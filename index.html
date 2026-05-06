@@ -12,6 +12,7 @@
       --ink: #13243a;
       --muted: #66758a;
       --glass: rgba(255,255,255,.72);
+      --white: rgba(255,255,255,.92);
       --line: rgba(9, 78, 145, .14);
       --shadow: 0 24px 70px rgba(7, 35, 70, .14);
       --soft: 0 12px 36px rgba(7, 35, 70, .10);
@@ -61,12 +62,14 @@
       box-shadow: var(--soft);
       display: grid;
       place-items: center;
+      position: relative;
       overflow: hidden;
     }
 
     .lion-logo svg {
       width: 52px;
       height: 52px;
+      display: block;
     }
 
     .brand-text h1 {
@@ -169,8 +172,23 @@
       padding: 26px;
       cursor: pointer;
       transition: .22s ease;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
       overflow: hidden;
       position: relative;
+    }
+
+    .category::before {
+      content: "";
+      position: absolute;
+      width: 160px;
+      height: 160px;
+      right: -54px;
+      top: -48px;
+      border-radius: 999px;
+      background: rgba(11,126,232,.12);
+      filter: blur(2px);
     }
 
     .category:hover {
@@ -189,6 +207,8 @@
       display: grid;
       place-items: center;
       font-size: 34px;
+      position: relative;
+      z-index: 1;
     }
 
     .category h3 {
@@ -196,6 +216,8 @@
       color: var(--navy);
       font-size: 28px;
       letter-spacing: -.045em;
+      position: relative;
+      z-index: 1;
     }
 
     .category p {
@@ -203,6 +225,8 @@
       color: var(--muted);
       line-height: 1.42;
       font-weight: 700;
+      position: relative;
+      z-index: 1;
     }
 
     .chip-row {
@@ -210,6 +234,8 @@
       flex-wrap: wrap;
       gap: 8px;
       margin-top: 20px;
+      position: relative;
+      z-index: 1;
     }
 
     .chip {
@@ -263,6 +289,7 @@
     }
 
     .back {
+      border: 0;
       background: rgba(255,255,255,.76);
       border: 1px solid var(--line);
       color: var(--navy);
@@ -333,6 +360,7 @@
       display: block;
       color: var(--navy);
       font-size: 19px;
+      letter-spacing: -.02em;
       margin-bottom: 8px;
     }
 
@@ -366,13 +394,12 @@
     }
   </style>
 </head>
-
 <body>
   <main class="app">
     <header class="topbar">
       <div class="brand">
-        <div class="lion-logo">
-          <svg viewBox="0 0 100 100">
+        <div class="lion-logo" aria-label="FairLife logo">
+          <svg viewBox="0 0 100 100" role="img" aria-label="Lev FairLife">
             <path d="M50 5 70 15 88 12 80 31 92 47 72 50 76 73 58 64 50 90 42 64 24 73 28 50 8 47 20 31 12 12 30 15Z" fill="#06224a"/>
             <path d="M31 34h38l-8 24-11 7-11-7z" fill="#ffffff" opacity=".96"/>
             <path d="M37 41h9l-5 6zm17 0h9l-4 6z" fill="#20b7e8"/>
@@ -380,17 +407,12 @@
             <path d="M34 17 50 10 66 17l-5 8-11-5-11 5z" fill="#20b7e8"/>
           </svg>
         </div>
-
         <div class="brand-text">
           <h1>Fair<span>Life</span></h1>
           <p>kompletní finanční strategie</p>
         </div>
       </div>
-
-      <div class="advisor">
-        Filip Solár
-        <span>Hypotéky · investice · pojištění</span>
-      </div>
+      <div class="advisor">Filip Solár<span>Hypotéky · investice · pojištění</span></div>
     </header>
 
     <section id="home" class="screen active">
@@ -403,46 +425,38 @@
 
         <div class="main-grid">
           <article class="category" onclick="openScreen('hypoteky')">
-            <div class="glass-icon">🏠</div>
-            <h3>Hypotéky a úvěry</h3>
-            <p>Bydlení, refinancování, investiční nemovitosti a chytré nastavení splácení.</p>
-            <div class="chip-row">
-              <span class="chip">sazba</span>
-              <span class="chip">fixace</span>
-              <span class="chip">cashflow</span>
+            <div>
+              <div class="glass-icon">🏠</div>
+              <h3>Hypotéky a úvěry</h3>
+              <p>Bydlení, refinancování, investiční nemovitosti a chytré nastavení splácení.</p>
+              <div class="chip-row"><span class="chip">sazba</span><span class="chip">fixace</span><span class="chip">cashflow</span></div>
             </div>
           </article>
 
           <article class="category" onclick="openScreen('investice')">
-            <div class="glass-icon">📈</div>
-            <h3>Investice</h3>
-            <p>Tvorba majetku, rezerva, ochrana před inflací, renta a finanční nezávislost.</p>
-            <div class="chip-row">
-              <span class="chip">renta</span>
-              <span class="chip">rezerva</span>
-              <span class="chip">diverzifikace</span>
+            <div>
+              <div class="glass-icon">📈</div>
+              <h3>Investice</h3>
+              <p>Tvorba majetku, rezerva, ochrana před inflací, renta a finanční nezávislost.</p>
+              <div class="chip-row"><span class="chip">renta</span><span class="chip">rezerva</span><span class="chip">diverzifikace</span></div>
             </div>
           </article>
 
           <article class="category" onclick="openScreen('pojisteni')">
-            <div class="glass-icon">🛡️</div>
-            <h3>Pojištění</h3>
-            <p>Ochrana příjmu, rodiny, majetku, vozidel, odpovědnosti i podnikání.</p>
-            <div class="chip-row">
-              <span class="chip">příjem</span>
-              <span class="chip">majetek</span>
-              <span class="chip">rodina</span>
+            <div>
+              <div class="glass-icon">🛡️</div>
+              <h3>Pojištění</h3>
+              <p>Ochrana příjmu, rodiny, majetku, vozidel, odpovědnosti i podnikání.</p>
+              <div class="chip-row"><span class="chip">příjem</span><span class="chip">majetek</span><span class="chip">rodina</span></div>
             </div>
           </article>
 
           <article class="category" onclick="openScreen('spoluprace')">
-            <div class="glass-icon">🔗</div>
-            <h3>Proč spolupráce</h3>
-            <p>Propojení služeb, úspora času, hlídání termínů a strategie místo produktů.</p>
-            <div class="chip-row">
-              <span class="chip">přehled</span>
-              <span class="chip">klid</span>
-              <span class="chip">péče</span>
+            <div>
+              <div class="glass-icon">🔗</div>
+              <h3>Proč spolupráce</h3>
+              <p>Propojení služeb, úspora času, hlídání termínů a strategie místo produktů.</p>
+              <div class="chip-row"><span class="chip">přehled</span><span class="chip">klid</span><span class="chip">péče</span></div>
             </div>
           </article>
         </div>
@@ -456,7 +470,7 @@
       </div>
     </section>
 
-    <section id="hypoteky" class="screen">
+    <section id="hypoteky" class="screen detail-screen">
       <div class="detail">
         <aside class="detail-left">
           <button class="back" onclick="openScreen('home')">← Zpět na hlavní stránku</button>
@@ -465,7 +479,6 @@
           <p>Hypotéka není jen o nejnižší sazbě. Ovlivňuje vaše cashflow, rezervy, investice i celkovou finanční stabilitu.</p>
           <div class="value-box">Moje přidaná hodnota: pomohu vybrat banku, nastavit parametry, pohlídat proces a ukázat, jak hypotéka zapadá do celkové strategie.</div>
         </aside>
-
         <div class="detail-right">
           <div class="mini-title">Co konkrétně řeším</div>
           <div class="subgrid">
@@ -480,7 +493,7 @@
       </div>
     </section>
 
-    <section id="investice" class="screen">
+    <section id="investice" class="screen detail-screen">
       <div class="detail">
         <aside class="detail-left">
           <button class="back" onclick="openScreen('home')">← Zpět na hlavní stránku</button>
@@ -489,7 +502,6 @@
           <p>Cílem není jen někam odkládat peníze. Cílem je vytvořit kapitál, rezervu, budoucí rentu a ochranu před inflací.</p>
           <div class="value-box">Moje přidaná hodnota: nastavím strategii podle cíle, horizontu, rizika a návaznosti na zbytek vašeho finančního života.</div>
         </aside>
-
         <div class="detail-right">
           <div class="mini-title">Co konkrétně řeším</div>
           <div class="subgrid">
@@ -504,7 +516,7 @@
       </div>
     </section>
 
-    <section id="pojisteni" class="screen">
+    <section id="pojisteni" class="screen detail-screen">
       <div class="detail">
         <aside class="detail-left">
           <button class="back" onclick="openScreen('home')">← Zpět na hlavní stránku</button>
@@ -513,7 +525,6 @@
           <p>Pojištění má chránit životní standard. Nejde o to mít pojistku, ale mít správně pokrytá rizika.</p>
           <div class="value-box">Moje přidaná hodnota: zkontroluji, co opravdu potřebujete chránit, nastavím odpovídající částky a hlídám, aby smlouvy dávaly smysl i v čase.</div>
         </aside>
-
         <div class="detail-right">
           <div class="mini-title">Co konkrétně řeším</div>
           <div class="subgrid">
@@ -528,7 +539,7 @@
       </div>
     </section>
 
-    <section id="spoluprace" class="screen">
+    <section id="spoluprace" class="screen detail-screen">
       <div class="detail">
         <aside class="detail-left">
           <button class="back" onclick="openScreen('home')">← Zpět na hlavní stránku</button>
@@ -537,7 +548,6 @@
           <p>Největší hodnota není v jedné smlouvě. Je v tom, že jednotlivé oblasti spolu ladí a někdo je dlouhodobě hlídá.</p>
           <div class="value-box">Moje role: být pro vás jedno kontaktní místo pro důležitá finanční rozhodnutí — srozumitelně, dlouhodobě a v souvislostech.</div>
         </aside>
-
         <div class="detail-right">
           <div class="mini-title">Přidaná hodnota pro klienta</div>
           <div class="subgrid">
