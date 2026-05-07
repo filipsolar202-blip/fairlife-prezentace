@@ -1,355 +1,525 @@
-{\rtf1\ansi\ansicpg1250\cocoartf2867
-\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fswiss\fcharset0 Helvetica;}
-{\colortbl;\red255\green255\blue255;}
-{\*\expandedcolortbl;;}
-\paperw11900\paperh16840\margl1440\margr1440\vieww23800\viewh15680\viewkind0
-\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FairLife | Interaktivní mapa spolupráce</title>
+  <style>
+    :root {
+      --bg: #f5f5f7;
+      --card: #ffffff;
+      --ink: #1d1d1f;
+      --muted: #6e6e73;
+      --navy: #154e72;
+      --cyan: #2fb8cc;
+      --blue: #0b7ee8;
+      --green: #15905f;
+      --violet: #7556d7;
+      --orange: #e86b00;
+      --line: rgba(0,0,0,.08);
+      --shadow: 0 22px 70px rgba(0,0,0,.10);
+      --soft-shadow: 0 10px 32px rgba(0,0,0,.07);
+      --radius: 34px;
+    }
 
-\f0\fs24 \cf0 <!DOCTYPE html>\
-<html lang="cs">\
-<head>\
-  <meta charset="UTF-8" />\
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />\
-  <title>Filip Sol\'e1r | Mapa spolupr\'e1ce</title>\
-  <style>\
-    :root \{\
-      --navy: #06224a;\
-      --blue: #0b7ee8;\
-      --cyan: #20b7e8;\
-      --ink: #13243a;\
-      --muted: #66758a;\
-      --glass: rgba(255,255,255,.72);\
-      --line: rgba(9, 78, 145, .14);\
-      --shadow: 0 24px 70px rgba(7, 35, 70, .14);\
-      --soft: 0 12px 36px rgba(7, 35, 70, .10);\
-      --radius: 30px;\
-      --green: #16885f;\
-      --orange: #e88425;\
-    \}\
-\
-    * \{ box-sizing: border-box; \}\
-\
-    body \{\
-      margin: 0;\
-      min-height: 100vh;\
-      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, Arial, sans-serif;\
-      color: var(--ink);\
-      background:\
-        radial-gradient(circle at 12% 8%, rgba(32,183,232,.25), transparent 30%),\
-        radial-gradient(circle at 88% 12%, rgba(11,126,232,.20), transparent 34%),\
-        linear-gradient(145deg, #f8fcff 0%, #eef7ff 48%, #ffffff 100%);\
-      overflow-x: hidden;\
-    \}\
-\
-    .app \{ max-width: 1320px; margin: 0 auto; padding: 30px 28px 42px; \}\
-\
-    .topbar \{ display: flex; justify-content: space-between; align-items: center; gap: 18px; margin-bottom: 24px; \}\
-    .brand \{ display: flex; align-items: center; gap: 16px; \}\
-    .logo-img \{ height: 70px; width: auto; object-fit: contain; border-radius: 18px; filter: drop-shadow(0 10px 24px rgba(7,35,70,.10)); \}\
-    .advisor \{ display: flex; align-items: center; gap: 14px; text-align: right; color: var(--navy); font-weight: 900; \}\
-    .advisor span \{ display: block; color: var(--muted); font-size: 14px; font-weight: 700; margin-top: 4px; \}\
-    .avatar \{ width: 68px; height: 68px; border-radius: 22px; object-fit: cover; box-shadow: var(--soft); border: 2px solid rgba(255,255,255,.88); \}\
-\
-    .screen \{ display: none; animation: fade .24s ease both; \}\
-    .screen.active \{ display: block; \}\
-    @keyframes fade \{ from \{ opacity: 0; transform: translateY(8px); \} to \{ opacity: 1; transform: translateY(0); \} \}\
-\
-    .hero \{ min-height: calc(100vh - 150px); display: grid; grid-template-rows: auto 1fr auto; gap: 22px; \}\
-    .intro \{ text-align: center; max-width: 920px; margin: 0 auto; \}\
-    .eyebrow, .mini-title \{ color: var(--blue); font-weight: 900; text-transform: uppercase; letter-spacing: .14em; font-size: 13px; margin-bottom: 12px; \}\
-    .intro h1 \{ margin: 0; font-size: clamp(38px, 5vw, 72px); line-height: .96; letter-spacing: -.07em; color: var(--navy); \}\
-    .intro p \{ margin: 18px auto 0; max-width: 790px; color: #3f5168; font-size: 20px; line-height: 1.48; font-weight: 650; \}\
-\
-    .main-grid \{ display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 18px; align-self: center; \}\
-    .category \{ min-height: 300px; border: 1px solid rgba(255,255,255,.88); background: var(--glass); backdrop-filter: blur(26px); border-radius: var(--radius); box-shadow: var(--shadow); padding: 26px; cursor: pointer; transition: .22s ease; overflow: hidden; position: relative; \}\
-    .category::before \{ content: ""; position: absolute; width: 170px; height: 170px; right: -58px; top: -50px; border-radius: 999px; background: rgba(11,126,232,.12); \}\
-    .category:hover \{ transform: translateY(-6px); box-shadow: 0 28px 80px rgba(11,126,232,.18); border-color: rgba(11,126,232,.30); \}\
-\
-    .glass-icon, .detail-icon, .small-icon \{ border-radius: 26px; background: linear-gradient(145deg, rgba(255,255,255,.96), rgba(227,245,255,.78)); border: 1px solid rgba(255,255,255,.96); box-shadow: inset 0 1px 0 rgba(255,255,255,.9), 0 16px 35px rgba(7,35,70,.12); display: grid; place-items: center; position: relative; z-index: 1; \}\
-    .glass-icon \{ width: 76px; height: 76px; \}\
-    .detail-icon \{ width: 96px; height: 96px; margin-bottom: 20px; \}\
-    .small-icon \{ width: 46px; height: 46px; border-radius: 16px; \}\
-    .glass-icon svg, .detail-icon svg, .small-icon svg \{ width: 54%; height: 54%; stroke: var(--blue); fill: none; stroke-width: 2.6; stroke-linecap: round; stroke-linejoin: round; \}\
-\
-    .category h3 \{ margin: 22px 0 10px; color: var(--navy); font-size: 27px; letter-spacing: -.045em; position: relative; z-index: 1; \}\
-    .category p \{ margin: 0; color: var(--muted); line-height: 1.42; font-weight: 700; position: relative; z-index: 1; \}\
-    .chip-row \{ display: flex; flex-wrap: wrap; gap: 8px; margin-top: 20px; position: relative; z-index: 1; \}\
-    .chip \{ padding: 8px 10px; border-radius: 999px; background: rgba(255,255,255,.72); border: 1px solid var(--line); color: #41536b; font-size: 12px; font-weight: 850; \}\
-\
-    .bottom-promise \{ display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; \}\
-    .promise \{ padding: 17px; border-radius: 24px; background: rgba(255,255,255,.72); border: 1px solid rgba(255,255,255,.88); box-shadow: var(--soft); color: var(--navy); font-weight: 900; text-align: center; \}\
-    .promise .small-icon \{ margin: 0 auto 8px; \}\
-\
-    .detail \{ min-height: calc(100vh - 150px); display: grid; grid-template-columns: .76fr 1.24fr; gap: 24px; align-items: stretch; \}\
-    .detail-left, .detail-right \{ border: 1px solid rgba(255,255,255,.88); background: var(--glass); backdrop-filter: blur(26px); border-radius: var(--radius); box-shadow: var(--shadow); padding: 30px; \}\
-    .back \{ background: rgba(255,255,255,.78); border: 1px solid var(--line); color: var(--navy); padding: 13px 17px; border-radius: 999px; font-weight: 900; cursor: pointer; box-shadow: var(--soft); margin-bottom: 28px; \}\
-    .detail-left h2 \{ margin: 0; color: var(--navy); font-size: clamp(36px, 4vw, 58px); line-height: .96; letter-spacing: -.065em; \}\
-    .detail-left p \{ color: #405168; font-size: 19px; line-height: 1.5; font-weight: 650; margin: 18px 0 0; \}\
-    .value-box \{ margin-top: 24px; padding: 20px; border-radius: 24px; background: rgba(255,255,255,.76); border: 1px solid var(--line); color: var(--navy); font-weight: 850; line-height: 1.45; \}\
-\
-    .subgrid \{ display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; \}\
-    .subcard \{ border: 1px solid var(--line); background: rgba(255,255,255,.76); border-radius: 24px; padding: 20px; min-height: 144px; box-shadow: 0 10px 28px rgba(7,35,70,.06); \}\
-    .subcard.clickable \{ cursor: pointer; transition: .18s ease; \}\
-    .subcard.clickable:hover \{ transform: translateY(-3px); border-color: rgba(11,126,232,.30); box-shadow: var(--soft); \}\
-    .subcard strong \{ display: flex; align-items: center; gap: 10px; color: var(--navy); font-size: 19px; letter-spacing: -.02em; margin-bottom: 8px; \}\
-    .subcard span \{ display: block; color: var(--muted); line-height: 1.4; font-weight: 650; \}\
-\
-    .extra-panel \{ display: none; margin-top: 16px; padding: 22px; border-radius: 26px; background: rgba(255,255,255,.82); border: 1px solid rgba(11,126,232,.18); box-shadow: var(--soft); animation: fade .22s ease both; \}\
-    .extra-panel.active \{ display: block; \}\
-    .extra-panel h3 \{ margin: 0 0 12px; color: var(--navy); font-size: 25px; letter-spacing: -.03em; \}\
-    .extra-panel p \{ margin: 0 0 14px; color: #46566a; line-height: 1.5; font-weight: 650; \}\
-\
-    .data-table \{ width: 100%; border-collapse: separate; border-spacing: 0; overflow: hidden; border-radius: 18px; border: 1px solid var(--line); background: white; margin-top: 12px; font-size: 14px; \}\
-    .data-table th, .data-table td \{ padding: 12px 13px; text-align: right; border-bottom: 1px solid rgba(9,78,145,.11); \}\
-    .data-table th:first-child, .data-table td:first-child \{ text-align: left; \}\
-    .data-table th \{ background: #f1f8ff; color: var(--navy); font-size: 12px; text-transform: uppercase; letter-spacing: .06em; \}\
-    .data-table tr:last-child td \{ border-bottom: 0; \}\
-    .plus \{ color: var(--green); font-weight: 900; \}\
-\
-    .time-grid \{ display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; margin-top: 14px; \}\
-    .time-card \{ border-radius: 22px; border: 1px solid var(--line); background: rgba(255,255,255,.8); padding: 18px; \}\
-    .time-card b \{ color: var(--navy); font-size: 18px; \}\
-    .time-card p \{ font-size: 15px; margin: 8px 0 0; color: var(--muted); \}\
-\
-    .formula \{ margin-top: 14px; padding: 16px; border-radius: 20px; background: #f3faff; border: 1px solid rgba(11,126,232,.12); color: var(--navy); font-weight: 800; line-height: 1.45; \}\
-    .warning \{ font-size: 13px; color: var(--muted); margin-top: 12px; font-weight: 650; \}\
-\
-    @media (max-width: 1100px) \{ .main-grid, .bottom-promise \{ grid-template-columns: repeat(2, minmax(0, 1fr)); \} .detail \{ grid-template-columns: 1fr; \} .time-grid \{ grid-template-columns: 1fr; \} \}\
-    @media (max-width: 680px) \{ .app \{ padding: 22px 14px 34px; \} .topbar \{ align-items: flex-start; flex-direction: column; \} .advisor \{ text-align: left; \} .main-grid, .bottom-promise, .subgrid \{ grid-template-columns: 1fr; \} .category \{ min-height: 240px; \} .data-table \{ font-size: 12px; \} .data-table th, .data-table td \{ padding: 9px 8px; \} \}\
-  </style>\
-</head>\
-<body>\
-  <main class="app">\
-    <header class="topbar">\
-      <div class="brand">\
-        <img class="logo-img" src="./fairlife-logo.png" alt="FairLife logo" onerror="this.style.display='none'; document.querySelector('.fallback-logo').style.display='block'" />\
-        <div class="fallback-logo" style="display:none; font-size:38px; font-weight:900; color:#06224a">Fair<span style="color:#20b7e8">Life</span></div>\
-      </div>\
-      <div class="advisor">\
-        <div>Filip Sol\'e1r<span>Hypot\'e9ky \'b7 investice \'b7 poji\'9at\uc0\u283 n\'ed</span></div>\
-        <img class="avatar" src="./filip-solar.jpg" alt="Filip Sol\'e1r" onerror="this.style.display='none'" />\
-      </div>\
-    </header>\
-\
-    <section id="home" class="screen active">\
-      <div class="hero">\
-        <div class="intro">\
-          <div class="eyebrow">S \uc0\u269 \'edm v\'e1m mohu pomoci</div>\
-          <h1>Finance propojen\'e9 do jednoho jasn\'e9ho pl\'e1nu.</h1>\
-          <p>Na jednom m\'edst\uc0\u283  \u345 e\'9a\'edme bydlen\'ed, tvorbu majetku, ochranu p\u345 \'edjmu i dlouhodob\'e9 hl\'edd\'e1n\'ed. C\'edlem nen\'ed prodat produkt, ale nastavit \u345 e\'9aen\'ed, kter\'e9 d\'e1v\'e1 smysl ve va\'9aem \'9eivot\u283 .</p>\
-        </div>\
-\
-        <div class="main-grid">\
-          <article class="category" onclick="openScreen('hypoteky')">\
-            <div class="glass-icon"> <svg viewBox="0 0 24 24"><path d="M3 11.5 12 4l9 7.5"/><path d="M5.5 10.5V20h13v-9.5"/><path d="M9 20v-6h6v6"/></svg></div>\
-            <h3>Hypot\'e9ky a \'fav\uc0\u283 ry</h3><p>Bydlen\'ed, refinancov\'e1n\'ed, investi\u269 n\'ed nemovitosti, konsolidace a chytr\'e9 nastaven\'ed spl\'e1cen\'ed.</p>\
-            <div class="chip-row"><span class="chip">sazba</span><span class="chip">fixace</span><span class="chip">cashflow</span></div>\
-          </article>\
-          <article class="category" onclick="openScreen('investice')">\
-            <div class="glass-icon"><svg viewBox="0 0 24 24"><path d="M4 19h16"/><path d="M6 16l4-5 3 3 5-8"/><path d="M18 6h-4"/><path d="M18 6v4"/></svg></div>\
-            <h3>Investice</h3><p>Tvorba majetku, rezerva, ochrana p\uc0\u345 ed inflac\'ed, renta a finan\u269 n\'ed nez\'e1vislost.</p>\
-            <div class="chip-row"><span class="chip">renta</span><span class="chip">rezerva</span><span class="chip">diverzifikace</span></div>\
-          </article>\
-          <article class="category" onclick="openScreen('pojisteni')">\
-            <div class="glass-icon"><svg viewBox="0 0 24 24"><path d="M12 3 19 6v5c0 5-3 8-7 10-4-2-7-5-7-10V6z"/><path d="M9 12l2 2 4-5"/></svg></div>\
-            <h3>Poji\'9at\uc0\u283 n\'ed</h3><p>Ochrana p\u345 \'edjmu, rodiny, majetku, vozidel, odpov\u283 dnosti i podnik\'e1n\'ed.</p>\
-            <div class="chip-row"><span class="chip">p\uc0\u345 \'edjem</span><span class="chip">majetek</span><span class="chip">rodina</span></div>\
-          </article>\
-          <article class="category" onclick="openScreen('spoluprace')">\
-            <div class="glass-icon"><svg viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7 0l2-2a5 5 0 0 0-7-7l-1 1"/><path d="M14 11a5 5 0 0 0-7 0l-2 2a5 5 0 0 0 7 7l1-1"/></svg></div>\
-            <h3>Pro\uc0\u269  spolupr\'e1ce</h3><p>Propojen\'ed slu\'9eeb, \'faspora \u269 asu, hl\'edd\'e1n\'ed term\'edn\u367 , informovanost a strategie m\'edsto produkt\u367 .</p>\
-            <div class="chip-row"><span class="chip">p\uc0\u345 ehled</span><span class="chip">klid</span><span class="chip">p\'e9\u269 e</span></div>\
-          </article>\
-        </div>\
-\
-        <div class="bottom-promise">\
-          <div class="promise"><div class="small-icon"><svg viewBox="0 0 24 24"><path d="M12 3v4"/><path d="M12 17v4"/><path d="M3 12h4"/><path d="M17 12h4"/><circle cx="12" cy="12" r="5"/></svg></div>Jasn\'fd sm\uc0\u283 r</div>\
-          <div class="promise"><div class="small-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><path d="M12 8v5l3 2"/></svg></div>\'daspora \uc0\u269 asu</div>\
-          <div class="promise"><div class="small-icon"><svg viewBox="0 0 24 24"><path d="M12 3 19 6v5c0 5-3 8-7 10-4-2-7-5-7-10V6z"/></svg></div>Ochrana hodnot</div>\
-          <div class="promise"><div class="small-icon"><svg viewBox="0 0 24 24"><path d="M4 19h16"/><path d="M7 16v-5"/><path d="M12 16V8"/><path d="M17 16V5"/></svg></div>R\uc0\u367 st majetku</div>\
-        </div>\
-      </div>\
-    </section>\
-\
-    <section id="hypoteky" class="screen">\
-      <div class="detail">\
-        <aside class="detail-left">\
-          <button class="back" onclick="openScreen('home')">\uc0\u8592  Zp\u283 t na hlavn\'ed str\'e1nku</button>\
-          <div class="detail-icon"><svg viewBox="0 0 24 24"><path d="M3 11.5 12 4l9 7.5"/><path d="M5.5 10.5V20h13v-9.5"/><path d="M9 20v-6h6v6"/></svg></div>\
-          <h2>Hypot\'e9ky a \'fav\uc0\u283 ry</h2>\
-          <p>Hypot\'e9ka nen\'ed jen o nejni\'9e\'9a\'ed sazb\uc0\u283 . Ovliv\u328 uje cashflow, rezervy, investice i celkovou finan\u269 n\'ed stabilitu.</p>\
-          <div class="value-box">P\uc0\u345 idan\'e1 hodnota: v\'fdb\u283 r banky, nastaven\'ed parametr\u367 , hl\'edd\'e1n\'ed procesu, koordinace podklad\u367  a strategie, jak hypot\'e9ka zapad\'e1 do celkov\'e9ho pl\'e1nu.</div>\
-          <div class="time-grid">\
-            <div class="time-card"><b>S\'e1m klient</b><p>porovn\'e1v\'e1n\'ed bank, sazeb, podm\'ednek, registr\uc0\u367 , odhad\u367  a \u269 erp\'e1n\'ed: typicky 11\'9620 hodin.</p></div>\
-            <div class="time-card"><b>Se mnou</b><p>klient \uc0\u345 e\'9a\'ed hlavn\u283  dod\'e1n\'ed podklad\u367  a rozhodnut\'ed: typicky kolem 1\'962 hodin.</p></div>\
-            <div class="time-card"><b>V\'fdhoda</b><p>\uc0\u269 asov\'e1 \'faspora, m\'e9n\u283  chyb, lep\'9a\'ed informovanost a profesion\'e1ln\'ed koordinace.</p></div>\
-          </div>\
-        </aside>\
-        <div class="detail-right">\
-          <div class="mini-title">Co konkr\'e9tn\uc0\u283  \u345 e\'9a\'edm \'97 kliknuteln\'e9 \u269 \'e1sti obsahuj\'ed detail</div>\
-          <div class="subgrid">\
-            <div class="subcard"><strong>Vlastn\'ed bydlen\'ed</strong><span>V\'fdb\uc0\u283 r banky, v\'fd\'9ae \'fav\u283 ru, fixace, splatnost a cel\'fd proces \'9e\'e1dosti.</span></div>\
-            <div class="subcard"><strong>Refinancov\'e1n\'ed / refixace</strong><span>Hl\'edd\'e1n\'ed v\'fdro\uc0\u269 \'ed, porovn\'e1n\'ed sazeb, vyjedn\'e1n\'ed podm\'ednek a rozhodnut\'ed, zda m\u283 nit banku.</span></div>\
-            <div class="subcard clickable" onclick="toggleExtra('paka')"><strong>Investi\uc0\u269 n\'ed nemovitosti</strong><span>Financov\'e1n\'ed n\'e1kupu, pr\'e1ce s n\'e1jmem, zhodnocen\'edm, v\'fdnosem, rizikem a p\'e1kov\'fdm efektem.</span></div>\
-            <div class="subcard clickable" onclick="toggleExtra('konsolidace')"><strong>Konsolidace z\'e1vazk\uc0\u367 </strong><span>Slou\u269 en\'ed z\'e1vazk\u367  tak, aby se uvolnilo cashflow pro rezervu nebo investice.</span></div>\
-            <div class="subcard clickable" onclick="toggleExtra('splaceni')"><strong>Strategie spl\'e1cen\'ed</strong><span>Kdy spl\'e1cet rychleji a kdy rad\uc0\u283 ji tvo\u345 it investi\u269 n\'ed rezervu vedle hypot\'e9ky.</span></div>\
-            <div class="subcard"><strong>Poji\'9at\uc0\u283 n\'ed nemovitosti</strong><span>N\'e1vaznost na po\'9eadavky banky, re\'e1lnou hodnotu nemovitosti a riziko podpoji\'9at\u283 n\'ed.</span></div>\
-          </div>\
-\
-          <div id="splaceni" class="extra-panel">\
-            <h3>Strategie spl\'e1cen\'ed: splatit, nebo investovat?</h3>\
-            <p>Pokud klient pou\'9eije v\'9aechny voln\'e9 pen\'edze jen na mimo\uc0\u345 \'e1dn\'e9 spl\'e1tky, sni\'9euje dluh, ale nemus\'ed si budovat likvidn\'ed rezervu. Druh\'e1 varianta je \u269 \'e1st prost\u345 edk\u367  investovat a vytvo\u345 it kapit\'e1l, kter\'fd m\u367 \'9ee pozd\u283 ji slou\'9eit jako renta, rezerva nebo zdroj pro mimo\u345 \'e1dn\'e9 splacen\'ed hypot\'e9ky.</p>\
-            <div class="formula">P\uc0\u345 \'edklad my\'9alenky: pen\'edze vedle hypot\'e9ky mohou pracovat. Klient si t\'edm zachov\'e1 flexibilitu \'97 m\u367 \'9ee tvo\u345 it rentu, dr\'9eet pou\'9eiteln\'e9 cashflow, nebo v budoucnu \u269 \'e1st hypot\'e9ky doplatit.</div>\
-          </div>\
-\
-          <div id="konsolidace" class="extra-panel">\
-            <h3>Konsolidace: ni\'9e\'9a\'ed spl\'e1tky mohou tvo\uc0\u345 it kapit\'e1l</h3>\
-            <p>Pokud se dra\'9e\'9a\'ed z\'e1vazky vhodn\uc0\u283  slou\u269 \'ed a optimalizuj\'ed, m\u367 \'9ee vzniknout voln\'e9 m\u283 s\'ed\u269 n\'ed cashflow. To nemus\'ed zmizet ve spot\u345 eb\u283  \'97 m\u367 \'9ee se c\'edlen\u283  pos\'edlat do rezervy nebo investic.</p>\
-            <div class="formula">P\uc0\u345 \'edklad: uvoln\u283 n\'fdch 3 000 K\u269  m\u283 s\'ed\u269 n\u283  m\u367 \'9ee b\'fdt z\'e1klad dlouhodob\'e9 rezervy. Za 20 let p\u345 i 8 % p.a. m\u367 \'9ee m\'edt investi\u269 n\'ed hodnota p\u345 ibli\'9en\u283  1,77 mil. K\u269 , p\u345 i vkladu 720 tis. K\u269 .</div>\
-          </div>\
-\
-          <div id="paka" class="extra-panel">\
-            <h3>Investi\uc0\u269 n\'ed nemovitost a p\'e1kov\'fd efekt</h3>\
-            <p>Hypot\'e9ka umo\'9e\uc0\u328 uje kontrolovat v\u283 t\'9a\'ed hodnotu nemovitosti s men\'9a\'edm vlastn\'edm kapit\'e1lem. Pokud nemovitost roste na cen\u283 , zhodnocuje se cel\'e1 nemovitost, ne jen vlo\'9een\'e9 vlastn\'ed pen\'edze.</p>\
-            <table class="data-table">\
-              <thead><tr><th>P\uc0\u345 \'edklad</th><th>Hodnota</th></tr></thead>\
-              <tbody>\
-                <tr><td>Cena nemovitosti</td><td>5 000 000 K\uc0\u269 </td></tr>\
-                <tr><td>Vlastn\'ed pen\'edze 20 %</td><td>1 000 000 K\uc0\u269 </td></tr>\
-                <tr><td>R\uc0\u367 st nemovitosti o 3 % ro\u269 n\u283  po 10 letech</td><td>cca 6 720 000 K\u269 </td></tr>\
-                <tr><td>N\'e1r\uc0\u367 st hodnoty</td><td class="plus">cca 1 720 000 K\u269 </td></tr>\
-              </tbody>\
-            </table>\
-            <div class="warning">Zjednodu\'9aen\'fd model bez n\'e1klad\uc0\u367 , dan\'ed, \'farok\u367 , oprav a n\'e1jemn\'edho cashflow. Slou\'9e\'ed pro vysv\u283 tlen\'ed principu p\'e1kov\'e9ho efektu.</div>\
-          </div>\
-        </div>\
-      </div>\
-    </section>\
-\
-    <section id="investice" class="screen">\
-      <div class="detail">\
-        <aside class="detail-left">\
-          <button class="back" onclick="openScreen('home')">\uc0\u8592  Zp\u283 t na hlavn\'ed str\'e1nku</button>\
-          <div class="detail-icon"><svg viewBox="0 0 24 24"><path d="M4 19h16"/><path d="M6 16l4-5 3 3 5-8"/><path d="M18 6h-4"/><path d="M18 6v4"/></svg></div>\
-          <h2>Investice</h2>\
-          <p>C\'edlem nen\'ed jen n\uc0\u283 kam odkl\'e1dat pen\'edze. C\'edlem je vytvo\u345 it kapit\'e1l, rezervu, budouc\'ed rentu a ochranu p\u345 ed inflac\'ed.</p>\
-          <div class="value-box">P\uc0\u345 idan\'e1 hodnota: strategie podle c\'edle, horizontu, rizika, likvidity a n\'e1vaznosti na hypot\'e9ku, poji\'9at\u283 n\'ed a rodinn\'fd rozpo\u269 et.</div>\
-          <div class="time-grid">\
-            <div class="time-card"><b>S\'e1m klient</b><p>studium fond\uc0\u367 , rizik, n\'e1klad\u367 , horizont\u367  a psychologie investov\'e1n\'ed: des\'edtky hodin.</p></div>\
-            <div class="time-card"><b>Se mnou</b><p>spole\uc0\u269 n\u283  nastav\'edme sm\u283 r, vhodnou strategii a pr\u367 b\u283 \'9enou p\'e9\u269 i.</p></div>\
-            <div class="time-card"><b>V\'fdhoda</b><p>lep\'9a\'ed informovanost, discipl\'edna, struktura a men\'9a\'ed riziko nahodil\'fdch rozhodnut\'ed.</p></div>\
-          </div>\
-        </aside>\
-        <div class="detail-right">\
-          <div class="mini-title">Co konkr\'e9tn\uc0\u283  \u345 e\'9a\'edm</div>\
-          <div class="subgrid">\
-            <div class="subcard clickable" onclick="toggleExtra('majetek')"><strong>Tvorba majetku</strong><span>Pravideln\'e9 i jednor\'e1zov\'e9 investice podle mo\'9enost\'ed, c\'edle a \uc0\u269 asov\'e9ho horizontu.</span></div>\
-            <div class="subcard"><strong>Renta a pasivn\'ed p\uc0\u345 \'edjem</strong><span>Budov\'e1n\'ed budouc\'edho p\u345 \'edjmu z kapit\'e1lu a v\u283 t\'9a\'ed finan\u269 n\'ed nez\'e1vislosti.</span></div>\
-            <div class="subcard"><strong>Ochrana p\uc0\u345 ed inflac\'ed</strong><span>Rozlo\'9een\'ed pen\u283 z tak, aby dlouhodob\u283  neztr\'e1cely hodnotu jen na \'fa\u269 tu.</span></div>\
-            <div class="subcard"><strong>Diverzifikace</strong><span>Fondy, akcie, dluhopisy, ETF, nemovitosti a dal\'9a\'ed n\'e1stroje podle vhodnosti.</span></div>\
-            <div class="subcard"><strong>Likvidita a rezerva</strong><span>Rozd\uc0\u283 len\'ed pen\u283 z na kr\'e1tkodobou rezervu, st\u345 edn\u283 dob\'e9 c\'edle a dlouhodob\'fd kapit\'e1l.</span></div>\
-            <div class="subcard"><strong>Pokro\uc0\u269 il\'e9 investice</strong><span>FKI fondy, priv\'e1tn\'ed p\u345 \'edle\'9eitosti a \u345 e\'9aen\'ed pro v\u283 t\'9a\'ed kapit\'e1l.</span></div>\
-          </div>\
-\
-          <div id="majetek" class="extra-panel">\
-            <h3>Tvorba majetku \'97 s\'edla \uc0\u269 asu a slo\'9een\'e9ho \'faro\u269 en\'ed</h3>\
-            <p>Model ukazuje pravidelnou m\uc0\u283 s\'ed\u269 n\'ed investici p\u345 i p\u345 edpokl\'e1dan\'e9m zhodnocen\'ed 8 % p.a. Hodnoty jsou orienta\u269 n\'ed a slou\'9e\'ed pro vysv\u283 tlen\'ed principu dlouhodob\'e9ho investov\'e1n\'ed.</p>\
-            <table class="data-table">\
-              <thead><tr><th>M\uc0\u283 s\'ed\u269 n\u283  / horizont</th><th>Vlo\'9eeno</th><th>Hodnota</th><th>V\'fdnos</th></tr></thead>\
-              <tbody>\
-                <tr><td>1 000 K\uc0\u269  / 10 let</td><td>120 000 K\u269 </td><td>183 000 K\u269 </td><td class="plus">63 000 K\u269 </td></tr>\
-                <tr><td>2 000 K\uc0\u269  / 10 let</td><td>240 000 K\u269 </td><td>366 000 K\u269 </td><td class="plus">126 000 K\u269 </td></tr>\
-                <tr><td>5 000 K\uc0\u269  / 10 let</td><td>600 000 K\u269 </td><td>915 000 K\u269 </td><td class="plus">315 000 K\u269 </td></tr>\
-                <tr><td>1 000 K\uc0\u269  / 20 let</td><td>240 000 K\u269 </td><td>589 000 K\u269 </td><td class="plus">349 000 K\u269 </td></tr>\
-                <tr><td>2 000 K\uc0\u269  / 20 let</td><td>480 000 K\u269 </td><td>1 178 000 K\u269 </td><td class="plus">698 000 K\u269 </td></tr>\
-                <tr><td>5 000 K\uc0\u269  / 20 let</td><td>1 200 000 K\u269 </td><td>2 945 000 K\u269 </td><td class="plus">1 745 000 K\u269 </td></tr>\
-                <tr><td>1 000 K\uc0\u269  / 30 let</td><td>360 000 K\u269 </td><td>1 490 000 K\u269 </td><td class="plus">1 130 000 K\u269 </td></tr>\
-                <tr><td>2 000 K\uc0\u269  / 30 let</td><td>720 000 K\u269 </td><td>2 981 000 K\u269 </td><td class="plus">2 261 000 K\u269 </td></tr>\
-                <tr><td>5 000 K\uc0\u269  / 30 let</td><td>1 800 000 K\u269 </td><td>7 452 000 K\u269 </td><td class="plus">5 652 000 K\u269 </td></tr>\
-              </tbody>\
-            </table>\
-            <div class="warning">Nejde o garanci v\'fdnosu. V\'fdpo\uc0\u269 et nepo\u269 \'edt\'e1 poplatky, dan\u283 , inflaci ani kol\'eds\'e1n\'ed trh\u367 .</div>\
-          </div>\
-        </div>\
-      </div>\
-    </section>\
-\
-    <section id="pojisteni" class="screen">\
-      <div class="detail">\
-        <aside class="detail-left">\
-          <button class="back" onclick="openScreen('home')">\uc0\u8592  Zp\u283 t na hlavn\'ed str\'e1nku</button>\
-          <div class="detail-icon"><svg viewBox="0 0 24 24"><path d="M12 3 19 6v5c0 5-3 8-7 10-4-2-7-5-7-10V6z"/><path d="M9 12l2 2 4-5"/></svg></div>\
-          <h2>Poji\'9at\uc0\u283 n\'ed</h2>\
-          <p>Poji\'9at\uc0\u283 n\'ed m\'e1 chr\'e1nit \'9eivotn\'ed standard. Nejde o to m\'edt pojistku, ale m\'edt spr\'e1vn\u283  pokryt\'e1 rizika.</p>\
-          <div class="value-box">P\uc0\u345 idan\'e1 hodnota: \u269 tu a porovn\'e1v\'e1m pojistn\'e9 podm\'ednky, v\'fdluky, definice pln\u283 n\'ed a praktick\'e9 rozd\'edly mezi poji\'9a\u357 ovnami. Klient tak nemus\'ed tr\'e1vit hodiny studiem dokument\u367 , kter\'fdm se b\u283 \'9en\u283  \'9apatn\u283  rozum\'ed.</div>\
-          <div class="time-grid">\
-            <div class="time-card"><b>S\'e1m klient</b><p>\uc0\u269 ten\'ed podm\'ednek, v\'fdluk, limit\u367  a porovn\'e1n\'ed poji\'9a\u357 oven: \u269 asto 8\'9615 hodin.</p></div>\
-            <div class="time-card"><b>Se mnou</b><p>vysv\uc0\u283 tl\'edm rozd\'edly, doporu\u269 \'edm smyslupln\'e9 nastaven\'ed a upozorn\'edm na slab\'e1 m\'edsta.</p></div>\
-            <div class="time-card"><b>V\'fdhoda</b><p>m\'e9n\uc0\u283  p\u345 ehl\'e9dnut\'fdch v\'fdluk, lep\'9a\'ed pojistn\'e9 \u269 \'e1stky a jasn\u283 j\'9a\'ed rozhodnut\'ed.</p></div>\
-          </div>\
-        </aside>\
-        <div class="detail-right">\
-          <div class="mini-title">Co konkr\'e9tn\uc0\u283  \u345 e\'9a\'edm</div>\
-          <div class="subgrid">\
-            <div class="subcard"><strong>Ochrana p\uc0\u345 \'edjmu</strong><span>Invalidita, pracovn\'ed neschopnost, z\'e1va\'9en\'e1 onemocn\u283 n\'ed a dlouhodob\'fd v\'fdpadek p\u345 \'edjmu.</span></div>\
-            <div class="subcard"><strong>Rodina a z\'e1vazky</strong><span>Zaji\'9at\uc0\u283 n\'ed partnera, d\u283 t\'ed, hypot\'e9ky a dal\'9a\'edch finan\u269 n\'edch povinnost\'ed.</span></div>\
-            <div class="subcard"><strong>Majetek</strong><span>Nemovitost, dom\'e1cnost, odpov\uc0\u283 dnost a kontrola podpoji\'9at\u283 n\'ed.</span></div>\
-            <div class="subcard"><strong>Vozidla</strong><span>Povinn\'e9 ru\uc0\u269 en\'ed, havarijn\'ed poji\'9at\u283 n\'ed, limity a p\u345 ipoji\'9at\u283 n\'ed podle re\'e1ln\'e9ho u\'9e\'edv\'e1n\'ed auta.</span></div>\
-            <div class="subcard"><strong>Podnik\'e1n\'ed</strong><span>Ochrana OSV\uc0\u268 , odpov\u283 dnost, majetek firmy a kl\'ed\u269 ov\'e9 osoby.</span></div>\
-            <div class="subcard"><strong>Pravideln\'e1 revize</strong><span>\'daprava smluv podle zm\uc0\u283 n p\u345 \'edjm\u367 , majetku, rodiny, cen a pojistn\'fdch podm\'ednek.</span></div>\
-          </div>\
-        </div>\
-      </div>\
-    </section>\
-\
-    <section id="spoluprace" class="screen">\
-      <div class="detail">\
-        <aside class="detail-left">\
-          <button class="back" onclick="openScreen('home')">\uc0\u8592  Zp\u283 t na hlavn\'ed str\'e1nku</button>\
-          <div class="detail-icon"><svg viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7 0l2-2a5 5 0 0 0-7-7l-1 1"/><path d="M14 11a5 5 0 0 0-7 0l-2 2a5 5 0 0 0 7 7l1-1"/></svg></div>\
-          <h2>Pro\uc0\u269  spolupr\'e1ce se mnou</h2>\
-          <p>Nejv\uc0\u283 t\'9a\'ed hodnota nen\'ed v jedn\'e9 smlouv\u283 . Je v tom, \'9ee jednotliv\'e9 oblasti spolu lad\'ed a n\u283 kdo je dlouhodob\u283  hl\'edd\'e1.</p>\
-          <div class="value-box">Moje role: b\'fdt jedno kontaktn\'ed m\'edsto pro d\uc0\u367 le\'9eit\'e1 finan\u269 n\'ed rozhodnut\'ed \'97 srozumiteln\u283 , dlouhodob\u283  a v souvislostech.</div>\
-        </aside>\
-        <div class="detail-right">\
-          <div class="mini-title">Shrnut\'ed p\uc0\u345 idan\'e9 hodnoty</div>\
-          <div class="subgrid">\
-            <div class="subcard"><strong>V\'9ae propojen\'e9</strong><span>Hypot\'e9ka ovliv\uc0\u328 uje cashflow, investice tvo\u345 \'ed kapit\'e1l a poji\'9at\u283 n\'ed chr\'e1n\'ed p\u345 \'edjem i majetek.</span></div>\
-            <div class="subcard"><strong>Strategie, ne produkt</strong><span>Neza\uc0\u269 \'edn\'e1me produktem, ale c\'edlem: bydlen\'ed, rezerva, renta, ochrana rodiny nebo r\u367 st majetku.</span></div>\
-            <div class="subcard"><strong>\uc0\u268 asov\'e1 \'faspora</strong><span>Klient nemus\'ed s\'e1m porovn\'e1vat banky, fondy, poji\'9a\u357 ovny, v\'fdluky, podm\'ednky a procesy.</span></div>\
-            <div class="subcard"><strong>Informovanost</strong><span>Dost\'e1v\'e1 srozumiteln\'e9 vysv\uc0\u283 tlen\'ed v\'fdhod, rizik, n\'e1klad\u367  a n\'e1vaznost\'ed.</span></div>\
-            <div class="subcard"><strong>Profesionalita</strong><span>Proces, kontrola dokument\uc0\u367 , hl\'edd\'e1n\'ed term\'edn\u367 , komunikace s institucemi a prevence chyb.</span></div>\
-            <div class="subcard"><strong>Dlouhodob\'e9 hl\'edd\'e1n\'ed</strong><span>Nastaven\'ed se vyv\'edj\'ed podle \'9eivota klienta, trhu, sazeb, rodiny, majetku a c\'edl\uc0\u367 .</span></div>\
-          </div>\
-          <div class="extra-panel active">\
-            <h3>\uc0\u268 as, kter\'fd klient nemus\'ed \u345 e\'9ait s\'e1m</h3>\
-            <table class="data-table">\
-              <thead><tr><th>Oblast</th><th>S\'e1m klient</th><th>Se mnou</th><th>Hlavn\'ed v\'fdhoda</th></tr></thead>\
-              <tbody>\
-                <tr><td>Hypot\'e9ka</td><td>11\'9620 hod</td><td>1\'962 hod</td><td class="plus">proces a vyjedn\'e1n\'ed</td></tr>\
-                <tr><td>Investice</td><td>des\'edtky hodin</td><td>spole\uc0\u269 n\'e1 strategie</td><td class="plus">struktura a discipl\'edna</td></tr>\
-                <tr><td>Poji\'9at\uc0\u283 n\'ed</td><td>8\'9615 hod</td><td>vysv\u283 tlen\'ed a n\'e1vrh</td><td class="plus">podm\'ednky a v\'fdluky</td></tr>\
-                <tr><td>Dlouhodob\'e1 p\'e9\uc0\u269 e</td><td>hl\'edd\'e1 s\'e1m</td><td>pr\u367 b\u283 \'9en\u283  sleduji</td><td class="plus">klid a n\'e1vaznost</td></tr>\
-              </tbody>\
-            </table>\
-          </div>\
-        </div>\
-      </div>\
-    </section>\
-  </main>\
-\
-  <script>\
-    function openScreen(id) \{\
-      document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));\
-      document.getElementById(id).classList.add('active');\
-      window.scrollTo(\{ top: 0, behavior: 'smooth' \});\
-    \}\
-    function toggleExtra(id) \{\
-      const panel = document.getElementById(id);\
-      panel.classList.toggle('active');\
-      panel.scrollIntoView(\{ behavior: 'smooth', block: 'nearest' \});\
-    \}\
-  </script>\
-</body>\
-</html>\
-}
+    * { box-sizing: border-box; }
+
+    html, body {
+      margin: 0;
+      min-height: 100%;
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, Arial, sans-serif;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 12% 10%, rgba(47,184,204,.15), transparent 32%),
+        radial-gradient(circle at 88% 8%, rgba(21,78,114,.13), transparent 30%),
+        var(--bg);
+    }
+
+    button, input { font-family: inherit; }
+
+    .page {
+      width: min(1460px, calc(100vw - 44px));
+      margin: 0 auto;
+      padding: 26px 0 38px;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+      margin-bottom: 22px;
+    }
+
+    .logo {
+      height: 72px;
+      width: auto;
+      object-fit: contain;
+      display: block;
+    }
+
+    .advisor {
+      text-align: right;
+      font-size: 18px;
+      font-weight: 850;
+      color: var(--navy);
+      line-height: 1.15;
+    }
+
+    .advisor span {
+      display: block;
+      color: var(--muted);
+      font-size: 14px;
+      font-weight: 650;
+      margin-top: 5px;
+    }
+
+    .hero {
+      text-align: center;
+      margin: 18px auto 30px;
+      max-width: 980px;
+    }
+
+    .eyebrow {
+      color: var(--blue);
+      text-transform: uppercase;
+      letter-spacing: .14em;
+      font-size: 13px;
+      font-weight: 900;
+      margin-bottom: 13px;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(42px, 5.5vw, 82px);
+      line-height: .95;
+      letter-spacing: -.068em;
+      font-weight: 850;
+    }
+
+    .hero p {
+      margin: 18px auto 0;
+      max-width: 820px;
+      color: #45454a;
+      font-size: 20px;
+      line-height: 1.45;
+      font-weight: 600;
+    }
+
+    .map-shell {
+      position: relative;
+      min-height: 650px;
+      border-radius: 44px;
+      background: rgba(255,255,255,.58);
+      border: 1px solid rgba(255,255,255,.82);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      padding: 36px;
+      backdrop-filter: blur(18px);
+    }
+
+    .map-bg {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background:
+        linear-gradient(90deg, rgba(21,78,114,.045) 1px, transparent 1px),
+        linear-gradient(0deg, rgba(21,78,114,.045) 1px, transparent 1px);
+      background-size: 48px 48px;
+      mask-image: radial-gradient(circle at center, black, transparent 76%);
+      opacity: .8;
+    }
+
+    .center {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      width: 238px;
+      height: 238px;
+      border-radius: 50%;
+      background: linear-gradient(145deg, #fff, #eef8fc);
+      border: 1px solid rgba(255,255,255,.94);
+      box-shadow: 0 24px 70px rgba(21,78,114,.14), inset 0 1px 0 rgba(255,255,255,.9);
+      display: grid;
+      place-items: center;
+      text-align: center;
+      z-index: 4;
+      padding: 30px;
+    }
+
+    .center svg {
+      width: 42px;
+      height: 42px;
+      stroke: var(--navy);
+      fill: none;
+      stroke-width: 2.2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      margin-bottom: 10px;
+    }
+
+    .center strong {
+      display: block;
+      color: var(--navy);
+      font-size: 23px;
+      line-height: 1.08;
+      letter-spacing: -.03em;
+    }
+
+    .center span {
+      display: block;
+      color: var(--muted);
+      font-weight: 750;
+      margin-top: 10px;
+      font-size: 13px;
+    }
+
+    .path {
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    .path path {
+      fill: none;
+      stroke: rgba(21,78,114,.20);
+      stroke-width: 2.2;
+      stroke-linecap: round;
+    }
+
+    .node {
+      position: absolute;
+      z-index: 3;
+      width: 334px;
+      min-height: 166px;
+      border-radius: 30px;
+      background: rgba(255,255,255,.88);
+      border: 1px solid rgba(255,255,255,.86);
+      box-shadow: var(--soft-shadow);
+      padding: 18px;
+      cursor: pointer;
+      transition: .22s ease;
+      text-align: left;
+    }
+
+    .node:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 24px 58px rgba(0,0,0,.12);
+    }
+
+    .node.dim {
+      opacity: .34;
+      filter: grayscale(1);
+      transform: scale(.98);
+    }
+
+    .node.active {
+      opacity: 1;
+      filter: none;
+      outline: 4px solid rgba(47,184,204,.25);
+      transform: translateY(-5px);
+    }
+
+    .node-top {
+      display: flex;
+      gap: 13px;
+      align-items: center;
+      margin-bottom: 13px;
+    }
+
+    .icon {
+      width: 58px;
+      height: 58px;
+      border-radius: 20px;
+      display: grid;
+      place-items: center;
+      background: linear-gradient(145deg, #fff, #eef8fc);
+      border: 1px solid rgba(255,255,255,.95);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.9), 0 10px 26px rgba(21,78,114,.12);
+      flex: 0 0 auto;
+    }
+
+    .icon svg {
+      width: 32px;
+      height: 32px;
+      stroke: var(--navy);
+      fill: none;
+      stroke-width: 2.2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .node h2 {
+      margin: 0;
+      font-size: 24px;
+      line-height: 1.06;
+      letter-spacing: -.04em;
+    }
+
+    .node p {
+      margin: 0;
+      color: #515158;
+      line-height: 1.42;
+      font-weight: 650;
+      font-size: 15px;
+    }
+
+    .chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 7px;
+      margin-top: 12px;
+    }
+
+    .chip {
+      font-size: 11px;
+      font-weight: 850;
+      padding: 7px 9px;
+      border-radius: 999px;
+      color: #45454a;
+      background: #f5f5f7;
+      border: 1px solid var(--line);
+    }
+
+    .node-bydleni { left: 7%; top: 16%; }
+    .node-majetek { right: 7%; top: 16%; }
+    .node-ochrana { left: 7%; bottom: 13%; }
+    .node-plan { right: 7%; bottom: 13%; }
+
+    .node-majetek .icon svg { stroke: var(--green); }
+    .node-ochrana .icon svg { stroke: var(--violet); }
+    .node-plan .icon svg { stroke: var(--orange); }
+
+    .detail-panel {
+      display: none;
+      position: relative;
+      z-index: 5;
+      margin-top: 28px;
+      background: #fff;
+      border-radius: 38px;
+      box-shadow: var(--shadow);
+      border: 1px solid rgba(255,255,255,.8);
+      padding: 28px;
+      animation: show .25s ease both;
+    }
+
+    .detail-panel.active { display: block; }
+
+    @keyframes show {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .detail-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 22px;
+      align-items: flex-start;
+      margin-bottom: 22px;
+    }
+
+    .detail-title h2 {
+      margin: 0;
+      font-size: clamp(34px, 4vw, 56px);
+      line-height: .98;
+      letter-spacing: -.055em;
+    }
+
+    .detail-title p {
+      margin: 12px 0 0;
+      color: #515158;
+      font-size: 18px;
+      font-weight: 650;
+      line-height: 1.45;
+      max-width: 760px;
+    }
+
+    .close {
+      border: 0;
+      border-radius: 999px;
+      padding: 12px 16px;
+      background: #f5f5f7;
+      color: var(--ink);
+      font-weight: 850;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    .detail-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 16px;
+      margin-top: 16px;
+    }
+
+    .box {
+      border-radius: 26px;
+      background: #f7f8fa;
+      border: 1px solid var(--line);
+      padding: 22px;
+      min-height: 190px;
+    }
+
+    .box h3 {
+      margin: 0 0 12px;
+      color: var(--navy);
+      font-size: 21px;
+      letter-spacing: -.025em;
+    }
+
+    .box p, .box li {
+      color: #4b4b50;
+      font-weight: 650;
+      line-height: 1.52;
+    }
+
+    .box p { margin: 0; }
+    .box ul { margin: 0; padding-left: 18px; }
+
+    .examples {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 16px;
+      margin-top: 16px;
+    }
+
+    .example {
+      border-radius: 26px;
+      background: linear-gradient(150deg, #f3fbff, #fff 70%);
+      border: 1px solid rgba(21,78,114,.11);
+      padding: 22px;
+      min-height: 156px;
+    }
+
+    .example h4 {
+      margin: 0 0 9px;
+      color: var(--navy);
+      font-size: 19px;
+      letter-spacing: -.02em;
+    }
+
+    .example p {
+      margin: 0;
+      color: #55565c;
+      font-weight: 650;
+      line-height: 1.45;
+    }
+
+    .table-wrap {
+      margin-top: 16px;
+      border-radius: 24px;
+      overflow: auto;
+      border: 1px solid var(--line);
+      background: #fff;
+    }
+
+    table {
+      width: 100%;
+      min-width: 760px;
+      border-collapse: collapse;
+      font-size: 14px;
+    }
+
+    th, td {
+      padding: 14px 15px;
+      border-bottom: 1px solid rgba(0,0,0,.07);
+      text-align: right;
+      font-weight: 650;
+    }
+
+    th:first-child, td:first-child { text-align: left; }
+    th {
+      background: #f5f7fa;
+      color: #3b3b40;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+    }
+
+    tr:last-child td { border-bottom: 0; }
+    .plus { color: var(--green); font-weight: 900; }
+    .note { color: var(--muted); font-size: 13px; line-height: 1.45; font-weight: 650; margin-top: 10px; }
+
+    .priority {
+      margin-top: 18px;
+      border-radius: 30px;
+      background: #f7f8fa;
+      border: 1px solid var(--line);
+      padding: 22px;
+    }
+
+    .priority h3 {
+      margin: 0 0 12px;
+      font-size: 24px;
+      letter-spacing: -.03em;
+    }
+
+    .checks {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    label {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 12px 13px;
+      font-weight: 750;
+      color: #3f3f44;
+    }
+
+    input { accent-color: var(--blue); }
+
+    @media (max-width: 1180px) {
+      .map-shell { min-height: auto; padding: 24px; }
+      .center, .path { display: none; }
+      .node {
+        position: relative;
+        left: auto !important;
+        right: auto !important;
+        top: auto !important;
+        bottom: auto !important;
+        width: 100%;
+      }
+      .mobile-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 16px;
+      }
+      .detail-grid, .examples, .checks { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+
+    @media (min-width: 1181px) {
+      .mobile-grid { display: contents; }
+    }
+
+    @media (max-width: 720px) {
+      .page { width: min(100vw - 28px, 1460px); padding-top: 18px; }
+      .topbar { align-items: flex-start; flex-direction: column; }
+      .advisor { text-align: left; }
+      .logo { height: 58px; }
+      .hero { margin-bottom: 22px; }
+      h1 { font-size: 42px; }
+      .hero p { font-size: 17px; }
+      .mobile-grid, .detail-grid, .examples, .checks { grid-template-columns: 1fr; }
+      .detail-head { flex-direction: column; }
+      .close { width: 100%; }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header class="topbar">
+      <img class="logo" src="./fairlife-logo.jpeg" alt="FairLife logo" />
+      <div class="advisor">Filip Solár<span>osobní finanční poradce</span></div>
+    </header>
+
+    <section class="hero">
+      <div class="eyebrow">Interaktivní mapa spolupráce</div>
+      <h1>Co spolu můžeme řešit?</
