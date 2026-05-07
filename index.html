@@ -522,4 +522,163 @@
 
     <section class="hero">
       <div class="eyebrow">Interaktivní mapa spolupráce</div>
-      <h1>Co spolu můžeme řešit?</
+      <h1>Co spolu můžeme řešit?</h1>
+      <p>Začneme jednoduše. Vyberte oblast, která je pro vás teď nejdůležitější. Po prokliku si ukážeme, co řešíme, proč to dává smysl a kde je moje konkrétní přidaná hodnota.</p>
+    </section>
+
+    <section class="map-shell" id="map">
+      <div class="map-bg"></div>
+      <svg class="path" viewBox="0 0 1200 650" preserveAspectRatio="none">
+        <path d="M600 325 C430 240, 330 180, 210 165" />
+        <path d="M600 325 C770 240, 870 180, 990 165" />
+        <path d="M600 325 C430 410, 330 480, 210 500" />
+        <path d="M600 325 C770 410, 870 480, 990 500" />
+      </svg>
+
+      <div class="center">
+        <div>
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.8-4 5-6 8-6s6.2 2 8 6"/></svg>
+          <strong>Klient<br>a jeho cíle</strong>
+          <span>klid · jistota · růst · svoboda</span>
+        </div>
+      </div>
+
+      <div class="mobile-grid">
+        <article class="node node-bydleni" onclick="openPanel('bydleni', this)">
+          <div class="node-top"><div class="icon"><svg viewBox="0 0 24 24"><path d="M3 11.5 12 4l9 7.5"/><path d="M5.5 10.5V20h13v-9.5"/><path d="M9 20v-6h6v6"/></svg></div><h2>Bydlení a hypotéka</h2></div>
+          <p>Financování bydlení, refinancování, investiční nemovitosti, konsolidace a strategie splácení.</p>
+          <div class="chips"><span class="chip">sazba</span><span class="chip">fixace</span><span class="chip">cashflow</span></div>
+        </article>
+
+        <article class="node node-majetek" onclick="openPanel('majetek', this)">
+          <div class="node-top"><div class="icon"><svg viewBox="0 0 24 24"><path d="M4 19h16"/><path d="M6 16l4-5 3 3 5-8"/><path d="M18 6h-4"/><path d="M18 6v4"/></svg></div><h2>Tvorba majetku a renta</h2></div>
+          <p>Rezerva, pravidelné i jednorázové investice, ochrana před inflací a budování budoucího příjmu.</p>
+          <div class="chips"><span class="chip">rezerva</span><span class="chip">renta</span><span class="chip">růst</span></div>
+        </article>
+
+        <article class="node node-ochrana" onclick="openPanel('ochrana', this)">
+          <div class="node-top"><div class="icon"><svg viewBox="0 0 24 24"><path d="M12 3 19 6v5c0 5-3 8-7 10-4-2-7-5-7-10V6z"/><path d="M9 12l2 2 4-5"/></svg></div><h2>Ochrana příjmu a majetku</h2></div>
+          <p>Pojištění příjmu, rodiny, hypotéky, majetku, vozidel, odpovědnosti i podnikání.</p>
+          <div class="chips"><span class="chip">příjem</span><span class="chip">rodina</span><span class="chip">majetek</span></div>
+        </article>
+
+        <article class="node node-plan" onclick="openPanel('plan', this)">
+          <div class="node-top"><div class="icon"><svg viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7 0l2-2a5 5 0 0 0-7-7l-1 1"/><path d="M14 11a5 5 0 0 0-7 0l-2 2a5 5 0 0 0 7 7l1-1"/></svg></div><h2>Komplexní finanční plán</h2></div>
+          <p>Propojení hypotéky, investic a pojištění do jednoho srozumitelného plánu s dlouhodobou péčí.</p>
+          <div class="chips"><span class="chip">přehled</span><span class="chip">klid</span><span class="chip">péče</span></div>
+        </article>
+      </div>
+    </section>
+
+    <section class="detail-panel" id="bydleni">
+      <div class="detail-head">
+        <div class="detail-title"><h2>Bydlení a hypotéka</h2><p>Hypotéka není jen nejnižší sazba. Ovlivňuje měsíční rozpočet, rezervy, investice, pojištění a finanční flexibilitu rodiny.</p></div>
+        <button class="close" onclick="closePanel()">Zpět na mapu</button>
+      </div>
+      <div class="detail-grid">
+        <div class="box"><h3>Co řešíme</h3><ul><li>výběr banky a parametrů</li><li>refixaci a refinancování</li><li>investiční nemovitosti</li><li>konsolidaci závazků</li><li>strategii splácení</li></ul></div>
+        <div class="box"><h3>Proč je to důležité</h3><p>Špatně nastavená hypotéka může zbytečně zatížit cashflow, omezit rezervu a snížit schopnost tvořit majetek.</p></div>
+        <div class="box"><h3>Moje přidaná hodnota</h3><p>Pomohu vybrat řešení, vysvětlím rozdíly, připravím proces, hlídám termíny a ukážu dopad na celý finanční plán.</p></div>
+      </div>
+      <div class="examples">
+        <div class="example"><h4>Strategie splácení</h4><p>Někdy dává smysl splácet rychleji. Jindy je lepší budovat investiční rezervu vedle hypotéky a zachovat flexibilitu.</p></div>
+        <div class="example"><h4>Konsolidace závazků</h4><p>Sloučení závazků může uvolnit měsíční cashflow, které lze využít na rezervu nebo pravidelné investice.</p></div>
+        <div class="example"><h4>Investiční nemovitost</h4><p>U investiční nemovitosti se zhodnocuje celá hodnota nemovitosti, nejen vlastní vložené peníze.</p></div>
+      </div>
+    </section>
+
+    <section class="detail-panel" id="majetek">
+      <div class="detail-head">
+        <div class="detail-title"><h2>Tvorba majetku a renta</h2><p>Investice dávají smysl, když mají jasný účel: rezerva, větší klid, ochrana před inflací nebo budoucí renta.</p></div>
+        <button class="close" onclick="closePanel()">Zpět na mapu</button>
+      </div>
+      <div class="detail-grid">
+        <div class="box"><h3>Co řešíme</h3><ul><li>pravidelné investice</li><li>jednorázové investice</li><li>rezervu a likviditu</li><li>růst majetku</li><li>budoucí rentu</li></ul></div>
+        <div class="box"><h3>Proč je to důležité</h3><p>Peníze bez plánu často zůstávají ležet na účtu, ztrácí hodnotu inflací nebo se investují nahodile bez návaznosti na cíle.</p></div>
+        <div class="box"><h3>Moje přidaná hodnota</h3><p>Přeložím investice do srozumitelného plánu, nastavím strategii podle horizontu, rizika, účelu a návaznosti na rozpočet.</p></div>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Měsíčně / horizont</th><th>Vloženo</th><th>Hodnota při 8 % p.a.</th><th>Výnos</th></tr></thead>
+          <tbody>
+            <tr><td>1 000 Kč / 10 let</td><td>120 000 Kč</td><td>183 000 Kč</td><td class="plus">63 000 Kč</td></tr>
+            <tr><td>2 000 Kč / 10 let</td><td>240 000 Kč</td><td>366 000 Kč</td><td class="plus">126 000 Kč</td></tr>
+            <tr><td>5 000 Kč / 10 let</td><td>600 000 Kč</td><td>915 000 Kč</td><td class="plus">315 000 Kč</td></tr>
+            <tr><td>1 000 Kč / 20 let</td><td>240 000 Kč</td><td>589 000 Kč</td><td class="plus">349 000 Kč</td></tr>
+            <tr><td>2 000 Kč / 20 let</td><td>480 000 Kč</td><td>1 178 000 Kč</td><td class="plus">698 000 Kč</td></tr>
+            <tr><td>5 000 Kč / 20 let</td><td>1 200 000 Kč</td><td>2 945 000 Kč</td><td class="plus">1 745 000 Kč</td></tr>
+            <tr><td>1 000 Kč / 30 let</td><td>360 000 Kč</td><td>1 490 000 Kč</td><td class="plus">1 130 000 Kč</td></tr>
+            <tr><td>2 000 Kč / 30 let</td><td>720 000 Kč</td><td>2 981 000 Kč</td><td class="plus">2 261 000 Kč</td></tr>
+            <tr><td>5 000 Kč / 30 let</td><td>1 800 000 Kč</td><td>7 452 000 Kč</td><td class="plus">5 652 000 Kč</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="note">Model je pouze orientační. Nejde o garanci výnosu a výpočet nezohledňuje poplatky, daně, inflaci ani kolísání trhu.</div>
+    </section>
+
+    <section class="detail-panel" id="ochrana">
+      <div class="detail-head">
+        <div class="detail-title"><h2>Ochrana příjmu a majetku</h2><p>Pojištění má chránit životní standard. Nejde o počet smluv, ale o správné pokrytí rizik, která by reálně ohrozila rodinu nebo majetek.</p></div>
+        <button class="close" onclick="closePanel()">Zpět na mapu</button>
+      </div>
+      <div class="detail-grid">
+        <div class="box"><h3>Co řešíme</h3><ul><li>invaliditu a pracovní neschopnost</li><li>závažná onemocnění</li><li>smrt a závazky</li><li>nemovitost a domácnost</li><li>vozidla, odpovědnost, podnikání</li></ul></div>
+        <div class="box"><h3>Proč je to důležité</h3><p>Největší problém často není cena pojistky, ale výluky, špatné definice, nízké částky nebo podpojištění.</p></div>
+        <div class="box"><h3>Moje přidaná hodnota</h3><p>Čtu a porovnávám pojistné podmínky, výluky a rozdíly mezi pojišťovnami. Klientovi je překládám lidsky a srozumitelně.</p></div>
+      </div>
+      <div class="examples">
+        <div class="example"><h4>Časová úspora</h4><p>Klient sám by často strávil 8–15 hodin studiem podmínek. Se mnou dostane srozumitelné shrnutí a doporučení.</p></div>
+        <div class="example"><h4>Správné částky</h4><p>Nastavení vychází z příjmu, závazků, rodiny, hypotéky a reálných dopadů výpadku příjmu.</p></div>
+        <div class="example"><h4>Revize v čase</h4><p>Pojištění má reagovat na změny příjmu, rodiny, majetku, cen nemovitostí a pojistných podmínek.</p></div>
+      </div>
+    </section>
+
+    <section class="detail-panel" id="plan">
+      <div class="detail-head">
+        <div class="detail-title"><h2>Komplexní finanční plán</h2><p>Největší hodnota je v propojení. Hypotéka, investice a pojištění nejsou oddělené světy — každé rozhodnutí ovlivňuje další oblasti.</p></div>
+        <button class="close" onclick="closePanel()">Zpět na mapu</button>
+      </div>
+      <div class="detail-grid">
+        <div class="box"><h3>Vysvětluji lidsky</h3><p>Klienti oceňují, že složité věci umím vysvětlit jednoduše, bez zbytečné omáčky a v souvislostech.</p></div>
+        <div class="box"><h3>Propojuji souvislosti</h3><p>Bydlení ovlivňuje cashflow, investice tvoří kapitál a pojištění chrání schopnost plán udržet.</p></div>
+        <div class="box"><h3>Šetřím čas a hlídám</h3><p>Klient nemusí sám porovnávat banky, fondy, pojišťovny, výluky, podmínky a termíny.</p></div>
+      </div>
+      <div class="priority">
+        <h3>Co je pro vás teď priorita?</h3>
+        <div class="checks">
+          <label><input type="checkbox"> Řeším bydlení / hypotéku</label>
+          <label><input type="checkbox"> Chci tvořit rezervu</label>
+          <label><input type="checkbox"> Chci budovat rentu</label>
+          <label><input type="checkbox"> Chci zkontrolovat pojištění</label>
+          <label><input type="checkbox"> Chci investiční strategii</label>
+          <label><input type="checkbox"> Chci vše propojit do plánu</label>
+        </div>
+        <div class="note">Později lze toto vyplňování napojit přes Make do Notion, aby se odpovědi ukládaly do CRM.</div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    function openPanel(id, clickedNode) {
+      document.querySelectorAll('.detail-panel').forEach(panel => panel.classList.remove('active'));
+      document.querySelectorAll('.node').forEach(node => {
+        node.classList.add('dim');
+        node.classList.remove('active');
+      });
+      clickedNode.classList.remove('dim');
+      clickedNode.classList.add('active');
+      document.getElementById(id).classList.add('active');
+      document.getElementById(id).scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    function closePanel() {
+      document.querySelectorAll('.detail-panel').forEach(panel => panel.classList.remove('active'));
+      document.querySelectorAll('.node').forEach(node => {
+        node.classList.remove('dim');
+        node.classList.remove('active');
+      });
+      document.getElementById('map').scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+  </script>
+</body>
+</html>
