@@ -6,7 +6,7 @@
   <title>FairLife | Interaktivní mapa spolupráce</title>
   <style>
     :root {
-      --bg: #f5f7fa;
+      --bg: #f5f8fc;
       --card: rgba(255,255,255,.88);
       --ink: #142033;
       --muted: #647083;
@@ -15,7 +15,7 @@
       --green: #2fa36b;
       --violet: #7d61d8;
       --orange: #f19b2d;
-      --line: rgba(21,78,114,.14);
+      --line: rgba(21,78,114,.13);
       --shadow: 0 22px 65px rgba(20,45,70,.11);
       --soft: 0 10px 30px rgba(20,45,70,.08);
     }
@@ -28,16 +28,16 @@
       font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, Arial, sans-serif;
       color: var(--ink);
       background:
-        radial-gradient(circle at 6% 10%, rgba(47,141,246,.12), transparent 30%),
-        radial-gradient(circle at 94% 8%, rgba(47,163,107,.10), transparent 32%),
-        linear-gradient(145deg, #f8fbff 0%, #f2f6fb 48%, #ffffff 100%);
+        radial-gradient(circle at 5% 5%, rgba(47,141,246,.13), transparent 28%),
+        radial-gradient(circle at 95% 6%, rgba(47,163,107,.12), transparent 30%),
+        linear-gradient(145deg, #f8fbff 0%, #f3f7fb 54%, #ffffff 100%);
       overflow-x: hidden;
     }
 
     .page {
-      width: min(1580px, calc(100vw - 44px));
+      width: min(1620px, calc(100vw - 44px));
       margin: 0 auto;
-      padding: 22px 0 40px;
+      padding: 22px 0 36px;
     }
 
     .topbar {
@@ -45,14 +45,15 @@
       justify-content: space-between;
       align-items: center;
       gap: 24px;
-      margin-bottom: 0;
+      margin-bottom: 12px;
     }
 
     .logo {
-      height: 96px;
+      height: 86px;
       width: auto;
       object-fit: contain;
       display: block;
+      border-radius: 6px;
     }
 
     .logo-fallback {
@@ -69,26 +70,24 @@
 
     .hero {
       text-align: center;
-      margin: 20px auto -28px;
-      max-width: 980px;
-      position: relative;
-      z-index: 3;
+      margin: 10px auto 28px;
+      max-width: 1040px;
     }
 
-    .eyebrow { color: var(--blue); text-transform: uppercase; letter-spacing: .16em; font-size: 13px; font-weight: 900; margin-bottom: 10px; }
-    h1 { margin: 0; font-size: clamp(38px, 4.5vw, 64px); line-height: .94; letter-spacing: -.065em; }
-    .hero p { margin: 14px auto 0; max-width: 790px; color: #4e5663; font-size: 18px; line-height: 1.42; font-weight: 650; }
+    .eyebrow { color: var(--blue); text-transform: uppercase; letter-spacing: .18em; font-size: 13px; font-weight: 900; margin-bottom: 10px; }
+    h1 { margin: 0; font-size: clamp(40px, 4.6vw, 70px); line-height: .94; letter-spacing: -.065em; }
+    .hero p { margin: 14px auto 0; max-width: 850px; color: #4e5663; font-size: 18px; line-height: 1.42; font-weight: 650; }
 
     .map-wrap {
       position: relative;
-      min-height: 900px;
-      margin-top: 78px;
+      min-height: 590px;
       border-radius: 46px;
       background: rgba(255,255,255,.66);
       border: 1px solid rgba(255,255,255,.88);
       box-shadow: var(--shadow);
       overflow: hidden;
       backdrop-filter: blur(18px);
+      padding: 44px 46px 40px;
     }
 
     .grid-bg {
@@ -96,191 +95,244 @@
       inset: 0;
       pointer-events: none;
       background:
-        linear-gradient(90deg, rgba(21,78,114,.035) 1px, transparent 1px),
-        linear-gradient(0deg, rgba(21,78,114,.035) 1px, transparent 1px);
+        linear-gradient(90deg, rgba(21,78,114,.033) 1px, transparent 1px),
+        linear-gradient(0deg, rgba(21,78,114,.033) 1px, transparent 1px);
       background-size: 46px 46px;
-      mask-image: radial-gradient(circle at center, black, transparent 78%);
+      mask-image: radial-gradient(circle at center, black, transparent 82%);
+    }
+
+    .main-grid {
+      position: relative;
+      z-index: 2;
+      display: grid;
+      grid-template-columns: 1fr 190px 1fr;
+      grid-template-rows: 1fr 1fr;
+      gap: 28px 42px;
+      align-items: center;
+      min-height: 500px;
     }
 
     .center {
-      position: absolute;
-      left: 50%;
-      top: 43%;
-      transform: translate(-50%, -50%);
-      width: 270px;
-      height: 270px;
+      grid-column: 2;
+      grid-row: 1 / span 2;
+      width: 170px;
+      height: 170px;
+      justify-self: center;
+      align-self: center;
       border-radius: 50%;
       background: linear-gradient(145deg, #fff, #eef8fc);
       border: 1px solid rgba(255,255,255,.95);
-      box-shadow: 0 24px 70px rgba(21,78,114,.14), inset 0 1px 0 rgba(255,255,255,.9);
+      box-shadow: 0 22px 60px rgba(21,78,114,.13), inset 0 1px 0 rgba(255,255,255,.9);
       display: grid;
       place-items: center;
       text-align: center;
-      z-index: 6;
-      padding: 26px;
+      padding: 22px;
       transition: .25s ease;
     }
 
     .map-wrap.has-active .center {
-      width: 170px;
-      height: 170px;
-      opacity: .38;
+      width: 132px;
+      height: 132px;
+      opacity: .42;
       filter: grayscale(1);
-      box-shadow: 0 12px 35px rgba(21,78,114,.08);
+      box-shadow: 0 12px 30px rgba(21,78,114,.07);
     }
 
-    .center svg { width: 48px; height: 48px; stroke: var(--navy); fill: none; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; margin-bottom: 10px; transition: .25s ease; }
-    .center strong { display: block; color: var(--navy); font-size: 28px; line-height: 1.06; letter-spacing: -.035em; transition: .25s ease; }
-    .center span { display: block; margin-top: 10px; color: var(--muted); font-size: 14px; font-weight: 800; transition: .25s ease; }
+    .center svg { width: 34px; height: 34px; stroke: var(--navy); fill: none; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; margin-bottom: 8px; transition: .25s ease; }
+    .center strong { display: block; color: var(--navy); font-size: 21px; line-height: 1.06; letter-spacing: -.035em; transition: .25s ease; }
+    .center span { display: block; margin-top: 8px; color: var(--muted); font-size: 12px; font-weight: 800; transition: .25s ease; }
 
-    .map-wrap.has-active .center svg { width: 32px; height: 32px; margin-bottom: 6px; }
-    .map-wrap.has-active .center strong { font-size: 19px; }
-    .map-wrap.has-active .center span { font-size: 11px; margin-top: 5px; }
+    .map-wrap.has-active .center svg { width: 26px; height: 26px; margin-bottom: 5px; }
+    .map-wrap.has-active .center strong { font-size: 16px; }
+    .map-wrap.has-active .center span { font-size: 10px; margin-top: 4px; }
 
-    .connections { display: none !important; }
+    .area {
+      display: grid;
+      grid-template-columns: 300px 1fr;
+      gap: 14px;
+      align-items: stretch;
+      transition: .25s ease;
+    }
+
+    .area-right {
+      grid-template-columns: 300px 1fr;
+    }
+
+    .area-bydleni { grid-column: 1; grid-row: 1; }
+    .area-ochrana { grid-column: 1; grid-row: 2; }
+    .area-majetek { grid-column: 3; grid-row: 1; }
+    .area-plan { grid-column: 3; grid-row: 2; }
+
+    .map-wrap.has-active .area:not(.active-area) {
+      opacity: .28;
+      filter: grayscale(1);
+    }
 
     .topic {
-      position: absolute;
-      z-index: 4;
-      width: 300px;
-      min-height: 145px;
-      border-radius: 28px;
+      min-height: 188px;
+      border-radius: 30px;
       background: var(--card);
       border: 1px solid rgba(255,255,255,.9);
       box-shadow: var(--soft);
-      padding: 17px;
+      padding: 20px;
       cursor: pointer;
       transition: .23s ease;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
     }
 
     .topic:hover { transform: translateY(-4px); box-shadow: 0 22px 55px rgba(20,45,70,.14); }
-    .topic.dim { opacity: .26; filter: grayscale(1); transform: scale(.985); }
-    .topic.active { opacity: 1; filter: none; transform: translateY(-4px); box-shadow: 0 24px 60px rgba(20,45,70,.16); }
+    .area.active-area .topic { transform: translateY(-4px); box-shadow: 0 24px 60px rgba(20,45,70,.16); }
+    .area-bydleni.active-area .topic { outline: 4px solid rgba(47,163,107,.20); }
+    .area-majetek.active-area .topic { outline: 4px solid rgba(47,141,246,.20); }
+    .area-ochrana.active-area .topic { outline: 4px solid rgba(125,97,216,.20); }
+    .area-plan.active-area .topic { outline: 4px solid rgba(241,155,45,.24); }
 
-    .topic-bydleni { left: 6.5%; top: 13%; }
-    .topic-majetek { right: 6.5%; top: 13%; }
-    .topic-ochrana { left: 6.5%; bottom: 15%; }
-    .topic-plan { right: 6.5%; bottom: 15%; }
+    .topic-top { display: flex; align-items: center; gap: 14px; margin-bottom: 13px; }
+    .icon { width: 66px; height: 66px; border-radius: 24px; background: linear-gradient(145deg, #fff, #eef8fc); border: 1px solid rgba(255,255,255,.96); box-shadow: inset 0 1px 0 rgba(255,255,255,.9), 0 10px 26px rgba(21,78,114,.10); display: grid; place-items: center; flex: 0 0 auto; }
+    .icon svg { width: 36px; height: 36px; fill: none; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+    .area-bydleni .icon svg { stroke: var(--green); }
+    .area-majetek .icon svg { stroke: var(--blue); }
+    .area-ochrana .icon svg { stroke: var(--violet); }
+    .area-plan .icon svg { stroke: var(--orange); }
 
-    .topic.active.topic-bydleni { outline: 4px solid rgba(47,163,107,.20); }
-    .topic.active.topic-majetek { outline: 4px solid rgba(47,141,246,.20); }
-    .topic.active.topic-ochrana { outline: 4px solid rgba(125,97,216,.20); }
-    .topic.active.topic-plan { outline: 4px solid rgba(241,155,45,.24); }
-
-    .topic-top { display: flex; align-items: center; gap: 13px; margin-bottom: 11px; }
-    .icon { width: 53px; height: 53px; border-radius: 19px; background: linear-gradient(145deg, #fff, #eef8fc); border: 1px solid rgba(255,255,255,.96); box-shadow: inset 0 1px 0 rgba(255,255,255,.9), 0 10px 26px rgba(21,78,114,.10); display: grid; place-items: center; flex: 0 0 auto; }
-    .icon svg { width: 30px; height: 30px; fill: none; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
-    .topic-bydleni .icon svg { stroke: var(--green); }
-    .topic-majetek .icon svg { stroke: var(--blue); }
-    .topic-ochrana .icon svg { stroke: var(--violet); }
-    .topic-plan .icon svg { stroke: var(--orange); }
-
-    .topic h2 { margin: 0; font-size: 23px; line-height: 1.05; letter-spacing: -.04em; }
-    .topic p { margin: 0; color: #4f5663; line-height: 1.36; font-weight: 700; font-size: 14.5px; }
-    .chips { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 11px; }
-    .chip { font-size: 11px; font-weight: 850; padding: 7px 9px; border-radius: 999px; color: #464b54; background: #f4f5f7; border: 1px solid var(--line); }
+    .topic h2 { margin: 0; font-size: 25px; line-height: 1.05; letter-spacing: -.045em; }
+    .topic p { margin: 0; color: #4f5663; line-height: 1.38; font-weight: 700; font-size: 15px; }
+    .chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
+    .chip { font-size: 12px; font-weight: 850; padding: 8px 10px; border-radius: 999px; color: #464b54; background: #f4f5f7; border: 1px solid var(--line); }
 
     .branches {
-      position: absolute;
-      z-index: 5;
       display: none;
-      gap: 9px;
+      gap: 0;
       flex-direction: column;
-      width: 315px;
-      animation: fade .24s ease both;
+      border-radius: 24px;
+      overflow: hidden;
+      background: rgba(255,255,255,.88);
+      border: 1px solid rgba(255,255,255,.92);
+      box-shadow: 0 10px 28px rgba(20,45,70,.08);
+      animation: fade .22s ease both;
     }
 
-    .branches.active { display: flex; }
+    .area.active-area .branches { display: flex; }
     @keyframes fade { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
-
-    /* Nové rozmístění: podsekce jsou vždy přímo nad/pod hlavní kartou. */
-    .branches-left { left: 6.5%; top: calc(13% + 175px); }
-    .branches-right { right: 6.5%; top: calc(13% + 175px); }
-    .branches-left-bottom { left: 6.5%; bottom: calc(15% + 175px); }
-    .branches-right-bottom { right: 6.5%; bottom: calc(15% + 175px); }
 
     .branch {
       display: grid;
-      grid-template-columns: 42px 1fr;
-      gap: 10px;
+      grid-template-columns: 44px 1fr 18px;
+      gap: 11px;
       align-items: center;
-      border-radius: 19px;
-      background: rgba(255,255,255,.94);
-      border: 1px solid rgba(255,255,255,.92);
-      box-shadow: 0 10px 24px rgba(20,45,70,.075);
-      padding: 9px 11px;
+      background: rgba(255,255,255,.82);
+      border-bottom: 1px solid rgba(21,78,114,.10);
+      padding: 12px 14px;
+      min-height: 66px;
     }
 
-    .branch-ico { width: 42px; height: 42px; border-radius: 15px; display: grid; place-items: center; background: #f3f8fb; border: 1px solid rgba(21,78,114,.08); }
+    .branch:last-child { border-bottom: 0; }
+    .branch-ico { width: 44px; height: 44px; border-radius: 15px; display: grid; place-items: center; background: #f3f8fb; border: 1px solid rgba(21,78,114,.08); }
     .branch-ico svg { width: 24px; height: 24px; fill: none; stroke: var(--navy); stroke-width: 2.1; stroke-linecap: round; stroke-linejoin: round; }
     .branch h3 { margin: 0; font-size: 15px; letter-spacing: -.015em; color: var(--navy); }
     .branch p { margin: 3px 0 0; color: #657083; font-weight: 650; font-size: 12px; line-height: 1.22; }
+    .arrow { color: #8b96a6; font-weight: 900; }
 
-    .detail-card {
-      position: absolute;
-      z-index: 7;
-      width: 430px;
-      min-height: 150px;
-      border-radius: 28px;
-      background: rgba(255,255,255,.96);
+    .value-panel {
+      position: relative;
+      z-index: 3;
+      width: min(1060px, 90%);
+      margin: 30px auto 0;
+      border-radius: 30px;
+      background: rgba(255,255,255,.92);
       border: 1px solid rgba(255,255,255,.95);
-      box-shadow: 0 22px 62px rgba(20,45,70,.14);
-      padding: 20px 24px;
+      box-shadow: 0 22px 62px rgba(20,45,70,.12);
+      padding: 24px 28px;
       display: none;
-      animation: fade .24s ease both;
+      animation: fade .22s ease both;
     }
 
-    .detail-card.active { display: block; }
+    .value-panel.active { display: block; }
+    .value-panel h3 { margin: 0 0 8px; font-size: 24px; letter-spacing: -.03em; color: var(--navy); }
+    .value-panel p { margin: 0; color: #4f5663; font-weight: 650; line-height: 1.42; font-size: 15.5px; }
 
-    /* Přidaná hodnota je vždy vedle rozbalených podsekcí. */
-    .detail-card.pos-bydleni { left: 34%; top: calc(13% + 175px); }
-    .detail-card.pos-ochrana { left: 34%; bottom: calc(15% + 175px); }
-    .detail-card.pos-majetek { right: calc(6.5% + 340px); top: calc(13% + 175px); }
-    .detail-card.pos-plan { right: calc(6.5% + 340px); bottom: calc(15% + 175px); }
+    .value-content {
+      display: grid;
+      grid-template-columns: 1fr 390px;
+      gap: 22px;
+      align-items: stretch;
+      margin-top: 16px;
+    }
 
-    .detail-card h3 { margin: 0 0 8px; font-size: 22px; letter-spacing: -.03em; color: var(--navy); }
-    .detail-card p { margin: 0; color: #4f5663; font-weight: 650; line-height: 1.42; font-size: 15px; }
-    .value-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 12px; }
-    .value-pill { border-radius: 15px; background: #f5f7fa; border: 1px solid var(--line); padding: 9px; font-size: 12px; color: #4d5664; font-weight: 850; text-align: center; }
+    .value-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+    }
+
+    .value-pill {
+      border-radius: 18px;
+      background: linear-gradient(145deg, #f7fbf8, #ffffff);
+      border: 1px solid rgba(47,163,107,.14);
+      padding: 15px 13px;
+      font-size: 13px;
+      color: #4d5664;
+      font-weight: 850;
+      text-align: center;
+    }
 
     .time-row {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      gap: 8px;
-      margin-top: 10px;
+      gap: 0;
+      border-radius: 22px;
+      overflow: hidden;
+      border: 1px solid rgba(47,141,246,.18);
+      background: linear-gradient(145deg, #f5faff, #fff);
     }
 
     .time-box {
-      border-radius: 15px;
-      border: 1px solid rgba(21,78,114,.12);
-      background: #fbfdff;
-      padding: 9px 10px;
-      font-size: 12px;
+      padding: 15px 12px;
+      font-size: 13px;
       color: #4f5663;
       font-weight: 800;
       text-align: center;
+      border-right: 1px solid rgba(47,141,246,.16);
     }
-    .time-box strong { color: var(--navy); display: block; font-size: 13px; margin-bottom: 2px; }
+    .time-box:last-child { border-right: 0; }
+    .time-box strong { color: var(--navy); display: block; font-size: 14px; margin-bottom: 3px; }
+
+    .reset-btn {
+      display: none;
+      margin: 24px auto 0;
+      border: 1px solid rgba(21,78,114,.14);
+      background: rgba(255,255,255,.78);
+      color: var(--navy);
+      border-radius: 999px;
+      padding: 14px 22px;
+      font-weight: 900;
+      font-size: 15px;
+      cursor: pointer;
+      box-shadow: var(--soft);
+    }
+
+    .reset-btn.active { display: block; }
 
     @media (max-width: 1280px) {
       .map-wrap { min-height: auto; padding: 24px; }
+      .main-grid { display: grid; grid-template-columns: 1fr; gap: 18px; min-height: auto; }
       .center { display: none; }
-      .map-content { display: grid; grid-template-columns: 1fr; gap: 16px; }
-      .topic, .branches, .detail-card { position: relative; left: auto !important; right: auto !important; top: auto !important; bottom: auto !important; transform: none !important; width: 100%; }
-      .branches { margin-left: 0; }
-      .detail-card { margin-top: 10px; }
+      .area { grid-column: auto !important; grid-row: auto !important; grid-template-columns: 1fr; }
+      .value-content { grid-template-columns: 1fr; }
     }
 
-    @media (min-width: 1281px) { .map-content { display: contents; } }
-
-    @media (max-width: 720px) {
-      .page { width: min(100vw - 28px, 1560px); padding-top: 18px; }
+    @media (max-width: 760px) {
+      .page { width: min(100vw - 28px, 1580px); padding-top: 18px; }
       .topbar { flex-direction: column; align-items: flex-start; }
       .advisor { text-align: left; }
       .logo { height: 56px; }
       h1 { font-size: 42px; }
       .hero p { font-size: 17px; }
       .value-row, .time-row { grid-template-columns: 1fr; }
+      .time-box { border-right: 0; border-bottom: 1px solid rgba(47,141,246,.16); }
+      .time-box:last-child { border-bottom: 0; }
     }
   </style>
 </head>
@@ -303,74 +355,82 @@
     <section class="map-wrap" id="map" data-active="">
       <div class="grid-bg"></div>
 
-      <div class="center">
-        <div>
-          <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.8-4 5-6 8-6s6.2 2 8 6"/></svg>
-          <strong>Klient<br>a jeho cíle</strong>
-          <span>klid · jistota · růst · svoboda</span>
+      <div class="main-grid">
+        <div class="center">
+          <div>
+            <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.8-4 5-6 8-6s6.2 2 8 6"/></svg>
+            <strong>Klient<br>a jeho cíle</strong>
+            <span>klid · jistota · růst · svoboda</span>
+          </div>
         </div>
+
+        <section class="area area-bydleni" data-id="bydleni">
+          <article class="topic" onclick="activate('bydleni')">
+            <div class="topic-top"><div class="icon"><svg viewBox="0 0 24 24"><path d="M3 11.5 12 4l9 7.5"/><path d="M5.5 10.5V20h13v-9.5"/><path d="M9 20v-6h6v6"/></svg></div><h2>Bydlení a hypotéka</h2></div>
+            <p>Nastavení hypotéky tak, aby podporovala váš život — ne ho omezovala.</p>
+            <div class="chips"><span class="chip">sazba</span><span class="chip">fixace</span><span class="chip">cashflow</span></div>
+          </article>
+          <div class="branches" id="branches-bydleni">
+            <div class="branch"><div class="branch-ico"><svg viewBox="0 0 24 24"><path d="M3 11.5 12 4l9 7.5"/><path d="M5.5 10.5V20h13v-9.5"/></svg></div><div><h3>Vlastní bydlení</h3><p>výběr banky, sazby, fixace a procesu</p></div><div class="arrow">›</div></div>
+            <div class="branch"><div class="branch-ico"><svg viewBox="0 0 24 24"><path d="M4 20h16"/><path d="M7 20V8h10v12"/><path d="M10 11h1"/><path d="M14 11h1"/></svg></div><div><h3>Investiční nemovitosti</h3><p>páka, výnos, nájem a cashflow</p></div><div class="arrow">›</div></div>
+            <div class="branch"><div class="branch-ico"><svg viewBox="0 0 24 24"><path d="M4 12h15"/><path d="M15 8l4 4-4 4"/><path d="M20 6v12"/></svg></div><div><h3>Refinancování a refixace</h3><p>hlídání výročí a vyjednání podmínek</p></div><div class="arrow">›</div></div>
+            <div class="branch"><div class="branch-ico"><svg viewBox="0 0 24 24"><path d="M4 7h16"/><path d="M6 7v12h12V7"/><path d="M8 11h8"/><path d="M8 15h5"/></svg></div><div><h3>Konsolidace závazků</h3><p>uvolnění cashflow pro rezervu</p></div><div class="arrow">›</div></div>
+          </div>
+        </section>
+
+        <section class="area area-majetek" data-id="majetek">
+          <article class="topic" onclick="activate('majetek')">
+            <div class="topic-top"><div class="icon"><svg viewBox="0 0 24 24"><path d="M4 19h16"/><path d="M6 16l4-5 3 3 5-8"/><path d="M18 6h-4"/><path d="M18 6v4"/></svg></div><h2>Tvorba majetku a renta</h2></div>
+            <p>Peníze, které mají plán: rezerva, růst majetku, ochrana před inflací a budoucí renta.</p>
+            <div class="chips"><span class="chip">rezerva</span><span class="chip">renta</span><span class="chip">růst</span></div>
+          </article>
+          <div class="branches" id="branches-majetek">
+            <div class="branch"><div class="branch-ico"><svg viewBox="0 0 24 24"><path d="M12 3v18"/><path d="M6 7h9a3 3 0 0 1 0 6H8"/><path d="M8 13h8a3 3 0 0 1 0 6H6"/></svg></div><div><h3>Tvorba majetku</h3><p>pravidelné i jednorázové investice</p></div><div class="arrow">›</div></div>
+            <div class="branch"><div class="branch-ico"><svg viewBox="0 0 24 24"><path d="M4 19h16"/><path d="M7 16v-5"/><path d="M12 16V8"/><path d="M17 16V5"/></svg></div><div><h3>Renta a pasivní příjem</h3><p>budování budoucího příjmu</p></div><div class="arrow">›</div></div>
+            <div class="branch"><div class="branch-ico"><svg viewBox="0 0 24 24"><path d="M12 3 19 6v5c0 5-3 8-7 10-4-2-7-5-7-10V6z"/></svg></div><div><h3>Ochrana před inflací</h3><p>reálná hodnota peněz v čase</p></div><div class="arrow">›</div></div>
+            <div class="branch"><div class="branch-ico"><svg viewBox="0 0 24 24"><path d="M12 3v18"/><path d="M3 12h18"/><circle cx="12" cy="12" r="8"/></svg></div><div><h3>Diverzifikace</h3><p>fondy, ETF, FKI, nemovitosti</p></div><div class="arrow">›</div></div>
+          </div>
+        </section>
+
+        <section class="area area-ochrana" data-id="ochrana">
+          <article class="topic" onclick="activate('ochrana')">
+            <div class="topic-top"><div class="icon"><svg viewBox="0 0 24 24"><path d="M12 3 19 6v5c0 5-3 8-7 10-4-2-7-5-7-10V6z"/><path d="M9 12l2 2 4-5"/></svg></div><h2>Ochrana příjmu a majetku</h2></div>
+            <p>Ochrana toho, co jste vybudovali — příjem, rodina, majetek, auta i podnikání.</p>
+            <div class="chips"><span class="chip">příjem</span><span class="chip">rodina</span><span class="chip">majetek</span></div>
+          </article>
+          <div class="branches" id="branches-ochrana">
+            <div class="branch"><div class="branch-ico"><svg viewBox="0 0 24 24"><circle cx="12" cy="7" r="4"/><path d="M5 21c1.5-4 4-6 7-6s5.5 2 7 6"/></svg></div><div><h3>Ochrana příjmu</h3><p>invalidita, PN, závažná onemocnění</p></div><div class="arrow">›</div></div>
+            <div class="branch"><div class="branch-ico"><svg viewBox="0 0 24 24"><path d="M4 20v-8l8-6 8 6v8"/><path d="M9 20v-6h6v6"/></svg></div><div><h3>Majetek</h3><p>nemovitost, domácnost, odpovědnost</p></div><div class="arrow">›</div></div>
+            <div class="branch"><div class="branch-ico"><svg viewBox="0 0 24 24"><path d="M3 16l2-6h14l2 6"/><circle cx="7" cy="17" r="2"/><circle cx="17" cy="17" r="2"/></svg></div><div><h3>Vozidla</h3><p>povinné ručení a havarijní pojištění</p></div><div class="arrow">›</div></div>
+            <div class="branch"><div class="branch-ico"><svg viewBox="0 0 24 24"><path d="M10 6h4"/><path d="M4 8h16v12H4z"/><path d="M8 8V6a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></div><div><h3>Podnikání</h3><p>OSVČ, odpovědnost, klíčové osoby</p></div><div class="arrow">›</div></div>
+          </div>
+        </section>
+
+        <section class="area area-plan" data-id="plan">
+          <article class="topic" onclick="activate('plan')">
+            <div class="topic-top"><div class="icon"><svg viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7 0l2-2a5 5 0 0 0-7-7l-1 1"/><path d="M14 11a5 5 0 0 0-7 0l-2 2a5 5 0 0 0 7 7l1-1"/></svg></div><h2>Komplexní finanční plán</h2></div>
+            <p>Vše propojené a pod kontrolou. Jedno místo pro důležitá finanční rozhodnutí.</p>
+            <div class="chips"><span class="chip">přehled</span><span class="chip">klid</span><span class="chip">péče</span></div>
+          </article>
+          <div class="branches" id="branches-plan">
+            <div class="branch"><div class="branch-ico"><svg viewBox="0 0 24 24"><path d="M4 6h16"/><path d="M4 12h16"/><path d="M4 18h10"/></svg></div><div><h3>Finanční plán</h3><p>hypotéka, investice a pojištění spolu</p></div><div class="arrow">›</div></div>
+            <div class="branch"><div class="branch-ico"><svg viewBox="0 0 24 24"><path d="M8 3v4"/><path d="M16 3v4"/><rect x="4" y="5" width="16" height="16" rx="2"/><path d="M8 12h8"/></svg></div><div><h3>Pravidelná péče</h3><p>revize, aktualizace, reakce na změny</p></div><div class="arrow">›</div></div>
+            <div class="branch"><div class="branch-ico"><svg viewBox="0 0 24 24"><circle cx="6" cy="6" r="3"/><circle cx="18" cy="6" r="3"/><circle cx="12" cy="18" r="3"/><path d="M8.5 8.5l2.2 6"/><path d="M15.5 8.5l-2.2 6"/></svg></div><div><h3>Koordinace</h3><p>banky, pojišťovny, investiční společnosti</p></div><div class="arrow">›</div></div>
+            <div class="branch"><div class="branch-ico"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><path d="M12 8v5l3 2"/></svg></div><div><h3>Úspora času a chyb</h3><p>přehled, hlídání, méně starostí</p></div><div class="arrow">›</div></div>
+          </div>
+        </section>
       </div>
 
-      <div class="map-content">
-        <article class="topic topic-bydleni" onclick="activate('bydleni')">
-          <div class="topic-top"><div class="icon"><svg viewBox="0 0 24 24"><path d="M3 11.5 12 4l9 7.5"/><path d="M5.5 10.5V20h13v-9.5"/><path d="M9 20v-6h6v6"/></svg></div><h2>Bydlení a hypotéka</h2></div>
-          <p>Nastavení hypotéky tak, aby podporovala váš život — ne ho omezovala.</p>
-          <div class="chips"><span class="chip">sazba</span><span class="chip">fixace</span><span class="chip">cashflow</span></div>
-        </article>
-
-        <div class="branches branches-left" id="branches-bydleni">
-          <div class="branch"><div class="branch-ico"><svg viewBox="0 0 24 24"><path d="M3 11.5 12 4l9 7.5"/><path d="M5.5 10.5V20h13v-9.5"/></svg></div><div><h3>Vlastní bydlení</h3><p>výběr banky, sazby, fixace a procesu</p></div></div>
-          <div class="branch"><div class="branch-ico"><svg viewBox="0 0 24 24"><path d="M4 20h16"/><path d="M7 20V8h10v12"/><path d="M10 11h1"/><path d="M14 11h1"/></svg></div><div><h3>Investiční nemovitosti</h3><p>páka, výnos, nájem a cashflow</p></div></div>
-          <div class="branch"><div class="branch-ico"><svg viewBox="0 0 24 24"><path d="M4 12h15"/><path d="M15 8l4 4-4 4"/><path d="M20 6v12"/></svg></div><div><h3>Refinancování a refixace</h3><p>hlídání výročí a vyjednání podmínek</p></div></div>
-          <div class="branch"><div class="branch-ico"><svg viewBox="0 0 24 24"><path d="M4 7h16"/><path d="M6 7v12h12V7"/><path d="M8 11h8"/><path d="M8 15h5"/></svg></div><div><h3>Konsolidace závazků</h3><p>uvolnění cashflow pro rezervu</p></div></div>
-        </div>
-
-        <article class="topic topic-majetek" onclick="activate('majetek')">
-          <div class="topic-top"><div class="icon"><svg viewBox="0 0 24 24"><path d="M4 19h16"/><path d="M6 16l4-5 3 3 5-8"/><path d="M18 6h-4"/><path d="M18 6v4"/></svg></div><h2>Tvorba majetku a renta</h2></div>
-          <p>Peníze, které mají plán: rezerva, růst majetku, ochrana před inflací a budoucí renta.</p>
-          <div class="chips"><span class="chip">rezerva</span><span class="chip">renta</span><span class="chip">růst</span></div>
-        </article>
-
-        <div class="branches branches-right" id="branches-majetek">
-          <div class="branch"><div class="branch-ico"><svg viewBox="0 0 24 24"><path d="M12 3v18"/><path d="M6 7h9a3 3 0 0 1 0 6H8"/><path d="M8 13h8a3 3 0 0 1 0 6H6"/></svg></div><div><h3>Tvorba majetku</h3><p>pravidelné i jednorázové investice</p></div></div>
-          <div class="branch"><div class="branch-ico"><svg viewBox="0 0 24 24"><path d="M4 19h16"/><path d="M7 16v-5"/><path d="M12 16V8"/><path d="M17 16V5"/></svg></div><div><h3>Renta a pasivní příjem</h3><p>budování budoucího příjmu</p></div></div>
-          <div class="branch"><div class="branch-ico"><svg viewBox="0 0 24 24"><path d="M12 3 19 6v5c0 5-3 8-7 10-4-2-7-5-7-10V6z"/></svg></div><div><h3>Ochrana před inflací</h3><p>reálná hodnota peněz v čase</p></div></div>
-          <div class="branch"><div class="branch-ico"><svg viewBox="0 0 24 24"><path d="M12 3v18"/><path d="M3 12h18"/><circle cx="12" cy="12" r="8"/></svg></div><div><h3>Diverzifikace</h3><p>fondy, ETF, FKI, nemovitosti</p></div></div>
-        </div>
-
-        <article class="topic topic-ochrana" onclick="activate('ochrana')">
-          <div class="topic-top"><div class="icon"><svg viewBox="0 0 24 24"><path d="M12 3 19 6v5c0 5-3 8-7 10-4-2-7-5-7-10V6z"/><path d="M9 12l2 2 4-5"/></svg></div><h2>Ochrana příjmu a majetku</h2></div>
-          <p>Ochrana toho, co jste vybudovali — příjem, rodina, majetek, auta i podnikání.</p>
-          <div class="chips"><span class="chip">příjem</span><span class="chip">rodina</span><span class="chip">majetek</span></div>
-        </article>
-
-        <div class="branches branches-left-bottom" id="branches-ochrana">
-          <div class="branch"><div class="branch-ico"><svg viewBox="0 0 24 24"><circle cx="12" cy="7" r="4"/><path d="M5 21c1.5-4 4-6 7-6s5.5 2 7 6"/></svg></div><div><h3>Ochrana příjmu</h3><p>invalidita, PN, závažná onemocnění</p></div></div>
-          <div class="branch"><div class="branch-ico"><svg viewBox="0 0 24 24"><path d="M4 20v-8l8-6 8 6v8"/><path d="M9 20v-6h6v6"/></svg></div><div><h3>Majetek</h3><p>nemovitost, domácnost, odpovědnost</p></div></div>
-          <div class="branch"><div class="branch-ico"><svg viewBox="0 0 24 24"><path d="M3 16l2-6h14l2 6"/><circle cx="7" cy="17" r="2"/><circle cx="17" cy="17" r="2"/></svg></div><div><h3>Vozidla</h3><p>povinné ručení a havarijní pojištění</p></div></div>
-          <div class="branch"><div class="branch-ico"><svg viewBox="0 0 24 24"><path d="M10 6h4"/><path d="M4 8h16v12H4z"/><path d="M8 8V6a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></div><div><h3>Podnikání</h3><p>OSVČ, odpovědnost, klíčové osoby</p></div></div>
-        </div>
-
-        <article class="topic topic-plan" onclick="activate('plan')">
-          <div class="topic-top"><div class="icon"><svg viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7 0l2-2a5 5 0 0 0-7-7l-1 1"/><path d="M14 11a5 5 0 0 0-7 0l-2 2a5 5 0 0 0 7 7l1-1"/></svg></div><h2>Komplexní finanční plán</h2></div>
-          <p>Vše propojené a pod kontrolou. Jedno místo pro důležitá finanční rozhodnutí.</p>
-          <div class="chips"><span class="chip">přehled</span><span class="chip">klid</span><span class="chip">péče</span></div>
-        </article>
-
-        <div class="branches branches-right-bottom" id="branches-plan">
-          <div class="branch"><div class="branch-ico"><svg viewBox="0 0 24 24"><path d="M4 6h16"/><path d="M4 12h16"/><path d="M4 18h10"/></svg></div><div><h3>Finanční plán</h3><p>hypotéka, investice a pojištění spolu</p></div></div>
-          <div class="branch"><div class="branch-ico"><svg viewBox="0 0 24 24"><path d="M8 3v4"/><path d="M16 3v4"/><rect x="4" y="5" width="16" height="16" rx="2"/><path d="M8 12h8"/></svg></div><div><h3>Pravidelná péče</h3><p>revize, aktualizace, reakce na změny</p></div></div>
-          <div class="branch"><div class="branch-ico"><svg viewBox="0 0 24 24"><circle cx="6" cy="6" r="3"/><circle cx="18" cy="6" r="3"/><circle cx="12" cy="18" r="3"/><path d="M8.5 8.5l2.2 6"/><path d="M15.5 8.5l-2.2 6"/></svg></div><div><h3>Koordinace</h3><p>banky, pojišťovny, investiční společnosti</p></div></div>
-          <div class="branch"><div class="branch-ico"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><path d="M12 8v5l3 2"/></svg></div><div><h3>Úspora času a chyb</h3><p>přehled, hlídání, méně starostí</p></div></div>
-        </div>
-      </div>
-
-      <div class="detail-card" id="detail-card">
-        <h3 id="detail-title">Vyberte oblast</h3>
+      <section class="value-panel" id="value-panel">
+        <h3 id="detail-title">Přidaná hodnota pro klienta</h3>
         <p id="detail-text">Po kliknutí se zvýrazní vybraná část a rozbalí podtémata.</p>
-        <div class="value-row" id="value-row"></div>
-        <div class="time-row" id="time-row"></div>
-      </div>
+        <div class="value-content">
+          <div class="value-row" id="value-row"></div>
+          <div class="time-row" id="time-row"></div>
+        </div>
+      </section>
+
+      <button class="reset-btn" id="reset-btn" onclick="resetMap()">← Návrat na hlavní stránku</button>
     </section>
   </main>
 
@@ -407,33 +467,25 @@
       map.classList.add('has-active');
       map.dataset.active = id;
 
-      const center = document.querySelector('.center');
-      center.style.width = '170px';
-      center.style.height = '170px';
-      center.style.opacity = '.35';
-      center.style.filter = 'grayscale(1)';
-      center.style.transform = 'translate(-50%, -50%) scale(0.82)';
-
-      document.querySelectorAll('.topic').forEach(t => {
-        t.classList.add('dim');
-        t.classList.remove('active');
-      });
-      document.querySelector('.topic-' + id).classList.remove('dim');
-      document.querySelector('.topic-' + id).classList.add('active');
-
-      document.querySelectorAll('.branches').forEach(b => b.classList.remove('active'));
-      document.getElementById('branches-' + id).classList.add('active');
+      document.querySelectorAll('.area').forEach(area => area.classList.remove('active-area'));
+      document.querySelector('.area-' + id).classList.add('active-area');
 
       const detail = details[id];
       document.getElementById('detail-title').textContent = detail.title;
       document.getElementById('detail-text').textContent = detail.text;
       document.getElementById('value-row').innerHTML = detail.values.map(v => `<div class="value-pill">${v}</div>`).join('');
       document.getElementById('time-row').innerHTML = detail.time.map(v => `<div class="time-box"><strong>${v.split(':')[0]}</strong>${v.split(':').slice(1).join(':').trim()}</div>`).join('');
+      document.getElementById('value-panel').classList.add('active');
+      document.getElementById('reset-btn').classList.add('active');
+    }
 
-      const card = document.getElementById('detail-card');
-      card.classList.remove('pos-bydleni', 'pos-majetek', 'pos-ochrana', 'pos-plan');
-      card.classList.add('pos-' + id);
-      card.classList.add('active');
+    function resetMap() {
+      const map = document.getElementById('map');
+      map.classList.remove('has-active');
+      map.dataset.active = '';
+      document.querySelectorAll('.area').forEach(area => area.classList.remove('active-area'));
+      document.getElementById('value-panel').classList.remove('active');
+      document.getElementById('reset-btn').classList.remove('active');
     }
   </script>
 </body>
