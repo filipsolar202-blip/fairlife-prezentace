@@ -45,11 +45,11 @@
       justify-content: space-between;
       align-items: center;
       gap: 24px;
-      margin-bottom: 18px;
+      margin-bottom: 10px;
     }
 
     .logo {
-      height: 70px;
+      height: 96px;
       width: auto;
       object-fit: contain;
       display: block;
@@ -74,7 +74,7 @@
 
     .map-wrap {
       position: relative;
-      min-height: 760px;
+      min-height: 860px;
       border-radius: 46px;
       background: rgba(255,255,255,.66);
       border: 1px solid rgba(255,255,255,.88);
@@ -97,7 +97,7 @@
     .center {
       position: absolute;
       left: 50%;
-      top: 47%;
+      top: 44%;
       transform: translate(-50%, -50%);
       width: 218px;
       height: 218px;
@@ -159,10 +159,10 @@
     .topic.dim { opacity: .30; filter: grayscale(1); transform: scale(.985); }
     .topic.active { opacity: 1; filter: none; transform: translateY(-4px); box-shadow: 0 24px 60px rgba(20,45,70,.16); }
 
-    .topic-bydleni { left: 6.5%; top: 20%; }
-    .topic-majetek { right: 6.5%; top: 20%; }
-    .topic-ochrana { left: 6.5%; bottom: 20%; }
-    .topic-plan { right: 6.5%; bottom: 20%; }
+    .topic-bydleni { left: 6.5%; top: 17%; }
+    .topic-majetek { right: 6.5%; top: 17%; }
+    .topic-ochrana { left: 6.5%; bottom: 25%; }
+    .topic-plan { right: 6.5%; bottom: 25%; }
 
     .topic.active.topic-bydleni { outline: 4px solid rgba(47,163,107,.20); }
     .topic.active.topic-majetek { outline: 4px solid rgba(47,141,246,.20); }
@@ -196,10 +196,10 @@
     @keyframes fade { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
 
     /* Rozmístění je záměrně více od středu, aby se nic nepřekrývalo */
-    .branches-left { left: 26.2%; top: 8.5%; }
-    .branches-right { right: 26.2%; top: 8.5%; }
-    .branches-left-bottom { left: 26.2%; bottom: 8.5%; }
-    .branches-right-bottom { right: 26.2%; bottom: 8.5%; }
+    .branches-left { left: 27.5%; top: 7.5%; }
+    .branches-right { right: 27.5%; top: 7.5%; }
+    .branches-left-bottom { left: 27.5%; bottom: 37%; }
+    .branches-right-bottom { right: 27.5%; bottom: 37%; }
 
     .branch {
       display: grid;
@@ -222,22 +222,22 @@
       position: absolute;
       z-index: 7;
       left: 50%;
-      bottom: 22px;
+      bottom: 26px;
       transform: translateX(-50%);
-      width: min(690px, calc(100% - 70px));
-      min-height: 142px;
+      width: min(760px, calc(100% - 70px));
+      min-height: 150px;
       border-radius: 28px;
       background: rgba(255,255,255,.95);
       border: 1px solid rgba(255,255,255,.95);
       box-shadow: 0 22px 62px rgba(20,45,70,.14);
-      padding: 18px 21px;
+      padding: 20px 24px;
       display: none;
       animation: fade .24s ease both;
     }
 
     .detail-card.active { display: block; }
-    .detail-card h3 { margin: 0 0 8px; font-size: 22px; letter-spacing: -.03em; color: var(--navy); }
-    .detail-card p { margin: 0; color: #4f5663; font-weight: 650; line-height: 1.42; }
+    .detail-card h3 { margin: 0 0 8px; font-size: 24px; letter-spacing: -.03em; color: var(--navy); }
+    .detail-card p { margin: 0; color: #4f5663; font-weight: 650; line-height: 1.42; font-size: 15.5px; }
     .value-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 12px; }
     .value-pill { border-radius: 15px; background: #f5f7fa; border: 1px solid var(--line); padding: 9px; font-size: 12.2px; color: #4d5664; font-weight: 850; text-align: center; }
 
