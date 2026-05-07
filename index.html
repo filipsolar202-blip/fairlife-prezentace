@@ -7,7 +7,7 @@
   <style>
     :root {
       --bg: #f5f7fa;
-      --card: rgba(255,255,255,.86);
+      --card: rgba(255,255,255,.88);
       --ink: #142033;
       --muted: #647083;
       --navy: #154e72;
@@ -35,9 +35,9 @@
     }
 
     .page {
-      width: min(1560px, calc(100vw - 44px));
+      width: min(1580px, calc(100vw - 44px));
       margin: 0 auto;
-      padding: 26px 0 40px;
+      padding: 24px 0 40px;
     }
 
     .topbar {
@@ -45,22 +45,36 @@
       justify-content: space-between;
       align-items: center;
       gap: 24px;
-      margin-bottom: 20px;
+      margin-bottom: 18px;
     }
 
-    .logo { height: 70px; width: auto; object-fit: contain; display: block; }
+    .logo {
+      height: 70px;
+      width: auto;
+      object-fit: contain;
+      display: block;
+    }
+
+    .logo-fallback {
+      display: none;
+      font-size: 38px;
+      font-weight: 900;
+      letter-spacing: -.04em;
+      color: var(--navy);
+    }
+    .logo-fallback span { color: #2fb8cc; }
 
     .advisor { text-align: right; color: var(--navy); font-weight: 900; font-size: 18px; }
     .advisor span { display: block; color: var(--muted); font-size: 14px; margin-top: 4px; font-weight: 700; }
 
-    .hero { text-align: center; margin: 8px auto 24px; max-width: 980px; }
+    .hero { text-align: center; margin: 4px auto 20px; max-width: 980px; }
     .eyebrow { color: var(--blue); text-transform: uppercase; letter-spacing: .16em; font-size: 13px; font-weight: 900; margin-bottom: 10px; }
-    h1 { margin: 0; font-size: clamp(42px, 5.4vw, 78px); line-height: .94; letter-spacing: -.065em; }
-    .hero p { margin: 16px auto 0; max-width: 790px; color: #4e5663; font-size: 20px; line-height: 1.42; font-weight: 650; }
+    h1 { margin: 0; font-size: clamp(40px, 5vw, 72px); line-height: .94; letter-spacing: -.065em; }
+    .hero p { margin: 14px auto 0; max-width: 790px; color: #4e5663; font-size: 19px; line-height: 1.42; font-weight: 650; }
 
     .map-wrap {
       position: relative;
-      min-height: 720px;
+      min-height: 760px;
       border-radius: 46px;
       background: rgba(255,255,255,.66);
       border: 1px solid rgba(255,255,255,.88);
@@ -83,10 +97,10 @@
     .center {
       position: absolute;
       left: 50%;
-      top: 50%;
+      top: 47%;
       transform: translate(-50%, -50%);
-      width: 230px;
-      height: 230px;
+      width: 218px;
+      height: 218px;
       border-radius: 50%;
       background: linear-gradient(145deg, #fff, #eef8fc);
       border: 1px solid rgba(255,255,255,.95);
@@ -95,12 +109,12 @@
       place-items: center;
       text-align: center;
       z-index: 6;
-      padding: 28px;
+      padding: 26px;
     }
 
-    .center svg { width: 40px; height: 40px; stroke: var(--navy); fill: none; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; margin-bottom: 10px; }
-    .center strong { display: block; color: var(--navy); font-size: 23px; line-height: 1.06; letter-spacing: -.035em; }
-    .center span { display: block; margin-top: 9px; color: var(--muted); font-size: 13px; font-weight: 800; }
+    .center svg { width: 38px; height: 38px; stroke: var(--navy); fill: none; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; margin-bottom: 10px; }
+    .center strong { display: block; color: var(--navy); font-size: 22px; line-height: 1.06; letter-spacing: -.035em; }
+    .center span { display: block; margin-top: 9px; color: var(--muted); font-size: 12.5px; font-weight: 800; }
 
     .connections {
       position: absolute;
@@ -111,13 +125,13 @@
 
     .connections path {
       fill: none;
-      stroke: rgba(21,78,114,.22);
-      stroke-width: 2.3;
+      stroke: rgba(21,78,114,.18);
+      stroke-width: 2.2;
       stroke-linecap: round;
       transition: .25s ease;
     }
 
-    .map-wrap.has-active .connections path { stroke: rgba(21,78,114,.08); }
+    .map-wrap.has-active .connections path { stroke: rgba(21,78,114,.06); }
     .map-wrap[data-active="bydleni"] #line-bydleni,
     .map-wrap[data-active="majetek"] #line-majetek,
     .map-wrap[data-active="ochrana"] #line-ochrana,
@@ -130,101 +144,121 @@
     .topic {
       position: absolute;
       z-index: 4;
-      width: 315px;
-      min-height: 150px;
+      width: 300px;
+      min-height: 145px;
       border-radius: 28px;
       background: var(--card);
       border: 1px solid rgba(255,255,255,.9);
       box-shadow: var(--soft);
-      padding: 18px;
+      padding: 17px;
       cursor: pointer;
       transition: .23s ease;
     }
 
     .topic:hover { transform: translateY(-4px); box-shadow: 0 22px 55px rgba(20,45,70,.14); }
-    .topic.dim { opacity: .36; filter: grayscale(1); transform: scale(.985); }
+    .topic.dim { opacity: .30; filter: grayscale(1); transform: scale(.985); }
     .topic.active { opacity: 1; filter: none; transform: translateY(-4px); box-shadow: 0 24px 60px rgba(20,45,70,.16); }
 
-    .topic-bydleni { left: 7%; top: 18%; }
-    .topic-majetek { right: 7%; top: 18%; }
-    .topic-ochrana { left: 7%; bottom: 18%; }
-    .topic-plan { right: 7%; bottom: 18%; }
+    .topic-bydleni { left: 6.5%; top: 20%; }
+    .topic-majetek { right: 6.5%; top: 20%; }
+    .topic-ochrana { left: 6.5%; bottom: 20%; }
+    .topic-plan { right: 6.5%; bottom: 20%; }
 
     .topic.active.topic-bydleni { outline: 4px solid rgba(47,163,107,.20); }
     .topic.active.topic-majetek { outline: 4px solid rgba(47,141,246,.20); }
     .topic.active.topic-ochrana { outline: 4px solid rgba(125,97,216,.20); }
     .topic.active.topic-plan { outline: 4px solid rgba(241,155,45,.24); }
 
-    .topic-top { display: flex; align-items: center; gap: 13px; margin-bottom: 12px; }
-    .icon { width: 55px; height: 55px; border-radius: 19px; background: linear-gradient(145deg, #fff, #eef8fc); border: 1px solid rgba(255,255,255,.96); box-shadow: inset 0 1px 0 rgba(255,255,255,.9), 0 10px 26px rgba(21,78,114,.10); display: grid; place-items: center; flex: 0 0 auto; }
-    .icon svg { width: 31px; height: 31px; fill: none; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+    .topic-top { display: flex; align-items: center; gap: 13px; margin-bottom: 11px; }
+    .icon { width: 53px; height: 53px; border-radius: 19px; background: linear-gradient(145deg, #fff, #eef8fc); border: 1px solid rgba(255,255,255,.96); box-shadow: inset 0 1px 0 rgba(255,255,255,.9), 0 10px 26px rgba(21,78,114,.10); display: grid; place-items: center; flex: 0 0 auto; }
+    .icon svg { width: 30px; height: 30px; fill: none; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
     .topic-bydleni .icon svg { stroke: var(--green); }
     .topic-majetek .icon svg { stroke: var(--blue); }
     .topic-ochrana .icon svg { stroke: var(--violet); }
     .topic-plan .icon svg { stroke: var(--orange); }
 
-    .topic h2 { margin: 0; font-size: 24px; line-height: 1.05; letter-spacing: -.04em; }
-    .topic p { margin: 0; color: #4f5663; line-height: 1.38; font-weight: 700; font-size: 15px; }
-    .chips { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 12px; }
+    .topic h2 { margin: 0; font-size: 23px; line-height: 1.05; letter-spacing: -.04em; }
+    .topic p { margin: 0; color: #4f5663; line-height: 1.36; font-weight: 700; font-size: 14.5px; }
+    .chips { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 11px; }
     .chip { font-size: 11px; font-weight: 850; padding: 7px 9px; border-radius: 999px; color: #464b54; background: #f4f5f7; border: 1px solid var(--line); }
 
     .branches {
       position: absolute;
       z-index: 5;
       display: none;
-      gap: 10px;
+      gap: 9px;
       flex-direction: column;
-      width: 300px;
+      width: 305px;
       animation: fade .24s ease both;
     }
 
     .branches.active { display: flex; }
     @keyframes fade { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
 
-    .branches-left { left: 27.5%; top: 10%; }
-    .branches-right { right: 27.5%; top: 10%; }
-    .branches-left-bottom { left: 27.5%; bottom: 9%; }
-    .branches-right-bottom { right: 27.5%; bottom: 9%; }
+    /* Rozmístění je záměrně více od středu, aby se nic nepřekrývalo */
+    .branches-left { left: 26.2%; top: 8.5%; }
+    .branches-right { right: 26.2%; top: 8.5%; }
+    .branches-left-bottom { left: 26.2%; bottom: 8.5%; }
+    .branches-right-bottom { right: 26.2%; bottom: 8.5%; }
 
     .branch {
       display: grid;
-      grid-template-columns: 44px 1fr;
-      gap: 11px;
+      grid-template-columns: 42px 1fr;
+      gap: 10px;
       align-items: center;
-      border-radius: 20px;
-      background: rgba(255,255,255,.90);
+      border-radius: 19px;
+      background: rgba(255,255,255,.93);
       border: 1px solid rgba(255,255,255,.92);
-      box-shadow: 0 10px 28px rgba(20,45,70,.08);
-      padding: 10px 12px;
+      box-shadow: 0 10px 24px rgba(20,45,70,.075);
+      padding: 9px 11px;
     }
 
-    .branch-ico { width: 44px; height: 44px; border-radius: 15px; display: grid; place-items: center; background: #f3f8fb; border: 1px solid rgba(21,78,114,.08); }
-    .branch-ico svg { width: 25px; height: 25px; fill: none; stroke-width: 2.1; stroke-linecap: round; stroke-linejoin: round; }
-    .branch h3 { margin: 0; font-size: 15.5px; letter-spacing: -.015em; color: var(--navy); }
-    .branch p { margin: 3px 0 0; color: #657083; font-weight: 650; font-size: 12.2px; line-height: 1.25; }
+    .branch-ico { width: 42px; height: 42px; border-radius: 15px; display: grid; place-items: center; background: #f3f8fb; border: 1px solid rgba(21,78,114,.08); }
+    .branch-ico svg { width: 24px; height: 24px; fill: none; stroke: var(--navy); stroke-width: 2.1; stroke-linecap: round; stroke-linejoin: round; }
+    .branch h3 { margin: 0; font-size: 15px; letter-spacing: -.015em; color: var(--navy); }
+    .branch p { margin: 3px 0 0; color: #657083; font-weight: 650; font-size: 12px; line-height: 1.22; }
 
     .detail-card {
       position: absolute;
       z-index: 7;
       left: 50%;
-      bottom: 30px;
+      bottom: 22px;
       transform: translateX(-50%);
-      width: min(620px, calc(100% - 60px));
-      min-height: 145px;
+      width: min(690px, calc(100% - 70px));
+      min-height: 142px;
       border-radius: 28px;
-      background: rgba(255,255,255,.93);
+      background: rgba(255,255,255,.95);
       border: 1px solid rgba(255,255,255,.95);
       box-shadow: 0 22px 62px rgba(20,45,70,.14);
-      padding: 20px 22px;
+      padding: 18px 21px;
       display: none;
       animation: fade .24s ease both;
     }
 
     .detail-card.active { display: block; }
-    .detail-card h3 { margin: 0 0 9px; font-size: 22px; letter-spacing: -.03em; color: var(--navy); }
-    .detail-card p { margin: 0; color: #4f5663; font-weight: 650; line-height: 1.45; }
-    .value-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 9px; margin-top: 14px; }
-    .value-pill { border-radius: 16px; background: #f5f7fa; border: 1px solid var(--line); padding: 10px; font-size: 12.5px; color: #4d5664; font-weight: 800; text-align: center; }
+    .detail-card h3 { margin: 0 0 8px; font-size: 22px; letter-spacing: -.03em; color: var(--navy); }
+    .detail-card p { margin: 0; color: #4f5663; font-weight: 650; line-height: 1.42; }
+    .value-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 12px; }
+    .value-pill { border-radius: 15px; background: #f5f7fa; border: 1px solid var(--line); padding: 9px; font-size: 12.2px; color: #4d5664; font-weight: 850; text-align: center; }
+
+    .time-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .time-box {
+      border-radius: 15px;
+      border: 1px solid rgba(21,78,114,.12);
+      background: #fbfdff;
+      padding: 9px 10px;
+      font-size: 12.2px;
+      color: #4f5663;
+      font-weight: 800;
+      text-align: center;
+    }
+    .time-box strong { color: var(--navy); display: block; font-size: 13px; margin-bottom: 2px; }
 
     @media (max-width: 1280px) {
       .map-wrap { min-height: auto; padding: 24px; }
@@ -244,14 +278,17 @@
       .logo { height: 56px; }
       h1 { font-size: 42px; }
       .hero p { font-size: 17px; }
-      .value-row { grid-template-columns: 1fr; }
+      .value-row, .time-row { grid-template-columns: 1fr; }
     }
   </style>
 </head>
 <body>
   <main class="page">
     <header class="topbar">
-      <img class="logo" src="./fairlife-logo.jpeg" alt="FairLife logo" />
+      <div>
+        <img class="logo" src="./fairlife-logo.jpeg" alt="FairLife logo" onerror="this.style.display='none'; document.querySelector('.logo-fallback').style.display='block';" />
+        <div class="logo-fallback">Fair<span>Life</span></div>
+      </div>
       <div class="advisor">Filip Solár<span>osobní finanční poradce</span></div>
     </header>
 
@@ -264,11 +301,11 @@
     <section class="map-wrap" id="map" data-active="">
       <div class="grid-bg"></div>
 
-      <svg class="connections" viewBox="0 0 1200 720" preserveAspectRatio="none">
-        <path id="line-bydleni" d="M600 360 C475 300, 370 250, 270 225" />
-        <path id="line-majetek" d="M600 360 C725 300, 830 250, 930 225" />
-        <path id="line-ochrana" d="M600 360 C475 420, 370 485, 270 535" />
-        <path id="line-plan" d="M600 360 C725 420, 830 485, 930 535" />
+      <svg class="connections" viewBox="0 0 1200 760" preserveAspectRatio="none">
+        <path id="line-bydleni" d="M600 357 C490 300, 390 260, 295 246" />
+        <path id="line-majetek" d="M600 357 C710 300, 810 260, 905 246" />
+        <path id="line-ochrana" d="M600 357 C490 420, 390 492, 295 530" />
+        <path id="line-plan" d="M600 357 C710 420, 810 492, 905 530" />
       </svg>
 
       <div class="center">
@@ -337,6 +374,7 @@
         <h3 id="detail-title">Vyberte oblast</h3>
         <p id="detail-text">Po kliknutí se zvýrazní vybraná část a rozbalí podtémata.</p>
         <div class="value-row" id="value-row"></div>
+        <div class="time-row" id="time-row"></div>
       </div>
     </section>
   </main>
@@ -346,22 +384,26 @@
       bydleni: {
         title: 'Bydlení bez zbytečného stresu',
         text: 'Hypotéka není jen sazba. Pomáhám nastavit financování tak, aby dávalo smysl pro cashflow, rezervu, investice i ochranu majetku.',
-        values: ['výběr banky a parametrů', 'strategie splácení', 'hlídání procesu a termínů']
+        values: ['výběr banky a parametrů', 'strategie splácení', 'hlídání procesu a termínů'],
+        time: ['Sám: 11–20 hod', 'Se mnou: 1–2 hod', 'Úspora: až 10–18 hod']
       },
       majetek: {
         title: 'Peníze, které pracují za vás',
         text: 'Investice dávají smysl, když mají jasný účel. Společně nastavíme strategii pro rezervu, růst majetku, ochranu před inflací i budoucí rentu.',
-        values: ['plán podle cíle', 'složené úročení', 'disciplína a dlouhodobost']
+        values: ['plán podle cíle', 'složené úročení', 'disciplína a dlouhodobost'],
+        time: ['Sám: desítky hodin', 'Se mnou: jasný plán', 'Úspora: méně chaosu']
       },
       ochrana: {
         title: 'Ochrana toho, co jste vybudovali',
         text: 'Čtu a porovnávám pojistné podmínky, výluky a rozdíly mezi pojišťovnami. Klientovi je překládám lidsky a srozumitelně.',
-        values: ['ochrana příjmu', 'kontrola výluk', 'správné pojistné částky']
+        values: ['ochrana příjmu', 'kontrola výluk', 'správné pojistné částky'],
+        time: ['Sám: 8–15 hod', 'Se mnou: vysvětlení', 'Úspora: podmínky bez studia']
       },
       plan: {
         title: 'Vše propojené. Vše pod kontrolou.',
         text: 'Hypotéka, investice a pojištění nejsou oddělené světy. Každé rozhodnutí ovlivňuje další oblasti — proto je důležité dívat se na finance jako na celek.',
-        values: ['lidské vysvětlení', 'úspora času', 'dlouhodobé hlídání']
+        values: ['lidské vysvětlení', 'úspora času', 'dlouhodobé hlídání'],
+        time: ['Sám: hlídá vše sám', 'Se mnou: průběžná péče', 'Výhoda: klid a návaznost']
       }
     };
 
@@ -384,6 +426,7 @@
       document.getElementById('detail-title').textContent = detail.title;
       document.getElementById('detail-text').textContent = detail.text;
       document.getElementById('value-row').innerHTML = detail.values.map(v => `<div class="value-pill">${v}</div>`).join('');
+      document.getElementById('time-row').innerHTML = detail.time.map(v => `<div class="time-box"><strong>${v.split(':')[0]}</strong>${v.split(':').slice(1).join(':').trim()}</div>`).join('');
       document.getElementById('detail-card').classList.add('active');
     }
   </script>
