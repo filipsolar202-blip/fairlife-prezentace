@@ -67,14 +67,15 @@
     .advisor { text-align: right; color: var(--navy); font-weight: 900; font-size: 18px; }
     .advisor span { display: block; color: var(--muted); font-size: 14px; margin-top: 4px; font-weight: 700; }
 
-    .hero { text-align: center; margin: 4px auto 20px; max-width: 980px; }
+    .hero { text-align: center; margin: 4px auto -8px; max-width: 980px; position: relative; z-index: 3; }
     .eyebrow { color: var(--blue); text-transform: uppercase; letter-spacing: .16em; font-size: 13px; font-weight: 900; margin-bottom: 10px; }
-    h1 { margin: 0; font-size: clamp(40px, 5vw, 72px); line-height: .94; letter-spacing: -.065em; }
+    h1 { margin: 0; font-size: clamp(38px, 4.6vw, 66px); line-height: .94; letter-spacing: -.065em; }
     .hero p { margin: 14px auto 0; max-width: 790px; color: #4e5663; font-size: 19px; line-height: 1.42; font-weight: 650; }
 
     .map-wrap {
       position: relative;
       min-height: 860px;
+      margin-top: 38px;
       border-radius: 46px;
       background: rgba(255,255,255,.66);
       border: 1px solid rgba(255,255,255,.88);
@@ -97,10 +98,10 @@
     .center {
       position: absolute;
       left: 50%;
-      top: 44%;
+      top: 43%;
       transform: translate(-50%, -50%);
-      width: 218px;
-      height: 218px;
+      width: 270px;
+      height: 270px;
       border-radius: 50%;
       background: linear-gradient(145deg, #fff, #eef8fc);
       border: 1px solid rgba(255,255,255,.95);
@@ -112,34 +113,11 @@
       padding: 26px;
     }
 
-    .center svg { width: 38px; height: 38px; stroke: var(--navy); fill: none; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; margin-bottom: 10px; }
-    .center strong { display: block; color: var(--navy); font-size: 22px; line-height: 1.06; letter-spacing: -.035em; }
-    .center span { display: block; margin-top: 9px; color: var(--muted); font-size: 12.5px; font-weight: 800; }
+    .center svg { width: 48px; height: 48px; stroke: var(--navy); fill: none; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; margin-bottom: 10px; }
+    .center strong { display: block; color: var(--navy); font-size: 28px; line-height: 1.06; letter-spacing: -.035em; }
+    .center span { display: block; margin-top: 10px; color: var(--muted); font-size: 14px; font-weight: 800; }
 
-    .connections {
-      position: absolute;
-      inset: 0;
-      z-index: 1;
-      pointer-events: none;
-    }
-
-    .connections path {
-      fill: none;
-      stroke: rgba(21,78,114,.18);
-      stroke-width: 2.2;
-      stroke-linecap: round;
-      transition: .25s ease;
-    }
-
-    .map-wrap.has-active .connections path { stroke: rgba(21,78,114,.06); }
-    .map-wrap[data-active="bydleni"] #line-bydleni,
-    .map-wrap[data-active="majetek"] #line-majetek,
-    .map-wrap[data-active="ochrana"] #line-ochrana,
-    .map-wrap[data-active="plan"] #line-plan { stroke-width: 3.5; opacity: 1; }
-    .map-wrap[data-active="bydleni"] #line-bydleni { stroke: var(--green); }
-    .map-wrap[data-active="majetek"] #line-majetek { stroke: var(--blue); }
-    .map-wrap[data-active="ochrana"] #line-ochrana { stroke: var(--violet); }
-    .map-wrap[data-active="plan"] #line-plan { stroke: var(--orange); }
+    .connections { display: none; }
 
     .topic {
       position: absolute;
@@ -236,6 +214,8 @@
     }
 
     .detail-card.active { display: block; }
+    .detail-card.left-detail { left: 30%; transform: translateX(-50%); }
+    .detail-card.right-detail { left: 70%; transform: translateX(-50%); }
     .detail-card h3 { margin: 0 0 8px; font-size: 24px; letter-spacing: -.03em; color: var(--navy); }
     .detail-card p { margin: 0; color: #4f5663; font-weight: 650; line-height: 1.42; font-size: 15.5px; }
     .value-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 12px; }
@@ -301,12 +281,7 @@
     <section class="map-wrap" id="map" data-active="">
       <div class="grid-bg"></div>
 
-      <svg class="connections" viewBox="0 0 1200 760" preserveAspectRatio="none">
-        <path id="line-bydleni" d="M600 357 C490 300, 390 260, 295 246" />
-        <path id="line-majetek" d="M600 357 C710 300, 810 260, 905 246" />
-        <path id="line-ochrana" d="M600 357 C490 420, 390 492, 295 530" />
-        <path id="line-plan" d="M600 357 C710 420, 810 492, 905 530" />
-      </svg>
+      
 
       <div class="center">
         <div>
@@ -427,7 +402,11 @@
       document.getElementById('detail-text').textContent = detail.text;
       document.getElementById('value-row').innerHTML = detail.values.map(v => `<div class="value-pill">${v}</div>`).join('');
       document.getElementById('time-row').innerHTML = detail.time.map(v => `<div class="time-box"><strong>${v.split(':')[0]}</strong>${v.split(':').slice(1).join(':').trim()}</div>`).join('');
-      document.getElementById('detail-card').classList.add('active');
+      const card = document.getElementById('detail-card');
+      card.classList.remove('left-detail', 'right-detail');
+      if (id === 'majetek' || id === 'plan') card.classList.add('left-detail');
+      if (id === 'bydleni' || id === 'ochrana') card.classList.add('right-detail');
+      card.classList.add('active');
     }
   </script>
 </body>
