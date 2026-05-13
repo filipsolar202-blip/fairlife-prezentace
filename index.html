@@ -217,6 +217,11 @@
       z-index: 6;
     }
 
+    .area.active-area .value-panel {
+      display: block;
+      grid-column: 1 / -1;
+    }
+
     /* Hlavní karty jsou v rozích. */
     .area-bydleni { left: 12px; top: 12px; }
     .area-ochrana { left: 12px; bottom: 12px; }
@@ -332,7 +337,17 @@
     }
 
     .branches {
-      display: none;$1min-height: 190px;
+      display: none;
+      gap: 0;
+      flex-direction: column;
+      border-radius: 24px;
+      overflow: hidden;
+      background: rgba(255,255,255,.91);
+      border: 1px solid rgba(255,255,255,.92);
+      box-shadow: 0 10px 28px rgba(20,45,70,.08);
+      animation: fade .22s ease both;
+      align-self: stretch;
+      min-height: 190px;
     }
 
     .area.active-area .branches { display: flex; }
@@ -445,9 +460,88 @@
 
     .reset-btn.active { display: block; }
 
-    @media (max-width: 1380px) {
-      .workspace { height: auto; display: grid; grid-template-columns: 1fr; gap: 18px; }
-      .center { display: none; }
+    @media (max-width: 900px) {
+      .page {
+        width: min(100vw - 18px, 1620px);
+        padding: 12px 0 24px;
+      }
+
+      .topbar {
+        flex-direction: row;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .logo {
+        height: 54px;
+      }
+
+      .advisor {
+        text-align: right;
+        font-size: 14px;
+      }
+
+      .advisor span {
+        font-size: 12px;
+      }
+
+      .hero {
+        margin: 8px auto 18px;
+        padding: 0 8px;
+      }
+
+      .eyebrow {
+        font-size: 11px;
+        letter-spacing: .14em;
+        margin-bottom: 8px;
+      }
+
+      h1,
+      .hero h1 {
+        font-size: 38px;
+        line-height: .95;
+        letter-spacing: -.055em;
+      }
+
+      .hero p {
+        font-size: 15px;
+        line-height: 1.38;
+        padding: 0;
+      }
+
+      .map-wrap {
+        padding: 16px 12px 22px;
+        border-radius: 30px;
+      }
+
+      .workspace {
+        height: auto;
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+        padding: 0;
+      }
+
+      .center {
+        position: relative;
+        left: auto;
+        top: auto;
+        transform: none;
+        width: 138px !important;
+        height: 138px !important;
+        margin: 0 auto 4px;
+        opacity: 1 !important;
+        filter: none !important;
+        order: -1;
+      }
+
+      .map-wrap.has-active .center {
+        width: 108px !important;
+        height: 108px !important;
+        opacity: .38 !important;
+        filter: grayscale(1) !important;
+      }
+
       .area,
       .area.active-area {
         position: relative;
@@ -455,14 +549,145 @@
         right: auto !important;
         top: auto !important;
         bottom: auto !important;
-        width: 100%;
-        grid-template-columns: 1fr;
+        width: 100% !important;
+        min-height: auto;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        grid-template-columns: 1fr !important;
       }
+
       .area-majetek .topic,
       .area-plan .topic,
       .area-majetek .branches,
-      .area-plan .branches { order: initial; }
-      .value-content { grid-template-columns: 1fr; }
+      .area-plan .branches {
+        order: initial;
+      }
+
+      .map-wrap.has-active .area:not(.active-area) {
+        opacity: .34;
+        filter: grayscale(1);
+      }
+
+      .topic,
+      .area.active-area .topic {
+        min-height: auto;
+        padding: 18px;
+        border-radius: 26px;
+        transform: none !important;
+      }
+
+      .topic-top {
+        gap: 12px;
+        margin-bottom: 10px;
+      }
+
+      .icon,
+      .area.active-area .icon {
+        width: 54px;
+        height: 54px;
+        border-radius: 20px;
+      }
+
+      .icon svg,
+      .area.active-area .icon svg {
+        width: 30px;
+        height: 30px;
+      }
+
+      .topic h2,
+      .area.active-area .topic h2 {
+        font-size: 23px;
+        line-height: 1.06;
+      }
+
+      .topic p,
+      .area.active-area .topic p {
+        font-size: 14px;
+        line-height: 1.34;
+      }
+
+      .chips {
+        margin-top: 12px;
+        gap: 7px;
+      }
+
+      .chip {
+        font-size: 11px;
+        padding: 7px 9px;
+      }
+
+      .branches {
+        width: 100%;
+        min-height: auto;
+        border-radius: 22px;
+      }
+
+      .branch {
+        min-height: auto;
+        padding: 11px 12px;
+        grid-template-columns: 40px 1fr;
+      }
+
+      .branch-ico {
+        width: 40px;
+        height: 40px;
+        border-radius: 14px;
+      }
+
+      .branch h3 {
+        font-size: 14px;
+      }
+
+      .branch p {
+        font-size: 11.5px;
+      }
+
+      .value-panel {
+        width: 100%;
+        margin: 10px 0 0;
+        padding: 16px;
+        border-radius: 24px;
+      }
+
+      .value-panel h3 {
+        font-size: 20px;
+      }
+
+      .value-panel p {
+        font-size: 13.5px;
+      }
+
+      .value-content {
+        grid-template-columns: 1fr;
+        gap: 10px;
+        margin-top: 12px;
+      }
+
+      .value-row,
+      .time-row {
+        grid-template-columns: 1fr;
+      }
+
+      .value-pill,
+      .time-box {
+        padding: 10px 11px;
+      }
+
+      .time-box {
+        border-right: 0;
+        border-bottom: 1px solid rgba(47,141,246,.16);
+      }
+
+      .time-box:last-child {
+        border-bottom: 0;
+      }
+
+      .reset-btn {
+        margin-top: 16px;
+        padding: 12px 18px;
+        font-size: 14px;
+      }
     }
 
     @media (max-width: 760px) {
@@ -475,6 +700,150 @@
       .value-row, .time-row { grid-template-columns: 1fr; }
       .time-box { border-right: 0; border-bottom: 1px solid rgba(47,141,246,.16); }
       .time-box:last-child { border-bottom: 0; }
+    }
+
+    /* FINAL MOBILE FIX — telefon na výšku bez vodorovného posunu */
+    @media (max-width: 900px) {
+      html,
+      body {
+        width: 100%;
+        max-width: 100%;
+        overflow-x: hidden;
+      }
+
+      .page {
+        width: 100%;
+        max-width: 100%;
+        padding: 12px 10px 24px;
+        overflow-x: hidden;
+      }
+
+      .map-wrap {
+        width: 100%;
+        max-width: 100%;
+        padding: 14px 10px 22px;
+        overflow-x: hidden;
+      }
+
+      .workspace {
+        width: 100%;
+        max-width: 100%;
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+        overflow-x: hidden;
+      }
+
+      .area,
+      .area.active-area {
+        width: 100% !important;
+        max-width: 100% !important;
+        min-width: 0 !important;
+        display: flex !important;
+        flex-direction: column !important;
+        grid-template-columns: 1fr !important;
+        position: relative !important;
+        left: auto !important;
+        right: auto !important;
+        top: auto !important;
+        bottom: auto !important;
+        overflow: visible;
+      }
+
+      .topic,
+      .branches,
+      .value-panel {
+        width: 100% !important;
+        max-width: 100% !important;
+        min-width: 0 !important;
+      }
+
+      .topic {
+        padding: 16px;
+      }
+
+      .topic-top {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .topic h2,
+      .area.active-area .topic h2 {
+        font-size: 21px;
+        line-height: 1.08;
+        word-break: normal;
+      }
+
+      .topic p,
+      .area.active-area .topic p {
+        font-size: 13.5px;
+        line-height: 1.35;
+      }
+
+      .icon,
+      .area.active-area .icon {
+        width: 48px;
+        height: 48px;
+        min-width: 48px;
+        border-radius: 18px;
+      }
+
+      .icon svg,
+      .area.active-area .icon svg {
+        width: 27px;
+        height: 27px;
+      }
+
+      .branches {
+        display: none;
+      }
+
+      .area.active-area .branches {
+        display: flex;
+      }
+
+      .branch {
+        width: 100%;
+        max-width: 100%;
+        grid-template-columns: 38px minmax(0, 1fr);
+        gap: 10px;
+        padding: 10px 11px;
+      }
+
+      .branch-ico {
+        width: 38px;
+        height: 38px;
+        min-width: 38px;
+      }
+
+      .branch h3 {
+        font-size: 13.5px;
+      }
+
+      .branch p {
+        font-size: 11.5px;
+      }
+
+      .value-panel {
+        margin: 10px 0 0;
+        padding: 14px;
+      }
+
+      .value-content,
+      .value-row,
+      .time-row {
+        display: grid;
+        grid-template-columns: 1fr !important;
+        width: 100%;
+        max-width: 100%;
+      }
+
+      .value-pill,
+      .time-box {
+        width: 100%;
+        max-width: 100%;
+      }
     }
   </style>
 </head>
