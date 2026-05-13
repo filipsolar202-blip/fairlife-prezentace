@@ -407,7 +407,7 @@
       gap: 0;
       flex-direction: column;
       border-radius: 26px;
-      overflow: hidden;
+      overflow: visible;
       background: rgba(255,255,255,.44);
       border: 1px solid rgba(255,255,255,.74);
       box-shadow: 0 12px 34px rgba(45,82,115,.10), inset 0 1px 0 rgba(255,255,255,.86);
@@ -421,6 +421,7 @@
     @keyframes fade { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
 
     .branch {
+      position: relative;
       display: grid;
       grid-template-columns: 46px 1fr;
       gap: 13px;
@@ -432,7 +433,40 @@
       flex: 1;
       transition: .22s ease;
     }
-    .branch:hover { background: rgba(255,255,255,.42); }
+    .branch:hover {
+      background: rgba(255,255,255,.50);
+      transform: translateY(-2px) scale(1.01);
+      box-shadow: 0 14px 30px rgba(45,82,115,.10), inset 0 1px 0 rgba(255,255,255,.86);
+      z-index: 4;
+    }
+
+    .branch::after {
+      content: attr(data-tip);
+      position: absolute;
+      left: 50%;
+      bottom: calc(100% + 10px);
+      transform: translateX(-50%) translateY(6px);
+      width: min(310px, 90vw);
+      padding: 12px 14px;
+      border-radius: 18px;
+      color: #243246;
+      font-size: 12px;
+      line-height: 1.32;
+      font-weight: 750;
+      background: rgba(255,255,255,.78);
+      border: 1px solid rgba(255,255,255,.88);
+      box-shadow: 0 18px 42px rgba(45,82,115,.14), inset 0 1px 0 rgba(255,255,255,.92);
+      backdrop-filter: blur(18px) saturate(160%);
+      opacity: 0;
+      pointer-events: none;
+      transition: .2s ease;
+      white-space: normal;
+    }
+
+    .branch:hover::after {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
     .branch:last-child { border-bottom: 0; }
 
     .branch-ico {
@@ -465,7 +499,8 @@
       backdrop-filter: blur(22px) saturate(160%);
     }
 
-    .area.active-area .value-panel { display: block; }
+    .area.active-area .value-panel,
+    .value-panel.active { display: block; }
     .value-panel h3 { margin: 0 0 6px; font-size: 21px; letter-spacing: -.03em; color: var(--navy); }
     .value-panel p { margin: 0; color: #404b5b; font-weight: 620; line-height: 1.35; font-size: 14px; }
 
@@ -610,10 +645,10 @@
             <div class="chips"><span class="chip">sazba</span><span class="chip">fixace</span><span class="chip">cashflow</span></div>
           </article>
           <div class="branches" id="branches-bydleni">
-            <div class="branch"><div class="branch-ico"><svg viewBox="0 0 24 24"><path d="M3 11.5 12 4l9 7.5"/><path d="M5.5 10.5V20h13v-9.5"/></svg></div><div><h3>Vlastní bydlení</h3><p>výběr banky, sazby, fixace a procesu</p></div></div>
-            <div class="branch"><div class="branch-ico"><svg viewBox="0 0 24 24"><path d="M4 20h16"/><path d="M7 20V8h10v12"/><path d="M10 11h1"/><path d="M14 11h1"/></svg></div><div><h3>Investiční nemovitosti</h3><p>páka, výnos, nájem a cashflow</p></div></div>
-            <div class="branch"><div class="branch-ico"><svg viewBox="0 0 24 24"><path d="M4 12h15"/><path d="M15 8l4 4-4 4"/><path d="M20 6v12"/></svg></div><div><h3>Refinancování a refixace</h3><p>hlídání výročí a vyjednání podmínek</p></div></div>
-            <div class="branch"><div class="branch-ico"><svg viewBox="0 0 24 24"><path d="M4 7h16"/><path d="M6 7v12h12V7"/><path d="M8 11h8"/><path d="M8 15h5"/></svg></div><div><h3>Konsolidace závazků</h3><p>uvolnění cashflow pro rezervu</p></div></div>
+            <div class="branch" data-tip="Časová úspora: klient sám často řeší 11–20 hodin porovnávání bank, podmínek a návazností. Se mnou má jasný postup, výběr banky a vysvětlení dopadu na cashflow."><div class="branch-ico"><svg viewBox="0 0 24 24"><path d="M3 11.5 12 4l9 7.5"/><path d="M5.5 10.5V20h13v-9.5"/></svg></div><div><h3>Vlastní bydlení</h3><p>výběr banky, sazby, fixace a procesu</p></div></div>
+            <div class="branch" data-tip="Přidaná hodnota: ukážu pákový efekt, dopad vlastních peněz, nájmu, růstu hodnoty nemovitosti a celkový smysl v rámci majetku."><div class="branch-ico"><svg viewBox="0 0 24 24"><path d="M4 20h16"/><path d="M7 20V8h10v12"/><path d="M10 11h1"/><path d="M14 11h1"/></svg></div><div><h3>Investiční nemovitosti</h3><p>páka, výnos, nájem a cashflow</p></div></div>
+            <div class="branch" data-tip="Přidaná hodnota: hlídám výročí, sazbu, proces a vyjednání podmínek. Klient nemusí řešit, kdy začít a co přesně doložit."><div class="branch-ico"><svg viewBox="0 0 24 24"><path d="M4 12h15"/><path d="M15 8l4 4-4 4"/><path d="M20 6v12"/></svg></div><div><h3>Refinancování a refixace</h3><p>hlídání výročí a vyjednání podmínek</p></div></div>
+            <div class="branch" data-tip="Přidaná hodnota: když se závazky správně sloučí a optimalizují, může vzniknout volné cashflow pro rezervu, investice nebo stabilnější rodinný rozpočet."><div class="branch-ico"><svg viewBox="0 0 24 24"><path d="M4 7h16"/><path d="M6 7v12h12V7"/><path d="M8 11h8"/><path d="M8 15h5"/></svg></div><div><h3>Konsolidace závazků</h3><p>uvolnění cashflow pro rezervu</p></div></div>
           </div>
         </section>
 
@@ -624,10 +659,10 @@
             <div class="chips"><span class="chip">rezerva</span><span class="chip">renta</span><span class="chip">růst</span></div>
           </article>
           <div class="branches" id="branches-majetek">
-            <div class="branch"><div class="branch-ico"><svg viewBox="0 0 24 24"><path d="M12 3v18"/><path d="M6 7h9a3 3 0 0 1 0 6H8"/><path d="M8 13h8a3 3 0 0 1 0 6H6"/></svg></div><div><h3>Tvorba majetku</h3><p>pravidelné i jednorázové investice</p></div></div>
-            <div class="branch"><div class="branch-ico"><svg viewBox="0 0 24 24"><path d="M4 19h16"/><path d="M7 16v-5"/><path d="M12 16V8"/><path d="M17 16V5"/></svg></div><div><h3>Renta a pasivní příjem</h3><p>budování budoucího příjmu</p></div></div>
-            <div class="branch"><div class="branch-ico"><svg viewBox="0 0 24 24"><path d="M12 3 19 6v5c0 5-3 8-7 10-4-2-7-5-7-10V6z"/></svg></div><div><h3>Ochrana před inflací</h3><p>reálná hodnota peněz v čase</p></div></div>
-            <div class="branch"><div class="branch-ico"><svg viewBox="0 0 24 24"><path d="M12 3v18"/><path d="M3 12h18"/><circle cx="12" cy="12" r="8"/></svg></div><div><h3>Diverzifikace</h3><p>fondy, ETF, FKI, nemovitosti</p></div></div>
+            <div class="branch" data-tip="Přidaná hodnota: nastavíme účel peněz — rezerva, budoucí renta, děti, bydlení nebo dlouhodobá finanční svoboda. Neinvestujeme bez cíle."><div class="branch-ico"><svg viewBox="0 0 24 24"><path d="M12 3v18"/><path d="M6 7h9a3 3 0 0 1 0 6H8"/><path d="M8 13h8a3 3 0 0 1 0 6H6"/></svg></div><div><h3>Tvorba majetku</h3><p>pravidelné i jednorázové investice</p></div></div>
+            <div class="branch" data-tip="Přidaná hodnota: ukážu, kolik může dlouhodobé investování vytvořit kapitálu a jak z něj může vzniknout budoucí příjem nebo renta."><div class="branch-ico"><svg viewBox="0 0 24 24"><path d="M4 19h16"/><path d="M7 16v-5"/><path d="M12 16V8"/><path d="M17 16V5"/></svg></div><div><h3>Renta a pasivní příjem</h3><p>budování budoucího příjmu</p></div></div>
+            <div class="branch" data-tip="Přidaná hodnota: vysvětlím rozdíl mezi nominálním a reálným zhodnocením, aby klient věděl, zda jeho peníze skutečně rostou."><div class="branch-ico"><svg viewBox="0 0 24 24"><path d="M12 3 19 6v5c0 5-3 8-7 10-4-2-7-5-7-10V6z"/></svg></div><div><h3>Ochrana před inflací</h3><p>reálná hodnota peněz v čase</p></div></div>
+            <div class="branch" data-tip="Přidaná hodnota: rozložení rizika mezi různé nástroje a cíle. Klient chápe, proč nemá stát všechno na jedné kartě."><div class="branch-ico"><svg viewBox="0 0 24 24"><path d="M12 3v18"/><path d="M3 12h18"/><circle cx="12" cy="12" r="8"/></svg></div><div><h3>Diverzifikace</h3><p>fondy, ETF, FKI, nemovitosti</p></div></div>
           </div>
         </section>
 
@@ -638,10 +673,10 @@
             <div class="chips"><span class="chip">příjem</span><span class="chip">rodina</span><span class="chip">majetek</span></div>
           </article>
           <div class="branches" id="branches-ochrana">
-            <div class="branch"><div class="branch-ico"><svg viewBox="0 0 24 24"><circle cx="12" cy="7" r="4"/><path d="M5 21c1.5-4 4-6 7-6s5.5 2 7 6"/></svg></div><div><h3>Ochrana příjmu</h3><p>invalidita, PN, závažná onemocnění</p></div></div>
-            <div class="branch"><div class="branch-ico"><svg viewBox="0 0 24 24"><path d="M4 20v-8l8-6 8 6v8"/><path d="M9 20v-6h6v6"/></svg></div><div><h3>Majetek</h3><p>nemovitost, domácnost, odpovědnost</p></div></div>
-            <div class="branch"><div class="branch-ico"><svg viewBox="0 0 24 24"><path d="M3 16l2-6h14l2 6"/><circle cx="7" cy="17" r="2"/><circle cx="17" cy="17" r="2"/></svg></div><div><h3>Vozidla</h3><p>povinné ručení a havarijní pojištění</p></div></div>
-            <div class="branch"><div class="branch-ico"><svg viewBox="0 0 24 24"><path d="M10 6h4"/><path d="M4 8h16v12H4z"/><path d="M8 8V6a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></div><div><h3>Podnikání</h3><p>OSVČ, odpovědnost, klíčové osoby</p></div></div>
+            <div class="branch" data-tip="Časová úspora: samostatné porovnání podmínek, výluk a výpočtu částek může zabrat 8–15 hodin. Se mnou dostane klient lidské vysvětlení a návrh částek."><div class="branch-ico"><svg viewBox="0 0 24 24"><circle cx="12" cy="7" r="4"/><path d="M5 21c1.5-4 4-6 7-6s5.5 2 7 6"/></svg></div><div><h3>Ochrana příjmu</h3><p>invalidita, PN, závažná onemocnění</p></div></div>
+            <div class="branch" data-tip="Přidaná hodnota: kontroluji limity, rizika, výluky a návaznost na skutečnou hodnotu majetku. Nejde jen o cenu pojistky."><div class="branch-ico"><svg viewBox="0 0 24 24"><path d="M4 20v-8l8-6 8 6v8"/><path d="M9 20v-6h6v6"/></svg></div><div><h3>Majetek</h3><p>nemovitost, domácnost, odpovědnost</p></div></div>
+            <div class="branch" data-tip="Přidaná hodnota: porovnám nejen cenu, ale i limity, asistenci, skla, střet se zvěří, náhradní vozidlo a reálnou použitelnost pojištění."><div class="branch-ico"><svg viewBox="0 0 24 24"><path d="M3 16l2-6h14l2 6"/><circle cx="7" cy="17" r="2"/><circle cx="17" cy="17" r="2"/></svg></div><div><h3>Vozidla</h3><p>povinné ručení a havarijní pojištění</p></div></div>
+            <div class="branch" data-tip="Přidaná hodnota: řešíme rizika podnikání, odpovědnost, příjem OSVČ a návaznost na rodinu i firemní závazky."><div class="branch-ico"><svg viewBox="0 0 24 24"><path d="M10 6h4"/><path d="M4 8h16v12H4z"/><path d="M8 8V6a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></div><div><h3>Podnikání</h3><p>OSVČ, odpovědnost, klíčové osoby</p></div></div>
           </div>
         </section>
 
@@ -652,10 +687,10 @@
             <div class="chips"><span class="chip">přehled</span><span class="chip">klid</span><span class="chip">péče</span></div>
           </article>
           <div class="branches" id="branches-plan">
-            <div class="branch"><div class="branch-ico"><svg viewBox="0 0 24 24"><path d="M4 6h16"/><path d="M4 12h16"/><path d="M4 18h10"/></svg></div><div><h3>Finanční plán</h3><p>hypotéka, investice a pojištění spolu</p></div></div>
-            <div class="branch"><div class="branch-ico"><svg viewBox="0 0 24 24"><path d="M8 3v4"/><path d="M16 3v4"/><rect x="4" y="5" width="16" height="16" rx="2"/><path d="M8 12h8"/></svg></div><div><h3>Pravidelná péče</h3><p>revize, aktualizace, reakce na změny</p></div></div>
-            <div class="branch"><div class="branch-ico"><svg viewBox="0 0 24 24"><circle cx="6" cy="6" r="3"/><circle cx="18" cy="6" r="3"/><circle cx="12" cy="18" r="3"/><path d="M8.5 8.5l2.2 6"/><path d="M15.5 8.5l-2.2 6"/></svg></div><div><h3>Koordinace</h3><p>banky, pojišťovny, investiční společnosti</p></div></div>
-            <div class="branch"><div class="branch-ico"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><path d="M12 8v5l3 2"/></svg></div><div><h3>Úspora času a chyb</h3><p>přehled, hlídání, méně starostí</p></div></div>
+            <div class="branch" data-tip="Přidaná hodnota: hypotéka, investice a pojištění spolu souvisí. Ukážu dopad jednoho rozhodnutí na ostatní oblasti."><div class="branch-ico"><svg viewBox="0 0 24 24"><path d="M4 6h16"/><path d="M4 12h16"/><path d="M4 18h10"/></svg></div><div><h3>Finanční plán</h3><p>hypotéka, investice a pojištění spolu</p></div></div>
+            <div class="branch" data-tip="Přidaná hodnota: hlídám změny v čase — výročí, sazby, životní změny, nové příležitosti i nutnost aktualizace smluv."><div class="branch-ico"><svg viewBox="0 0 24 24"><path d="M8 3v4"/><path d="M16 3v4"/><rect x="4" y="5" width="16" height="16" rx="2"/><path d="M8 12h8"/></svg></div><div><h3>Pravidelná péče</h3><p>revize, aktualizace, reakce na změny</p></div></div>
+            <div class="branch" data-tip="Časová úspora: klient nemusí koordinovat banku, pojišťovnu, investiční společnost a dokumenty sám. Držím proces a návaznosti."><div class="branch-ico"><svg viewBox="0 0 24 24"><circle cx="6" cy="6" r="3"/><circle cx="18" cy="6" r="3"/><circle cx="12" cy="18" r="3"/><path d="M8.5 8.5l2.2 6"/><path d="M15.5 8.5l-2.2 6"/></svg></div><div><h3>Koordinace</h3><p>banky, pojišťovny, investiční společnosti</p></div></div>
+            <div class="branch" data-tip="Přidaná hodnota: méně chyb, méně hledání, méně nejasností. Klient ví, co se děje, proč to děláme a jaký je další krok."><div class="branch-ico"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><path d="M12 8v5l3 2"/></svg></div><div><h3>Úspora času a chyb</h3><p>přehled, hlídání, méně starostí</p></div></div>
           </div>
         </section>
       </div>
@@ -669,7 +704,7 @@
         </div>
       </section>
 
-      <button class="reset-btn" id="reset-btn" onclick="resetMap()">← Návrat na hlavní stránku</button>
+      <button class="reset-btn" id="reset-btn" onclick="resetMap()" aria-hidden="true">← Návrat na hlavní stránku</button>
     </section>
   </main>
 
@@ -709,6 +744,10 @@
 
     function activate(id) {
       const map = document.getElementById('map');
+      if (map.dataset.active === id) {
+        resetMap();
+        return;
+      }
       map.classList.add('has-active');
       map.dataset.active = id;
 
@@ -729,7 +768,7 @@
         document.getElementById('map').appendChild(panel);
       }
       panel.classList.add('active');
-      document.getElementById('reset-btn').classList.add('active');
+      // návrat řeší druhý klik na aktivní sekci
     }
 
     function resetMap() {
