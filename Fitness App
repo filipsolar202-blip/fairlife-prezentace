@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1, user-scalable=no" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta name="apple-mobile-web-app-title" content="FitCore" />
+  <meta name="theme-color" content="#f2f2f7" />
+  <link rel="manifest" href="manifest.json" />
+  <link rel="apple-touch-icon" href="icon-192.png" />
+  <title>FitCore</title>
+  <style>
+    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+    body { margin: 0; padding: 0; background: #f2f2f7; font-family: -apple-system, 'SF Pro Text', BlinkMacSystemFont, sans-serif; -webkit-font-smoothing: antialiased; }
+    #root { min-height: 100vh; min-height: -webkit-fill-available; }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/sw.js').catch(() => {});
+    }
+  </script>
+  <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <script type="text/babel" data-type="module">
+    /* ── FitCore App ── */
+    const { useState } = React;
+
+    const C = {
+      bg: "#f2f2f7", card: "#ffffff", border: "rgba(0,0,0,0.06)",
+      accent: "#007aff", green: "#34c759", orange: "#ff9500",
+      red: "#ff3b30", purple: "#af52de",
+      text: "#000000", textSec: "#6d6d72", textTer: "#aeaeb2",
+      fill: "rgba(0,122,255,0.08)",
+    };
+
+    const TABS = [
+      { id: "prehled", label: "Přehled", icon: "house" },
+      { id: "trenink", label: "Trénink", icon: "figure" },
+      { id: "vyziva",  label: "Výživa",  icon: "fork" },
+      { id: "telo",    label: "Tělo",    icon: "heart" },
+      { id: "progres", label: "Progres", icon: "chart" },
+    ];
+
+    const TRÉNINKY = [
+      { id:1, název:"Hrudník & Triceps", počet:5, doba:"52 min", kcal:380, hotovo:true,  e:"💪" },
+      { id:2, název:"Záda & Biceps",     počet:6, doba:"48 min", kcal:410, hotovo:true,  e:"🏋️" },
+      { id:3, název:"Nohy",              počet:7, doba:"65 min", kcal:520, hotovo:false, e:"🦵" },
+      { id:4, název:"Ramena",            počet:5, doba:"44 min", kcal:310, hotovo:false, e:"🔝" },
+      { id:5, název:"Střed těla",        počet:4, doba:"35 min", kcal:290, hotovo:false, e:"🔥" },
+    ];
+
+    const CVIKY = [
+      { název:"Bench press",      svalová:"Hrudník",       pr:100, sety:[{kg:80,r:8},{kg:85,r:6},{kg:90,r:5}] },
+      { název:"Tlak nad hlavou",  svalová:"Ramena",        pr:70,  sety:[{kg:55,r:8},{kg:60,r:6},{kg:62.5,r:5}] },
+      { název:"Shyby",            svalová:"Záda",          pr:"+20kg", sety:[{kg:0,r:12},{kg:10,r:8},{kg:15,r:6}] },
+      { název:"Dřep",             svalová:"Nohy",          pr:130, sety:[{kg:100,r:8},{kg:110,r:6},{kg:115,r:5}] },
+      { název:"Mrtvý tah",        svalová:"Záda / Nohy",   pr:160, sety:[{kg:120,r:5},{kg:130,r:4},{kg:140,r:3}] },
+    ];
+
+    const JÍDLA = [
+      { čas:"07:30", název:"Ovesná kaše + protein shake",   kcal:520, p:42, s:68, t:12, e:"🥣" },
+      { čas:"10:00", název:"Řecký jogurt + ovoce",          kcal:280, p:20, s:35, t:6,  e:"🍓" },
+      { čas:"13:00", název:"Kuřecí + rýže + brokolice",     kcal:680, p:55, s:72, t:14, e:"🍗" },
+      { čas:"16:00", název:"Tvaroh + mandle",               kcal:340, p:28, s:18, t:16, e:"🥛" },
+      { čas:"19:30", název:"Losos + batáty",                kcal:580, p:48, s:52, t:18, e:"🐟" },
+    ];
+
+    const BMI_HIST = [
+      { d:"1.3.",  bmi:26.2, váha:84.5, tuk:21 },
+      { d:"15.3.", bmi:25.8, váha:83.2, tuk:20.2 },
+      { d:"1.4.",  bmi:25.1, váha:81.0, tuk:19.1 },
+      { d:"15.4.", bmi:24.6, váha:79.4, tuk:18.3 },
+      { d:"1.5.",  bmi:24.1, váha:77.8, tuk:17.6 },
+    ];
+
+    const TÝDEN_KCAL = [480, 620, 390, 710, 550, 680, 0];
+    const TÝDEN_DNY  = ["Po","Út","St","Čt","Pá","So","Ne"];
+    const PROGRES = [
+      { m:"Ún",  bench:80, dřep:90,  tah:110 },
+      { m:"Bře", bench:85, dřep:100, tah:120 },
+      { m:"Dub", bench:90, dřep:108, tah:130 },
+      { m:"Kvě", bench:95, dřep:115, tah:140 },
+    ];
+
+    // ── primitives ─────────────────────────────────────────
+    function Card({ children, style={}, onClick }) {
+      const [press, setPress] = useState(false);
+      return (
+        <div onClick={onClick}
+          onTouchStart={() => onClick && setPress(true)}
+          onTouchEnd={() => setPress(false)}
+          onMouseDown={() => onClick && setPress(true)}
+          onMouseUp={() => setPress(false)}
+          onMouseLeave={() => setPress(false)}
+          style={{ background:C.card, borderRadius:16, boxShadow:"0 1px 3px rgba(0,0,0,0.08)",
+            transition:"transform 0.12s", transform: press ? "scale(0.98)" : "scale(1)",
+            cursor: onClick ? "pointer" : "default", overflow:"hidden", ...style }}>
+          {children}
+        </div>
+      );
+    }
+
+    function Label({ children }) {
+      return <p style={{ margin:"0 0 6px 4px", fontSize:13, fontWeight:600, color:C.textSec, textTransform:"uppercase", letterSpacing:0.3 }}>{children}</p>;
+    }
+
+    function Ring({ value, max, color, size=70, stroke=7, label, sub }) {
+      const r = (size - stroke) / 2, circ = 2 * Math.PI * r;
+      const off = circ - Math.min(value / max, 1) * circ;
+      return (
+        <div style={{ display:"flex", flexDirection:"column", alignItems:"center", gap:4 }}>
+          <div style={{ position:"relative", width:size, height:size }}>
+            <svg width={size} height={size} style={{ transform:"rotate(-90deg)" }}>
+              <circle cx={size/2} cy={size/2} r={r} fill="none" stroke={color+"20"} strokeWidth={stroke} />
+              <circle cx={size/2} cy={size/2} r={r} fill="none" stroke={color} strokeWidth={stroke}
+                strokeDasharray={circ} strokeDashoffset={off} strokeLinecap="round"
+                style={{ transition:"stroke-dashoffset 1s" }} />
+            </svg>
+            <div style={{ position:"absolute", inset:0, display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center" }}>
+              <span style={{ fontSize:14, fontWeight:700, color:C.text, lineHeight:1 }}>{value}</span>
+              <span style={{ fontSize:9, color:C.textSec }}>{sub}</span>
+            </div>
+          </div>
+          <span style={{ fontSize:11, color:C.textSec }}>{label}</span>
+        </div>
+      );
+    }
+
+    function Bars({ data, labels, color }) {
+      const max = Math.max(...data, 1);
+      return (
+        <div style={{ display:"flex", alignItems:"flex-end", gap:5, height:56 }}>
+          {data.map((v,i) => (
+            <div key={i} style={{ flex:1, display:"flex", flexDirection:"column", alignItems:"center", gap:3 }}>
+              <div style={{ width:"100%", minHeight:3, height:`${Math.max((v/max)*42, v>0?4:2)}px`,
+                background: v>0 ? color : C.bg, borderRadius:"3px 3px 2px 2px", transition:"height 0.6s" }} />
+              <span style={{ fontSize:10, color:C.textTer }}>{labels[i]}</span>
+            </div>
+          ))}
+        </div>
+      );
+    }
+
+    function Lines({ datasets, labels, h=70 }) {
+      const all = datasets.flatMap(d => d.v);
+      const mn = Math.min(...all), mx = Math.max(...all), rng = mx-mn||1;
+      const W = 280;
+      const pt = (vals) => vals.map((v,i) => [i/(vals.length-1)*W, h-((v-mn)/rng)*(h-10)-5]);
+      const pth = (p) => p.map((pp,i) => `${i?"L":"M"}${pp[0]},${pp[1]}`).join(" ");
+      return (
+        <svg width="100%" viewBox={`0 0 ${W} ${h+14}`} style={{ overflow:"visible" }}>
+          {datasets.map((d,di) => {
+            const p = pt(d.v);
+            return (
+              <g key={di}>
+                <path d={pth(p)} fill="none" stroke={d.c} strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" />
+                {p.map((pp,i) => <circle key={i} cx={pp[0]} cy={pp[1]} r={2.5} fill={d.c} />)}
+              </g>
+            );
+          })}
+          {labels.map((l,i) => (
+            <text key={i} x={i/(labels.length-1)*W} y={h+13} textAnchor="middle"
+              style={{ fontSize:9, fill:C.textTer, fontFamily:"inherit" }}>{l}</text>
+          ))}
+        </svg>
+      );
+    }
+
+    function TabIcon({ icon, active }) {
+      const col = active ? C.accent : C.textTer, sw = active ? 2 : 1.5;
+      if (icon==="house") return <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M3 10L12 3l9 7v10a1 1 0 01-1 1H5a1 1 0 01-1-1V10z" stroke={col} strokeWidth={sw} fill={active?C.fill:"none"}/><path d="M9 21V13h6v8" stroke={col} strokeWidth={sw} strokeLinecap="round"/></svg>;
+      if (icon==="figure") return <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="5" r="2" stroke={col} strokeWidth={sw} fill={active?C.fill:"none"}/><path d="M8 11h8M12 11v5M10 21l2-5 2 5" stroke={col} strokeWidth={sw} strokeLinecap="round" strokeLinejoin="round"/></svg>;
+      if (icon==="fork") return <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M3 2v6c0 1.1.9 2 2 2h4V2M7 10v12M17 2a5 5 0 010 10v10" stroke={col} strokeWidth={sw} strokeLinecap="round"/></svg>;
+      if (icon==="heart") return <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78L12 21.23l8.84-8.84a5.5 5.5 0 000-7.78z" stroke={col} strokeWidth={sw} fill={active?C.fill:"none"}/></svg>;
+      if (icon==="chart") return <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12" stroke={col} strokeWidth={sw} strokeLinecap="round" strokeLinejoin="round"/></svg>;
+      return null;
+    }
+
+    // ── Screens ────────────────────────────────────────────
+    function Přehled({ onTab }) {
+      const totalKcal = JÍDLA.reduce((a,j)=>a+j.kcal,0);
+      const totalP = JÍDLA.reduce((a,j)=>a+j.p,0), totalS = JÍDLA.reduce((a,j)=>a+j.s,0), totalT = JÍDLA.reduce((a,j)=>a+j.t,0);
+      const dnešek = new Date().toLocaleDateString("cs-CZ",{weekday:"long",day:"numeric",month:"long"});
+      return (
+        <div style={{ display:"flex", flexDirection:"column", gap:20 }}>
+          <div style={{ paddingTop:8 }}>
+            <p style={{ margin:0, fontSize:13, color:C.textSec }}>{dnešek}</p>
+            <h2 style={{ margin:"2px 0 0", fontSize:28, fontWeight:700, color:C.text, letterSpacing:-0.5 }}>Dobrý den, Filip</h2>
+          </div>
+          <div><Label>Aktivita dnes</Label>
+            <Card>
+              <div style={{ padding:16 }}>
+                <div style={{ display:"flex", justifyContent:"space-around" }}>
+                  <Ring value={420} max={500} color={C.red}    label="Pohyb"   sub="kcal" />
+                  <Ring value={38}  max={60}  color={C.green}  label="Cvičení" sub="min" />
+                  <Ring value={9}   max={12}  color={C.accent} label="Stání"   sub="hod" />
+                </div>
+                <div style={{ marginTop:14, paddingTop:12, borderTop:`1px solid ${C.border}`, display:"flex", justifyContent:"space-around" }}>
+                  {[["8 420","kroků",C.text],["2 400 kcal","spalování",C.orange],["🔥 14 dní","série",C.red]].map(([v,l,c])=>(
+                    <div key={l} style={{ textAlign:"center" }}>
+                      <p style={{ margin:0, fontSize:16, fontWeight:700, color:c }}>{v}</p>
+                      <p style={{ margin:"2px 0 0", fontSize:11, color:C.textSec }}>{l}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </Card>
+          </div>
+          <div><Label>Výživa dnes</Label>
+            <Card style={{ padding:16 }}>
+              <div style={{ display:"flex", justifyContent:"space-between", alignItems:"baseline", marginBottom:10 }}>
+                <span style={{ fontSize:22, fontWeight:700, color:C.text }}>{totalKcal} <span style={{ fontSize:13, fontWeight:400, color:C.textSec }}>kcal</span></span>
+                <span style={{ fontSize:13, color:C.textSec }}>z 2 800</span>
+              </div>
+              <div style={{ height:5, background:C.bg, borderRadius:5, overflow:"hidden", marginBottom:12 }}>
+                <div style={{ height:"100%", width:`${Math.min(totalKcal/2800,1)*100}%`, background:C.accent, borderRadius:5 }} />
+              </div>
+              <div style={{ display:"flex", gap:18 }}>
+                {[["B",totalP+"g",C.accent],["S",totalS+"g",C.orange],["T",totalT+"g",C.purple]].map(([l,v,c])=>(
+                  <div key={l} style={{ display:"flex", alignItems:"center", gap:4 }}>
+                    <div style={{ width:7, height:7, borderRadius:4, background:c }} />
+                    <span style={{ fontSize:12, color:C.textSec }}>{l}: <span style={{ color:C.text, fontWeight:600 }}>{v}</span></span>
+                  </div>
+                ))}
+              </div>
+            </Card>
+          </div>
+          <div><Label>Dnešní trénink</Label>
+            <Card onClick={() => onTab("trenink")}>
+              <div style={{ display:"flex", alignItems:"center", gap:14, padding:16 }}>
+                <div style={{ width:46, height:46, borderRadius:13, background:C.fill, display:"flex", alignItems:"center", justifyContent:"center", fontSize:22 }}>🦵</div>
+                <div style={{ flex:1 }}>
+                  <p style={{ margin:0, fontSize:16, fontWeight:600, color:C.text }}>Nohy</p>
+                  <p style={{ margin:"3px 0 0", fontSize:12, color:C.textSec }}>7 cviků · 65 min · 520 kcal</p>
+                </div>
+                <div style={{ background:C.accent, borderRadius:10, padding:"7px 16px", fontSize:14, fontWeight:600, color:"#fff" }}>Start</div>
+              </div>
+            </Card>
+          </div>
+          <div><Label>Týdenní kalorie</Label>
+            <Card style={{ padding:16 }}><Bars data={TÝDEN_KCAL} labels={TÝDEN_DNY} color={C.accent} /></Card>
+          </div>
+        </div>
+      );
+    }
+
+    function Trénink() {
+      const [otevřeno, setOtevřeno] = useState(null);
+      const [cvik, setCvik] = useState(null);
+      return (
+        <div style={{ display:"flex", flexDirection:"column", gap:20 }}>
+          <div style={{ paddingTop:8 }}>
+            <h2 style={{ margin:0, fontSize:28, fontWeight:700, color:C.text, letterSpacing:-0.5 }}>Trénink</h2>
+            <p style={{ margin:"3px 0 0", fontSize:13, color:C.textSec }}>Plán na tento týden</p>
+          </div>
+          <div><Label>Tréninky</Label>
+            <Card>
+              {TRÉNINKY.map((t,i) => (
+                <div key={t.id}>
+                  <div onClick={() => setOtevřeno(otevřeno===t.id?null:t.id)}
+                    style={{ display:"flex", alignItems:"center", gap:14, padding:"13px 16px", cursor:"pointer" }}>
+                    <span style={{ fontSize:22 }}>{t.e}</span>
+                    <div style={{ flex:1 }}>
+                      <div style={{ display:"flex", alignItems:"center", gap:7 }}>
+                        <span style={{ fontSize:15, fontWeight:600, color:C.text }}>{t.název}</span>
+                        {t.hotovo && <span style={{ fontSize:11, background:C.green+"18", color:C.green, borderRadius:6, padding:"1px 7px", fontWeight:600 }}>✓</span>}
+                      </div>
+                      <span style={{ fontSize:12, color:C.textSec }}>{t.počet} cviků · {t.doba} · {t.kcal} kcal</span>
+                    </div>
+                    <span style={{ fontSize:12, color:C.textTer }}>{otevřeno===t.id?"▲":"›"}</span>
+                  </div>
+                  {otevřeno===t.id && (
+                    <div style={{ padding:"0 16px 14px", borderTop:`1px solid ${C.border}` }}>
+                      {CVIKY.slice(0,3).map((cv,ci) => (
+                        <div key={ci} onClick={() => setCvik(cvik===cv.název?null:cv.název)}
+                          style={{ padding:"10px 0", borderBottom:ci<2?`1px solid ${C.border}`:"none", cursor:"pointer" }}>
+                          <div style={{ display:"flex", justifyContent:"space-between" }}>
+                            <div>
+                              <p style={{ margin:0, fontSize:14, fontWeight:600, color:C.text }}>{cv.název}</p>
+                              <p style={{ margin:"2px 0 0", fontSize:12, color:C.textSec }}>{cv.svalová} · PR: {cv.pr} kg</p>
+                            </div>
+                            <span style={{ fontSize:12, color:C.accent, alignSelf:"center" }}>{cv.sety.length} sety</span>
+                          </div>
+                          {cvik===cv.název && (
+                            <div style={{ display:"flex", gap:8, marginTop:8 }}>
+                              {cv.sety.map((s,si) => (
+                                <div key={si} style={{ flex:1, background:C.bg, borderRadius:10, padding:"8px", textAlign:"center" }}>
+                                  <p style={{ margin:0, fontSize:10, color:C.textSec }}>Set {si+1}</p>
+                                  <p style={{ margin:"4px 0", fontSize:15, fontWeight:700, color:C.text }}>{s.kg>0?s.kg+" kg":"BW"}</p>
+                                  <p style={{ margin:0, fontSize:11, color:C.textSec }}>{s.r} ×</p>
+                                </div>
+                              ))}
+                            </div>
+                          )}
+                        </div>
+                      ))}
+                      {!t.hotovo && <div style={{ marginTop:10, background:C.accent, borderRadius:12, padding:"11px", textAlign:"center", fontSize:14, fontWeight:600, color:"#fff", cursor:"pointer" }}>▶ Spustit trénink</div>}
+                    </div>
+                  )}
+                  {i<TRÉNINKY.length-1 && <div style={{ height:1, background:C.border, margin:"0 16px" }} />}
+                </div>
+              ))}
+            </Card>
+          </div>
+          <div><Label>Knihovna cviků</Label>
+            <Card>
+              {CVIKY.map((cv,i) => (
+                <div key={i} style={{ display:"flex", justifyContent:"space-between", alignItems:"center", padding:"13px 16px", borderBottom:i<CVIKY.length-1?`1px solid ${C.border}`:"none" }}>
+                  <div>
+                    <p style={{ margin:0, fontSize:15, color:C.text }}>{cv.název}</p>
+                    <p style={{ margin:"2px 0 0", fontSize:12, color:C.textSec }}>{cv.svalová}</p>
+                  </div>
+                  <span style={{ fontSize:13, fontWeight:700, color:C.orange }}>PR {cv.pr} kg</span>
+                </div>
+              ))}
+            </Card>
+          </div>
+        </div>
+      );
+    }
+
+    function Výživa() {
+      const totalKcal = JÍDLA.reduce((a,j)=>a+j.kcal,0), goal=2800;
+      const totalP=JÍDLA.reduce((a,j)=>a+j.p,0), totalS=JÍDLA.reduce((a,j)=>a+j.s,0), totalT=JÍDLA.reduce((a,j)=>a+j.t,0);
+      return (
+        <div style={{ display:"flex", flexDirection:"column", gap:20 }}>
+          <div style={{ paddingTop:8 }}>
+            <h2 style={{ margin:0, fontSize:28, fontWeight:700, color:C.text, letterSpacing:-0.5 }}>Výživa</h2>
+            <p style={{ margin:"3px 0 0", fontSize:13, color:C.textSec }}>Dnešní příjem</p>
+          </div>
+          <div><Label>Kalorie a makra</Label>
+            <Card style={{ padding:16 }}>
+              <div style={{ display:"flex", alignItems:"center", gap:20 }}>
+                <div style={{ position:"relative" }}>
+                  <svg width={88} height={88} style={{ transform:"rotate(-90deg)" }}>
+                    <circle cx={44} cy={44} r={36} fill="none" stroke={C.orange+"20"} strokeWidth={8} />
+                    <circle cx={44} cy={44} r={36} fill="none" stroke={C.orange} strokeWidth={8}
+                      strokeLinecap="round"
+                      strokeDasharray={2*Math.PI*36}
+                      strokeDashoffset={2*Math.PI*36*(1-totalKcal/goal)} />
+                  </svg>
+                  <div style={{ position:"absolute", inset:0, display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center" }}>
+                    <span style={{ fontSize:16, fontWeight:800, color:C.text, lineHeight:1 }}>{totalKcal}</span>
+                    <span style={{ fontSize:9, color:C.textSec }}>z {goal}</span>
+                  </div>
+                </div>
+                <div style={{ flex:1 }}>
+                  {[["Bílkoviny",totalP,180,C.accent],["Sacharidy",totalS,280,C.orange],["Tuky",totalT,65,C.purple]].map(([l,v,g,c])=>(
+                    <div key={l} style={{ marginBottom:9 }}>
+                      <div style={{ display:"flex", justifyContent:"space-between", marginBottom:3 }}>
+                        <span style={{ fontSize:12, color:C.textSec }}>{l}</span>
+                        <span style={{ fontSize:12, fontWeight:600, color:C.text }}>{v}g / {g}g</span>
+                      </div>
+                      <div style={{ height:4, borderRadius:4, background:c+"20" }}>
+                        <div style={{ height:"100%", borderRadius:4, background:c, width:`${Math.min(v/g,1)*100}%` }} />
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </Card>
+          </div>
+          <div><Label>Hydratace</Label>
+            <Card style={{ padding:16 }}>
+              <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:10 }}>
+                <span style={{ fontSize:15, fontWeight:600, color:C.text }}>💧 Voda dnes</span>
+                <span style={{ fontSize:16, fontWeight:700, color:C.accent }}>2.1 / 3 L</span>
+              </div>
+              <div style={{ display:"flex", gap:5 }}>
+                {Array.from({length:8}).map((_,i)=>(
+                  <div key={i} style={{ flex:1, height:26, borderRadius:7, background:i<5?C.accent:C.bg, display:"flex", alignItems:"center", justifyContent:"center" }}>
+                    {i<5 && <span style={{ fontSize:10 }}>💧</span>}
+                  </div>
+                ))}
+              </div>
+            </Card>
+          </div>
+          <div><Label>Jídla</Label>
+            <Card>
+              {JÍDLA.map((j,i)=>(
+                <div key={i} style={{ display:"flex", alignItems:"center", gap:12, padding:"13px 16px", borderBottom:i<JÍDLA.length-1?`1px solid ${C.border}`:"none" }}>
+                  <span style={{ fontSize:22 }}>{j.e}</span>
+                  <div style={{ flex:1 }}>
+                    <p style={{ margin:0, fontSize:14, color:C.text }}>{j.název}</p>
+                    <p style={{ margin:"2px 0 0", fontSize:11, color:C.textSec }}>{j.čas} · B:{j.p}g S:{j.s}g T:{j.t}g</p>
+                  </div>
+                  <span style={{ fontSize:14, fontWeight:600, color:C.orange }}>{j.kcal}</span>
+                </div>
+              ))}
+            </Card>
+          </div>
+          <Card style={{ background:C.fill, boxShadow:"none", border:`1px solid ${C.accent}30`, padding:16, textAlign:"center" }}>
+            <p style={{ margin:"0 0 4px", fontSize:15, fontWeight:600, color:C.accent }}>📷 Přidat jídlo fotkou</p>
+            <p style={{ margin:0, fontSize:12, color:C.textSec }}>Vyfoť jídlo — AI rozpozná kalorie automaticky</p>
+          </Card>
+        </div>
+      );
+    }
+
+    function Tělo() {
+      const pos=BMI_HIST[BMI_HIST.length-1], prv=BMI_HIST[0];
+      const zmn=(pos.váha-prv.váha).toFixed(1);
+      const [cat,catColor]=pos.bmi<18.5?["Podváha",C.accent]:pos.bmi<25?["Normální",C.green]:pos.bmi<30?["Nadváha",C.orange]:["Obezita",C.red];
+      return (
+        <div style={{ display:"flex", flexDirection:"column", gap:20 }}>
+          <div style={{ paddingTop:8 }}>
+            <h2 style={{ margin:0, fontSize:28, fontWeight:700, color:C.text, letterSpacing:-0.5 }}>Tělo</h2>
+            <p style={{ margin:"3px 0 0", fontSize:13, color:C.textSec }}>BMI a kompozice</p>
+          </div>
+          <div><Label>BMI index</Label>
+            <Card style={{ padding:16 }}>
+              <div style={{ display:"flex", alignItems:"center", gap:20 }}>
+                <div style={{ textAlign:"center", minWidth:90 }}>
+                  <div style={{ fontSize:44, fontWeight:800, color:catColor, lineHeight:1 }}>{pos.bmi}</div>
+                  <div style={{ marginTop:6, background:catColor+"18", borderRadius:8, padding:"3px 12px", fontSize:12, fontWeight:700, color:catColor, display:"inline-block" }}>{cat}</div>
+                </div>
+                <div style={{ flex:1, paddingLeft:16, borderLeft:`1px solid ${C.border}` }}>
+                  {[["Váha",pos.váha+" kg"],["Těl. tuk",pos.tuk+"%"],["Změna",zmn+" kg"],["Cíl","75 kg"]].map(([l,v],i)=>(
+                    <div key={l} style={{ marginBottom:i<3?8:0 }}>
+                      <p style={{ margin:0, fontSize:11, color:C.textSec }}>{l}</p>
+                      <p style={{ margin:"1px 0 0", fontSize:15, fontWeight:700, color:C.text }}>{v}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+              <div style={{ marginTop:14 }}>
+                <div style={{ height:6, borderRadius:6, background:`linear-gradient(90deg,${C.accent},${C.green},${C.orange},${C.red})`, position:"relative" }}>
+                  <div style={{ position:"absolute", top:-4, width:14, height:14, borderRadius:7, background:"#fff", border:`2.5px solid ${catColor}`, left:`${Math.min(Math.max((pos.bmi-15)/25,0),1)*100}%`, transform:"translateX(-50%)", boxShadow:"0 1px 4px rgba(0,0,0,0.15)" }} />
+                </div>
+                <div style={{ display:"flex", justifyContent:"space-between", marginTop:5 }}>
+                  {["15","18.5","25","30","40"].map(v=><span key={v} style={{ fontSize:9, color:C.textTer }}>{v}</span>)}
+                </div>
+              </div>
+            </Card>
+          </div>
+          <div><Label>Vývoj</Label>
+            <Card style={{ padding:16 }}>
+              <Lines datasets={[{v:BMI_HIST.map(b=>b.bmi),c:C.purple},{v:BMI_HIST.map(b=>b.tuk),c:C.orange}]} labels={BMI_HIST.map(b=>b.d)} />
+              <div style={{ display:"flex", gap:16, marginTop:8 }}>
+                {[["BMI",C.purple],["Tuk %",C.orange]].map(([l,c])=>(
+                  <div key={l} style={{ display:"flex", alignItems:"center", gap:4 }}>
+                    <div style={{ width:7, height:7, borderRadius:4, background:c }} />
+                    <span style={{ fontSize:11, color:C.textSec }}>{l}</span>
+                  </div>
+                ))}
+              </div>
+            </Card>
+          </div>
+          <div><Label>Historie měření</Label>
+            <Card>
+              {BMI_HIST.map((b,i)=>(
+                <div key={i} style={{ display:"flex", justifyContent:"space-between", alignItems:"center", padding:"12px 16px", borderBottom:i<BMI_HIST.length-1?`1px solid ${C.border}`:"none" }}>
+                  <span style={{ fontSize:14, color:C.textSec }}>{b.d}</span>
+                  <div style={{ display:"flex", gap:16 }}>
+                    <span style={{ fontSize:14, fontWeight:600, color:C.text }}>{b.váha} kg</span>
+                    <span style={{ fontSize:14, fontWeight:600, color:C.purple }}>{b.bmi}</span>
+                    <span style={{ fontSize:14, fontWeight:600, color:C.orange }}>{b.tuk}%</span>
+                  </div>
+                </div>
+              ))}
+            </Card>
+          </div>
+          <div><Label>Fotodokumentace</Label>
+            <Card style={{ padding:16 }}>
+              <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr 1fr", gap:8 }}>
+                {["Únor","Březen","Duben","Květ.",null,null].map((m,i)=>(
+                  <div key={i} style={{ aspectRatio:"3/4", borderRadius:12, background:C.bg, border:`1px solid ${C.border}`, display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", gap:3 }}>
+                    {m?<><span style={{ fontSize:22 }}>🧍</span><span style={{ fontSize:10, color:C.textSec }}>{m}</span></>:<span style={{ fontSize:20, color:C.textTer }}>+</span>}
+                  </div>
+                ))}
+              </div>
+            </Card>
+          </div>
+        </div>
+      );
+    }
+
+    function Progres() {
+      return (
+        <div style={{ display:"flex", flexDirection:"column", gap:20 }}>
+          <div style={{ paddingTop:8 }}>
+            <h2 style={{ margin:0, fontSize:28, fontWeight:700, color:C.text, letterSpacing:-0.5 }}>Progres</h2>
+            <p style={{ margin:"3px 0 0", fontSize:13, color:C.textSec }}>Osobní rekordy a vývoj</p>
+          </div>
+          <div><Label>Osobní rekordy</Label>
+            <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:10 }}>
+              {[["Bench press",100,C.accent],["Dřep",130,C.orange],["Mrtvý tah",160,C.purple],["Tlak nad hlavou",70,C.green]].map(([n,v,c])=>(
+                <Card key={n} style={{ padding:"16px 12px", textAlign:"center" }}>
+                  <p style={{ margin:"0 0 6px", fontSize:12, color:C.textSec }}>{n}</p>
+                  <p style={{ margin:"0 0 2px", fontSize:26, fontWeight:800, color:c }}>{v}</p>
+                  <p style={{ margin:0, fontSize:11, color:C.textTer }}>kg · 🏆</p>
+                </Card>
+              ))}
+            </div>
+          </div>
+          <div><Label>Silový vývoj</Label>
+            <Card style={{ padding:16 }}>
+              <Lines datasets={[{v:PROGRES.map(d=>d.bench),c:C.accent},{v:PROGRES.map(d=>d.dřep),c:C.orange},{v:PROGRES.map(d=>d.tah),c:C.purple}]} labels={PROGRES.map(d=>d.m)} />
+              <div style={{ display:"flex", gap:16, marginTop:10 }}>
+                {[["Bench press",C.accent],["Dřep",C.orange],["Mrtvý tah",C.purple]].map(([l,c])=>(
+                  <div key={l} style={{ display:"flex", alignItems:"center", gap:4 }}>
+                    <div style={{ width:7, height:7, borderRadius:4, background:c }} />
+                    <span style={{ fontSize:11, color:C.textSec }}>{l}</span>
+                  </div>
+                ))}
+              </div>
+            </Card>
+          </div>
+          <div><Label>Kalorie za týden</Label>
+            <Card style={{ padding:16 }}><Bars data={TÝDEN_KCAL} labels={TÝDEN_DNY} color={C.orange} /></Card>
+          </div>
+          <div><Label>Úspěchy</Label>
+            <Card>
+              {[["🔥","14denní série","Trénuješ 14 dní v řadě"],["💪","100 kg bench press","Dosáhl jsi stkilového benche"],["📉","−6.7 kg","Zhubl jsi 6.7 kg od začátku"],["⚡","Maratonský týden","10 000 kcal spáleno za týden"]].map(([e,n,d],i)=>(
+                <div key={i} style={{ display:"flex", alignItems:"center", gap:12, padding:"13px 16px", borderBottom:i<3?`1px solid ${C.border}`:"none" }}>
+                  <span style={{ fontSize:22 }}>{e}</span>
+                  <div>
+                    <p style={{ margin:0, fontSize:14, fontWeight:600, color:C.text }}>{n}</p>
+                    <p style={{ margin:"2px 0 0", fontSize:12, color:C.textSec }}>{d}</p>
+                  </div>
+                </div>
+              ))}
+            </Card>
+          </div>
+        </div>
+      );
+    }
+
+    // ── Root App ───────────────────────────────────────────
+    function App() {
+      const [tab, setTab] = useState("prehled");
+      const [fade, setFade] = useState(true);
+      const changeTab = (id) => { setFade(false); setTimeout(()=>{ setTab(id); setFade(true); }, 110); };
+      const screens = {
+        prehled: <Přehled onTab={changeTab} />,
+        trenink: <Trénink />,
+        vyziva:  <Výživa />,
+        telo:    <Tělo />,
+        progres: <Progres />,
+      };
+      return (
+        <div style={{ minHeight:"100vh", minHeight:"-webkit-fill-available", display:"flex", flexDirection:"column", background:C.bg }}>
+          {/* Scrollable content */}
+          <div style={{ flex:1, overflowY:"auto", padding:"env(safe-area-inset-top, 48px) 16px 88px", opacity:fade?1:0, transform:fade?"none":"translateY(5px)", transition:"opacity 0.13s, transform 0.13s", WebkitOverflowScrolling:"touch" }}>
+            {screens[tab]}
+          </div>
+          {/* Tab bar */}
+          <div style={{ position:"fixed", bottom:0, left:0, right:0, background:"rgba(242,242,247,0.92)", backdropFilter:"blur(20px)", WebkitBackdropFilter:"blur(20px)", borderTop:`1px solid ${C.border}`, paddingBottom:"env(safe-area-inset-bottom, 16px)", display:"flex", justifyContent:"space-around", zIndex:100 }}>
+            {TABS.map(t => {
+              const active = tab===t.id;
+              return (
+                <button key={t.id} onClick={() => changeTab(t.id)}
+                  style={{ background:"none", border:"none", cursor:"pointer", display:"flex", flexDirection:"column", alignItems:"center", gap:3, padding:"10px 12px 6px", transition:"transform 0.12s", transform:active?"scale(1.08)":"scale(1)" }}>
+                  <TabIcon icon={t.icon} active={active} />
+                  <span style={{ fontSize:10, fontWeight:active?600:400, color:active?C.accent:C.textTer }}>{t.label}</span>
+                </button>
+              );
+            })}
+          </div>
+        </div>
+      );
+    }
+
+    ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+  </script>
+</body>
+</html>
