@@ -8,338 +8,329 @@
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{min-height:100vh;overflow-x:hidden}
-body{font-family:'Inter',system-ui,sans-serif;background:#d4e6f4}
+body{font-family:'Inter',system-ui,sans-serif;background:#cfe4f4}
 
-/* ─── BACKGROUND ─── */
+/* ─── BG ─── */
 .bg{position:fixed;inset:0;z-index:0;pointer-events:none;
   background:
-    radial-gradient(ellipse 90% 80% at 5% 3%,rgba(255,255,255,.94),transparent 45%),
-    radial-gradient(ellipse 70% 65% at 95% 5%,rgba(208,236,255,.90),transparent 45%),
-    radial-gradient(ellipse 65% 55% at 50% 102%,rgba(168,214,250,.68),transparent 50%),
-    linear-gradient(148deg,#cce2f6 0%,#deeffe 36%,#d8f2ee 66%,#cfe9f6 100%)}
-.orb{position:fixed;border-radius:50%;pointer-events:none;filter:blur(120px);opacity:.7}
-.o1{width:700px;height:700px;background:radial-gradient(circle,rgba(148,210,255,.75),transparent);top:-220px;left:-170px;animation:orb1 24s ease-in-out infinite}
-.o2{width:500px;height:500px;background:radial-gradient(circle,rgba(182,226,200,.68),transparent);top:5%;right:-130px;animation:orb2 28s ease-in-out infinite}
-.o3{width:420px;height:420px;background:radial-gradient(circle,rgba(200,185,255,.44),transparent);bottom:8%;left:12%;animation:orb3 22s ease-in-out infinite}
-.o4{width:360px;height:360px;background:radial-gradient(circle,rgba(255,222,165,.40),transparent);bottom:2%;right:8%;animation:orb4 30s ease-in-out infinite}
-@keyframes orb1{0%,100%{transform:translate(0,0) scale(1)}40%{transform:translate(40px,-32px) scale(1.07)}70%{transform:translate(-18px,25px) scale(.94)}}
-@keyframes orb2{0%,100%{transform:translate(0,0) scale(1)}35%{transform:translate(-32px,24px) scale(1.05)}65%{transform:translate(22px,-18px) scale(.96)}}
-@keyframes orb3{0%,100%{transform:translate(0,0) scale(1)}45%{transform:translate(26px,-22px) scale(1.06)}75%{transform:translate(-16px,15px) scale(.95)}}
-@keyframes orb4{0%,100%{transform:translate(0,0) scale(1)}30%{transform:translate(-24px,18px) scale(1.04)}60%{transform:translate(18px,-13px) scale(.97)}}
+    radial-gradient(ellipse 90% 80% at 4% 3%,rgba(255,255,255,.94),transparent 44%),
+    radial-gradient(ellipse 70% 65% at 96% 5%,rgba(205,234,255,.90),transparent 44%),
+    radial-gradient(ellipse 65% 55% at 50% 103%,rgba(165,212,250,.68),transparent 48%),
+    linear-gradient(148deg,#cae0f5 0%,#dceffe 36%,#d6f1ee 66%,#cce8f5 100%)}
+.orb{position:fixed;border-radius:50%;pointer-events:none;filter:blur(120px);opacity:.68}
+.o1{width:680px;height:680px;background:radial-gradient(circle,rgba(145,208,255,.74),transparent);top:-210px;left:-165px;animation:orb1 24s ease-in-out infinite}
+.o2{width:490px;height:490px;background:radial-gradient(circle,rgba(178,224,198,.68),transparent);top:4%;right:-125px;animation:orb2 28s ease-in-out infinite}
+.o3{width:410px;height:410px;background:radial-gradient(circle,rgba(198,182,255,.44),transparent);bottom:7%;left:11%;animation:orb3 22s ease-in-out infinite}
+.o4{width:350px;height:350px;background:radial-gradient(circle,rgba(255,220,162,.40),transparent);bottom:2%;right:7%;animation:orb4 30s ease-in-out infinite}
+@keyframes orb1{0%,100%{transform:translate(0,0) scale(1)}40%{transform:translate(38px,-30px) scale(1.07)}70%{transform:translate(-17px,24px) scale(.94)}}
+@keyframes orb2{0%,100%{transform:translate(0,0) scale(1)}35%{transform:translate(-30px,22px) scale(1.05)}65%{transform:translate(20px,-16px) scale(.96)}}
+@keyframes orb3{0%,100%{transform:translate(0,0) scale(1)}45%{transform:translate(24px,-20px) scale(1.06)}75%{transform:translate(-14px,13px) scale(.95)}}
+@keyframes orb4{0%,100%{transform:translate(0,0) scale(1)}30%{transform:translate(-22px,16px) scale(1.04)}60%{transform:translate(16px,-12px) scale(.97)}}
 
 /* ─── PAGE ─── */
-.page{position:relative;z-index:1;max-width:1680px;margin:0 auto;padding:20px 20px 36px}
+.page{position:relative;z-index:1;max-width:1680px;margin:0 auto;padding:18px 20px 32px}
 
 /* ─── TOPBAR ─── */
-.topbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
-.pill{height:50px;display:flex;align-items:center;padding:0 22px;border-radius:999px;
-  background:rgba(255,255,255,.48);
-  border:1px solid rgba(255,255,255,.80);
-  box-shadow:inset 0 1.5px 0 rgba(255,255,255,.96),0 8px 28px rgba(18,65,120,.10);
+.topbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.pill{height:48px;display:flex;align-items:center;padding:0 22px;border-radius:999px;
+  background:rgba(255,255,255,.50);border:1px solid rgba(255,255,255,.82);
+  box-shadow:inset 0 1.5px 0 rgba(255,255,255,.96),0 8px 26px rgba(16,60,116,.09);
   backdrop-filter:blur(30px) saturate(200%);
-  font-size:13px;font-weight:700;color:#0b3350;letter-spacing:.025em;white-space:nowrap}
-.pill .a{color:#1868b8;font-style:italic}
+  font-size:13px;font-weight:700;color:#0a3250;letter-spacing:.02em;white-space:nowrap}
+.pill .a{color:#1565b5;font-style:italic}
 
 /* ─── HERO ─── */
-.hero{text-align:center;padding:6px 16px 22px;max-width:860px;margin:0 auto}
-.eyebrow{font-size:11px;font-weight:700;letter-spacing:.30em;text-transform:uppercase;color:#1868b8;margin-bottom:11px;opacity:.85}
-.hero h1{font-size:clamp(42px,5vw,88px);font-weight:900;line-height:.89;letter-spacing:-.060em;color:#091f38;margin-bottom:14px}
-.hero h1 i{font-style:italic;font-weight:300;color:#1868b8}
-.hero p{font-size:16px;line-height:1.54;color:#335068;font-weight:400;max-width:680px;margin:0 auto}
+.hero{text-align:center;padding:4px 16px 18px;max-width:860px;margin:0 auto}
+.eyebrow{font-size:11px;font-weight:700;letter-spacing:.30em;text-transform:uppercase;color:#1565b5;margin-bottom:10px;opacity:.85}
+.hero h1{font-size:clamp(38px,4.8vw,82px);font-weight:900;line-height:.89;letter-spacing:-.060em;color:#08203a;margin-bottom:12px}
+.hero h1 i{font-style:italic;font-weight:300;color:#1565b5}
+.hero p{font-size:15.5px;line-height:1.52;color:#305068;font-weight:400;max-width:660px;margin:0 auto}
 
-/* ─── SHELL — overflow visible, karty přesahují ─── */
-.shell{position:relative;border-radius:44px;
-  background:rgba(255,255,255,.22);
+/* ─── SHELL ─── */
+.shell{position:relative;border-radius:40px;
+  background:rgba(255,255,255,.20);
   border:1px solid rgba(255,255,255,.78);
-  box-shadow:
-    0 24px 80px rgba(14,52,108,.15),
-    0 6px 20px rgba(14,52,108,.07),
-    inset 0 1.5px 0 rgba(255,255,255,.95),
-    inset 0 -1px 0 rgba(200,225,255,.22);
+  box-shadow:0 22px 72px rgba(12,48,104,.14),0 5px 18px rgba(12,48,104,.07),
+    inset 0 1.5px 0 rgba(255,255,255,.95),inset 0 -1px 0 rgba(195,222,255,.20);
   backdrop-filter:blur(36px) saturate(200%) brightness(105%);
-  padding:28px 32px;
-  overflow:visible}      /* KRITICKÉ – panely přesahují bez ořezu */
-
-.shell::before{content:'';position:absolute;inset:0;border-radius:43px;pointer-events:none;z-index:0;
-  background:linear-gradient(148deg,rgba(255,255,255,.62) 0%,rgba(255,255,255,.06) 42%,transparent 65%),
-    radial-gradient(ellipse 75% 28% at 50% 0%,rgba(255,255,255,.52),transparent)}
-.shell::after{content:'';position:absolute;inset:0;border-radius:43px;pointer-events:none;z-index:0;
+  padding:24px 28px;overflow:hidden}   /* overflow:hidden — karty nepřesahují, tooltip je fixed */
+.shell::before{content:'';position:absolute;inset:0;border-radius:39px;pointer-events:none;z-index:0;
+  background:linear-gradient(148deg,rgba(255,255,255,.60) 0%,rgba(255,255,255,.05) 42%,transparent 64%),
+    radial-gradient(ellipse 75% 26% at 50% 0%,rgba(255,255,255,.50),transparent)}
+.shell::after{content:'';position:absolute;inset:0;border-radius:39px;pointer-events:none;z-index:0;
   animation:lsweep 15s ease-in-out infinite}
 @keyframes lsweep{
-  0%,100%{background:radial-gradient(ellipse 44% 36% at 26% 20%,rgba(255,255,255,.26),transparent 68%)}
-  33%{background:radial-gradient(ellipse 44% 36% at 74% 17%,rgba(255,255,255,.26),transparent 68%)}
-  66%{background:radial-gradient(ellipse 44% 36% at 50% 80%,rgba(255,255,255,.26),transparent 68%)}
+  0%,100%{background:radial-gradient(ellipse 42% 34% at 25% 18%,rgba(255,255,255,.24),transparent 66%)}
+  33%{background:radial-gradient(ellipse 42% 34% at 75% 15%,rgba(255,255,255,.24),transparent 66%)}
+  66%{background:radial-gradient(ellipse 42% 34% at 50% 82%,rgba(255,255,255,.24),transparent 66%)}
 }
-.gridbg{position:absolute;inset:0;border-radius:43px;pointer-events:none;z-index:0;
-  background:linear-gradient(90deg,rgba(8,48,80,.016) 1px,transparent 1px),
-             linear-gradient(0deg,rgba(8,48,80,.016) 1px,transparent 1px);
+.gridbg{position:absolute;inset:0;border-radius:39px;pointer-events:none;z-index:0;
+  background:linear-gradient(90deg,rgba(8,46,78,.015) 1px,transparent 1px),
+             linear-gradient(0deg,rgba(8,46,78,.015) 1px,transparent 1px);
   background-size:50px 50px;
-  mask-image:radial-gradient(ellipse 84% 78% at center,black 12%,transparent 70%)}
+  mask-image:radial-gradient(ellipse 84% 78% at center,black 10%,transparent 70%)}
 
-/* ─── WORKSPACE ─── */
-.ws{position:relative;z-index:2;height:580px}   /* kompaktnější výška */
+/* ─── CSS GRID LAYOUT — 3 cols, 2 rows + center overlay ─── */
+.map-grid{
+  position:relative;z-index:2;
+  display:grid;
+  grid-template-columns:1fr 220px 1fr;
+  grid-template-rows:1fr 1fr;
+  gap:14px;
+  min-height:520px}
 
-/* ─── SVG CONNECTORS ─── */
-.connsvg{position:absolute;inset:0;z-index:1;pointer-events:none;overflow:visible}
+/* SVG connectors — stretched over entire grid */
+.connsvg{
+  position:absolute;inset:0;z-index:1;pointer-events:none;overflow:visible;
+  width:100%;height:100%}
 .cline{fill:none;stroke:rgba(255,255,255,.50);stroke-width:1.6;stroke-dasharray:5 4;
   filter:drop-shadow(0 0 5px rgba(255,255,255,.52));
   animation:dashflow 9s linear infinite;
-  transition:stroke .38s,opacity .38s,filter .38s,stroke-width .3s}
+  transition:stroke .36s,opacity .36s,filter .36s,stroke-width .28s}
 @keyframes dashflow{to{stroke-dashoffset:-36}}
-.cline.lit{stroke:rgba(155,212,255,.95);stroke-width:2.4;
-  filter:drop-shadow(0 0 10px rgba(120,192,255,.92)) drop-shadow(0 0 22px rgba(100,178,255,.48))}
-.shell.active .cline:not(.lit){opacity:.09}
-.cdot{fill:rgba(88,162,238,.85);filter:drop-shadow(0 0 7px rgba(88,162,238,.90));
+.cline.lit{stroke:rgba(150,210,255,.95);stroke-width:2.4;
+  filter:drop-shadow(0 0 10px rgba(115,190,255,.92)) drop-shadow(0 0 20px rgba(95,175,255,.46))}
+.shell.active .cline:not(.lit){opacity:.08}
+.cdot{fill:rgba(85,160,238,.85);filter:drop-shadow(0 0 7px rgba(85,160,238,.90));
   animation:pdot 2.8s ease-in-out infinite}
-@keyframes pdot{0%,100%{opacity:.65}50%{opacity:1}}
+@keyframes pdot{0%,100%{opacity:.62}50%{opacity:1}}
 
-/* ─── CENTER ─── */
-.center{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
-  width:196px;height:196px;border-radius:50%;
-  background:rgba(255,255,255,.55);
+/* ─── CENTER NODE — absolutely centered in grid ─── */
+.center-cell{
+  grid-column:2;grid-row:1/3;
+  display:flex;align-items:center;justify-content:center;
+  position:relative;z-index:5}
+.center{
+  width:170px;height:170px;border-radius:50%;
+  background:rgba(255,255,255,.56);
   border:1px solid rgba(255,255,255,.88);
   box-shadow:
     inset 0 1.5px 0 rgba(255,255,255,.98),
-    inset 0 -1px 0 rgba(195,225,255,.28),
-    0 0 0 14px rgba(255,255,255,.11),
-    0 0 0 28px rgba(255,255,255,.05),
-    0 20px 60px rgba(14,60,120,.16),
-    0 6px 18px rgba(14,60,120,.08);
+    inset 0 -1px 0 rgba(192,222,255,.26),
+    0 0 0 13px rgba(255,255,255,.10),
+    0 0 0 26px rgba(255,255,255,.05),
+    0 18px 56px rgba(12,56,116,.16),
+    0 5px 16px rgba(12,56,116,.08);
   backdrop-filter:blur(34px) saturate(210%);
   display:flex;flex-direction:column;align-items:center;justify-content:center;
-  text-align:center;cursor:pointer;z-index:5;padding:20px;
-  transition:all .40s cubic-bezier(.34,1.56,.64,1)}
-.center:hover{transform:translate(-50%,-50%) scale(1.08);
-  box-shadow:
-    inset 0 1.5px 0 rgba(255,255,255,.98),
-    0 0 0 20px rgba(255,255,255,.16),
-    0 0 0 38px rgba(255,255,255,.07),
-    0 28px 76px rgba(14,60,120,.20),
-    0 8px 24px rgba(14,60,120,.10)}
-.shell.active .center{width:136px;height:136px;opacity:.28;filter:grayscale(1)}
-.cp{position:absolute;width:12px;height:12px;border-radius:50%;
-  background:rgba(90,175,255,.90);
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.75);
+  text-align:center;cursor:pointer;padding:18px;
+  transition:all .38s cubic-bezier(.34,1.56,.64,1)}
+.center:hover{transform:scale(1.08);
+  box-shadow:inset 0 1.5px 0 rgba(255,255,255,.98),
+    0 0 0 20px rgba(255,255,255,.15),0 0 0 38px rgba(255,255,255,.06),
+    0 26px 72px rgba(12,56,116,.20),0 7px 22px rgba(12,56,116,.10)}
+.shell.active .center{opacity:.26;filter:grayscale(1);transform:scale(.88)}
+.cp{position:absolute;width:11px;height:11px;border-radius:50%;
+  background:rgba(88,172,255,.90);
   animation:rpulse 2.6s ease-out infinite}
-.cp.t{top:-6px;left:50%;transform:translateX(-50%)}
-.cp.b{bottom:-6px;left:50%;transform:translateX(-50%);animation-delay:-1.3s}
-.cp.l{left:-6px;top:50%;transform:translateY(-50%);animation-delay:-.65s}
-.cp.r{right:-6px;top:50%;transform:translateY(-50%);animation-delay:-1.95s}
-@keyframes rpulse{0%{box-shadow:0 0 0 0 rgba(90,175,255,.58),inset 0 1px 0 rgba(255,255,255,.75)}65%{box-shadow:0 0 0 13px rgba(90,175,255,0),inset 0 1px 0 rgba(255,255,255,.75)}100%{box-shadow:0 0 0 0 rgba(90,175,255,0),inset 0 1px 0 rgba(255,255,255,.75)}}
-.center svg{width:32px;height:32px;stroke:#091f38;fill:none;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round;margin-bottom:8px;transition:all .3s}
-.center strong{font-size:20px;font-weight:700;line-height:1.1;letter-spacing:-.04em;color:#091f38;transition:font-size .3s}
-.center em{display:block;margin-top:7px;font-style:normal;font-size:10.5px;font-weight:500;color:#507080;letter-spacing:.015em}
-.shell.active .center svg{width:20px;height:20px;margin-bottom:3px}
-.shell.active .center strong{font-size:12px}
+.cp.t{top:-5.5px;left:50%;transform:translateX(-50%)}
+.cp.b{bottom:-5.5px;left:50%;transform:translateX(-50%);animation-delay:-1.3s}
+.cp.l{left:-5.5px;top:50%;transform:translateY(-50%);animation-delay:-.65s}
+.cp.r{right:-5.5px;top:50%;transform:translateY(-50%);animation-delay:-1.95s}
+@keyframes rpulse{0%{box-shadow:0 0 0 0 rgba(88,172,255,.56)}65%{box-shadow:0 0 0 12px rgba(88,172,255,0)}100%{box-shadow:0 0 0 0 rgba(88,172,255,0)}}
+.center svg{width:30px;height:30px;stroke:#08203a;fill:none;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round;margin-bottom:7px;transition:all .3s}
+.center strong{font-size:18px;font-weight:700;line-height:1.1;letter-spacing:-.04em;color:#08203a;transition:font-size .3s}
+.center em{display:block;margin-top:6px;font-style:normal;font-size:10px;font-weight:500;color:#4e6e82;letter-spacing:.015em}
+.shell.active .center svg{width:18px;height:18px;margin-bottom:3px}
+.shell.active .center strong{font-size:11px}
 .shell.active .center em{display:none}
 
-/* ─── AREA ─── */
-.area{position:absolute;width:400px;display:flex;flex-direction:column;gap:8px;
-  z-index:3;transition:opacity .30s,filter .30s}
-.abl{left:8px;top:8px}
-.abr{right:8px;top:8px}
-.atl{left:8px;bottom:8px}
-.atr{right:8px;bottom:8px}
-.area.on{z-index:80}
-.shell.active .area:not(.on){opacity:.15;filter:grayscale(.9) blur(.5px);pointer-events:none}
+/* ─── AREA CELLS ─── */
+.area{
+  display:flex;flex-direction:column;gap:0;
+  position:relative;z-index:3;
+  transition:opacity .28s,filter .28s;
+  /* each area is one grid cell — defined below */
+}
+.area-bl{grid-column:1;grid-row:1}
+.area-br{grid-column:3;grid-row:1}
+.area-tl{grid-column:1;grid-row:2}
+.area-tr{grid-column:3;grid-row:2}
 
-/* ─── CARD — white-bright glass like reference ─── */
-.card{border-radius:28px;
-  background:rgba(255,255,255,.50);
+.area.on{z-index:20}
+.shell.active .area:not(.on){opacity:.14;filter:grayscale(.9) blur(.4px);pointer-events:none}
+
+/* ─── CARD ─── */
+.card{border-radius:26px;
+  background:rgba(255,255,255,.52);
   border:1px solid rgba(255,255,255,.82);
   box-shadow:
     inset 0 1.5px 0 rgba(255,255,255,.96),
-    inset 0 -1px 0 rgba(195,220,255,.20),
-    0 12px 42px rgba(14,52,108,.09),
-    0 3px 10px rgba(14,52,108,.05);
-  padding:20px 22px 17px;cursor:pointer;
+    inset 0 -1px 0 rgba(192,218,255,.18),
+    0 10px 36px rgba(12,48,100,.09),
+    0 3px 8px rgba(12,48,100,.05);
+  padding:18px 20px 15px;cursor:pointer;
   backdrop-filter:blur(30px) saturate(200%) brightness(106%);
-  overflow:hidden;position:relative;
+  overflow:hidden;position:relative;flex-shrink:0;
   animation:floatc 6s ease-in-out infinite;
-  transition:transform .34s cubic-bezier(.34,1.56,.64,1),box-shadow .3s,background .25s}
-.abl .card{animation-delay:0s}.abr .card{animation-delay:-3s}
-.atl .card{animation-delay:-1.5s}.atr .card{animation-delay:-4.5s}
+  transition:transform .34s cubic-bezier(.34,1.56,.64,1),box-shadow .28s,background .24s}
+.area-bl .card{animation-delay:0s}.area-br .card{animation-delay:-3s}
+.area-tl .card{animation-delay:-1.5s}.area-tr .card{animation-delay:-4.5s}
 @keyframes floatc{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
-.card::before{content:'';position:absolute;inset:0;pointer-events:none;border-radius:27px;
-  background:linear-gradient(145deg,rgba(255,255,255,.68) 0%,rgba(255,255,255,.14) 32%,transparent 55%)}
-.card::after{content:'';position:absolute;top:0;left:-110%;width:52%;height:100%;
+.card::before{content:'';position:absolute;inset:0;pointer-events:none;border-radius:25px;
+  background:linear-gradient(145deg,rgba(255,255,255,.70) 0%,rgba(255,255,255,.12) 30%,transparent 54%)}
+.card::after{content:'';position:absolute;top:0;left:-110%;width:50%;height:100%;
   background:linear-gradient(90deg,transparent,rgba(255,255,255,.48),transparent);
-  transform:skewX(-18deg);transition:left .65s ease;pointer-events:none}
+  transform:skewX(-18deg);transition:left .60s ease;pointer-events:none}
 .card:hover::after{left:170%}
-.card:hover{transform:translateY(-8px) scale(1.015)!important;animation-play-state:paused;
-  background:rgba(255,255,255,.68);
-  box-shadow:inset 0 1.5px 0 rgba(255,255,255,.98),0 26px 70px rgba(14,52,108,.15),0 6px 18px rgba(14,52,108,.08)}
-.area.on .card{animation-play-state:paused;transform:translateY(-4px)!important;
-  box-shadow:inset 0 1.5px 0 rgba(255,255,255,.98),0 22px 64px rgba(14,52,108,.14)}
-.abl.on .card{outline:2.5px solid rgba(22,145,82,.22);background:rgba(235,255,243,.58)}
-.abr.on .card{outline:2.5px solid rgba(24,104,184,.22);background:rgba(232,245,255,.58)}
-.atl.on .card{outline:2.5px solid rgba(95,65,195,.22);background:rgba(240,236,255,.58)}
-.atr.on .card{outline:2.5px solid rgba(215,130,10,.22);background:rgba(255,246,226,.58)}
+.card:hover{transform:translateY(-7px) scale(1.013)!important;animation-play-state:paused;
+  background:rgba(255,255,255,.70);
+  box-shadow:inset 0 1.5px 0 rgba(255,255,255,.98),0 22px 60px rgba(12,48,100,.14),0 5px 16px rgba(12,48,100,.07)}
+.area.on .card{animation-play-state:paused;transform:translateY(-3px)!important;
+  box-shadow:inset 0 1.5px 0 rgba(255,255,255,.98),0 18px 56px rgba(12,48,100,.13)}
+.area-bl.on .card{outline:2px solid rgba(20,140,78,.22);background:rgba(232,255,240,.60)}
+.area-br.on .card{outline:2px solid rgba(20,100,178,.22);background:rgba(230,244,255,.60)}
+.area-tl.on .card{outline:2px solid rgba(90,60,190,.22);background:rgba(238,234,255,.60)}
+.area-tr.on .card{outline:2px solid rgba(210,125,10,.22);background:rgba(255,245,222,.60)}
 
-.ctop{display:flex;align-items:center;gap:13px;margin-bottom:11px;position:relative;z-index:1}
-.ico{width:62px;height:62px;border-radius:20px;
-  background:rgba(255,255,255,.60);
-  border:1px solid rgba(255,255,255,.88);
-  box-shadow:inset 0 1.5px 0 rgba(255,255,255,.98),0 6px 18px rgba(14,52,108,.07);
+.ctop{display:flex;align-items:center;gap:12px;margin-bottom:10px;position:relative;z-index:1}
+.ico{width:56px;height:56px;border-radius:18px;
+  background:rgba(255,255,255,.62);border:1px solid rgba(255,255,255,.88);
+  box-shadow:inset 0 1.5px 0 rgba(255,255,255,.98),0 5px 14px rgba(12,48,100,.07);
   display:grid;place-items:center;flex-shrink:0}
-.ico svg{width:32px;height:32px;fill:none;stroke-width:2.1;stroke-linecap:round;stroke-linejoin:round}
-.abl .ico svg{stroke:#16915a}.abr .ico svg{stroke:#1868b8}
-.atl .ico svg{stroke:#5f41c3}.atr .ico svg{stroke:#d7820a}
-.card h2{font-size:22px;font-weight:800;line-height:1.06;letter-spacing:-.05em;color:#091f38;position:relative;z-index:1}
-.cdesc{color:#365268;font-size:13px;line-height:1.46;font-weight:400;position:relative;z-index:1;margin-bottom:12px}
-.chips{display:flex;flex-wrap:wrap;gap:6px;position:relative;z-index:1}
-.chip{font-size:10px;font-weight:600;padding:5px 11px;border-radius:999px;color:#1a3852;
-  background:rgba(255,255,255,.52);border:1px solid rgba(255,255,255,.80);
+.ico svg{width:29px;height:29px;fill:none;stroke-width:2.1;stroke-linecap:round;stroke-linejoin:round}
+.area-bl .ico svg{stroke:#148c4e}.area-br .ico svg{stroke:#1464b2}
+.area-tl .ico svg{stroke:#5a3cbe}.area-tr .ico svg{stroke:#d27d0a}
+.card h2{font-size:20px;font-weight:800;line-height:1.06;letter-spacing:-.05em;color:#08203a;position:relative;z-index:1}
+.cdesc{color:#345066;font-size:12.5px;line-height:1.46;font-weight:400;position:relative;z-index:1;margin-bottom:11px}
+.chips{display:flex;flex-wrap:wrap;gap:5px;position:relative;z-index:1}
+.chip{font-size:9.5px;font-weight:600;padding:4px 10px;border-radius:999px;color:#183650;
+  background:rgba(255,255,255,.54);border:1px solid rgba(255,255,255,.80);
   box-shadow:inset 0 1px 0 rgba(255,255,255,.92);letter-spacing:.01em}
 
-/* ─── BRANCHES — z-index 90 nad vším v shellu ─── */
-.branches{border-radius:24px;
-  background:rgba(255,255,255,.52);
+/* ─── EXPANDED PANEL — appears below card inside same area cell ─── */
+.expand{display:none;flex-direction:column;gap:7px;margin-top:7px}
+.area.on .expand{display:flex}
+
+/* branches */
+.branches{border-radius:20px;
+  background:rgba(255,255,255,.54);
   border:1px solid rgba(255,255,255,.84);
-  box-shadow:
-    inset 0 1.5px 0 rgba(255,255,255,.95),
-    0 16px 48px rgba(14,52,108,.12),
-    0 4px 14px rgba(14,52,108,.07);
+  box-shadow:inset 0 1.5px 0 rgba(255,255,255,.95),0 12px 36px rgba(12,48,100,.10),0 3px 10px rgba(12,48,100,.06);
   backdrop-filter:blur(32px) saturate(205%) brightness(106%);
-  overflow:visible;        /* KRITICKÉ — tooltip nesmí být oříznut */
-  display:none;flex-direction:column;
-  position:relative;z-index:90;
-  animation:slideup .26s cubic-bezier(.22,1,.36,1) both}
-.area.on .branches{display:flex}
-@keyframes slideup{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
-
-/* ─── BRANCH ROW ─── */
-.branch{display:grid;grid-template-columns:40px 1fr;gap:11px;align-items:center;
-  padding:10px 14px;border-bottom:1px solid rgba(255,255,255,.48);
-  background:rgba(255,255,255,.16);
-  position:relative;overflow:visible;  /* KRITICKÉ — tooltip musí vyčnívat */
-  transition:background .20s,transform .22s cubic-bezier(.34,1.56,.64,1),box-shadow .20s;cursor:default}
-.branch:last-child{border-bottom:0}
-.branch:hover{background:rgba(255,255,255,.65);transform:translateX(4px) scale(1.010);
-  box-shadow:0 6px 24px rgba(14,52,108,.09),inset 0 1px 0 rgba(255,255,255,.95);
-  z-index:200}
-
-/* TOOLTIP — position:fixed aby nebyl nikdy oříznut ─── */
-.tooltip{
-  display:none;
-  position:fixed;
-  width:300px;
-  padding:12px 14px;border-radius:18px;
-  color:#162e44;font-size:11.5px;line-height:1.46;font-weight:600;
-  background:rgba(255,255,255,.92);
-  border:1px solid rgba(255,255,255,.96);
-  box-shadow:0 20px 50px rgba(14,52,108,.16),inset 0 1.5px 0 rgba(255,255,255,.98);
-  backdrop-filter:blur(28px) saturate(210%);
-  pointer-events:none;
-  white-space:normal;
-  z-index:9999;             /* VŽDY NAHOŘE */
-  transform:translateX(-50%) translateY(-100%) translateY(-10px)}
+  overflow:visible;display:flex;flex-direction:column;
+  animation:slideup .24s cubic-bezier(.22,1,.36,1) both}
+@keyframes slideup{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
 
 .branch-wrap{position:relative}
+.branch{display:grid;grid-template-columns:36px 1fr;gap:10px;align-items:center;
+  padding:9px 13px;border-bottom:1px solid rgba(255,255,255,.46);
+  background:rgba(255,255,255,.16);
+  transition:background .18s,transform .20s cubic-bezier(.34,1.56,.64,1);cursor:default}
+.branch:last-child{border-bottom:0}
+.branch:hover{background:rgba(255,255,255,.65);transform:translateX(3px)}
+
+/* tooltip — position:fixed, JS positions it */
+.tooltip{
+  display:none;position:fixed;
+  width:280px;padding:11px 13px;border-radius:16px;
+  color:#152c42;font-size:11px;line-height:1.46;font-weight:600;
+  background:rgba(255,255,255,.94);
+  border:1px solid rgba(255,255,255,.96);
+  box-shadow:0 18px 46px rgba(12,48,100,.15),inset 0 1.5px 0 rgba(255,255,255,.98);
+  backdrop-filter:blur(28px) saturate(210%);
+  pointer-events:none;white-space:normal;z-index:9999;
+  transform:translate(-50%,-100%) translateY(-10px)}
 .branch-wrap:hover .tooltip{display:block}
 
-.bico{width:38px;height:38px;border-radius:12px;
-  background:rgba(225,240,255,.68);border:1px solid rgba(255,255,255,.80);
+.bico{width:34px;height:34px;border-radius:10px;
+  background:rgba(220,238,255,.70);border:1px solid rgba(255,255,255,.80);
   box-shadow:inset 0 1px 0 rgba(255,255,255,.94);display:grid;place-items:center}
-.bico svg{width:19px;height:19px;fill:none;stroke:#091f38;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
-.branch h3{font-size:12.5px;font-weight:700;color:#091f38;letter-spacing:-.01em}
-.branch p{font-size:11px;color:#507080;font-weight:400;margin-top:1px;line-height:1.28}
+.bico svg{width:17px;height:17px;fill:none;stroke:#08203a;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.branch h3{font-size:12px;font-weight:700;color:#08203a;letter-spacing:-.01em}
+.branch p{font-size:10.5px;color:#4e6e80;font-weight:400;margin-top:1px;line-height:1.26}
 
-/* ─── VALUE PANEL — z-index 90 ─── */
-.vp{display:none;margin-top:8px;padding:15px 17px;border-radius:22px;
-  background:rgba(255,255,255,.50);
+/* value panel */
+.vp{padding:13px 15px;border-radius:18px;
+  background:rgba(255,255,255,.52);
   border:1px solid rgba(255,255,255,.82);
-  box-shadow:inset 0 1.5px 0 rgba(255,255,255,.95),0 14px 44px rgba(14,52,108,.10),0 4px 12px rgba(14,52,108,.06);
+  box-shadow:inset 0 1.5px 0 rgba(255,255,255,.95),0 10px 34px rgba(12,48,100,.09),0 3px 8px rgba(12,48,100,.05);
   backdrop-filter:blur(30px) saturate(205%) brightness(106%);
-  position:relative;z-index:90;
   animation:slideup .26s cubic-bezier(.22,1,.36,1) both}
-.vp.vis{display:block}
-.vp h3{font-size:16px;font-weight:800;letter-spacing:-.04em;color:#091f38;margin-bottom:4px}
-.vp p{font-size:12px;color:#365268;line-height:1.48;margin-bottom:10px;font-weight:400}
-.vgrid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-bottom:7px}
-.vpill{border-radius:11px;background:rgba(255,255,255,.48);border:1px solid rgba(255,255,255,.78);
+.vp h3{font-size:14px;font-weight:800;letter-spacing:-.04em;color:#08203a;margin-bottom:4px}
+.vp p{font-size:11.5px;color:#345066;line-height:1.46;margin-bottom:9px;font-weight:400}
+.vgrid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:5px;margin-bottom:6px}
+.vpill{border-radius:10px;background:rgba(255,255,255,.50);border:1px solid rgba(255,255,255,.78);
   box-shadow:inset 0 1px 0 rgba(255,255,255,.90);
-  padding:8px 9px;font-size:10.5px;font-weight:700;color:#1a3852;text-align:center;line-height:1.28}
-.tgrid{display:grid;grid-template-columns:1fr 1fr 1fr;border-radius:12px;overflow:hidden;
-  border:1px solid rgba(24,104,184,.16);background:rgba(218,238,255,.44)}
-.tbox{padding:9px 10px;font-size:10.5px;color:#365268;font-weight:600;text-align:center;
-  border-right:1px solid rgba(24,104,184,.13)}
+  padding:7px 8px;font-size:10px;font-weight:700;color:#183650;text-align:center;line-height:1.26}
+.tgrid{display:grid;grid-template-columns:1fr 1fr 1fr;border-radius:11px;overflow:hidden;
+  border:1px solid rgba(20,100,178,.15);background:rgba(214,236,255,.44)}
+.tbox{padding:8px 9px;font-size:10px;color:#345066;font-weight:600;text-align:center;
+  border-right:1px solid rgba(20,100,178,.12)}
 .tbox:last-child{border-right:0}
-.tbox strong{display:block;font-size:11.5px;font-weight:800;color:#091f38;margin-bottom:2px}
+.tbox strong{display:block;font-size:11px;font-weight:800;color:#08203a;margin-bottom:2px}
 
-/* ─── ABOUT OVERLAY — vždy fixed, vždy viditelné ─── */
+/* ─── ABOUT — fixed overlay ─── */
 .aover{position:fixed;inset:0;z-index:5000;
   display:flex;align-items:center;justify-content:center;
-  pointer-events:none;opacity:0;transition:opacity .32s;
-  background:rgba(175,208,232,.16);backdrop-filter:blur(6px)}
+  pointer-events:none;opacity:0;transition:opacity .30s;
+  background:rgba(170,205,230,.16);backdrop-filter:blur(6px)}
 .aover.vis{pointer-events:all;opacity:1}
-.acard{width:min(720px,92%);
-  background:rgba(255,255,255,.72);
+.acard{width:min(700px,92%);
+  background:rgba(255,255,255,.74);
   border:1px solid rgba(255,255,255,.95);
-  box-shadow:
-    inset 0 2px 0 rgba(255,255,255,.98),
-    inset 0 -1px 0 rgba(195,225,255,.28),
-    0 44px 100px rgba(8,44,84,.22),
-    0 14px 36px rgba(8,44,84,.10),
-    0 4px 10px rgba(8,44,84,.06);
+  box-shadow:inset 0 2px 0 rgba(255,255,255,.98),inset 0 -1px 0 rgba(192,222,255,.26),
+    0 40px 96px rgba(8,42,82,.22),0 12px 32px rgba(8,42,82,.10),0 4px 10px rgba(8,42,82,.05);
   backdrop-filter:blur(44px) saturate(220%) brightness(108%);
-  border-radius:34px;padding:32px 34px;position:relative;
-  animation:scalein .32s cubic-bezier(.34,1.56,.64,1) both}
-.acard::before{content:'';position:absolute;inset:0;border-radius:33px;pointer-events:none;
-  background:linear-gradient(148deg,rgba(255,255,255,.66) 0%,rgba(255,255,255,.10) 38%,transparent 60%)}
+  border-radius:32px;padding:30px 32px;position:relative;
+  animation:scalein .30s cubic-bezier(.34,1.56,.64,1) both}
+.acard::before{content:'';position:absolute;inset:0;border-radius:31px;pointer-events:none;
+  background:linear-gradient(148deg,rgba(255,255,255,.64) 0%,rgba(255,255,255,.08) 36%,transparent 58%)}
 @keyframes scalein{from{transform:scale(.87);opacity:0}to{transform:scale(1);opacity:1}}
-.xbtn{position:absolute;top:16px;right:16px;width:34px;height:34px;border-radius:50%;
-  background:rgba(255,255,255,.60);border:1px solid rgba(255,255,255,.84);
-  box-shadow:inset 0 1.5px 0 rgba(255,255,255,.95),0 3px 8px rgba(14,52,108,.07);
-  display:grid;place-items:center;cursor:pointer;font-size:17px;color:#507080;
+.xbtn{position:absolute;top:15px;right:15px;width:32px;height:32px;border-radius:50%;
+  background:rgba(255,255,255,.62);border:1px solid rgba(255,255,255,.84);
+  box-shadow:inset 0 1.5px 0 rgba(255,255,255,.95),0 3px 8px rgba(12,48,100,.07);
+  display:grid;place-items:center;cursor:pointer;font-size:16px;color:#4e6e82;
   transition:background .2s,transform .2s;line-height:1;user-select:none;position:relative;z-index:1}
-.xbtn:hover{background:rgba(255,255,255,.90);transform:rotate(90deg)}
-.acard h2{font-size:27px;font-weight:900;letter-spacing:-.055em;color:#091f38;margin-bottom:7px;position:relative;z-index:1}
-.acard>.adesc{font-size:14px;color:#345068;line-height:1.56;margin-bottom:18px;font-weight:400;position:relative;z-index:1}
-.aitems{display:flex;flex-direction:column;gap:8px;margin-bottom:16px;position:relative;z-index:1}
-.aitem{display:flex;align-items:flex-start;gap:12px;padding:12px 14px;
-  border-radius:18px;background:rgba(255,255,255,.46);border:1px solid rgba(255,255,255,.78);
-  box-shadow:inset 0 1.5px 0 rgba(255,255,255,.92),0 3px 10px rgba(14,52,108,.05)}
-.aiico{width:38px;height:38px;border-radius:13px;background:rgba(218,238,255,.70);
+.xbtn:hover{background:rgba(255,255,255,.92);transform:rotate(90deg)}
+.acard h2{font-size:26px;font-weight:900;letter-spacing:-.055em;color:#08203a;margin-bottom:6px;position:relative;z-index:1}
+.acard>.adesc{font-size:13.5px;color:#325066;line-height:1.55;margin-bottom:16px;font-weight:400;position:relative;z-index:1}
+.aitems{display:flex;flex-direction:column;gap:7px;margin-bottom:15px;position:relative;z-index:1}
+.aitem{display:flex;align-items:flex-start;gap:11px;padding:11px 13px;
+  border-radius:16px;background:rgba(255,255,255,.48);border:1px solid rgba(255,255,255,.78);
+  box-shadow:inset 0 1.5px 0 rgba(255,255,255,.92),0 2px 8px rgba(12,48,100,.05)}
+.aiico{width:36px;height:36px;border-radius:12px;background:rgba(214,236,255,.72);
   border:1px solid rgba(255,255,255,.82);box-shadow:inset 0 1.5px 0 rgba(255,255,255,.95);
   display:grid;place-items:center;flex-shrink:0}
-.aiico svg{width:19px;height:19px;fill:none;stroke:#091f38;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
-.aitem h4{font-size:13px;font-weight:700;color:#091f38;margin-bottom:2px}
-.aitem p{font-size:11.5px;color:#507080;line-height:1.42;font-weight:400}
-.qdivider{font-size:10.5px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:#88a2b6;margin-bottom:9px;position:relative;z-index:1}
-.quotes{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;position:relative;z-index:1}
-.quote{padding:13px 14px;border-radius:16px;
-  background:rgba(216,238,255,.50);border:1px solid rgba(24,104,184,.14);
-  box-shadow:inset 0 1.5px 0 rgba(255,255,255,.84),0 3px 10px rgba(14,52,108,.05);
-  font-size:12.5px;font-style:italic;color:#1c3a56;line-height:1.46;font-weight:400}
-.quote cite{display:block;font-style:normal;font-size:10.5px;font-weight:700;color:#6888a4;margin-top:8px}
+.aiico svg{width:18px;height:18px;fill:none;stroke:#08203a;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.aitem h4{font-size:12.5px;font-weight:700;color:#08203a;margin-bottom:2px}
+.aitem p{font-size:11px;color:#4e6e82;line-height:1.40;font-weight:400}
+.qdivider{font-size:10px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:#86a0b4;margin-bottom:8px;position:relative;z-index:1}
+.quotes{display:grid;grid-template-columns:1fr 1fr 1fr;gap:7px;position:relative;z-index:1}
+.quote{padding:12px 13px;border-radius:14px;
+  background:rgba(212,236,255,.52);border:1px solid rgba(20,100,178,.13);
+  box-shadow:inset 0 1.5px 0 rgba(255,255,255,.84),0 2px 8px rgba(12,48,100,.05);
+  font-size:12px;font-style:italic;color:#1a3852;line-height:1.44;font-weight:400}
+.quote cite{display:block;font-style:normal;font-size:10px;font-weight:700;color:#6486a0;margin-top:7px}
 
 /* ─── MOBILE ─── */
-@media(max-width:860px){
-  .page{padding:10px 10px 28px}
-  .topbar{gap:8px}
-  .pill{height:44px;padding:0 14px;font-size:12px}
-  .hero{padding:5px 8px 16px}
-  .hero h1{font-size:38px}
-  .hero p{font-size:14.5px}
-  .shell{padding:12px 10px 18px;border-radius:28px;overflow:hidden}
-  .ws{height:auto;display:flex;flex-direction:column;align-items:center;gap:12px}
+@media(max-width:800px){
+  .page{padding:10px 10px 26px}
+  .pill{height:42px;padding:0 13px;font-size:11.5px}
+  .hero h1{font-size:36px}
+  .hero p{font-size:14px}
+  .shell{padding:12px 10px 16px;border-radius:26px}
+  .map-grid{
+    grid-template-columns:1fr;
+    grid-template-rows:auto;
+    gap:10px;min-height:auto}
+  .center-cell{grid-column:1;grid-row:1;margin-bottom:4px}
+  .center{width:120px!important;height:120px!important;opacity:1!important;filter:none!important;transform:none!important}
+  .shell.active .center{opacity:.24!important;filter:grayscale(1)!important}
+  .area-bl{grid-column:1;grid-row:2}
+  .area-br{grid-column:1;grid-row:3}
+  .area-tl{grid-column:1;grid-row:4}
+  .area-tr{grid-column:1;grid-row:5}
   .connsvg{display:none}
-  .center{position:relative;left:auto;top:auto;transform:none!important;
-    width:130px!important;height:130px!important;order:-1;opacity:1!important;filter:none!important}
-  .shell.active .center{opacity:.26!important;filter:grayscale(1)!important;width:100px!important;height:100px!important}
-  .area,.area.on{position:relative!important;left:auto!important;right:auto!important;
-    top:auto!important;bottom:auto!important;width:100%!important}
-  .card{animation:none!important;border-radius:22px;padding:14px 14px 12px}
+  .card{animation:none!important}
   .card:hover{transform:none!important}
-  .card h2{font-size:19px}
-  .cdesc{font-size:13px}
+  .card h2{font-size:18px}
   .vgrid{grid-template-columns:1fr 1fr}
   .tgrid{grid-template-columns:1fr}
-  .tbox{border-right:0;border-bottom:1px solid rgba(24,104,184,.13)}
+  .tbox{border-right:0;border-bottom:1px solid rgba(20,100,178,.12)}
   .tbox:last-child{border-bottom:0}
-  .acard{padding:20px 16px;border-radius:26px}
-  .acard h2{font-size:21px}
+  .acard{padding:18px 15px;border-radius:24px}
+  .acard h2{font-size:20px}
   .quotes{grid-template-columns:1fr}
   .shell.active .area:not(.on){opacity:.18;filter:grayscale(.85)}
 }
@@ -364,30 +355,36 @@ body{font-family:'Inter',system-ui,sans-serif;background:#d4e6f4}
 
   <section class="shell" id="shell">
     <div class="gridbg"></div>
-    <div class="ws" id="ws">
 
-      <svg class="connsvg" viewBox="0 0 1620 580" preserveAspectRatio="none">
-        <path class="cline" id="l-bl" d="M362 122 C452 164,532 236,810 290"/>
-        <path class="cline" id="l-tl" d="M362 458 C452 416,532 344,810 290"/>
-        <path class="cline" id="l-br" d="M1258 122 C1168 164,1088 236,810 290"/>
-        <path class="cline" id="l-tr" d="M1258 458 C1168 416,1088 344,810 290"/>
-        <circle class="cdot" cx="810" cy="290" r="5"/>
-        <circle class="cdot" cx="590" cy="260" r="3.8" style="animation-delay:-.7s"/>
-        <circle class="cdot" cx="1030" cy="260" r="3.8" style="animation-delay:-1.4s"/>
-        <circle class="cdot" cx="590" cy="320" r="3.8" style="animation-delay:-2.1s"/>
-        <circle class="cdot" cx="1030" cy="320" r="3.8" style="animation-delay:-.35s"/>
+    <div class="map-grid">
+
+      <!-- SVG CONNECTORS — stretched over grid -->
+      <svg class="connsvg" id="connsvg" viewBox="0 0 100 100" preserveAspectRatio="none">
+        <!-- lines from card corners to center (50,50) in % coords -->
+        <path class="cline" id="l-bl" d="M16 24 C28 34,38 42,50 50"/>
+        <path class="cline" id="l-tl" d="M16 76 C28 66,38 58,50 50"/>
+        <path class="cline" id="l-br" d="M84 24 C72 34,62 42,50 50"/>
+        <path class="cline" id="l-tr" d="M84 76 C72 66,62 58,50 50"/>
+        <circle class="cdot" cx="50" cy="50" r="1.2"/>
+        <circle class="cdot" cx="34" cy="44" r=".9" style="animation-delay:-.7s"/>
+        <circle class="cdot" cx="66" cy="44" r=".9" style="animation-delay:-1.4s"/>
+        <circle class="cdot" cx="34" cy="56" r=".9" style="animation-delay:-2.1s"/>
+        <circle class="cdot" cx="66" cy="56" r=".9" style="animation-delay:-.35s"/>
       </svg>
 
-      <div class="center" id="center" onclick="openAbout()">
-        <div class="cp t"></div><div class="cp b"></div>
-        <div class="cp l"></div><div class="cp r"></div>
-        <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.8-4 5-6 8-6s6.2 2 8 6"/></svg>
-        <strong>Klient<br>a jeho cíle</strong>
-        <em>klid · jistota · růst · svoboda</em>
+      <!-- CENTER -->
+      <div class="center-cell">
+        <div class="center" id="center" onclick="openAbout()">
+          <div class="cp t"></div><div class="cp b"></div>
+          <div class="cp l"></div><div class="cp r"></div>
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.8-4 5-6 8-6s6.2 2 8 6"/></svg>
+          <strong>Klient<br>a jeho cíle</strong>
+          <em>klid · jistota · růst · svoboda</em>
+        </div>
       </div>
 
       <!-- BYDLENÍ -->
-      <section class="area abl" id="a-bl" data-line="l-bl">
+      <section class="area area-bl" id="a-bl" data-line="l-bl">
         <article class="card" onclick="toggle('bl')">
           <div class="ctop">
             <div class="ico"><svg viewBox="0 0 24 24"><path d="M3 11.5 12 4l9 7.5"/><path d="M5.5 10.5V20h13v-9.5"/><path d="M9 20v-6h6v6"/></svg></div>
@@ -399,54 +396,56 @@ body{font-family:'Inter',system-ui,sans-serif;background:#d4e6f4}
             <span class="chip">cashflow</span><span class="chip">refinancování</span>
           </div>
         </article>
-        <div class="branches" id="br-bl">
-          <div class="branch-wrap">
-            <div class="branch">
-              <div class="bico"><svg viewBox="0 0 24 24"><path d="M3 11.5 12 4l9 7.5"/><path d="M5.5 10.5V20h13v-9.5"/></svg></div>
-              <div><h3>Vlastní bydlení</h3><p>výběr banky, sazby, fixace a procesu</p></div>
+        <div class="expand">
+          <div class="branches">
+            <div class="branch-wrap">
+              <div class="branch">
+                <div class="bico"><svg viewBox="0 0 24 24"><path d="M3 11.5 12 4l9 7.5"/><path d="M5.5 10.5V20h13v-9.5"/></svg></div>
+                <div><h3>Vlastní bydlení</h3><p>výběr banky, sazby, fixace a procesu</p></div>
+              </div>
+              <div class="tooltip">⏱ Klient sám: 11–20 h porovnávání bank. Se mnou: jasný postup, výběr banky a vysvětlení co sazba znamená pro váš cashflow.</div>
             </div>
-            <div class="tooltip">⏱ Klient sám: 11–20 hodin porovnávání bank a podmínek. Se mnou: jasný postup, výběr banky a vysvětlení, co sazba reálně znamená pro váš cashflow.</div>
-          </div>
-          <div class="branch-wrap">
-            <div class="branch">
-              <div class="bico"><svg viewBox="0 0 24 24"><path d="M4 20h16"/><path d="M7 20V8h10v12"/><path d="M10 11h1"/><path d="M14 11h1"/></svg></div>
-              <div><h3>Investiční nemovitosti</h3><p>páka, výnos, nájem a cashflow</p></div>
+            <div class="branch-wrap">
+              <div class="branch">
+                <div class="bico"><svg viewBox="0 0 24 24"><path d="M4 20h16"/><path d="M7 20V8h10v12"/><path d="M10 11h1"/><path d="M14 11h1"/></svg></div>
+                <div><h3>Investiční nemovitosti</h3><p>páka, výnos, nájem a cashflow</p></div>
+              </div>
+              <div class="tooltip">💡 Ukážu pákový efekt, výnos z nájmu a jak nemovitost zapadá do celého majetku — ne jen ROI v tabulce.</div>
             </div>
-            <div class="tooltip">💡 Ukážu pákový efekt, výnos z nájmu a to, jak nemovitost zapadá do celého majetku — ne jen ROI v tabulce.</div>
-          </div>
-          <div class="branch-wrap">
-            <div class="branch">
-              <div class="bico"><svg viewBox="0 0 24 24"><path d="M4 12h15"/><path d="M15 8l4 4-4 4"/><path d="M20 6v12"/></svg></div>
-              <div><h3>Refinancování a refixace</h3><p>hlídání výročí, vyjednání podmínek</p></div>
+            <div class="branch-wrap">
+              <div class="branch">
+                <div class="bico"><svg viewBox="0 0 24 24"><path d="M4 12h15"/><path d="M15 8l4 4-4 4"/><path d="M20 6v12"/></svg></div>
+                <div><h3>Refinancování a refixace</h3><p>hlídání výročí, vyjednání podmínek</p></div>
+              </div>
+              <div class="tooltip">⏱ Hlídám výročí fixace, zahájím refinancování včas. Klient dostane zprávu s přesným postupem.</div>
             </div>
-            <div class="tooltip">⏱ Hlídám výročí fixace a zahájím refinancování včas. Klient dostane zprávu s přesným postupem — kdy a co udělat.</div>
-          </div>
-          <div class="branch-wrap">
-            <div class="branch">
-              <div class="bico"><svg viewBox="0 0 24 24"><path d="M4 7h16"/><path d="M6 7v12h12V7"/><path d="M8 11h8"/><path d="M8 15h5"/></svg></div>
-              <div><h3>Konsolidace závazků</h3><p>uvolnění cashflow pro rezervu a investice</p></div>
+            <div class="branch-wrap">
+              <div class="branch">
+                <div class="bico"><svg viewBox="0 0 24 24"><path d="M4 7h16"/><path d="M6 7v12h12V7"/><path d="M8 11h8"/><path d="M8 15h5"/></svg></div>
+                <div><h3>Konsolidace závazků</h3><p>uvolnění cashflow pro rezervu a investice</p></div>
+              </div>
+              <div class="tooltip">💡 Správné sloučení závazků uvolní cashflow pro rezervu nebo investice. Ukážu konkrétní čísla.</div>
             </div>
-            <div class="tooltip">💡 Správné sloučení závazků může uvolnit cashflow pro rezervu nebo investice. Ukážu konkrétní čísla.</div>
           </div>
-        </div>
-        <div class="vp" id="vp-bl">
-          <h3>Proč to nestačí vyřídit sám</h3>
-          <p>Banky nabízejí stovky kombinací. Pomůžu vybrat tu, která sedí vašemu životu — ne jen nejnižší sazbu z reklamy.</p>
-          <div class="vgrid">
-            <div class="vpill">výběr banky a parametrů</div>
-            <div class="vpill">strategie splácení</div>
-            <div class="vpill">hlídání termínů</div>
-          </div>
-          <div class="tgrid">
-            <div class="tbox"><strong>Sám</strong>11–20 hod. hledání</div>
-            <div class="tbox"><strong>Se mnou</strong>1–2 hod. + jasný plán</div>
-            <div class="tbox"><strong>Úspora</strong>až 18 hod. stresu</div>
+          <div class="vp">
+            <h3>Proč to nestačí vyřídit sám</h3>
+            <p>Banky nabízejí stovky kombinací. Pomůžu vybrat tu, která sedí vašemu životu — ne jen nejnižší sazbu z reklamy.</p>
+            <div class="vgrid">
+              <div class="vpill">výběr banky a parametrů</div>
+              <div class="vpill">strategie splácení</div>
+              <div class="vpill">hlídání termínů</div>
+            </div>
+            <div class="tgrid">
+              <div class="tbox"><strong>Sám</strong>11–20 hod.</div>
+              <div class="tbox"><strong>Se mnou</strong>1–2 hod.</div>
+              <div class="tbox"><strong>Úspora</strong>až 18 hod.</div>
+            </div>
           </div>
         </div>
       </section>
 
       <!-- MAJETEK -->
-      <section class="area abr" id="a-br" data-line="l-br">
+      <section class="area area-br" id="a-br" data-line="l-br">
         <article class="card" onclick="toggle('br')">
           <div class="ctop">
             <div class="ico"><svg viewBox="0 0 24 24"><path d="M4 19h16"/><path d="M6 16l4-5 3 3 5-8"/><path d="M18 6h-4"/><path d="M18 6v4"/></svg></div>
@@ -458,54 +457,56 @@ body{font-family:'Inter',system-ui,sans-serif;background:#d4e6f4}
             <span class="chip">ETF &amp; FKI</span><span class="chip">diverzifikace</span>
           </div>
         </article>
-        <div class="branches" id="br-br">
-          <div class="branch-wrap">
-            <div class="branch">
-              <div class="bico"><svg viewBox="0 0 24 24"><path d="M12 3v18"/><path d="M6 7h9a3 3 0 0 1 0 6H8"/><path d="M8 13h8a3 3 0 0 1 0 6H6"/></svg></div>
-              <div><h3>Tvorba majetku</h3><p>pravidelné i jednorázové investice s cílem</p></div>
+        <div class="expand">
+          <div class="branches">
+            <div class="branch-wrap">
+              <div class="branch">
+                <div class="bico"><svg viewBox="0 0 24 24"><path d="M12 3v18"/><path d="M6 7h9a3 3 0 0 1 0 6H8"/><path d="M8 13h8a3 3 0 0 1 0 6H6"/></svg></div>
+                <div><h3>Tvorba majetku</h3><p>pravidelné i jednorázové investice s cílem</p></div>
+              </div>
+              <div class="tooltip">💡 Neinvestujeme bez cíle. Nastavíme co je rezerva, co budoucí renta a co peníze pro děti. Každá část portfolia má smysl.</div>
             </div>
-            <div class="tooltip">💡 Neinvestujeme bez cíle. Nastavíme co je rezerva, co budoucí renta a co peníze pro děti. Každá část portfolia má smysl.</div>
-          </div>
-          <div class="branch-wrap">
-            <div class="branch">
-              <div class="bico"><svg viewBox="0 0 24 24"><path d="M4 19h16"/><path d="M7 16v-5"/><path d="M12 16V8"/><path d="M17 16V5"/></svg></div>
-              <div><h3>Renta a pasivní příjem</h3><p>konkrétní plán na budoucí příjem</p></div>
+            <div class="branch-wrap">
+              <div class="branch">
+                <div class="bico"><svg viewBox="0 0 24 24"><path d="M4 19h16"/><path d="M7 16v-5"/><path d="M12 16V8"/><path d="M17 16V5"/></svg></div>
+                <div><h3>Renta a pasivní příjem</h3><p>konkrétní plán na budoucí příjem</p></div>
+              </div>
+              <div class="tooltip">💡 Ukážu konkrétní číslo: kolik a jak dlouho investovat, aby portfolio generovalo příjem bez prodeje jistiny.</div>
             </div>
-            <div class="tooltip">💡 Ukážu konkrétní číslo: kolik a jak dlouho investovat, aby portfolio generovalo příjem bez nutnosti prodávat jistinu.</div>
-          </div>
-          <div class="branch-wrap">
-            <div class="branch">
-              <div class="bico"><svg viewBox="0 0 24 24"><path d="M12 3 19 6v5c0 5-3 8-7 10-4-2-7-5-7-10V6z"/></svg></div>
-              <div><h3>Ochrana před inflací</h3><p>reálná hodnota peněz v čase</p></div>
+            <div class="branch-wrap">
+              <div class="branch">
+                <div class="bico"><svg viewBox="0 0 24 24"><path d="M12 3 19 6v5c0 5-3 8-7 10-4-2-7-5-7-10V6z"/></svg></div>
+                <div><h3>Ochrana před inflací</h3><p>reálná hodnota peněz v čase</p></div>
+              </div>
+              <div class="tooltip">💡 Vysvětlím rozdíl mezi nominálním a reálným zhodnocením. Spousta lidí spoří a přitom reálně chudne.</div>
             </div>
-            <div class="tooltip">💡 Vysvětlím rozdíl mezi nominálním a reálným zhodnocením. Spousta lidí spoří na účtu a přitom reálně chudne.</div>
-          </div>
-          <div class="branch-wrap">
-            <div class="branch">
-              <div class="bico"><svg viewBox="0 0 24 24"><path d="M12 3v18"/><path d="M3 12h18"/><circle cx="12" cy="12" r="8"/></svg></div>
-              <div><h3>Diverzifikace portfolia</h3><p>fondy, ETF, FKI, nemovitosti</p></div>
+            <div class="branch-wrap">
+              <div class="branch">
+                <div class="bico"><svg viewBox="0 0 24 24"><path d="M12 3v18"/><path d="M3 12h18"/><circle cx="12" cy="12" r="8"/></svg></div>
+                <div><h3>Diverzifikace portfolia</h3><p>fondy, ETF, FKI, nemovitosti</p></div>
+              </div>
+              <div class="tooltip">💡 Ukážu proč nestačí mít vše na jedné kartě a jak rozložit riziko bez zbytečné složitosti.</div>
             </div>
-            <div class="tooltip">💡 Fondy, ETF, FKI, nemovitosti — ukážu proč nestačí mít vše na jedné kartě a jak rozložit riziko bez zbytečné složitosti.</div>
           </div>
-        </div>
-        <div class="vp" id="vp-br">
-          <h3>Investice bez cíle jsou ztráta peněz i času</h3>
-          <p>Složené úročení funguje — ale jen pokud víte, co chcete dosáhnout. Pomůžu nastavit strategii, která má smysl.</p>
-          <div class="vgrid">
-            <div class="vpill">plán podle cíle</div>
-            <div class="vpill">složené úročení</div>
-            <div class="vpill">disciplína a přehled</div>
-          </div>
-          <div class="tgrid">
-            <div class="tbox"><strong>Sám</strong>desítky hodin</div>
-            <div class="tbox"><strong>Se mnou</strong>jasný plán za schůzku</div>
-            <div class="tbox"><strong>Výhoda</strong>méně chaosu</div>
+          <div class="vp">
+            <h3>Investice bez cíle jsou ztráta peněz i času</h3>
+            <p>Složené úročení funguje — ale jen pokud víte, co chcete dosáhnout. Pomůžu nastavit strategii, která má smysl.</p>
+            <div class="vgrid">
+              <div class="vpill">plán podle cíle</div>
+              <div class="vpill">složené úročení</div>
+              <div class="vpill">disciplína</div>
+            </div>
+            <div class="tgrid">
+              <div class="tbox"><strong>Sám</strong>desítky hodin</div>
+              <div class="tbox"><strong>Se mnou</strong>jasný plán</div>
+              <div class="tbox"><strong>Výhoda</strong>méně chaosu</div>
+            </div>
           </div>
         </div>
       </section>
 
       <!-- OCHRANA -->
-      <section class="area atl" id="a-tl" data-line="l-tl">
+      <section class="area area-tl" id="a-tl" data-line="l-tl">
         <article class="card" onclick="toggle('tl')">
           <div class="ctop">
             <div class="ico"><svg viewBox="0 0 24 24"><path d="M12 3 19 6v5c0 5-3 8-7 10-4-2-7-5-7-10V6z"/><path d="M9 12l2 2 4-5"/></svg></div>
@@ -517,54 +518,56 @@ body{font-family:'Inter',system-ui,sans-serif;background:#d4e6f4}
             <span class="chip">majetek</span><span class="chip">OSVČ</span>
           </div>
         </article>
-        <div class="branches" id="br-tl">
-          <div class="branch-wrap">
-            <div class="branch">
-              <div class="bico"><svg viewBox="0 0 24 24"><circle cx="12" cy="7" r="4"/><path d="M5 21c1.5-4 4-6 7-6s5.5 2 7 6"/></svg></div>
-              <div><h3>Ochrana příjmu</h3><p>invalidita, pracovní neschopnost, závažná onemocnění</p></div>
+        <div class="expand">
+          <div class="branches">
+            <div class="branch-wrap">
+              <div class="branch">
+                <div class="bico"><svg viewBox="0 0 24 24"><circle cx="12" cy="7" r="4"/><path d="M5 21c1.5-4 4-6 7-6s5.5 2 7 6"/></svg></div>
+                <div><h3>Ochrana příjmu</h3><p>invalidita, pracovní neschopnost, závažná onemocnění</p></div>
+              </div>
+              <div class="tooltip">⏱ Klient sám: 8–15 h čtení podmínek. Se mnou: lidské vysvětlení rozdílů a návrh konkrétních částek.</div>
             </div>
-            <div class="tooltip">⏱ Klient sám: 8–15 hodin čtení podmínek. Se mnou: lidské vysvětlení rozdílů, návrh konkrétních částek a ochrana skutečného příjmu.</div>
-          </div>
-          <div class="branch-wrap">
-            <div class="branch">
-              <div class="bico"><svg viewBox="0 0 24 24"><path d="M4 20v-8l8-6 8 6v8"/><path d="M9 20v-6h6v6"/></svg></div>
-              <div><h3>Nemovitost a domácnost</h3><p>kontrola limitů, výluk a pojistné hodnoty</p></div>
+            <div class="branch-wrap">
+              <div class="branch">
+                <div class="bico"><svg viewBox="0 0 24 24"><path d="M4 20v-8l8-6 8 6v8"/><path d="M9 20v-6h6v6"/></svg></div>
+                <div><h3>Nemovitost a domácnost</h3><p>kontrola limitů, výluk a pojistné hodnoty</p></div>
+              </div>
+              <div class="tooltip">💡 Nekontroluju jen cenu pojistky. Ověřím limity, výluky a zda hodnota odpovídá skutečné ceně majetku.</div>
             </div>
-            <div class="tooltip">💡 Nekontroluju jen cenu pojistky. Ověřím limity, výluky a to, zda pojistná hodnota odpovídá skutečné hodnotě majetku.</div>
-          </div>
-          <div class="branch-wrap">
-            <div class="branch">
-              <div class="bico"><svg viewBox="0 0 24 24"><path d="M3 16l2-6h14l2 6"/><circle cx="7" cy="17" r="2"/><circle cx="17" cy="17" r="2"/></svg></div>
-              <div><h3>Vozidla</h3><p>povinné ručení a havarijní pojištění</p></div>
+            <div class="branch-wrap">
+              <div class="branch">
+                <div class="bico"><svg viewBox="0 0 24 24"><path d="M3 16l2-6h14l2 6"/><circle cx="7" cy="17" r="2"/><circle cx="17" cy="17" r="2"/></svg></div>
+                <div><h3>Vozidla</h3><p>povinné ručení a havarijní pojištění</p></div>
+              </div>
+              <div class="tooltip">💡 Porovnám cenu, asistenci, skla, střet se zvěří, náhradní vozidlo. Nejlevnější pojistka bývá při škodě nejdražší.</div>
             </div>
-            <div class="tooltip">💡 Porovnám cenu, asistenci, skla, střet se zvěří, náhradní vozidlo. Nejlevnější pojistka bývá při škodě nejdražší volbou.</div>
-          </div>
-          <div class="branch-wrap">
-            <div class="branch">
-              <div class="bico"><svg viewBox="0 0 24 24"><path d="M10 6h4"/><path d="M4 8h16v12H4z"/><path d="M8 8V6a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></div>
-              <div><h3>Podnikání a OSVČ</h3><p>odpovědnost, klíčové osoby, příjem</p></div>
+            <div class="branch-wrap">
+              <div class="branch">
+                <div class="bico"><svg viewBox="0 0 24 24"><path d="M10 6h4"/><path d="M4 8h16v12H4z"/><path d="M8 8V6a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></div>
+                <div><h3>Podnikání a OSVČ</h3><p>odpovědnost, klíčové osoby, příjem</p></div>
+              </div>
+              <div class="tooltip">💡 OSVČ nemá nemocenskou jako zaměstnanec. Řeším ochranu příjmu, odpovědnost a návaznost na rodinu.</div>
             </div>
-            <div class="tooltip">💡 OSVČ nemá nemocenskou jako zaměstnanec. Řeším ochranu příjmu, odpovědnost podnikání a návaznost na rodinu.</div>
           </div>
-        </div>
-        <div class="vp" id="vp-tl">
-          <h3>Podmínky jsou psané pro právníky. Vysvětluji je pro lidi.</h3>
-          <p>Nejde jen o cenu. Jde o to, co vás skutečně ochrání — a to se většinou zjistí až při škodě.</p>
-          <div class="vgrid">
-            <div class="vpill">kontrola výluk</div>
-            <div class="vpill">správné částky</div>
-            <div class="vpill">ochrana rodiny</div>
-          </div>
-          <div class="tgrid">
-            <div class="tbox"><strong>Sám</strong>8–15 hod. čtení</div>
-            <div class="tbox"><strong>Se mnou</strong>lidské vysvětlení</div>
-            <div class="tbox"><strong>Úspora</strong>bez studia práva</div>
+          <div class="vp">
+            <h3>Podmínky jsou psané pro právníky. Vysvětluji je pro lidi.</h3>
+            <p>Nejde jen o cenu. Jde o to, co vás skutečně ochrání — a to se zjistí až při škodě.</p>
+            <div class="vgrid">
+              <div class="vpill">kontrola výluk</div>
+              <div class="vpill">správné částky</div>
+              <div class="vpill">ochrana rodiny</div>
+            </div>
+            <div class="tgrid">
+              <div class="tbox"><strong>Sám</strong>8–15 hod.</div>
+              <div class="tbox"><strong>Se mnou</strong>vysvětlení</div>
+              <div class="tbox"><strong>Úspora</strong>bez studia</div>
+            </div>
           </div>
         </div>
       </section>
 
       <!-- PLÁN -->
-      <section class="area atr" id="a-tr" data-line="l-tr">
+      <section class="area area-tr" id="a-tr" data-line="l-tr">
         <article class="card" onclick="toggle('tr')">
           <div class="ctop">
             <div class="ico"><svg viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7 0l2-2a5 5 0 0 0-7-7l-1 1"/><path d="M14 11a5 5 0 0 0-7 0l-2 2a5 5 0 0 0 7 7l1-1"/></svg></div>
@@ -576,57 +579,59 @@ body{font-family:'Inter',system-ui,sans-serif;background:#d4e6f4}
             <span class="chip">revize</span><span class="chip">přehled</span>
           </div>
         </article>
-        <div class="branches" id="br-tr">
-          <div class="branch-wrap">
-            <div class="branch">
-              <div class="bico"><svg viewBox="0 0 24 24"><path d="M4 6h16"/><path d="M4 12h16"/><path d="M4 18h10"/></svg></div>
-              <div><h3>Finanční plán jako celek</h3><p>hypotéka, investice a pojištění propojené</p></div>
+        <div class="expand">
+          <div class="branches">
+            <div class="branch-wrap">
+              <div class="branch">
+                <div class="bico"><svg viewBox="0 0 24 24"><path d="M4 6h16"/><path d="M4 12h16"/><path d="M4 18h10"/></svg></div>
+                <div><h3>Finanční plán jako celek</h3><p>hypotéka, investice a pojištění propojené</p></div>
+              </div>
+              <div class="tooltip">💡 Ukážu dopad každého rozhodnutí na ostatní oblasti. Finance jsou propojené nádoby.</div>
             </div>
-            <div class="tooltip">💡 Ukážu dopad každého rozhodnutí na ostatní oblasti. Nižší splátka hypotéky může znamenat vyšší investici — finance jsou propojené nádoby.</div>
-          </div>
-          <div class="branch-wrap">
-            <div class="branch">
-              <div class="bico"><svg viewBox="0 0 24 24"><path d="M8 3v4"/><path d="M16 3v4"/><rect x="4" y="5" width="16" height="16" rx="2"/><path d="M8 12h8"/></svg></div>
-              <div><h3>Hlídání výročí a změn</h3><p>revize, aktualizace, reakce na situace</p></div>
+            <div class="branch-wrap">
+              <div class="branch">
+                <div class="bico"><svg viewBox="0 0 24 24"><path d="M8 3v4"/><path d="M16 3v4"/><rect x="4" y="5" width="16" height="16" rx="2"/><path d="M8 12h8"/></svg></div>
+                <div><h3>Hlídání výročí a změn</h3><p>revize, aktualizace, reakce na situace</p></div>
+              </div>
+              <div class="tooltip">⏱ Hlídám výročí fixací a životní změny. Klient dostane zprávu, až přijde čas jednat.</div>
             </div>
-            <div class="tooltip">⏱ Hlídám výročí fixací a životní změny. Klient dostane zprávu, až přijde čas jednat — nemusí nic sledovat sám.</div>
-          </div>
-          <div class="branch-wrap">
-            <div class="branch">
-              <div class="bico"><svg viewBox="0 0 24 24"><circle cx="6" cy="6" r="3"/><circle cx="18" cy="6" r="3"/><circle cx="12" cy="18" r="3"/><path d="M8.5 8.5l2.2 6"/><path d="M15.5 8.5l-2.2 6"/></svg></div>
-              <div><h3>Koordinace institucí</h3><p>banky, pojišťovny, investiční společnosti</p></div>
+            <div class="branch-wrap">
+              <div class="branch">
+                <div class="bico"><svg viewBox="0 0 24 24"><circle cx="6" cy="6" r="3"/><circle cx="18" cy="6" r="3"/><circle cx="12" cy="18" r="3"/><path d="M8.5 8.5l2.2 6"/><path d="M15.5 8.5l-2.2 6"/></svg></div>
+                <div><h3>Koordinace institucí</h3><p>banky, pojišťovny, investiční společnosti</p></div>
+              </div>
+              <div class="tooltip">⏱ Koordinuji banku, pojišťovnu a investiční společnost. Klient nemusí pamatovat, kdo co kdy potřebuje.</div>
             </div>
-            <div class="tooltip">⏱ Koordinuji banku, pojišťovnu a investiční společnost. Klient nemusí pamatovat, kdo co kdy potřebuje.</div>
-          </div>
-          <div class="branch-wrap">
-            <div class="branch">
-              <div class="bico"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><path d="M12 8v5l3 2"/></svg></div>
-              <div><h3>Shrnutí a videoprezentace</h3><p>srozumitelný výstup po každé schůzce</p></div>
+            <div class="branch-wrap">
+              <div class="branch">
+                <div class="bico"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><path d="M12 8v5l3 2"/></svg></div>
+                <div><h3>Shrnutí a videoprezentace</h3><p>srozumitelný výstup po každé schůzce</p></div>
+              </div>
+              <div class="tooltip">💡 Připravuji shrnutí a videoprezentace po každé schůzce. Klient ví, co jsme řešili a jaký je další krok.</div>
             </div>
-            <div class="tooltip">💡 Připravuji srozumitelné shrnutí a videoprezentace po každé schůzce. Klient ví, co jsme řešili a jaký je další krok.</div>
           </div>
-        </div>
-        <div class="vp" id="vp-tr">
-          <h3>Vše propojené. Vše pod kontrolou.</h3>
-          <p>Finance nejsou čtyři oddělené světy. Jedno rozhodnutí ovlivňuje vše ostatní — vyplatí se mít pod jednou střechou.</p>
-          <div class="vgrid">
-            <div class="vpill">hlídání návazností</div>
-            <div class="vpill">průběžná péče</div>
-            <div class="vpill">jeden kontakt</div>
-          </div>
-          <div class="tgrid">
-            <div class="tbox"><strong>Sám</strong>hlídá vše sám</div>
-            <div class="tbox"><strong>Se mnou</strong>průběžná péče</div>
-            <div class="tbox"><strong>Výhoda</strong>klid a přehled</div>
+          <div class="vp">
+            <h3>Vše propojené. Vše pod kontrolou.</h3>
+            <p>Finance nejsou čtyři oddělené světy. Jedno rozhodnutí ovlivňuje vše ostatní.</p>
+            <div class="vgrid">
+              <div class="vpill">hlídání návazností</div>
+              <div class="vpill">průběžná péče</div>
+              <div class="vpill">jeden kontakt</div>
+            </div>
+            <div class="tgrid">
+              <div class="tbox"><strong>Sám</strong>hlídá vše sám</div>
+              <div class="tbox"><strong>Se mnou</strong>průběžná péče</div>
+              <div class="tbox"><strong>Výhoda</strong>klid a přehled</div>
+            </div>
           </div>
         </div>
       </section>
 
-    </div><!-- /ws -->
+    </div><!-- /map-grid -->
   </section>
 </div>
 
-<!-- ABOUT — fixed, vždy nad vším ── -->
+<!-- ABOUT — fixed, vždy nad vším -->
 <div class="aover" id="aover">
   <div class="acard">
     <div class="xbtn" onclick="closeAbout()">&#215;</div>
@@ -661,14 +666,14 @@ const shell=document.getElementById('shell');
 const aover=document.getElementById('aover');
 const ids=['bl','br','tl','tr'];
 
-/* Tooltip positioning — přepočítá při hoveru */
+/* Tooltip — position:fixed, JS přepočítá souřadnice */
 document.querySelectorAll('.branch-wrap').forEach(wrap=>{
   const tip=wrap.querySelector('.tooltip');
   if(!tip)return;
   wrap.addEventListener('mouseenter',()=>{
     const r=wrap.getBoundingClientRect();
     tip.style.left=(r.left+r.width/2)+'px';
-    tip.style.top=(r.top-10)+'px';
+    tip.style.top=(r.top-8)+'px';
   });
 });
 
@@ -679,19 +684,23 @@ function toggle(id){
   shell.classList.add('active');
   ids.forEach(k=>{
     const a=document.getElementById('a-'+k);
-    const v=document.getElementById('vp-'+k);
     const line=document.getElementById(a.dataset.line);
-    if(k===id){a.classList.add('on');v.classList.add('vis');if(line)line.classList.add('lit')}
-    else{a.classList.remove('on');v.classList.remove('vis');if(line)line.classList.remove('lit')}
+    if(k===id){
+      a.classList.add('on');
+      if(line)line.classList.add('lit');
+    } else {
+      a.classList.remove('on');
+      if(line)line.classList.remove('lit');
+    }
   });
 }
 
 function reset(){
   cur=null;shell.classList.remove('active');
   ids.forEach(k=>{
-    document.getElementById('a-'+k).classList.remove('on');
-    document.getElementById('vp-'+k).classList.remove('vis');
-    const line=document.getElementById(document.getElementById('a-'+k).dataset.line);
+    const a=document.getElementById('a-'+k);
+    a.classList.remove('on');
+    const line=document.getElementById(a.dataset.line);
     if(line)line.classList.remove('lit');
   });
 }
@@ -710,6 +719,7 @@ document.addEventListener('keydown',e=>{
   if(e.key==='Escape'){if(aover.classList.contains('vis'))closeAbout();else reset()}
 });
 
+/* hover → rozsvítí linku */
 ids.forEach(k=>{
   const a=document.getElementById('a-'+k);
   const card=a.querySelector('.card');
