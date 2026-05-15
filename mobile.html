@@ -96,14 +96,7 @@ html,body{width:100%;height:100%;overflow:hidden;font-family:'Inter',system-ui,s
     0 0 0 18px rgba(255,255,255,.13),0 0 0 34px rgba(255,255,255,.06),
     0 22px 64px rgba(8,48,108,.20)}
 .base.dimmed .center{opacity:.22;filter:grayscale(1);transform:scale(.84)!important;pointer-events:none}
-.cp{position:absolute;width:10px;height:10px;border-radius:50%;
-  background:radial-gradient(circle at 35% 35%,rgba(175,220,255,.98),rgba(75,158,235,.88));
-  animation:rpulse 2.6s ease-out infinite}
-.cp.t{top:-5px;left:50%;transform:translateX(-50%)}
-.cp.b{bottom:-5px;left:50%;transform:translateX(-50%);animation-delay:-1.3s}
-.cp.l{left:-5px;top:50%;transform:translateY(-50%);animation-delay:-.65s}
-.cp.r{right:-5px;top:50%;transform:translateY(-50%);animation-delay:-1.95s}
-@keyframes rpulse{0%{box-shadow:0 0 0 0 rgba(80,165,252,.54)}65%{box-shadow:0 0 0 11px rgba(80,165,252,0)}100%{box-shadow:0 0 0 0 rgba(80,165,252,0)}}
+
 .center svg{width:27px;height:27px;stroke:#04192e;fill:none;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round;margin-bottom:6px}
 .center strong{font-size:16px;font-weight:700;line-height:1.1;letter-spacing:-.04em;color:#04192e}
 .center em{display:block;margin-top:5px;font-style:normal;font-size:9px;font-weight:500;color:#466478;letter-spacing:.015em}
@@ -328,8 +321,6 @@ html,body{width:100%;height:100%;overflow:hidden;font-family:'Inter',system-ui,s
 
       <div class="center-cell">
         <div class="center" id="center-btn" onclick="openAbout()">
-          <div class="cp t"></div><div class="cp b"></div>
-          <div class="cp l"></div><div class="cp r"></div>
           <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.8-4 5-6 8-6s6.2 2 8 6"/></svg>
           <strong>Klient<br>a jeho cíle</strong>
           <em>klid · jistota · růst · svoboda</em>
