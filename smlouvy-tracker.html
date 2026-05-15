@@ -339,7 +339,7 @@ function save(){try{localStorage.setItem(SK,JSON.stringify(smlouvy));}catch(e){a
 function saveSab(){try{localStorage.setItem(SK_SAB,JSON.stringify(sablona));}catch(e){}}
 
 function dtn(ds){const t=new Date();t.setHours(0,0,0,0);const d=new Date(ds);d.setFullYear(t.getFullYear());if(d<t)d.setFullYear(t.getFullYear()+1);return Math.round((d-t)/86400000);}
-function urgClass(days,stav){if(stav==='prepojistit')return'prepojistit';if(stav==='vypoved')return'vypoved';if(stav==='vyrizeno'||stav==='neprepojistuje')return'done';if(days<30)return'urgent';if(days<=90)return'soon';if(days<=120)return'kontakt';return'ok';}
+function urgClass(days,stav){if(stav==='prepojistit')return'prepojistit';if(stav==='vypoved')return'vypoved';if(stav==='vyrizeno'||stav==='neprepojistuje')return'done';if(days<30)return'urgent';if(days<70)return'soon';if(days<=90)return'kontakt';return'ok';}
 function fdate(d){if(!d)return'—';const p=d.split('-');return`${p[2]}.${p[1]}.${p[0]}`;}
 function typB(t){return t==='auto'?'<span class="badge b-auto"><i class="ti ti-car" style="font-size:10px;vertical-align:-1px;margin-right:2px"></i>Auto</span>':'<span class="badge b-maj"><i class="ti ti-home" style="font-size:10px;vertical-align:-1px;margin-right:2px"></i>Majetek</span>';}
 function stavBadge(stav){const s=stavInfo(stav);return`<span class="stav ${s.css}">${s.label}</span>`;}
@@ -352,13 +352,13 @@ function renderDash(){
   const prepojistit=all.filter(s=>s.stav==='prepojistit');
   const reseni=all.filter(s=>s.stav==='reseni');
   const aktivni90=all.filter(s=>s.days<=90&&s.stav!=='vyrizeno'&&s.stav!=='neprepojistuje');
-  const kontakt=all.filter(s=>s.days>90&&s.days<=120&&(!s.stav||s.stav==='kontakt'));
+  const kontakt=all.filter(s=>s.days>=70&&s.days<=90&&(!s.stav||s.stav==='kontakt'));
   document.getElementById('metrics').innerHTML=`
     <div class="metric"><div class="metric-label">Celkem smluv</div><div class="metric-val">${smlouvy.length}</div></div>
     <div class="metric"><div class="metric-label">Do 90 dnů</div><div class="metric-val ${aktivni90.length?'mv-d':'mv-ok'}">${aktivni90.length}</div></div>
     <div class="metric"><div class="metric-label">🔥 K přepojištění</div><div class="metric-val mv-d">${prepojistit.length}</div></div>
     <div class="metric"><div class="metric-label">V řešení</div><div class="metric-val mv-w">${reseni.length}</div></div>
-    <div class="metric"><div class="metric-label">Ke kontaktu 90–120d</div><div class="metric-val mv-p">${kontakt.length}</div></div>`;
+    <div class="metric"><div class="metric-label">Ke kontaktu 70–90d</div><div class="metric-val mv-p">${kontakt.length}</div></div>`;
 
   const sorted=[...all].sort((a,b)=>{const pa=stavPrio(a),pb=stavPrio(b);if(pa!==pb)return pb-pa;return a.days-b.days;});
 
@@ -367,8 +367,8 @@ function renderDash(){
     {title:'Odeslaná výpověď – připravit novou smlouvu',icon:'ti-file-off',color:'#534ab7',items:sorted.filter(s=>s.stav==='vypoved')},
     {title:'V řešení – čeká na rozhodnutí',icon:'ti-loader',color:'#854f0b',items:sorted.filter(s=>s.stav==='reseni')},
     {title:'Urgentní – výročí do 30 dnů',icon:'ti-alert-triangle',color:'#a32d2d',items:sorted.filter(s=>!s.stav&&s.days<30)},
-    {title:'Blízko – výročí do 90 dnů',icon:'ti-clock',color:'#854f0b',items:sorted.filter(s=>(!s.stav||s.stav==='kontakt')&&s.days>=30&&s.days<=90)},
-    {title:'Ke kontaktování – výročí do 120 dnů',icon:'ti-phone',color:'#185fa5',items:sorted.filter(s=>(!s.stav||s.stav==='kontakt')&&s.days>90&&s.days<=120)},
+    {title:'Blízko – výročí do 70 dnů',icon:'ti-clock',color:'#854f0b',items:sorted.filter(s=>(!s.stav||s.stav==='kontakt')&&s.days>=30&&s.days<70)},
+    {title:'Ke kontaktování – výročí za 70 až 90 dnů',icon:'ti-phone',color:'#185fa5',items:sorted.filter(s=>(!s.stav||s.stav==='kontakt')&&s.days>=70&&s.days<=90)},
     {title:'Vyřízeno',icon:'ti-circle-check',color:'#3b6d11',items:sorted.filter(s=>s.stav==='vyrizeno'),collapsed:true},
     {title:'Nepřepojišťuje',icon:'ti-x',color:'var(--text3)',items:sorted.filter(s=>s.stav==='neprepojistuje'),collapsed:true},
   ];
