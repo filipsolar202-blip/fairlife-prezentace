@@ -7,300 +7,253 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
-html,body{width:100%;height:100%;overflow:hidden;font-family:'Inter',system-ui,sans-serif}
+html,body{width:100%;height:100%;overflow:hidden;font-family:'Inter',system-ui,sans-serif;background:#e8f2fb}
 
+/* ── BG ── */
 .bg{position:fixed;inset:0;z-index:0;
   background:
-    radial-gradient(ellipse 95% 85% at 3% 2%,rgba(255,255,255,.96),transparent 40%),
-    radial-gradient(ellipse 78% 72% at 97% 4%,rgba(198,230,255,.93),transparent 40%),
-    radial-gradient(ellipse 72% 62% at 50% 106%,rgba(158,208,250,.72),transparent 44%),
-    linear-gradient(148deg,#c5ddf3 0%,#d8ecfe 36%,#d2eeed 66%,#c8e4f3 100%)}
-.orb{position:fixed;border-radius:50%;pointer-events:none;filter:blur(130px);opacity:.70}
-.o1{width:720px;height:720px;background:radial-gradient(circle,rgba(135,202,255,.78),transparent);top:-230px;left:-185px;animation:orb1 26s ease-in-out infinite}
-.o2{width:530px;height:530px;background:radial-gradient(circle,rgba(172,220,192,.72),transparent);top:3%;right:-145px;animation:orb2 30s ease-in-out infinite}
-.o3{width:450px;height:450px;background:radial-gradient(circle,rgba(192,175,255,.48),transparent);bottom:6%;left:10%;animation:orb3 24s ease-in-out infinite}
-.o4{width:380px;height:380px;background:radial-gradient(circle,rgba(255,215,155,.44),transparent);bottom:1%;right:6%;animation:orb4 32s ease-in-out infinite}
-@keyframes orb1{0%,100%{transform:translate(0,0) scale(1)}40%{transform:translate(44px,-36px) scale(1.08)}70%{transform:translate(-22px,28px) scale(.93)}}
-@keyframes orb2{0%,100%{transform:translate(0,0) scale(1)}35%{transform:translate(-36px,26px) scale(1.06)}65%{transform:translate(24px,-20px) scale(.95)}}
-@keyframes orb3{0%,100%{transform:translate(0,0) scale(1)}45%{transform:translate(28px,-24px) scale(1.07)}75%{transform:translate(-17px,16px) scale(.94)}}
-@keyframes orb4{0%,100%{transform:translate(0,0) scale(1)}30%{transform:translate(-26px,19px) scale(1.05)}60%{transform:translate(19px,-14px) scale(.97)}}
+    radial-gradient(ellipse 100% 60% at 50% 0%,rgba(255,255,255,.95),transparent 55%),
+    radial-gradient(ellipse 80% 80% at 0% 50%,rgba(200,230,255,.55),transparent 60%),
+    radial-gradient(ellipse 80% 80% at 100% 50%,rgba(195,228,252,.50),transparent 60%),
+    radial-gradient(ellipse 100% 60% at 50% 100%,rgba(175,218,248,.60),transparent 55%),
+    linear-gradient(180deg,#ddeefa 0%,#cce4f5 100%)}
 
-.page{position:fixed;inset:0;z-index:1;display:flex;flex-direction:column;padding:14px 20px 16px}
+/* ── PAGE ── */
+.page{position:fixed;inset:0;z-index:1;display:flex;flex-direction:column;padding:14px 22px 16px;gap:0}
 
-.topbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;flex-shrink:0}
-.pill{height:44px;display:flex;align-items:center;padding:0 20px;border-radius:999px;
-  background:linear-gradient(145deg,rgba(255,255,255,.68),rgba(255,255,255,.30));
-  border:1px solid rgba(255,255,255,.90);
-  box-shadow:inset 0 1.5px 0 rgba(255,255,255,.98),0 8px 28px rgba(12,50,108,.11);
-  backdrop-filter:blur(36px) saturate(220%);
-  font-size:13px;font-weight:700;color:#061830;letter-spacing:.02em;white-space:nowrap}
-.pill i{color:#1255a8;font-style:italic}
+/* ── TOPBAR ── */
+.topbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;flex-shrink:0}
+.logo{font-size:15px;font-weight:800;color:#04192e;letter-spacing:-.02em}
+.logo i{color:#1a66cc;font-style:normal}
+.brand-tag{font-size:13px;font-weight:600;color:#04192e;display:flex;align-items:center;gap:8px}
+.brand-tag .bt{width:28px;height:28px;border-radius:8px;background:#1a66cc;color:#fff;font-size:10px;font-weight:800;display:grid;place-items:center;letter-spacing:.02em}
 
-.hero{text-align:center;flex-shrink:0;padding:0 16px 10px;max-width:780px;margin:0 auto;width:100%}
-.eyebrow{font-size:10px;font-weight:700;letter-spacing:.30em;text-transform:uppercase;color:#1255a8;margin-bottom:7px;opacity:.82}
-.hero h1{font-size:clamp(26px,3.4vw,60px);font-weight:900;line-height:.88;letter-spacing:-.060em;color:#04192e;margin-bottom:9px}
-.hero h1 i{font-style:italic;font-weight:300;color:#1255a8}
-.hero p{font-size:13.5px;line-height:1.50;color:#2c4c64;font-weight:400;max-width:560px;margin:0 auto}
+/* ── HERO ── */
+.hero{text-align:center;flex-shrink:0;padding:0 16px 12px;max-width:860px;margin:0 auto;width:100%}
+.eyebrow{font-size:10px;font-weight:600;letter-spacing:.28em;text-transform:uppercase;color:#1a66cc;margin-bottom:8px;opacity:.75}
+.hero h1{font-size:clamp(32px,4.2vw,76px);font-weight:900;line-height:.88;letter-spacing:-.065em;color:#04192e;margin-bottom:10px}
+.hero h1 em{font-style:italic;font-weight:300;color:#1a66cc}
+.hero p{font-size:14px;line-height:1.52;color:#3a5a74;font-weight:400;max-width:560px;margin:0 auto}
 
-.stage{position:relative;flex:1;min-height:0;border-radius:34px;
-  background:linear-gradient(148deg,rgba(255,255,255,.28),rgba(255,255,255,.10));
-  border:1px solid rgba(255,255,255,.82);
-  box-shadow:0 18px 60px rgba(8,40,96,.14),0 4px 14px rgba(8,40,96,.07),
-    inset 0 1.5px 0 rgba(255,255,255,.96),inset 0 -1px 0 rgba(188,218,255,.18);
-  backdrop-filter:blur(40px) saturate(210%) brightness(105%);
-  overflow:hidden}
-.stage::before{content:'';position:absolute;inset:0;border-radius:33px;pointer-events:none;z-index:0;
-  background:linear-gradient(148deg,rgba(255,255,255,.66) 0%,rgba(255,255,255,.05) 40%,transparent 62%),
-    radial-gradient(ellipse 82% 22% at 50% 0%,rgba(255,255,255,.54),transparent)}
-.stage::after{content:'';position:absolute;inset:0;border-radius:33px;pointer-events:none;z-index:0;
-  animation:lsweep 17s ease-in-out infinite}
-@keyframes lsweep{
-  0%,100%{background:radial-gradient(ellipse 38% 30% at 22% 16%,rgba(255,255,255,.22),transparent 64%)}
-  33%{background:radial-gradient(ellipse 38% 30% at 78% 13%,rgba(255,255,255,.22),transparent 64%)}
-  66%{background:radial-gradient(ellipse 38% 30% at 50% 86%,rgba(255,255,255,.22),transparent 64%)}
-}
-.gridbg{position:absolute;inset:0;border-radius:33px;pointer-events:none;z-index:0;
-  background:linear-gradient(90deg,rgba(6,38,72,.013) 1px,transparent 1px),
-             linear-gradient(0deg,rgba(6,38,72,.013) 1px,transparent 1px);
-  background-size:54px 54px;
-  mask-image:radial-gradient(ellipse 88% 82% at center,black 6%,transparent 68%)}
+/* ── STAGE ── */
+.stage{position:relative;flex:1;min-height:0;border-radius:28px;background:rgba(255,255,255,.18);
+  border:1px solid rgba(255,255,255,.70);
+  box-shadow:0 8px 40px rgba(8,40,90,.08),inset 0 1px 0 rgba(255,255,255,.80);
+  backdrop-filter:blur(20px);overflow:hidden}
 
+/* subtle grid */
+.gridbg{position:absolute;inset:0;pointer-events:none;z-index:0;
+  background:linear-gradient(90deg,rgba(10,50,100,.018) 1px,transparent 1px),
+             linear-gradient(0deg,rgba(10,50,100,.018) 1px,transparent 1px);
+  background-size:60px 60px;
+  mask-image:radial-gradient(ellipse 90% 85% at center,black,transparent 80%)}
+
+/* ── BASE GRID 3 cols ── */
 .base{position:absolute;inset:0;z-index:1;
-  display:grid;grid-template-columns:1fr 190px 1fr;grid-template-rows:1fr 1fr;
-  gap:10px;padding:14px}
+  display:grid;grid-template-columns:1fr 200px 1fr;grid-template-rows:1fr 1fr;
+  gap:12px;padding:16px}
 
+/* SVG connectors */
 .connsvg{position:absolute;inset:0;z-index:0;pointer-events:none;overflow:visible;width:100%;height:100%}
-.cline{fill:none;stroke:rgba(255,255,255,.46);stroke-width:1.5;stroke-dasharray:5 4;
-  filter:drop-shadow(0 0 4px rgba(255,255,255,.48));
-  animation:dashflow 9s linear infinite;transition:all .32s}
-@keyframes dashflow{to{stroke-dashoffset:-36}}
-.cline.lit{stroke:rgba(145,206,255,.96);stroke-width:2.2;
-  filter:drop-shadow(0 0 8px rgba(108,186,255,.94)) drop-shadow(0 0 16px rgba(88,170,255,.42))}
+.cline{fill:none;stroke:rgba(26,102,204,.18);stroke-width:1.5;stroke-dasharray:6 5;
+  animation:dashflow 10s linear infinite;transition:stroke .3s,opacity .3s,stroke-width .3s}
+@keyframes dashflow{to{stroke-dashoffset:-44}}
+.cline.lit{stroke:rgba(26,102,204,.55);stroke-width:2;
+  filter:drop-shadow(0 0 6px rgba(26,102,204,.35))}
 .base.dimmed .cline:not(.lit){opacity:.06}
-.cdot{fill:rgba(78,155,234,.86);filter:drop-shadow(0 0 6px rgba(78,155,234,.90));animation:pdot 2.8s ease-in-out infinite}
-@keyframes pdot{0%,100%{opacity:.58}50%{opacity:1}}
+.cdot{fill:rgba(26,102,204,.50);animation:pdot 3s ease-in-out infinite}
+@keyframes pdot{0%,100%{opacity:.40}50%{opacity:.85}}
 
+/* ── CENTER ── */
 .center-cell{grid-column:2;grid-row:1/3;display:flex;align-items:center;justify-content:center;position:relative;z-index:3}
-.center{width:155px;height:155px;border-radius:50%;
-  background:linear-gradient(145deg,rgba(255,255,255,.70),rgba(255,255,255,.35));
-  border:1px solid rgba(255,255,255,.92);
-  box-shadow:
-    inset 0 1.5px 0 rgba(255,255,255,.98),inset 0 -1px 0 rgba(188,218,255,.22),
-    0 0 0 11px rgba(255,255,255,.09),0 0 0 22px rgba(255,255,255,.04),
-    0 14px 48px rgba(8,48,108,.16),0 4px 12px rgba(8,48,108,.08);
-  backdrop-filter:blur(38px) saturate(225%);
+.center{width:150px;height:150px;border-radius:50%;
+  background:rgba(255,255,255,.90);
+  border:1.5px solid rgba(200,220,245,.80);
+  box-shadow:0 4px 24px rgba(8,40,90,.10),0 1px 0 rgba(255,255,255,.95) inset;
   display:flex;flex-direction:column;align-items:center;justify-content:center;
-  text-align:center;cursor:pointer;padding:16px;transition:all .38s cubic-bezier(.34,1.56,.64,1)}
-.center:hover{transform:scale(1.09);
-  box-shadow:inset 0 1.5px 0 rgba(255,255,255,.98),
-    0 0 0 18px rgba(255,255,255,.13),0 0 0 34px rgba(255,255,255,.06),
-    0 22px 64px rgba(8,48,108,.20)}
-.base.dimmed .center{opacity:.22;filter:grayscale(1);transform:scale(.84)!important;pointer-events:none}
+  text-align:center;cursor:pointer;padding:18px;
+  transition:all .35s cubic-bezier(.34,1.56,.64,1)}
+.center:hover{transform:scale(1.07);box-shadow:0 12px 40px rgba(8,40,90,.16)}
+.base.dimmed .center{opacity:.25;filter:grayscale(1);transform:scale(.86)!important;pointer-events:none}
+.center svg{width:26px;height:26px;stroke:#04192e;fill:none;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round;margin-bottom:7px}
+.center strong{font-size:15px;font-weight:700;line-height:1.1;letter-spacing:-.03em;color:#04192e}
+.center em{display:block;margin-top:5px;font-style:normal;font-size:9px;font-weight:400;color:#6a8899;letter-spacing:.01em}
 
-.center svg{width:27px;height:27px;stroke:#04192e;fill:none;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round;margin-bottom:6px}
-.center strong{font-size:16px;font-weight:700;line-height:1.1;letter-spacing:-.04em;color:#04192e}
-.center em{display:block;margin-top:5px;font-style:normal;font-size:9px;font-weight:500;color:#466478;letter-spacing:.015em}
-
-.bc{position:relative;z-index:2;border-radius:22px;
-  background:linear-gradient(148deg,rgba(255,255,255,.56),rgba(255,255,255,.22));
-  border:1px solid rgba(255,255,255,.86);
-  box-shadow:
-    inset 0 1.5px 0 rgba(255,255,255,.96),inset 0 -1px 0 rgba(188,214,255,.14),
-    inset 1px 0 0 rgba(255,255,255,.46),
-    0 8px 28px rgba(8,40,92,.08),0 2px 6px rgba(8,40,92,.04);
-  padding:16px 18px 14px;cursor:pointer;
-  backdrop-filter:blur(32px) saturate(205%) brightness(106%);
-  overflow:hidden;
-  animation:floatc 6s ease-in-out infinite;
-  transition:transform .38s cubic-bezier(.34,1.56,.64,1),box-shadow .32s,background .26s,opacity .28s,filter .28s}
+/* ── BASE CARD ── */
+.bc{position:relative;z-index:2;border-radius:20px;background:rgba(255,255,255,.88);
+  border:1px solid rgba(210,228,248,.70);
+  box-shadow:0 2px 16px rgba(8,40,90,.07),0 1px 0 rgba(255,255,255,.95) inset;
+  padding:22px 24px 18px;cursor:pointer;overflow:hidden;
+  animation:floatc 7s ease-in-out infinite;
+  transition:transform .35s cubic-bezier(.34,1.56,.64,1),box-shadow .28s,background .22s,opacity .25s,filter .25s}
 .bc-bl{grid-column:1;grid-row:1;animation-delay:0s}
-.bc-br{grid-column:3;grid-row:1;animation-delay:-3s}
-.bc-tl{grid-column:1;grid-row:2;animation-delay:-1.5s}
-.bc-tr{grid-column:3;grid-row:2;animation-delay:-4.5s}
-@keyframes floatc{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}
-.bc::before{content:'';position:absolute;inset:0;border-radius:21px;pointer-events:none;
-  background:linear-gradient(145deg,rgba(255,255,255,.72) 0%,rgba(255,255,255,.12) 28%,transparent 50%)}
-.bc::after{content:'';position:absolute;top:0;left:-110%;width:46%;height:100%;
-  background:linear-gradient(90deg,transparent,rgba(255,255,255,.52),transparent);
-  transform:skewX(-18deg);transition:left .58s ease;pointer-events:none}
-.bc:hover::after{left:170%}
-.bc:hover{transform:translateY(-5px) scale(1.010)!important;animation-play-state:paused;
-  background:linear-gradient(148deg,rgba(255,255,255,.72),rgba(255,255,255,.38));
-  box-shadow:inset 0 1.5px 0 rgba(255,255,255,.98),0 18px 50px rgba(8,40,92,.13)}
-.bc.active{animation-play-state:paused;transform:scale(1.08) translateY(-4px)!important;z-index:10;
-  box-shadow:inset 0 1.5px 0 rgba(255,255,255,.98),0 28px 72px rgba(8,40,92,.20),0 0 0 1.5px rgba(255,255,255,.60)}
-.bc-bl.active{background:linear-gradient(148deg,rgba(220,255,238,.72),rgba(200,248,224,.40));outline:2px solid rgba(18,136,76,.28)}
-.bc-br.active{background:linear-gradient(148deg,rgba(218,240,255,.72),rgba(198,228,255,.40));outline:2px solid rgba(18,90,170,.28)}
-.bc-tl.active{background:linear-gradient(148deg,rgba(234,226,255,.72),rgba(218,208,255,.40));outline:2px solid rgba(86,52,186,.28)}
-.bc-tr.active{background:linear-gradient(148deg,rgba(255,244,218,.72),rgba(255,234,190,.40));outline:2px solid rgba(196,120,8,.28)}
-.base.dimmed .bc:not(.active){opacity:.14;filter:grayscale(.9) blur(.3px);pointer-events:none;animation-play-state:paused}
-.bc-top{display:flex;align-items:center;gap:10px;margin-bottom:8px;position:relative;z-index:1}
-.bc-ico{width:48px;height:48px;border-radius:15px;flex-shrink:0;
-  background:linear-gradient(145deg,rgba(255,255,255,.70),rgba(255,255,255,.32));
-  border:1px solid rgba(255,255,255,.92);
-  box-shadow:inset 0 1.5px 0 rgba(255,255,255,.98),0 3px 10px rgba(8,40,92,.06);
-  display:grid;place-items:center}
-.bc-ico svg{width:25px;height:25px;fill:none;stroke-width:2.1;stroke-linecap:round;stroke-linejoin:round}
-.bc-bl .bc-ico svg{stroke:#128a4a}.bc-br .bc-ico svg{stroke:#1258a8}
-.bc-tl .bc-ico svg{stroke:#5638ba}.bc-tr .bc-ico svg{stroke:#c87809}
-.bc h2{font-size:17px;font-weight:800;line-height:1.06;letter-spacing:-.05em;color:#04192e;position:relative;z-index:1}
-.bc-desc{color:#2e4c62;font-size:11.5px;line-height:1.44;font-weight:400;position:relative;z-index:1;margin-bottom:9px}
-.chips{display:flex;flex-wrap:wrap;gap:5px;position:relative;z-index:1}
-.chip{font-size:9px;font-weight:600;padding:4px 9px;border-radius:999px;color:#152e48;
-  background:linear-gradient(145deg,rgba(255,255,255,.60),rgba(255,255,255,.24));
-  border:1px solid rgba(255,255,255,.84);
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.94);letter-spacing:.01em}
+.bc-br{grid-column:3;grid-row:1;animation-delay:-3.5s}
+.bc-tl{grid-column:1;grid-row:2;animation-delay:-1.75s}
+.bc-tr{grid-column:3;grid-row:2;animation-delay:-5.25s}
+@keyframes floatc{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
 
+.bc:hover{transform:translateY(-6px) scale(1.008)!important;animation-play-state:paused;
+  background:rgba(255,255,255,.98);
+  box-shadow:0 14px 44px rgba(8,40,90,.13),0 1px 0 rgba(255,255,255,.98) inset}
+.bc.active{animation-play-state:paused;transform:scale(1.06) translateY(-3px)!important;z-index:10;
+  background:rgba(255,255,255,.99);
+  box-shadow:0 20px 56px rgba(8,40,90,.16)}
+.bc-bl.active{border-color:rgba(18,136,76,.30)}
+.bc-br.active{border-color:rgba(26,102,204,.30)}
+.bc-tl.active{border-color:rgba(86,52,186,.30)}
+.bc-tr.active{border-color:rgba(196,120,8,.30)}
+.base.dimmed .bc:not(.active){opacity:.12;filter:grayscale(.8);pointer-events:none;animation-play-state:paused}
+
+/* card internals */
+.bc-top{display:flex;align-items:center;gap:12px;margin-bottom:10px}
+.bc-ico{width:44px;height:44px;border-radius:12px;flex-shrink:0;display:grid;place-items:center;
+  background:rgba(240,248,255,.80);border:1px solid rgba(210,228,248,.60)}
+.bc-ico svg{width:24px;height:24px;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.bc-bl .bc-ico svg{stroke:#128a4a}
+.bc-br .bc-ico svg{stroke:#1a66cc}
+.bc-tl .bc-ico svg{stroke:#5638ba}
+.bc-tr .bc-ico svg{stroke:#c87809}
+.bc h2{font-size:19px;font-weight:800;line-height:1.05;letter-spacing:-.04em;color:#04192e}
+.bc-desc{font-size:12.5px;line-height:1.48;color:#3a5a74;font-weight:400;margin-bottom:11px}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{font-size:9.5px;font-weight:600;padding:4px 10px;border-radius:999px;color:#2a4a64;
+  background:rgba(220,236,255,.55);border:1px solid rgba(200,220,245,.70);letter-spacing:.01em}
+
+/* ── PANEL LAYER ── */
 .panel-wrap{position:absolute;inset:0;z-index:20;pointer-events:none}
 
-.t-panel{
-  position:absolute;width:36%;border-radius:26px;
-  background:linear-gradient(148deg,rgba(255,255,255,.72),rgba(255,255,255,.36));
-  border:1px solid rgba(255,255,255,.92);
-  box-shadow:
-    inset 0 2px 0 rgba(255,255,255,.98),inset 0 -1px 0 rgba(188,218,255,.22),
-    inset 1px 0 0 rgba(255,255,255,.58),
-    0 20px 62px rgba(8,40,92,.17),0 6px 20px rgba(8,40,92,.09);
-  backdrop-filter:blur(44px) saturate(225%) brightness(108%);
+/* Topic panel — auto height, anchored top */
+.t-panel{position:absolute;width:37%;border-radius:20px;
+  background:rgba(255,255,255,.97);border:1px solid rgba(210,228,248,.80);
+  box-shadow:0 16px 56px rgba(8,40,90,.14),0 2px 8px rgba(8,40,90,.06);
   display:flex;flex-direction:column;pointer-events:all;
-  transition:opacity .26s,transform .26s cubic-bezier(.22,1,.36,1)}
-.t-panel::before{content:'';position:absolute;inset:0;border-radius:25px;pointer-events:none;
-  background:linear-gradient(145deg,rgba(255,255,255,.72) 0%,rgba(255,255,255,.10) 30%,transparent 52%)}
-.t-panel.left{left:14px;top:14px}
-.t-panel.right{right:14px;top:14px}
-.t-panel.hidden{opacity:0;pointer-events:none;transform:scale(.96) translateY(-6px)}
-.t-panel.visible{opacity:1;transform:scale(1) translateY(0)}
+  transition:opacity .24s,transform .24s cubic-bezier(.22,1,.36,1)}
+.t-panel.left{left:16px;top:16px}
+.t-panel.right{right:16px;top:16px}
+.t-panel.hidden{opacity:0;pointer-events:none;transform:translateY(-8px) scale(.97)}
+.t-panel.visible{opacity:1;transform:translateY(0) scale(1)}
 
-.t-head{padding:16px 18px 12px;border-bottom:1px solid rgba(255,255,255,.42);flex-shrink:0;position:relative}
-.t-head-row{display:flex;align-items:center;gap:10px;margin-bottom:7px}
-.t-head-ico{width:48px;height:48px;border-radius:16px;flex-shrink:0;
-  background:linear-gradient(145deg,rgba(255,255,255,.72),rgba(255,255,255,.30));
-  border:1px solid rgba(255,255,255,.94);
-  box-shadow:inset 0 1.5px 0 rgba(255,255,255,.98),0 3px 10px rgba(8,40,92,.06);
-  display:grid;place-items:center}
-.t-head-ico svg{width:25px;height:25px;fill:none;stroke-width:2.1;stroke-linecap:round;stroke-linejoin:round}
-.t-head h2{font-size:18px;font-weight:800;line-height:1.06;letter-spacing:-.05em;color:#04192e}
-.t-head p{font-size:11.5px;color:#2e4c62;line-height:1.44;font-weight:400;margin-bottom:8px}
+.t-head{padding:18px 20px 14px;border-bottom:1px solid rgba(210,228,248,.50);flex-shrink:0;position:relative}
+.t-head-row{display:flex;align-items:center;gap:11px;margin-bottom:8px}
+.t-head-ico{width:44px;height:44px;border-radius:12px;flex-shrink:0;display:grid;place-items:center;
+  background:rgba(240,248,255,.80);border:1px solid rgba(210,228,248,.60)}
+.t-head-ico svg{width:24px;height:24px;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.t-head h2{font-size:18px;font-weight:800;line-height:1.05;letter-spacing:-.04em;color:#04192e}
+.t-head p{font-size:12px;color:#3a5a74;line-height:1.46;font-weight:400;margin-bottom:8px}
 .t-head .chips{margin-bottom:0}
-.t-close{position:absolute;top:12px;right:12px;width:26px;height:26px;border-radius:50%;
-  background:linear-gradient(145deg,rgba(255,255,255,.68),rgba(255,255,255,.28));
-  border:1px solid rgba(255,255,255,.88);
-  box-shadow:inset 0 1.5px 0 rgba(255,255,255,.96);
-  display:grid;place-items:center;cursor:pointer;font-size:13px;color:#446070;
-  transition:background .16s,transform .16s;line-height:1;user-select:none;z-index:10}
-.t-close:hover{background:rgba(255,255,255,.92);transform:rotate(90deg)}
+.t-close{position:absolute;top:14px;right:14px;width:24px;height:24px;border-radius:50%;
+  background:rgba(230,240,252,.70);border:1px solid rgba(200,220,245,.60);
+  display:grid;place-items:center;cursor:pointer;font-size:13px;color:#6a8899;
+  transition:background .14s,transform .14s;line-height:1;user-select:none}
+.t-close:hover{background:rgba(210,228,248,.90);transform:rotate(90deg)}
 
 .t-rows{display:flex;flex-direction:column}
-.t-row{display:flex;align-items:center;gap:10px;padding:10px 18px;
-  border-bottom:1px solid rgba(255,255,255,.40);background:rgba(255,255,255,.14);
-  transition:background .16s,transform .18s cubic-bezier(.34,1.56,.64,1);cursor:default}
+.t-row{display:flex;align-items:center;gap:11px;padding:11px 20px;
+  border-bottom:1px solid rgba(210,228,248,.40);background:transparent;
+  transition:background .14s;cursor:default}
 .t-row:last-child{border-bottom:0}
-.t-row:hover{background:rgba(255,255,255,.55);transform:translateX(3px)}
-.t-panel.right .t-row:hover{transform:translateX(-3px)}
+.t-row:hover{background:rgba(240,248,255,.70)}
+.t-panel.right .t-row:hover{background:rgba(240,248,255,.70)}
 
-.t-arr{font-size:13px;color:rgba(18,86,168,.35);transition:transform .16s,color .16s;flex-shrink:0}
+.t-arr{font-size:12px;color:rgba(26,102,204,.30);transition:color .14s,transform .14s;flex-shrink:0}
 .t-panel.left .t-arr{margin-left:auto}
 .t-panel.right .t-arr{margin-right:auto;transform:rotate(180deg)}
-.t-row:hover .t-arr{color:rgba(18,86,168,.80)}
-.t-panel.left .t-row:hover .t-arr{transform:translateX(3px)}
-.t-panel.right .t-row:hover .t-arr{transform:rotate(180deg) translateX(3px)}
+.t-row:hover .t-arr{color:rgba(26,102,204,.70)}
+.t-panel.left .t-row:hover .t-arr{transform:translateX(2px)}
+.t-panel.right .t-row:hover .t-arr{transform:rotate(180deg) translateX(2px)}
 
-.row-ico{width:33px;height:33px;border-radius:10px;flex-shrink:0;
-  background:linear-gradient(145deg,rgba(215,236,255,.74),rgba(198,224,255,.34));
-  border:1px solid rgba(255,255,255,.84);
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.94);display:grid;place-items:center}
-.row-ico svg{width:17px;height:17px;fill:none;stroke:#04192e;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
-.row-text h3{font-size:12px;font-weight:700;color:#04192e;letter-spacing:-.01em}
-.row-text p{font-size:10.5px;color:#466478;font-weight:400;margin-top:1px;line-height:1.24}
+.row-ico{width:32px;height:32px;border-radius:9px;flex-shrink:0;display:grid;place-items:center;
+  background:rgba(230,242,255,.70);border:1px solid rgba(200,220,245,.50)}
+.row-ico svg{width:16px;height:16px;fill:none;stroke:#04192e;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.row-text h3{font-size:12.5px;font-weight:700;color:#04192e;letter-spacing:-.01em}
+.row-text p{font-size:11px;color:#5a7a8e;font-weight:400;margin-top:1px;line-height:1.24}
 
-.v-panel{position:absolute;width:30%;border-radius:22px;
-  background:linear-gradient(148deg,rgba(255,255,255,.74),rgba(255,255,255,.40));
-  border:1px solid rgba(255,255,255,.94);
-  box-shadow:
-    inset 0 2px 0 rgba(255,255,255,.98),inset 0 -1px 0 rgba(188,218,255,.24),
-    0 18px 56px rgba(8,40,92,.15),0 5px 16px rgba(8,40,92,.08);
-  backdrop-filter:blur(48px) saturate(230%) brightness(109%);
+/* ── VALUE PANEL ── */
+.v-panel{position:absolute;width:31%;border-radius:20px;
+  background:rgba(255,255,255,.97);border:1px solid rgba(210,228,248,.80);
+  box-shadow:0 12px 44px rgba(8,40,90,.12),0 2px 6px rgba(8,40,90,.05);
   display:flex;flex-direction:column;pointer-events:none;
-  transition:opacity .20s,transform .20s cubic-bezier(.22,1,.36,1)}
-.v-panel::before{content:'';position:absolute;inset:0;border-radius:21px;pointer-events:none;
-  background:linear-gradient(145deg,rgba(255,255,255,.74) 0%,rgba(255,255,255,.10) 30%,transparent 50%)}
-.v-panel.from-left{left:calc(14px + 36% + 10px);top:14px}
-.v-panel.from-right{right:calc(14px + 36% + 10px);top:14px}
-.v-panel.hidden{opacity:0;transform:scale(.96) translateX(8px)}
-.v-panel.from-right.hidden{transform:scale(.96) translateX(-8px)}
-.v-panel.visible{opacity:1;transform:scale(1) translateX(0);pointer-events:all}
+  transition:opacity .18s,transform .18s cubic-bezier(.22,1,.36,1)}
+.v-panel.from-left{left:calc(16px + 37% + 12px);top:16px}
+.v-panel.from-right{right:calc(16px + 37% + 12px);top:16px}
+.v-panel.hidden{opacity:0;transform:translateX(10px) scale(.97)}
+.v-panel.from-right.hidden{transform:translateX(-10px) scale(.97)}
+.v-panel.visible{opacity:1;transform:translateX(0) scale(1);pointer-events:all}
 
-.v-inner{padding:15px 17px;display:flex;flex-direction:column;gap:9px}
-.v-title{font-size:14px;font-weight:800;letter-spacing:-.04em;color:#04192e;margin-bottom:3px}
-.v-desc{font-size:11px;color:#2e4c62;line-height:1.46;font-weight:400}
-.v-label{font-size:9px;font-weight:700;letter-spacing:.24em;text-transform:uppercase;color:#82a0b4}
-.v-pills{display:grid;grid-template-columns:1fr 1fr;gap:5px;margin-top:4px}
-.v-pill{border-radius:9px;padding:7px 8px;text-align:center;font-size:10px;font-weight:700;color:#152e48;line-height:1.26;
-  background:linear-gradient(145deg,rgba(255,255,255,.58),rgba(255,255,255,.24));
-  border:1px solid rgba(255,255,255,.82);box-shadow:inset 0 1px 0 rgba(255,255,255,.92)}
-.v-compare{border-radius:11px;overflow:hidden;margin-top:4px;
-  border:1px solid rgba(18,86,168,.15);
-  background:linear-gradient(145deg,rgba(208,232,255,.56),rgba(192,220,255,.26))}
-.v-row{display:grid;grid-template-columns:1fr 1fr 1fr;border-bottom:1px solid rgba(18,86,168,.10)}
-.v-row:last-child{border-bottom:0}
-.v-cell{padding:7px 8px;font-size:10px;color:#2e4c62;font-weight:600;text-align:center;border-right:1px solid rgba(18,86,168,.10)}
-.v-cell:last-child{border-right:0}
-.v-cell.hd{font-size:10.5px;font-weight:800;color:#04192e}
+.v-inner{padding:18px 20px;display:flex;flex-direction:column;gap:14px}
 
+/* value header */
+.v-label{font-size:9px;font-weight:700;letter-spacing:.26em;text-transform:uppercase;color:#1a66cc;margin-bottom:4px;opacity:.75}
+.v-title{font-size:17px;font-weight:800;letter-spacing:-.04em;color:#04192e;margin-bottom:5px}
+.v-desc{font-size:11.5px;color:#3a5a74;line-height:1.48;font-weight:400}
+
+/* value icons row */
+.v-icons{display:flex;gap:0;border-top:1px solid rgba(210,228,248,.50);padding-top:12px}
+.v-icon-item{flex:1;display:flex;flex-direction:column;align-items:center;gap:5px;padding:0 6px;
+  border-right:1px solid rgba(210,228,248,.40);text-align:center}
+.v-icon-item:last-child{border-right:0}
+.v-icon-box{width:32px;height:32px;border-radius:9px;display:grid;place-items:center;
+  background:rgba(230,242,255,.80);border:1px solid rgba(200,220,245,.50);margin-bottom:2px}
+.v-icon-box svg{width:16px;height:16px;fill:none;stroke:#1a66cc;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.v-icon-label{font-size:9.5px;font-weight:600;color:#04192e;line-height:1.2}
+
+/* value compare table */
+.v-section-label{font-size:9px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:#8aacbe;margin-bottom:6px}
+.v-table{border-radius:12px;overflow:hidden;border:1px solid rgba(210,228,248,.60)}
+.v-tr{display:grid;grid-template-columns:1fr 1fr 1fr;border-bottom:1px solid rgba(210,228,248,.40)}
+.v-tr:last-child{border-bottom:0}
+.v-td{padding:9px 10px;font-size:11px;color:#3a5a74;font-weight:500;text-align:center;
+  border-right:1px solid rgba(210,228,248,.35)}
+.v-td:last-child{border-right:0}
+.v-td.hd{font-size:11px;font-weight:800;color:#04192e;background:rgba(240,248,255,.60)}
+
+/* ── ABOUT OVERLAY ── */
 .about-overlay{position:fixed;inset:0;z-index:50;display:flex;align-items:center;justify-content:center;
-  pointer-events:none;opacity:0;transition:opacity .28s;
-  background:rgba(160,198,226,.15);backdrop-filter:blur(7px)}
+  pointer-events:none;opacity:0;transition:opacity .25s;
+  background:rgba(14,46,82,.12);backdrop-filter:blur(8px)}
 .about-overlay.open{pointer-events:all;opacity:1}
-.about-card{width:min(680px,88%);
-  background:linear-gradient(148deg,rgba(255,255,255,.78),rgba(255,255,255,.50));
-  border:1px solid rgba(255,255,255,.96);
-  box-shadow:inset 0 2px 0 rgba(255,255,255,.98),0 38px 90px rgba(6,34,76,.22),0 10px 28px rgba(6,34,76,.10);
-  backdrop-filter:blur(50px) saturate(230%) brightness(109%);
-  border-radius:30px;padding:26px 28px;position:relative;
-  animation:scalein .28s cubic-bezier(.34,1.56,.64,1) both}
-.about-card::before{content:'';position:absolute;inset:0;border-radius:29px;pointer-events:none;
-  background:linear-gradient(148deg,rgba(255,255,255,.66) 0%,rgba(255,255,255,.08) 34%,transparent 56%)}
-@keyframes scalein{from{transform:scale(.87);opacity:0}to{transform:scale(1);opacity:1}}
-.xbtn{position:absolute;top:13px;right:13px;width:28px;height:28px;border-radius:50%;
-  background:linear-gradient(145deg,rgba(255,255,255,.68),rgba(255,255,255,.28));
-  border:1px solid rgba(255,255,255,.88);box-shadow:inset 0 1.5px 0 rgba(255,255,255,.96);
-  display:grid;place-items:center;cursor:pointer;font-size:14px;color:#446070;
-  transition:background .16s,transform .16s;line-height:1;user-select:none;position:relative;z-index:1}
-.xbtn:hover{background:rgba(255,255,255,.92);transform:rotate(90deg)}
-.about-card h2{font-size:23px;font-weight:900;letter-spacing:-.055em;color:#04192e;margin-bottom:5px;position:relative;z-index:1}
-.about-card .adesc{font-size:13px;color:#2c4c64;line-height:1.52;margin-bottom:13px;font-weight:400;position:relative;z-index:1}
-.aitems{display:flex;flex-direction:column;gap:6px;margin-bottom:12px;position:relative;z-index:1}
-.aitem{display:flex;align-items:flex-start;gap:10px;padding:10px 12px;border-radius:14px;
-  background:linear-gradient(145deg,rgba(255,255,255,.52),rgba(255,255,255,.20));
-  border:1px solid rgba(255,255,255,.82);box-shadow:inset 0 1.5px 0 rgba(255,255,255,.94)}
-.aiico{width:32px;height:32px;border-radius:10px;flex-shrink:0;
-  background:linear-gradient(145deg,rgba(208,232,255,.76),rgba(190,220,255,.36));
-  border:1px solid rgba(255,255,255,.86);box-shadow:inset 0 1.5px 0 rgba(255,255,255,.96);display:grid;place-items:center}
-.aiico svg{width:16px;height:16px;fill:none;stroke:#04192e;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
-.aitem h4{font-size:12px;font-weight:700;color:#04192e;margin-bottom:2px}
-.aitem p{font-size:10.5px;color:#466478;line-height:1.38;font-weight:400}
-.qdiv{font-size:9.5px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:#82a0b4;margin-bottom:7px;position:relative;z-index:1}
-.quotes{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;position:relative;z-index:1}
-.quote{padding:10px 12px;border-radius:12px;
-  background:linear-gradient(145deg,rgba(206,230,255,.56),rgba(188,218,255,.26));
-  border:1px solid rgba(18,86,168,.12);box-shadow:inset 0 1.5px 0 rgba(255,255,255,.84);
-  font-size:11.5px;font-style:italic;color:#162e4c;line-height:1.42;font-weight:400}
-.quote cite{display:block;font-style:normal;font-size:9.5px;font-weight:700;color:#5e8098;margin-top:6px}
+.about-card{width:min(660px,90%);background:rgba(255,255,255,.98);
+  border:1px solid rgba(210,228,248,.80);
+  box-shadow:0 32px 80px rgba(8,40,90,.18),0 8px 24px rgba(8,40,90,.08);
+  border-radius:24px;padding:28px 30px;position:relative;
+  animation:scalein .26s cubic-bezier(.34,1.56,.64,1) both}
+@keyframes scalein{from{transform:scale(.88);opacity:0}to{transform:scale(1);opacity:1}}
+.xbtn{position:absolute;top:14px;right:14px;width:28px;height:28px;border-radius:50%;
+  background:rgba(230,240,252,.70);border:1px solid rgba(200,220,245,.60);
+  display:grid;place-items:center;cursor:pointer;font-size:14px;color:#6a8899;
+  transition:background .14s,transform .14s;line-height:1;user-select:none}
+.xbtn:hover{background:rgba(210,228,248,.90);transform:rotate(90deg)}
+.about-card h2{font-size:22px;font-weight:900;letter-spacing:-.05em;color:#04192e;margin-bottom:5px}
+.about-card .adesc{font-size:13px;color:#3a5a74;line-height:1.52;margin-bottom:16px;font-weight:400}
+.aitems{display:flex;flex-direction:column;gap:8px;margin-bottom:16px}
+.aitem{display:flex;align-items:flex-start;gap:11px;padding:12px 14px;border-radius:14px;
+  background:rgba(240,248,255,.70);border:1px solid rgba(210,228,248,.60)}
+.aiico{width:34px;height:34px;border-radius:10px;flex-shrink:0;display:grid;place-items:center;
+  background:rgba(220,238,255,.80);border:1px solid rgba(200,220,245,.60)}
+.aiico svg{width:17px;height:17px;fill:none;stroke:#04192e;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.aitem h4{font-size:12.5px;font-weight:700;color:#04192e;margin-bottom:2px}
+.aitem p{font-size:11px;color:#5a7a8e;line-height:1.40;font-weight:400}
+.qdiv{font-size:9px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:#8aacbe;margin-bottom:8px}
+.quotes{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
+.quote{padding:11px 13px;border-radius:12px;background:rgba(235,245,255,.70);
+  border:1px solid rgba(210,228,248,.60);
+  font-size:11.5px;font-style:italic;color:#1a3a58;line-height:1.42;font-weight:400}
+.quote cite{display:block;font-style:normal;font-size:9.5px;font-weight:700;color:#6a8aaa;margin-top:7px}
 </style>
 </head>
 <body>
 <div class="bg"></div>
-<div class="orb o1"></div><div class="orb o2"></div><div class="orb o3"></div><div class="orb o4"></div>
 
 <div class="page">
   <header class="topbar">
-    <div class="pill"><i>Filip</i>&nbsp;Solár</div>
-    <div class="pill">Osobní finanční poradce</div>
+    <div class="logo"><i>Filip</i> Solár</div>
+    <div class="brand-tag"><div class="bt">BT</div> Broker Trust</div>
   </header>
+
   <section class="hero">
     <div class="eyebrow">Interaktivní mapa spolupráce</div>
-    <h1>Finance, které <i>dávají</i> smysl.</h1>
-    <p>Nejdřív potřeba klienta. Pak přidaná hodnota. Až pak produkty. Klikněte na oblast a uvidíte, co pro vás reálně dělám.</p>
+    <h1>Finance, které <em>dávají</em> smysl.</h1>
+    <p>Nejdřív potřeba klienta. Pak přidaná hodnota. Až pak produkty.<br>Klikněte na oblast a uvidíte, co pro vás reálně dělám.</p>
   </section>
 
   <div class="stage" id="stage">
@@ -312,11 +265,11 @@ html,body{width:100%;height:100%;overflow:hidden;font-family:'Inter',system-ui,s
         <path class="cline" id="l-tl" d="M16 75 C29 64,40 56,50 50"/>
         <path class="cline" id="l-br" d="M84 25 C71 36,60 44,50 50"/>
         <path class="cline" id="l-tr" d="M84 75 C71 64,60 56,50 50"/>
-        <circle class="cdot" cx="50" cy="50" r="1.1"/>
-        <circle class="cdot" cx="34" cy="44" r=".82" style="animation-delay:-.7s"/>
-        <circle class="cdot" cx="66" cy="44" r=".82" style="animation-delay:-1.4s"/>
-        <circle class="cdot" cx="34" cy="56" r=".82" style="animation-delay:-2.1s"/>
-        <circle class="cdot" cx="66" cy="56" r=".82" style="animation-delay:-.35s"/>
+        <circle class="cdot" cx="50" cy="50" r="1"/>
+        <circle class="cdot" cx="34" cy="43" r=".7" style="animation-delay:-.8s"/>
+        <circle class="cdot" cx="66" cy="43" r=".7" style="animation-delay:-1.6s"/>
+        <circle class="cdot" cx="34" cy="57" r=".7" style="animation-delay:-2.4s"/>
+        <circle class="cdot" cx="66" cy="57" r=".7" style="animation-delay:-.4s"/>
       </svg>
 
       <div class="center-cell">
@@ -327,101 +280,200 @@ html,body{width:100%;height:100%;overflow:hidden;font-family:'Inter',system-ui,s
         </div>
       </div>
 
+      <!-- BYDLENÍ -->
       <div class="bc bc-bl" id="bc-bl" onclick="togglePanel('bl')">
-        <div class="bc-top"><div class="bc-ico"><svg viewBox="0 0 24 24"><path d="M3 11.5 12 4l9 7.5"/><path d="M5.5 10.5V20h13v-9.5"/><path d="M9 20v-6h6v6"/></svg></div><h2>Bydlení a hypotéka</h2></div>
+        <div class="bc-top">
+          <div class="bc-ico"><svg viewBox="0 0 24 24"><path d="M3 11.5 12 4l9 7.5"/><path d="M5.5 10.5V20h13v-9.5"/><path d="M9 20v-6h6v6"/></svg></div>
+          <h2>Bydlení a hypotéka</h2>
+        </div>
         <p class="bc-desc">Hypotéka není jen sazba. Nastavíme financování tak, aby odpovídalo vašemu cashflow, rezervě i plánům.</p>
         <div class="chips"><span class="chip">výběr banky</span><span class="chip">fixace</span><span class="chip">cashflow</span><span class="chip">refinancování</span></div>
       </div>
 
+      <!-- MAJETEK -->
       <div class="bc bc-br" id="bc-br" onclick="togglePanel('br')">
-        <div class="bc-top"><div class="bc-ico"><svg viewBox="0 0 24 24"><path d="M4 19h16"/><path d="M6 16l4-5 3 3 5-8"/><path d="M18 6h-4"/><path d="M18 6v4"/></svg></div><h2>Tvorba majetku a renta</h2></div>
-        <p class="bc-desc">Peníze, které mají plán: rezerva, ochrana před inflací, růst majetku a budoucí příjem.</p>
-        <div class="chips"><span class="chip">rezerva</span><span class="chip">renta</span><span class="chip">ETF &amp; FKI</span><span class="chip">diverzifikace</span></div>
+        <div class="bc-top">
+          <div class="bc-ico"><svg viewBox="0 0 24 24"><path d="M4 19h16"/><path d="M6 16l4-5 3 3 5-8"/><path d="M18 6h-4"/><path d="M18 6v4"/></svg></div>
+          <h2>Tvorba majetku a renta</h2>
+        </div>
+        <p class="bc-desc">Peníze, které mají plán: rezerva, ochrana před inflací, růst majetku a budoucí příjem bez závislosti na zaměstnavateli.</p>
+        <div class="chips"><span class="chip">rezerva</span><span class="chip">renta</span><span class="chip">fondy</span><span class="chip">diverzifikace</span></div>
       </div>
 
+      <!-- OCHRANA -->
       <div class="bc bc-tl" id="bc-tl" onclick="togglePanel('tl')">
-        <div class="bc-top"><div class="bc-ico"><svg viewBox="0 0 24 24"><path d="M12 3 19 6v5c0 5-3 8-7 10-4-2-7-5-7-10V6z"/><path d="M9 12l2 2 4-5"/></svg></div><h2>Ochrana příjmu a majetku</h2></div>
-        <p class="bc-desc">Desítky stran podmínek a výluk. Čtu je za vás — a vysvětlím lidsky, co máte pojištěno a kde jsou mezery.</p>
+        <div class="bc-top">
+          <div class="bc-ico"><svg viewBox="0 0 24 24"><path d="M12 3 19 6v5c0 5-3 8-7 10-4-2-7-5-7-10V6z"/><path d="M9 12l2 2 4-5"/></svg></div>
+          <h2>Ochrana příjmu a majetku</h2>
+        </div>
+        <p class="bc-desc">Desítky stran podmínek a výluk. Čtu je za vás — a vysvětlím lidsky, co skutečně máte pojištěno a kde jsou mezery.</p>
         <div class="chips"><span class="chip">příjem</span><span class="chip">rodina</span><span class="chip">majetek</span><span class="chip">OSVČ</span></div>
       </div>
 
+      <!-- PLÁN -->
       <div class="bc bc-tr" id="bc-tr" onclick="togglePanel('tr')">
-        <div class="bc-top"><div class="bc-ico"><svg viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7 0l2-2a5 5 0 0 0-7-7l-1 1"/><path d="M14 11a5 5 0 0 0-7 0l-2 2a5 5 0 0 0 7 7l1-1"/></svg></div><h2>Komplexní finanční plán</h2></div>
-        <p class="bc-desc">Hlídání výročí, návazností a změn v čase. Jedno místo pro všechna důležitá finanční rozhodnutí.</p>
+        <div class="bc-top">
+          <div class="bc-ico"><svg viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7 0l2-2a5 5 0 0 0-7-7l-1 1"/><path d="M14 11a5 5 0 0 0-7 0l-2 2a5 5 0 0 0 7 7l1-1"/></svg></div>
+          <h2>Komplexní finanční plán</h2>
+        </div>
+        <p class="bc-desc">Hlídání výročí, návazností a změn v čase. Jedno místo pro všechna důležitá finanční rozhodnutí — propojená, ne oddělená.</p>
         <div class="chips"><span class="chip">hlídání výročí</span><span class="chip">koordinace</span><span class="chip">revize</span><span class="chip">přehled</span></div>
       </div>
-    </div>
+    </div><!-- /base -->
 
+    <!-- PANELS -->
     <div class="panel-wrap" id="panel-wrap">
 
+      <!-- BL left -->
       <div class="t-panel left hidden" id="tp-bl">
         <div class="t-close" onclick="closeAll()">&#215;</div>
         <div class="t-head">
-          <div class="t-head-row"><div class="t-head-ico"><svg viewBox="0 0 24 24" width="25" height="25" fill="none" stroke="#128a4a" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11.5 12 4l9 7.5"/><path d="M5.5 10.5V20h13v-9.5"/><path d="M9 20v-6h6v6"/></svg></div><h2>Bydlení a hypotéka</h2></div>
+          <div class="t-head-row">
+            <div class="t-head-ico" style="background:rgba(220,255,238,.60);border-color:rgba(18,136,76,.20)"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="#128a4a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11.5 12 4l9 7.5"/><path d="M5.5 10.5V20h13v-9.5"/><path d="M9 20v-6h6v6"/></svg></div>
+            <h2>Bydlení a hypotéka</h2>
+          </div>
           <p>Nastavíme financování tak, aby odpovídalo vašemu cashflow, rezervě i plánům.</p>
           <div class="chips"><span class="chip">výběr banky</span><span class="chip">fixace</span><span class="chip">cashflow</span><span class="chip">refinancování</span></div>
         </div>
         <div class="t-rows">
-          <div class="t-row" onmouseenter="showV('bl',0)" onmouseleave="hideV()"><div class="row-ico"><svg viewBox="0 0 24 24"><path d="M3 11.5 12 4l9 7.5"/><path d="M5.5 10.5V20h13v-9.5"/></svg></div><div class="row-text"><h3>Vlastní bydlení</h3><p>výběr banky, sazby, fixace a procesu</p></div><span class="t-arr">›</span></div>
-          <div class="t-row" onmouseenter="showV('bl',1)" onmouseleave="hideV()"><div class="row-ico"><svg viewBox="0 0 24 24"><path d="M4 20h16"/><path d="M7 20V8h10v12"/><path d="M10 11h1"/><path d="M14 11h1"/></svg></div><div class="row-text"><h3>Investiční nemovitosti</h3><p>páka, výnos, nájem a cashflow</p></div><span class="t-arr">›</span></div>
-          <div class="t-row" onmouseenter="showV('bl',2)" onmouseleave="hideV()"><div class="row-ico"><svg viewBox="0 0 24 24"><path d="M4 12h15"/><path d="M15 8l4 4-4 4"/><path d="M20 6v12"/></svg></div><div class="row-text"><h3>Refinancování a refixace</h3><p>hlídání výročí, vyjednání podmínek</p></div><span class="t-arr">›</span></div>
-          <div class="t-row" onmouseenter="showV('bl',3)" onmouseleave="hideV()"><div class="row-ico"><svg viewBox="0 0 24 24"><path d="M4 7h16"/><path d="M6 7v12h12V7"/><path d="M8 11h8"/><path d="M8 15h5"/></svg></div><div class="row-text"><h3>Konsolidace závazků</h3><p>uvolnění cashflow pro rezervu a investice</p></div><span class="t-arr">›</span></div>
+          <div class="t-row" onmouseenter="showV('bl',0)" onmouseleave="hideV()">
+            <div class="row-ico"><svg viewBox="0 0 24 24"><path d="M3 11.5 12 4l9 7.5"/><path d="M5.5 10.5V20h13v-9.5"/></svg></div>
+            <div class="row-text"><h3>Vlastní bydlení</h3><p>výběr banky, sazby, fixace a procesu</p></div>
+            <span class="t-arr">›</span>
+          </div>
+          <div class="t-row" onmouseenter="showV('bl',1)" onmouseleave="hideV()">
+            <div class="row-ico"><svg viewBox="0 0 24 24"><path d="M4 20h16"/><path d="M7 20V8h10v12"/><path d="M10 11h1"/><path d="M14 11h1"/></svg></div>
+            <div class="row-text"><h3>Investiční nemovitosti</h3><p>nájem, rezerva a měsíční rozpočet</p></div>
+            <span class="t-arr">›</span>
+          </div>
+          <div class="t-row" onmouseenter="showV('bl',2)" onmouseleave="hideV()">
+            <div class="row-ico"><svg viewBox="0 0 24 24"><path d="M4 12h15"/><path d="M15 8l4 4-4 4"/><path d="M20 6v12"/></svg></div>
+            <div class="row-text"><h3>Refinancování a refixace</h3><p>hlídání výročí, vyjednání podmínek</p></div>
+            <span class="t-arr">›</span>
+          </div>
+          <div class="t-row" onmouseenter="showV('bl',3)" onmouseleave="hideV()">
+            <div class="row-ico"><svg viewBox="0 0 24 24"><path d="M4 7h16"/><path d="M6 7v12h12V7"/><path d="M8 11h8"/><path d="M8 15h5"/></svg></div>
+            <div class="row-text"><h3>Konsolidace závazků</h3><p>uvolnění rozpočtu pro rezervu a investice</p></div>
+            <span class="t-arr">›</span>
+          </div>
         </div>
       </div>
 
+      <!-- BR right -->
       <div class="t-panel right hidden" id="tp-br">
         <div class="t-close" onclick="closeAll()">&#215;</div>
         <div class="t-head">
-          <div class="t-head-row"><div class="t-head-ico"><svg viewBox="0 0 24 24" width="25" height="25" fill="none" stroke="#1258a8" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19h16"/><path d="M6 16l4-5 3 3 5-8"/><path d="M18 6h-4"/><path d="M18 6v4"/></svg></div><h2>Tvorba majetku a renta</h2></div>
+          <div class="t-head-row">
+            <div class="t-head-ico" style="background:rgba(220,236,255,.60);border-color:rgba(26,102,204,.20)"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="#1a66cc" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19h16"/><path d="M6 16l4-5 3 3 5-8"/><path d="M18 6h-4"/><path d="M18 6v4"/></svg></div>
+            <h2>Tvorba majetku a renta</h2>
+          </div>
           <p>Peníze, které mají plán: rezerva, ochrana před inflací, růst majetku a budoucí příjem.</p>
-          <div class="chips"><span class="chip">rezerva</span><span class="chip">renta</span><span class="chip">ETF &amp; FKI</span><span class="chip">diverzifikace</span></div>
+          <div class="chips"><span class="chip">rezerva</span><span class="chip">renta</span><span class="chip">fondy</span><span class="chip">diverzifikace</span></div>
         </div>
         <div class="t-rows">
-          <div class="t-row" onmouseenter="showV('br',0)" onmouseleave="hideV()"><span class="t-arr">›</span><div class="row-ico"><svg viewBox="0 0 24 24"><path d="M12 3v18"/><path d="M6 7h9a3 3 0 0 1 0 6H8"/><path d="M8 13h8a3 3 0 0 1 0 6H6"/></svg></div><div class="row-text"><h3>Tvorba majetku</h3><p>pravidelné i jednorázové investice s cílem</p></div></div>
-          <div class="t-row" onmouseenter="showV('br',1)" onmouseleave="hideV()"><span class="t-arr">›</span><div class="row-ico"><svg viewBox="0 0 24 24"><path d="M4 19h16"/><path d="M7 16v-5"/><path d="M12 16V8"/><path d="M17 16V5"/></svg></div><div class="row-text"><h3>Renta a pasivní příjem</h3><p>konkrétní plán na budoucí příjem</p></div></div>
-          <div class="t-row" onmouseenter="showV('br',2)" onmouseleave="hideV()"><span class="t-arr">›</span><div class="row-ico"><svg viewBox="0 0 24 24"><path d="M12 3 19 6v5c0 5-3 8-7 10-4-2-7-5-7-10V6z"/></svg></div><div class="row-text"><h3>Ochrana před inflací</h3><p>reálná hodnota peněz v čase</p></div></div>
-          <div class="t-row" onmouseenter="showV('br',3)" onmouseleave="hideV()"><span class="t-arr">›</span><div class="row-ico"><svg viewBox="0 0 24 24"><path d="M12 3v18"/><path d="M3 12h18"/><circle cx="12" cy="12" r="8"/></svg></div><div class="row-text"><h3>Diverzifikace portfolia</h3><p>fondy, ETF, FKI, nemovitosti</p></div></div>
+          <div class="t-row" onmouseenter="showV('br',0)" onmouseleave="hideV()">
+            <span class="t-arr">›</span>
+            <div class="row-ico"><svg viewBox="0 0 24 24"><path d="M12 3v18"/><path d="M6 7h9a3 3 0 0 1 0 6H8"/><path d="M8 13h8a3 3 0 0 1 0 6H6"/></svg></div>
+            <div class="row-text"><h3>Tvorba majetku</h3><p>pravidelné i jednorázové investice s cílem</p></div>
+          </div>
+          <div class="t-row" onmouseenter="showV('br',1)" onmouseleave="hideV()">
+            <span class="t-arr">›</span>
+            <div class="row-ico"><svg viewBox="0 0 24 24"><path d="M4 19h16"/><path d="M7 16v-5"/><path d="M12 16V8"/><path d="M17 16V5"/></svg></div>
+            <div class="row-text"><h3>Renta a pasivní příjem</h3><p>konkrétní plán na budoucí příjem</p></div>
+          </div>
+          <div class="t-row" onmouseenter="showV('br',2)" onmouseleave="hideV()">
+            <span class="t-arr">›</span>
+            <div class="row-ico"><svg viewBox="0 0 24 24"><path d="M12 3 19 6v5c0 5-3 8-7 10-4-2-7-5-7-10V6z"/></svg></div>
+            <div class="row-text"><h3>Ochrana před inflací</h3><p>reálná hodnota peněz v čase</p></div>
+          </div>
+          <div class="t-row" onmouseenter="showV('br',3)" onmouseleave="hideV()">
+            <span class="t-arr">›</span>
+            <div class="row-ico"><svg viewBox="0 0 24 24"><path d="M12 3v18"/><path d="M3 12h18"/><circle cx="12" cy="12" r="8"/></svg></div>
+            <div class="row-text"><h3>Diverzifikace portfolia</h3><p>fondy, ETF, FKI, nemovitosti</p></div>
+          </div>
         </div>
       </div>
 
+      <!-- TL left -->
       <div class="t-panel left hidden" id="tp-tl">
         <div class="t-close" onclick="closeAll()">&#215;</div>
         <div class="t-head">
-          <div class="t-head-row"><div class="t-head-ico"><svg viewBox="0 0 24 24" width="25" height="25" fill="none" stroke="#5638ba" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 19 6v5c0 5-3 8-7 10-4-2-7-5-7-10V6z"/><path d="M9 12l2 2 4-5"/></svg></div><h2>Ochrana příjmu a majetku</h2></div>
+          <div class="t-head-row">
+            <div class="t-head-ico" style="background:rgba(238,232,255,.60);border-color:rgba(86,52,186,.20)"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="#5638ba" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 19 6v5c0 5-3 8-7 10-4-2-7-5-7-10V6z"/><path d="M9 12l2 2 4-5"/></svg></div>
+            <h2>Ochrana příjmu a majetku</h2>
+          </div>
           <p>Čtu podmínky za vás — a vysvětlím lidsky, co máte pojištěno a kde jsou mezery.</p>
           <div class="chips"><span class="chip">příjem</span><span class="chip">rodina</span><span class="chip">majetek</span><span class="chip">OSVČ</span></div>
         </div>
         <div class="t-rows">
-          <div class="t-row" onmouseenter="showV('tl',0)" onmouseleave="hideV()"><div class="row-ico"><svg viewBox="0 0 24 24"><circle cx="12" cy="7" r="4"/><path d="M5 21c1.5-4 4-6 7-6s5.5 2 7 6"/></svg></div><div class="row-text"><h3>Ochrana příjmu</h3><p>invalidita, pracovní neschopnost, závažná onemocnění</p></div><span class="t-arr">›</span></div>
-          <div class="t-row" onmouseenter="showV('tl',1)" onmouseleave="hideV()"><div class="row-ico"><svg viewBox="0 0 24 24"><path d="M4 20v-8l8-6 8 6v8"/><path d="M9 20v-6h6v6"/></svg></div><div class="row-text"><h3>Nemovitost a domácnost</h3><p>kontrola limitů, výluk a pojistné hodnoty</p></div><span class="t-arr">›</span></div>
-          <div class="t-row" onmouseenter="showV('tl',2)" onmouseleave="hideV()"><div class="row-ico"><svg viewBox="0 0 24 24"><path d="M3 16l2-6h14l2 6"/><circle cx="7" cy="17" r="2"/><circle cx="17" cy="17" r="2"/></svg></div><div class="row-text"><h3>Vozidla</h3><p>povinné ručení a havarijní pojištění</p></div><span class="t-arr">›</span></div>
-          <div class="t-row" onmouseenter="showV('tl',3)" onmouseleave="hideV()"><div class="row-ico"><svg viewBox="0 0 24 24"><path d="M10 6h4"/><path d="M4 8h16v12H4z"/><path d="M8 8V6a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></div><div class="row-text"><h3>Podnikání a OSVČ</h3><p>odpovědnost, klíčové osoby, příjem</p></div><span class="t-arr">›</span></div>
+          <div class="t-row" onmouseenter="showV('tl',0)" onmouseleave="hideV()">
+            <div class="row-ico"><svg viewBox="0 0 24 24"><circle cx="12" cy="7" r="4"/><path d="M5 21c1.5-4 4-6 7-6s5.5 2 7 6"/></svg></div>
+            <div class="row-text"><h3>Ochrana příjmu</h3><p>invalidita, pracovní neschopnost, závažná onemocnění</p></div>
+            <span class="t-arr">›</span>
+          </div>
+          <div class="t-row" onmouseenter="showV('tl',1)" onmouseleave="hideV()">
+            <div class="row-ico"><svg viewBox="0 0 24 24"><path d="M4 20v-8l8-6 8 6v8"/><path d="M9 20v-6h6v6"/></svg></div>
+            <div class="row-text"><h3>Nemovitost a domácnost</h3><p>kontrola limitů, výluk a pojistné hodnoty</p></div>
+            <span class="t-arr">›</span>
+          </div>
+          <div class="t-row" onmouseenter="showV('tl',2)" onmouseleave="hideV()">
+            <div class="row-ico"><svg viewBox="0 0 24 24"><path d="M3 16l2-6h14l2 6"/><circle cx="7" cy="17" r="2"/><circle cx="17" cy="17" r="2"/></svg></div>
+            <div class="row-text"><h3>Vozidla</h3><p>povinné ručení a havarijní pojištění</p></div>
+            <span class="t-arr">›</span>
+          </div>
+          <div class="t-row" onmouseenter="showV('tl',3)" onmouseleave="hideV()">
+            <div class="row-ico"><svg viewBox="0 0 24 24"><path d="M10 6h4"/><path d="M4 8h16v12H4z"/><path d="M8 8V6a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></div>
+            <div class="row-text"><h3>Podnikání a OSVČ</h3><p>odpovědnost, klíčové osoby, příjem</p></div>
+            <span class="t-arr">›</span>
+          </div>
         </div>
       </div>
 
+      <!-- TR right -->
       <div class="t-panel right hidden" id="tp-tr">
         <div class="t-close" onclick="closeAll()">&#215;</div>
         <div class="t-head">
-          <div class="t-head-row"><div class="t-head-ico"><svg viewBox="0 0 24 24" width="25" height="25" fill="none" stroke="#c87809" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7 0l2-2a5 5 0 0 0-7-7l-1 1"/><path d="M14 11a5 5 0 0 0-7 0l-2 2a5 5 0 0 0 7 7l1-1"/></svg></div><h2>Komplexní finanční plán</h2></div>
+          <div class="t-head-row">
+            <div class="t-head-ico" style="background:rgba(255,244,218,.60);border-color:rgba(196,120,8,.20)"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="#c87809" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7 0l2-2a5 5 0 0 0-7-7l-1 1"/><path d="M14 11a5 5 0 0 0-7 0l-2 2a5 5 0 0 0 7 7l1-1"/></svg></div>
+            <h2>Komplexní finanční plán</h2>
+          </div>
           <p>Hlídání výročí, návazností a změn v čase. Jedno místo pro všechna důležitá rozhodnutí.</p>
           <div class="chips"><span class="chip">hlídání výročí</span><span class="chip">koordinace</span><span class="chip">revize</span><span class="chip">přehled</span></div>
         </div>
         <div class="t-rows">
-          <div class="t-row" onmouseenter="showV('tr',0)" onmouseleave="hideV()"><span class="t-arr">›</span><div class="row-ico"><svg viewBox="0 0 24 24"><path d="M4 6h16"/><path d="M4 12h16"/><path d="M4 18h10"/></svg></div><div class="row-text"><h3>Finanční plán jako celek</h3><p>hypotéka, investice a pojištění propojené</p></div></div>
-          <div class="t-row" onmouseenter="showV('tr',1)" onmouseleave="hideV()"><span class="t-arr">›</span><div class="row-ico"><svg viewBox="0 0 24 24"><path d="M8 3v4"/><path d="M16 3v4"/><rect x="4" y="5" width="16" height="16" rx="2"/><path d="M8 12h8"/></svg></div><div class="row-text"><h3>Hlídání výročí a změn</h3><p>revize, aktualizace, reakce na situace</p></div></div>
-          <div class="t-row" onmouseenter="showV('tr',2)" onmouseleave="hideV()"><span class="t-arr">›</span><div class="row-ico"><svg viewBox="0 0 24 24"><circle cx="6" cy="6" r="3"/><circle cx="18" cy="6" r="3"/><circle cx="12" cy="18" r="3"/><path d="M8.5 8.5l2.2 6"/><path d="M15.5 8.5l-2.2 6"/></svg></div><div class="row-text"><h3>Koordinace institucí</h3><p>banky, pojišťovny, investiční společnosti</p></div></div>
-          <div class="t-row" onmouseenter="showV('tr',3)" onmouseleave="hideV()"><span class="t-arr">›</span><div class="row-ico"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><path d="M12 8v5l3 2"/></svg></div><div class="row-text"><h3>Shrnutí a videoprezentace</h3><p>srozumitelný výstup po každé schůzce</p></div></div>
+          <div class="t-row" onmouseenter="showV('tr',0)" onmouseleave="hideV()">
+            <span class="t-arr">›</span>
+            <div class="row-ico"><svg viewBox="0 0 24 24"><path d="M4 6h16"/><path d="M4 12h16"/><path d="M4 18h10"/></svg></div>
+            <div class="row-text"><h3>Finanční plán jako celek</h3><p>hypotéka, investice a pojištění propojené</p></div>
+          </div>
+          <div class="t-row" onmouseenter="showV('tr',1)" onmouseleave="hideV()">
+            <span class="t-arr">›</span>
+            <div class="row-ico"><svg viewBox="0 0 24 24"><path d="M8 3v4"/><path d="M16 3v4"/><rect x="4" y="5" width="16" height="16" rx="2"/><path d="M8 12h8"/></svg></div>
+            <div class="row-text"><h3>Hlídání výročí a změn</h3><p>revize, aktualizace, reakce na situace</p></div>
+          </div>
+          <div class="t-row" onmouseenter="showV('tr',2)" onmouseleave="hideV()">
+            <span class="t-arr">›</span>
+            <div class="row-ico"><svg viewBox="0 0 24 24"><circle cx="6" cy="6" r="3"/><circle cx="18" cy="6" r="3"/><circle cx="12" cy="18" r="3"/><path d="M8.5 8.5l2.2 6"/><path d="M15.5 8.5l-2.2 6"/></svg></div>
+            <div class="row-text"><h3>Koordinace institucí</h3><p>banky, pojišťovny, investiční společnosti</p></div>
+          </div>
+          <div class="t-row" onmouseenter="showV('tr',3)" onmouseleave="hideV()">
+            <span class="t-arr">›</span>
+            <div class="row-ico"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><path d="M12 8v5l3 2"/></svg></div>
+            <div class="row-text"><h3>Shrnutí a videoprezentace</h3><p>srozumitelný výstup po každé schůzce</p></div>
+          </div>
         </div>
       </div>
 
+      <!-- VALUE PANEL -->
       <div class="v-panel hidden" id="v-panel">
         <div class="v-inner" id="v-inner"></div>
       </div>
 
-    </div>
-  </div>
-</div>
+    </div><!-- /panel-wrap -->
+  </div><!-- /stage -->
+</div><!-- /page -->
 
+<!-- ABOUT -->
 <div class="about-overlay" id="about-overlay">
   <div class="about-card">
     <div class="xbtn" onclick="closeAbout()">&#215;</div>
@@ -444,28 +496,76 @@ html,body{width:100%;height:100%;overflow:hidden;font-family:'Inter',system-ui,s
 <script>
 const D={
   bl:[
-    {h:'Vlastní bydlení',p:'Klient sám: 11–20 h porovnávání bank. Se mnou: jasný postup, výběr banky a vysvětlení, co sazba reálně znamená pro váš cashflow.',pills:['výběr banky','strategie fixace','cashflow plán'],rows:[['Sám','Se mnou','Úspora'],['11–20 hod.','1–2 hod.','až 18 hod.']]},
-    {h:'Investiční nemovitosti',p:'Ukážu pákový efekt, dopad vlastních peněz, výnos z nájmu a reálný pohled na celkový majetek — ne jen číslo ROI.',pills:['pákový efekt','výnos vs. nájem','cashflow analýza'],rows:[['Vlastní','Investiční','Přidaná hod.'],['bydlení','výnos','viditelná']]},
-    {h:'Refinancování a refixace',p:'Hlídám výročí fixace, zahájím refinancování včas a vyjednám podmínky. Klient dostane zprávu s přesným postupem.',pills:['výročí fixace','srovnání bank','nové podmínky'],rows:[['Sám','Se mnou','Výhoda'],['zapomene','upozornění','lepší sazba']]},
-    {h:'Konsolidace závazků',p:'Správné sloučení závazků může uvolnit cashflow pro rezervu nebo investice. Ukážu konkrétní čísla.',pills:['sloučení závazků','nižší splátka','volný cashflow'],rows:[['Před','Po','Rozdíl'],['více splátek','jedna splátka','volné peníze']]}
+    {label:'Vlastní bydlení',
+     desc:'Místo složitého porovnávání dostanete srozumitelný postup, jasné doporučení a kontrolu celého procesu.',
+     icons:[{ico:'M3 11.5 12 4l9 7.5M5.5 10.5V20h13v-9.5',lbl:'výběr banky'},{ico:'M4 19h16M6 15l3-3 3 3 3-4',lbl:'strategie splácení'},{ico:'M8 3v4M16 3v4 M4 7h16v14H4z',lbl:'hlídání termínů'}],
+     rows:[['Scénář','Měsíčně','Celkem','Rozdíl'],['Bez optimalizace','28 540 Kč','10 264 000 Kč','—'],['Doporučené řešení','23 730 Kč','8 542 000 Kč','1 722 000 Kč']]},
+    {label:'Investiční nemovitosti',
+     desc:'Ukážu pákový efekt, dopad vlastních peněz, výnos z nájmu a reálný pohled na celkový majetek — ne jen číslo ROI.',
+     icons:[{ico:'M4 20h16M7 20V8h10v12',lbl:'páka'},{ico:'M4 19h16M6 16l4-5 3 3 5-8',lbl:'výnos'},{ico:'M1 6h22v14H1zM8 6V4a2 2 0 0 1 4 0v2',lbl:'cashflow'}],
+     rows:[['Vlastní','Investiční','Přidaná hod.'],['bydlení','výnos','viditelná']]},
+    {label:'Refinancování a refixace',
+     desc:'Hlídám výročí fixace, zahájím refinancování včas a vyjednám podmínky. Klient dostane zprávu s přesným postupem.',
+     icons:[{ico:'M8 3v4M16 3v4 M4 7h16v14H4z',lbl:'výročí'},{ico:'M4 12h15M15 8l4 4-4 4M20 6v12',lbl:'srovnání bank'},{ico:'M9 12l2 2 4-5',lbl:'nové podmínky'}],
+     rows:[['Sám','Se mnou','Výhoda'],['zapomene','upozornění','lepší sazba']]},
+    {label:'Konsolidace závazků',
+     desc:'Správné sloučení závazků může uvolnit cashflow pro rezervu nebo investice. Ukážu konkrétní čísla.',
+     icons:[{ico:'M4 7h16M6 7v12h12V7M8 11h8',lbl:'sloučení'},{ico:'M12 3v18M6 7h9a3 3 0 0 1 0 6H8',lbl:'nižší splátka'},{ico:'M4 19h16M7 16v-5M12 16V8M17 16V5',lbl:'volný cashflow'}],
+     rows:[['Před','Po','Rozdíl'],['více splátek','jedna splátka','volné peníze']]}
   ],
   br:[
-    {h:'Tvorba majetku',p:'Neinvestujeme bez cíle. Nastavíme co je rezerva, co budoucí renta a co peníze pro děti. Každá část portfolia má smysl.',pills:['plán podle cíle','složené úročení','pravidelnost'],rows:[['Sám','Se mnou','Výhoda'],['náhodně','cíleně','jasný výsledek']]},
-    {h:'Renta a pasivní příjem',p:'Ukážu konkrétní číslo: kolik a jak dlouho investovat, aby portfolio generovalo příjem bez nutnosti prodávat jistinu.',pills:['cílová částka','měsíční příjem','čas do renty'],rows:[['Cíl','Plán','Výsledek'],['renta','investice','pravidelný příjem']]},
-    {h:'Ochrana před inflací',p:'Vysvětlím rozdíl mezi nominálním a reálným zhodnocením. Spousta lidí spoří na účtu a přitom reálně chudne.',pills:['reálné zhodnocení','inflace vs. výnos','ochrana hodnoty'],rows:[['Spořící účet','Inflace','Výsledek'],['~2 %','~3–4 %','chudnutí']]},
-    {h:'Diverzifikace portfolia',p:'Fondy, ETF, FKI, nemovitosti — ukážu proč nestačí mít vše na jedné kartě a jak rozložit riziko bez zbytečné složitosti.',pills:['fondy a ETF','FKI','nemovitosti'],rows:[['Jedno','Diverzif.','Výhoda'],['vše na kartě','více nástrojů','nižší riziko']]}
+    {label:'Tvorba majetku',
+     desc:'Neinvestujeme bez cíle. Nastavíme co je rezerva, co budoucí renta a co peníze pro děti. Každá část portfolia má smysl.',
+     icons:[{ico:'M12 3v18M6 7h9a3 3 0 0 1 0 6H8M8 13h8a3 3 0 0 1 0 6H6',lbl:'plán'},{ico:'M4 19h16M7 16v-5M12 16V8M17 16V5',lbl:'úročení'},{ico:'M8 3v4M16 3v4 M4 7h16v14H4z',lbl:'pravidelnost'}],
+     rows:[['Sám','Se mnou','Výhoda'],['náhodně','cíleně','jasný výsledek']]},
+    {label:'Renta a pasivní příjem',
+     desc:'Ukážu konkrétní číslo: kolik a jak dlouho investovat, aby portfolio generovalo příjem bez nutnosti prodávat jistinu.',
+     icons:[{ico:'M4 19h16M7 16v-5M12 16V8M17 16V5',lbl:'cílová částka'},{ico:'M12 3v18',lbl:'měsíční příjem'},{ico:'M8 3v4M16 3v4 M4 7h16v14H4z',lbl:'čas do renty'}],
+     rows:[['Cíl','Plán','Výsledek'],['renta','investice','pravidelný příjem']]},
+    {label:'Ochrana před inflací',
+     desc:'Vysvětlím rozdíl mezi nominálním a reálným zhodnocením. Spousta lidí spoří na účtu a přitom reálně chudne.',
+     icons:[{ico:'M12 3 19 6v5c0 5-3 8-7 10-4-2-7-5-7-10V6z',lbl:'reálná hodnota'},{ico:'M4 19h16M6 16l4-5 3 3 5-8',lbl:'inflace vs. výnos'},{ico:'M9 12l2 2 4-5',lbl:'ochrana hodnoty'}],
+     rows:[['Spořící účet','Inflace','Výsledek'],['~2 %','~3–4 %','chudnutí']]},
+    {label:'Diverzifikace portfolia',
+     desc:'Fondy, ETF, FKI, nemovitosti — ukážu proč nestačí mít vše na jedné kartě a jak rozložit riziko bez zbytečné složitosti.',
+     icons:[{ico:'M12 3v18M3 12h18',lbl:'fondy & ETF'},{ico:'M4 20v-8l8-6 8 6v8',lbl:'FKI'},{ico:'M4 20h16M7 20V8h10v12',lbl:'nemovitosti'}],
+     rows:[['Jedno','Diverzif.','Výhoda'],['vše na kartě','více nástrojů','nižší riziko']]}
   ],
   tl:[
-    {h:'Ochrana příjmu',p:'Čtu podmínky za vás a vysvětlím lidsky. Navrhnu konkrétní částky a ochranu skutečného příjmu — ne jen splátky úvěru.',pills:['konkrétní částky','výluky vysvětleny','ochrana příjmu'],rows:[['Sám','Se mnou','Úspora'],['8–15 hod.','vysvětlení','bez studia']]},
-    {h:'Nemovitost a domácnost',p:'Nekontroluju jen cenu pojistky. Ověřím limity, výluky a zda pojistná hodnota odpovídá skutečné ceně majetku.',pills:['pojistná hodnota','limity škod','výluky'],rows:[['Levná pojistka','Správná','Výsledek'],['nízká cena','krytí rizik','klid při škodě']]},
-    {h:'Vozidla',p:'Porovnám cenu, asistenci, skla, střet se zvěří, náhradní vozidlo. Nejlevnější pojistka bývá při škodě nejdražší volbou.',pills:['asistence','skla a střet','náhradní vozidlo'],rows:[['Nejlevnější','Správná','Rozdíl'],['nízká cena','krytí rizik','klid při škodě']]},
-    {h:'Podnikání a OSVČ',p:'OSVČ nemá nemocenskou jako zaměstnanec. Řeším ochranu příjmu, odpovědnost podnikání a návaznost na rodinu.',pills:['příjem při nemoci','odpovědnost','firemní rizika'],rows:[['OSVČ','Zaměstnanec','Řešení'],['bez nemocenské','státní ochrana','pojistka']]}
+    {label:'Ochrana příjmu',
+     desc:'Čtu podmínky za vás a vysvětlím lidsky. Navrhnu konkrétní částky a ochranu skutečného příjmu — ne jen splátky úvěru.',
+     icons:[{ico:'M12 3 19 6v5c0 5-3 8-7 10-4-2-7-5-7-10V6zM9 12l2 2 4-5',lbl:'výluky'},{ico:'M12 8v5l3 2',lbl:'správné částky'},{ico:'M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z',lbl:'ochrana příjmu'}],
+     rows:[['Sám','Se mnou','Úspora'],['8–15 hod.','vysvětlení','bez studia']]},
+    {label:'Nemovitost a domácnost',
+     desc:'Nekontroluju jen cenu pojistky. Ověřím limity, výluky a zda pojistná hodnota odpovídá skutečné ceně majetku.',
+     icons:[{ico:'M4 20v-8l8-6 8 6v8M9 20v-6h6v6',lbl:'pojistná hodnota'},{ico:'M4 7h16M6 7v12h12V7',lbl:'limity škod'},{ico:'M9 12l2 2 4-5',lbl:'výluky'}],
+     rows:[['Levná pojistka','Správná','Výsledek'],['nízká cena','krytí rizik','klid při škodě']]},
+    {label:'Vozidla',
+     desc:'Porovnám cenu, asistenci, skla, střet se zvěří, náhradní vozidlo. Nejlevnější pojistka bývá při škodě nejdražší volbou.',
+     icons:[{ico:'M3 16l2-6h14l2 6',lbl:'asistence'},{ico:'M9 12l2 2 4-5',lbl:'skla a střet'},{ico:'M4 12h15M15 8l4 4-4 4',lbl:'náhradní vůz'}],
+     rows:[['Nejlevnější','Správná','Rozdíl'],['nízká cena','krytí rizik','klid při škodě']]},
+    {label:'Podnikání a OSVČ',
+     desc:'OSVČ nemá nemocenskou jako zaměstnanec. Řeším ochranu příjmu, odpovědnost podnikání a návaznost na rodinu.',
+     icons:[{ico:'M10 6h4M4 8h16v12H4z',lbl:'příjem při nemoci'},{ico:'M12 3 19 6v5c0 5-3 8-7 10-4-2-7-5-7-10V6z',lbl:'odpovědnost'},{ico:'M8 3v4M16 3v4 M4 7h16v14H4z',lbl:'firemní rizika'}],
+     rows:[['OSVČ','Zaměstnanec','Řešení'],['bez nem.','státní ochr.','pojistka']]}
   ],
   tr:[
-    {h:'Finanční plán jako celek',p:'Ukážu dopad každého rozhodnutí na ostatní oblasti. Nižší splátka hypotéky může znamenat vyšší investici — finance jsou propojené nádoby.',pills:['propojení oblastí','dopad rozhodnutí','celkový obraz'],rows:[['Hypotéka','Investice','Pojištění'],['navzájem','ovlivňují','vše']]},
-    {h:'Hlídání výročí a změn',p:'Hlídám výročí fixací a životní změny. Klient dostane zprávu, až přijde čas jednat — nemusí nic sledovat sám.',pills:['výročí fixací','životní změny','upozornění'],rows:[['Sám','Se mnou','Výhoda'],['sleduje vše','dostane zprávu','klid']]},
-    {h:'Koordinace institucí',p:'Koordinuji banku, pojišťovnu a investiční společnost. Klient nemusí pamatovat, kdo co kdy potřebuje.',pills:['banky','pojišťovny','investice'],rows:[['Sám','Se mnou','Výhoda'],['koordinuje','přebírám','méně starostí']]},
-    {h:'Shrnutí a videoprezentace',p:'Připravuji srozumitelné shrnutí a videoprezentace po každé schůzce. Klient ví, co jsme řešili, proč a jaký je další krok.',pills:['shrnutí schůzky','videoprezentace','jasné kroky'],rows:[['Bez shrnutí','Se shrnutím','Výsledek'],['zapomínání','jasnost','důvěra']]}
+    {label:'Finanční plán jako celek',
+     desc:'Ukážu dopad každého rozhodnutí na ostatní oblasti. Nižší splátka hypotéky může znamenat vyšší investici — finance jsou propojené nádoby.',
+     icons:[{ico:'M4 6h16M4 12h16M4 18h10',lbl:'propojení'},{ico:'M4 19h16M6 16l4-5 3 3 5-8',lbl:'dopad rozhodnutí'},{ico:'M10 13a5 5 0 0 0 7 0l2-2a5 5 0 0 0-7-7l-1 1M14 11a5 5 0 0 0-7 0l-2 2a5 5 0 0 0 7 7l1-1',lbl:'celkový obraz'}],
+     rows:[['Hypotéka','Investice','Pojištění'],['navzájem','ovlivňují','vše']]},
+    {label:'Hlídání výročí a změn',
+     desc:'Hlídám výročí fixací a životní změny. Klient dostane zprávu, až přijde čas jednat — nemusí nic sledovat sám.',
+     icons:[{ico:'M8 3v4M16 3v4 M4 7h16v14H4zM8 12h8',lbl:'výročí fixací'},{ico:'M12 8v5l3 2',lbl:'životní změny'},{ico:'M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z',lbl:'upozornění'}],
+     rows:[['Sám','Se mnou','Výhoda'],['sleduje vše','dostane zprávu','klid']]},
+    {label:'Koordinace institucí',
+     desc:'Koordinuji banku, pojišťovnu a investiční společnost. Klient nemusí pamatovat, kdo co kdy potřebuje.',
+     icons:[{ico:'M4 20v-8l8-6 8 6v8',lbl:'banky'},{ico:'M12 3 19 6v5c0 5-3 8-7 10-4-2-7-5-7-10V6z',lbl:'pojišťovny'},{ico:'M4 19h16M6 16l4-5 3 3 5-8',lbl:'investice'}],
+     rows:[['Sám','Se mnou','Výhoda'],['koordinuje','přebírám','méně starostí']]},
+    {label:'Shrnutí a videoprezentace',
+     desc:'Připravuji srozumitelné shrnutí a videoprezentace po každé schůzce. Klient ví, co jsme řešili, proč a jaký je další krok.',
+     icons:[{ico:'M4 6h16M4 12h16M4 18h10',lbl:'shrnutí'},{ico:'M15 10l4.553-2.069A1 1 0 0 1 21 8.845v6.31a1 1 0 0 1-1.447.894L15 14M3 8a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z',lbl:'videoprezentace'},{ico:'M9 12l2 2 4-5',lbl:'jasné kroky'}],
+     rows:[['Bez shrnutí','Se shrnutím','Výsledek'],['zapomínání','jasnost','důvěra']]}
   ]
 };
 
@@ -491,9 +591,7 @@ function togglePanel(id){
 }
 
 function closeAll(){
-  curPanel=null;
-  base.classList.remove('dimmed');
-  hideV();
+  curPanel=null;base.classList.remove('dimmed');hideV();
   ['bl','br','tl','tr'].forEach(k=>{
     document.getElementById('bc-'+k).classList.remove('active');
     const tp=document.getElementById('tp-'+k);
@@ -507,21 +605,38 @@ function showV(panel,idx){
   const d=D[panel][idx];if(!d)return;
   const isLeft=(panel==='bl'||panel==='tl');
   vPanel.className='v-panel visible '+(isLeft?'from-left':'from-right');
+
+  // Build icons SVG row
+  const iconsHtml=d.icons.map(ic=>`
+    <div class="v-icon-item">
+      <div class="v-icon-box"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#1a66cc" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="${ic.ico}"/></svg></div>
+      <div class="v-icon-label">${ic.lbl}</div>
+    </div>`).join('');
+
+  // Build table — handle 4-col or 3-col
+  const cols=d.rows[0].length;
+  const colStyle=`grid-template-columns:${Array(cols).fill('1fr').join(' ')}`;
+  const tableHtml=d.rows.map((row,ri)=>`
+    <div class="v-tr" style="${colStyle}">
+      ${row.map(c=>`<div class="v-td${ri===0?' hd':''}">${c}</div>`).join('')}
+    </div>`).join('');
+
   vInner.innerHTML=`
-    <div><div class="v-title">${d.h}</div><div class="v-desc">${d.p}</div></div>
-    <div><div class="v-label">Přidaná hodnota</div>
-    <div class="v-pills">${d.pills.map(x=>`<div class="v-pill">${x}</div>`).join('')}</div></div>
-    <div><div class="v-label">Srovnání</div>
-    <div class="v-compare">
-      <div class="v-row">${d.rows[0].map(x=>`<div class="v-cell hd">${x}</div>`).join('')}</div>
-      <div class="v-row">${d.rows[1].map(x=>`<div class="v-cell">${x}</div>`).join('')}</div>
-    </div></div>`;
+    <div>
+      <div class="v-label">Přidaná hodnota</div>
+      <div class="v-title">${d.label}</div>
+      <div class="v-desc">${d.desc}</div>
+    </div>
+    <div class="v-icons">${iconsHtml}</div>
+    <div>
+      <div class="v-section-label">Srovnání</div>
+      <div class="v-table">${tableHtml}</div>
+    </div>`;
 }
 
 function hideV(){
   hideTimer=setTimeout(()=>{vPanel.className='v-panel hidden';},100);
 }
-
 vPanel.addEventListener('mouseenter',()=>{if(hideTimer){clearTimeout(hideTimer);hideTimer=null;}});
 vPanel.addEventListener('mouseleave',()=>{hideV();});
 
@@ -533,7 +648,6 @@ function openAbout(){
 }
 function closeAbout(){aboutOverlay.classList.remove('open');}
 aboutOverlay.addEventListener('click',e=>{if(e.target===aboutOverlay)closeAbout();});
-
 document.addEventListener('keydown',e=>{
   if(e.key==='Escape'){if(aboutOverlay.classList.contains('open'))closeAbout();else closeAll();}
 });
