@@ -405,6 +405,7 @@ function card(s){
     </div>
     <div class="pright">
       <div class="pdate">${fdate(s.vyroci)}</div>
+      ${(s.stav==='prepojistit'||s.stav==='vypoved')?`<button class="ab" style="background:var(--purple-bg);color:var(--purple-text);border-color:var(--purple-border)" onclick="openVypoved('${s.id}')"><i class="ti ti-file-text"></i> Výpověď</button>`:''}
       <button class="ab" onclick="openEdit('${s.id}')"><i class="ti ti-edit"></i> Správa</button>
       <button class="ab del" onclick="del('${s.id}')" title="Smazat"><i class="ti ti-trash"></i></button>
     </div>
