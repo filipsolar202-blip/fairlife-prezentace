@@ -553,15 +553,87 @@ function resetPDF(){document.getElementById('pdf-result').style.display='none';d
 
 // ===== VÝPOVĚĎ =====
 const VP_ADRESY = {
-  'Kooperativa': 'Kooperativa pojišťovna, a.s.\nTemplová 747\n110 01 Praha 1',
-  'Česká pojišťovna': 'Česká pojišťovna a.s.\nSpálená 75/16\n113 04 Praha 1',
-  'Allianz': 'Allianz pojišťovna, a.s.\nV Mezihraní 1\n160 41 Praha 6',
-  'ČSOB': 'ČSOB Pojišťovna, a.s.\nPardubice, Masarykovo náměstí 1458\n530 02 Pardubice',
-  'Generali': 'Generali Česká pojišťovna a.s.\nBělehradská 132\n120 84 Praha 2',
-  'Uniqa': 'UNIQA pojišťovna, a.s.\nEvropská 136\n160 12 Praha 6',
-  'Slavia': 'Slavia pojišťovna a.s.\nRevoluční 1\n110 00 Praha 1',
-  'ČPP': 'Česká podnikatelská pojišťovna, a.s.\nPobřežní 665/23\n186 00 Praha 8',
+  'Allianz': 'Allianz pojišťovna, a. s.\nKe Štvanici 656/3\n186 00 Praha 8',
+  'ČPP': 'Česká podnikatelská pojišťovna, a. s.\nP. O. BOX 28\n664 42 Modřice',
+  'ČSOB': 'ČSOB Pojišťovna, a. s.\nMasarykovo nám. 1458\n530 02 Pardubice',
+  'Direct': 'Direct pojišťovna, a. s.\nNové sady 996/25\n602 00 Brno',
+  'Generali': 'Generali Česká pojišťovna, a. s.\nP. O. Box 305\n659 05 Brno',
+  'Kooperativa': 'Kooperativa pojišťovna, a. s.\nBrněnská 634\n664 42 Modřice',
+  'Pillow': 'Pillow pojišťovna, a. s.\nLíbalova 2348/1\n149 00 Praha 4',
+  'Slavia': 'Slavia pojišťovna, a. s.\nTáborská 940/31\n140 00 Praha 4',
+  'Uniqa': 'Uniqa pojišťovna, a. s.\nEvropská 136\n160 12 Praha 6',
+  'Česká pojišťovna': 'Česká pojišťovna a. s.\nSpálená 75/16\n113 04 Praha 1',
   'Jiná': '',
+};
+
+// Postupy pro jednotlivé pojišťovny (POV - auto)
+const VP_POSTUPY = {
+  'Allianz': {
+    email: 'info@allianz.cz',
+    emailInfo: 'Výpověď stačí přiložit bez podpisu',
+    lhuta: 'Jednou za rok, nejméně 6 týdnů předem',
+    poznamka: 'Lze poslat z neověřeného e-mailu bez podpisu.'
+  },
+  'ČPP': {
+    email: 'info@cpp.cz',
+    emailInfo: 'Výpověď je třeba vytisknout, podepsat, vyfotit a přiložit nebo podepsat elektronicky',
+    lhuta: 'Ke každé platbě, nejméně 6 týdnů předem',
+    poznamka: 'Nutný podpis — vytisknout, podepsat, vyfotit a přiložit.'
+  },
+  'ČSOB': {
+    email: 'www.csobpoj.cz/poslete-nam-vzkaz',
+    emailInfo: 'Stačí vyplnit formulář na webu',
+    lhuta: 'Jednou za rok, nejméně 6 týdnů předem',
+    poznamka: 'Preferovaný způsob: webový formulář na csobpoj.cz.'
+  },
+  'Direct': {
+    email: 'info@direct.cz',
+    emailInfo: 'Výpověď stačí přiložit bez podpisu',
+    lhuta: 'Kdykoliv, ukončení dohodou',
+    poznamka: 'Bez poboček. Lze kdykoli, preferovaně dohodou.'
+  },
+  'Generali': {
+    email: 'www.generaliceska.cz/napiste-nam',
+    emailInfo: 'Výpověď je třeba vytisknout, podepsat, vyfotit a přiložit nebo podepsat elektronicky',
+    lhuta: 'Jednou za rok, nejméně 6 týdnů předem',
+    poznamka: 'Nutný podpis — vytisknout, podepsat, vyfotit a přiložit.'
+  },
+  'Kooperativa': {
+    email: 'info@koop.cz',
+    emailInfo: 'Výpověď je třeba vytisknout, podepsat, vyfotit a přiložit nebo podepsat elektronicky',
+    lhuta: 'Ke každé platbě, nejméně 6 týdnů předem',
+    poznamka: 'Nutný podpis — vytisknout, podepsat, vyfotit a přiložit.'
+  },
+  'Pillow': {
+    email: 'info@mypillow.cz',
+    emailInfo: 'Výpověď stačí přiložit bez podpisu',
+    lhuta: 'Ke každé platbě, nejméně 2 týdny předem',
+    poznamka: 'Bez poboček. Lhůta pouze 2 týdny — pozor!'
+  },
+  'Slavia': {
+    email: 'info@slavia-pojistovna.cz',
+    emailInfo: 'Výpověď stačí přiložit bez podpisu',
+    lhuta: 'Jednou za rok, nejméně 6 týdnů předem',
+    poznamka: 'Lze poslat bez podpisu.'
+  },
+  'Uniqa': {
+    email: 'info@uniqa.cz',
+    emailInfo: 'Výpověď je třeba vytisknout, podepsat, vyfotit a přiložit nebo podepsat elektronicky',
+    lhuta: 'Jednou za rok, nejméně 6 týdnů předem',
+    poznamka: 'Nutný podpis — vytisknout, podepsat, vyfotit a přiložit.'
+  },
+  'Česká pojišťovna': {
+    email: 'info@cpp.cz',
+    emailInfo: 'Výpověď je třeba vytisknout, podepsat, vyfotit a přiložit',
+    lhuta: 'Jednou za rok, nejméně 6 týdnů předem',
+    poznamka: 'Nutný podpis.'
+  },
+  'Jiná': {
+    email: '',
+    emailInfo: 'Ověřte postup u konkrétní pojišťovny',
+    lhuta: 'Ověřte lhůtu u konkrétní pojišťovny',
+    poznamka: ''
+  },
 };
 
 let vpTyp = 'konci';
@@ -731,6 +803,9 @@ load();
 
     <div class="sec-label">Náhled výpovědi</div>
     <div id="vp-preview" style="background:var(--bg2);border-radius:var(--radius);padding:14px;font-size:12px;line-height:1.8;white-space:pre-wrap;font-family:inherit;margin-bottom:1rem;min-height:200px;border:0.5px solid var(--border)"></div>
+
+    <div class="sec-label">Postup odeslání výpovědi</div>
+    <div id="vp-postup-box" style="background:var(--bg2);border-radius:var(--radius);padding:12px;margin-bottom:1rem;border:0.5px solid var(--border)"></div>
 
     <div class="br" style="justify-content:space-between;align-items:center">
       <div style="font-size:11px;color:var(--text2)"><i class="ti ti-printer"></i> Tisk = Ctrl+P po otevření náhledu</div>
