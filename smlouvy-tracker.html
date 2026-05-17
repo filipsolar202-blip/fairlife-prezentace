@@ -650,9 +650,11 @@ function openVypoved(id) {
   const pmap = {'Kooperativa':'Kooperativa','Česká pojišťovna':'Česká pojišťovna','Allianz':'Allianz','ČSOB':'ČSOB','Generali':'Generali','Uniqa':'Uniqa','Slavia':'Slavia','ČPP':'ČPP','Jiná':'Jiná'};
   psel.value = pmap[s.pojistovna] || 'Jiná';
   updateVpAdresa();
-  // Set datum
+  // Set datum — city from adresa
   const dnes = new Date();
-  document.getElementById('vp-datum').value = `${s.klient?.split(' ').pop() || '…'} dne ${dnes.getDate()}.${dnes.getMonth()+1}.${dnes.getFullYear()}`;
+  const adresaVal = s.adresa || '';
+  const cityGuess = adresaVal ? adresaVal.split(',').slice(-2).map(x=>x.trim()).find(x=>x.length>2&&!/^\d/.test(x)) || '…' : '…';
+  document.getElementById('vp-datum').value = `${cityGuess} dne ${dnes.getDate()}.${dnes.getMonth()+1}.${dnes.getFullYear()}`;
   vpTyp = 'konci';
   selectVpTyp('konci');
   closeMod('modal-edit');
@@ -741,16 +743,68 @@ document.addEventListener('input', e => {
 });
 
 function tiskVypoved() {
-  const preview = document.getElementById('vp-preview').textContent;
-  const klient = document.getElementById('vp-klient').value || 'vypoved';
+  const klient = document.getElementById('vp-klient').value || '…';
+  const cislo = document.getElementById('vp-cislo').value || '…';
+  const adresa = document.getElementById('vp-adresa').value || '';
+  const datum = document.getElementById('vp-datum').value || '';
+  const poznamka = document.getElementById('vp-poznamka').value;
+  const datumProdeje = document.getElementById('vp-datum-prodeje').value || 'XX.XX.XXXX';
+  const vozidlo = document.getElementById('vp-vozidlo').value || '';
+  const pojVal = document.getElementById('vp-pojistovna').value;
+  const adresaPoj = VP_ADRESY[pojVal] || pojVal;
+
+  // Adresa pojišťovny — každý řádek zvlášť
+  const pojLines = adresaPoj.split('\n').map(l => `<p style="margin:0;line-height:1.6">${l}</p>`).join('');
+
+  // Adresa klienta — každý řádek zvlášť
+  const klientLines = adresa ? adresa.split(',').map(l => `<p style="margin:0;line-height:1.6">${l.trim()}</p>`).join('') : '';
+
+  let vec = '';
+  let bodyText = '';
+
+  if (vpTyp === 'konci') {
+    vec = `Výpověď smlouvy č. ${cislo} ke konci pojistného období`;
+    bodyText = `Vypovídám výše uvedenou pojistnou smlouvu ke konci pojistného období.<br><br>Současně žádám o zaslání potvrzení o době trvání a škodném průběhu pojištění.`;
+  } else if (vpTyp === 'zdrazeni') {
+    vec = `Výpověď smlouvy č. ${cislo} z důvodu změny výše pojistného`;
+    bodyText = `Vypovídám výše uvedenou pojistnou smlouvu z důvodu změny výše pojistného.<br><br>Současně žádám o zaslání potvrzení o době trvání a škodném průběhu pojištění.`;
+  } else if (vpTyp === 'prodej') {
+    vec = `Výpověď smlouvy č. ${cislo} z důvodu prodeje vozidla`;
+    bodyText = `Vypovídám výše uvedenou smlouvu o pojištění odpovědnosti za škodu způsobenou provozem vozidla${vozidlo ? ' (' + vozidlo + ')' : ''} z důvodu prodeje vozidla k datu ${datumProdeje}.<br><br>Současně žádám o zaslání potvrzení o délce bezeškodního průběhu pojištění a o vrácení přeplatku pojistného. V příloze zasílám doklad o prodeji vozidla.`;
+  }
+
+  if (poznamka) bodyText += `<br><br>${poznamka}`;
+
   const win = window.open('', '_blank');
-  win.document.write(`<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Výpověď – ${klient}</title>
+  win.document.write(`<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Výpověď</title>
   <style>
-    body{font-family:'Times New Roman',serif;font-size:12pt;margin:2.5cm;line-height:1.8;color:#000}
-    pre{font-family:inherit;font-size:12pt;white-space:pre-wrap;line-height:1.8}
-    @media print{body{margin:2cm}}
-  </style></head><body><pre>${preview.replace(/</g,'&lt;').replace(/>/g,'&gt;')}</pre>
-  <script>window.onload=()=>{window.print();}<\/script></body></html>`);
+    *{box-sizing:border-box}
+    body{font-family:'Times New Roman',Georgia,serif;font-size:12pt;margin:0;padding:0;color:#000;background:#fff}
+    .page{margin:2.5cm 3cm 2.5cm 3cm;max-width:16cm}
+    .adresa-poj{margin-bottom:3em;line-height:1.6}
+    .datum{margin-bottom:3em}
+    .vec{margin-bottom:2.5em;font-weight:bold}
+    .vec span{font-weight:normal;font-size:10pt;display:block;margin-top:2px}
+    .text{margin-bottom:3em;line-height:1.7;text-align:justify}
+    .podpis{margin-top:1em;line-height:1.7}
+    @media print{
+      body{margin:0}
+      .page{margin:2cm 2.5cm}
+    }
+  </style></head><body>
+  <div class="page">
+    <div class="adresa-poj">${pojLines}</div>
+    <div class="datum">V ${datum}</div>
+    <div class="vec">Věc: ${vec}</div>
+    <div class="text">${bodyText}</div>
+    <p style="margin:0 0 3em 0">S pozdravem</p>
+    <div class="podpis">
+      <p style="margin:0;font-weight:500">${klient}</p>
+      ${klientLines}
+    </div>
+  </div>
+  <script>window.onload=()=>{window.print();}<\/script>
+  </body></html>`);
   win.document.close();
 }
 // ===== END VÝPOVĚĎ =====
