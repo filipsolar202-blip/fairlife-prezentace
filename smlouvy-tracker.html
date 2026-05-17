@@ -163,6 +163,7 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:#378add;box-sh
       <button class="ibtn" onclick="openSablona()"><i class="ti ti-mail"></i> Šablona</button>
       <button class="ibtn" onclick="exportData()"><i class="ti ti-download"></i> Export</button>
       <button class="ibtn" onclick="openImport()"><i class="ti ti-upload"></i> Import</button>
+      <a class="ibtn" href="https://drive.google.com/drive/folders/130YjntsN3-13QchctOZBqcFXvrDJbh_e" target="_blank" title="Otevřít složku Klienti na Google Drive"><i class="ti ti-brand-google-drive"></i> Drive</a>
     </div>
   </div>
   <div class="tabs">
@@ -202,6 +203,7 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:#378add;box-sh
         <div class="fl"><label>Datum výročí</label><input type="date" id="p-vyroci"></div>
         <div class="fl"><label>Telefon</label><input type="text" id="p-tel"></div>
         <div class="fl fgf"><label>Email</label><input type="email" id="p-email"></div>
+        <div class="fl fgf"><label>Adresa klienta</label><input type="text" id="p-adresa" placeholder="ulice č.p., město, PSČ"></div>
         <div class="fl fgf"><label>Poznámka</label><input type="text" id="p-pozn"></div>
       </div>
       <div class="br">
@@ -236,13 +238,14 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:#378add;box-sh
   <div id="view-pridat" class="view">
     <div style="max-width:500px">
       <div class="fg">
-        <div class="fl fgf"><label>Jméno klienta *</label><input type="text" id="f-klient" placeholder="Jan Novák"></div>
+        <div class="fl fgf"><label>Jméno klienta *</label><input type="text" id="f-klient" placeholder="Jan Novák" oninput="checkDupl(this.value)"><div id="dupl-hint" style="font-size:11px;margin-top:3px"></div></div>
         <div class="fl"><label>Typ *</label><select id="f-typ"><option value="auto">Auto</option><option value="majetek">Majetek</option></select></div>
         <div class="fl"><label>Pojišťovna</label><select id="f-poj"><option>Kooperativa</option><option>Česká pojišťovna</option><option>Allianz</option><option>ČSOB</option><option>Generali</option><option>Uniqa</option><option>Slavia</option><option>Jiná</option></select></div>
         <div class="fl"><label>Číslo smlouvy</label><input type="text" id="f-cislo"></div>
         <div class="fl"><label>Datum výročí *</label><input type="date" id="f-vyroci"></div>
         <div class="fl"><label>Telefon</label><input type="text" id="f-tel"></div>
         <div class="fl fgf"><label>Email klienta</label><input type="email" id="f-email"></div>
+        <div class="fl fgf"><label>Adresa klienta</label><input type="text" id="f-adresa" placeholder="ulice č.p., město, PSČ"></div>
         <div class="fl fgf"><label>Poznámka</label><input type="text" id="f-pozn"></div>
       </div>
       <div class="br">
@@ -298,6 +301,7 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:#378add;box-sh
       <div class="fl"><label>Datum výročí</label><input type="date" id="e-vyroci"></div>
       <div class="fl"><label>Telefon</label><input type="text" id="e-tel"></div>
       <div class="fl fgf"><label>Email klienta</label><input type="email" id="e-email"></div>
+      <div class="fl fgf"><label>Adresa klienta</label><input type="text" id="e-adresa" placeholder="ulice č.p., město, PSČ"></div>
       <div class="fl fgf"><label>Poznámka</label><input type="text" id="e-pozn"></div>
     </div>
 
@@ -393,7 +397,8 @@ function card(s){
     <div class="bubble ${u}"><div class="bnum ${u}">${s.days}</div><div class="blbl">dní</div></div>
     <div style="min-width:0">
       <div class="pname">${s.klient}</div>
-      <div class="pmeta">${s.pojistovna||'—'}${s.cislo?' · '+s.cislo:''}</div>
+      <div class="pmeta">${s.pojistovna||'—'}${s.cislo?' · '+s.cislo:''}${s.tel?' · '+s.tel:''}</div>
+      ${s.adresa?`<div class="pmeta" style="font-size:10px">${s.adresa}</div>`:''}
       <div style="display:flex;gap:4px;flex-wrap:wrap;margin-bottom:3px">${typB(s.typ)} ${stavBadge(s.stav)}</div>
       ${s.poznamka?`<div class="pnote">${s.poznamka}</div>`:''}
       ${lastLogs.length?`<div class="plog">${lastLogs.map(l=>`<div class="log-item"><span class="log-date">${l.d}</span><span class="log-text">${l.t}</span></div>`).join('')}</div>`:''}
@@ -401,6 +406,7 @@ function card(s){
     <div class="pright">
       <div class="pdate">${fdate(s.vyroci)}</div>
       <button class="ab" onclick="openEdit('${s.id}')"><i class="ti ti-edit"></i> Správa</button>
+      <button class="ab del" onclick="del('${s.id}')" title="Smazat"><i class="ti ti-trash"></i></button>
     </div>
   </div>`;
 }
@@ -456,7 +462,7 @@ function openEdit(id){
   document.getElementById('e-klient').value=s.klient;document.getElementById('e-typ').value=s.typ;
   document.getElementById('e-poj').value=s.pojistovna||'Kooperativa';document.getElementById('e-cislo').value=s.cislo||'';
   document.getElementById('e-vyroci').value=s.vyroci;document.getElementById('e-tel').value=s.tel||'';
-  document.getElementById('e-email').value=s.email||'';document.getElementById('e-pozn').value=s.poznamka||'';
+  document.getElementById('e-email').value=s.email||'';document.getElementById('e-adresa').value=s.adresa||'';document.getElementById('e-pozn').value=s.poznamka||'';
   renderStavPicker();renderLogList();
   document.getElementById('modal-edit').classList.add('open');
 }
@@ -475,16 +481,36 @@ document.getElementById('log-input').addEventListener('keydown',e=>{if(e.key==='
 
 function saveEdit(){
   const i=smlouvy.findIndex(s=>s.id===editId);if(i<0)return;
-  smlouvy[i]={...smlouvy[i],klient:document.getElementById('e-klient').value.trim(),typ:document.getElementById('e-typ').value,pojistovna:document.getElementById('e-poj').value,cislo:document.getElementById('e-cislo').value.trim(),vyroci:document.getElementById('e-vyroci').value,tel:document.getElementById('e-tel').value.trim(),email:document.getElementById('e-email').value.trim(),poznamka:document.getElementById('e-pozn').value.trim(),stav:editStav,log:editLogs};
+  smlouvy[i]={...smlouvy[i],klient:document.getElementById('e-klient').value.trim(),typ:document.getElementById('e-typ').value,pojistovna:document.getElementById('e-poj').value,cislo:document.getElementById('e-cislo').value.trim(),vyroci:document.getElementById('e-vyroci').value,tel:document.getElementById('e-tel').value.trim(),email:document.getElementById('e-email').value.trim(),adresa:document.getElementById('e-adresa').value.trim(),poznamka:document.getElementById('e-pozn').value.trim(),stav:editStav,log:editLogs};
   save();closeMod('modal-edit');renderAll();
+}
+function checkDupl(val){
+  const hint=document.getElementById('dupl-hint');if(!val||val.length<2){hint.innerHTML='';return;}
+  const found=smlouvy.filter(s=>s.klient.toLowerCase().includes(val.toLowerCase()));
+  if(found.length){hint.innerHTML=`<span style="color:#854f0b"><i class="ti ti-alert-triangle" style="font-size:11px;vertical-align:-1px"></i> Nalezeno ${found.length} podobných: ${found.slice(0,3).map(s=>s.klient).join(', ')}${found.length>3?'…':''}</span>`;}
+  else hint.innerHTML='';
 }
 function saveNew(){
   const k=document.getElementById('f-klient').value.trim();const v=document.getElementById('f-vyroci').value;const msg=document.getElementById('fmsg');
   if(!k||!v){msg.style.color='#a32d2d';msg.textContent='Vyplňte jméno a datum výročí.';return;}
-  smlouvy.push({id:Date.now().toString(),klient:k,typ:document.getElementById('f-typ').value,pojistovna:document.getElementById('f-poj').value,cislo:document.getElementById('f-cislo').value.trim(),vyroci:v,tel:document.getElementById('f-tel').value.trim(),email:document.getElementById('f-email').value.trim(),poznamka:document.getElementById('f-pozn').value.trim(),stav:'',log:[]});
+  // Duplicate check
+  const dupl=smlouvy.filter(s=>s.klient.toLowerCase()===k.toLowerCase());
+  if(dupl.length>0){
+    const info=dupl.map(s=>`${s.typ} · ${s.pojistovna||'—'} · výročí ${fdate(s.vyroci)}`).join('; ');
+    if(!confirm(`Klient "${k}" již existuje v databázi:\n${info}\n\nPřesto přidat novou smlouvu?`))return;
+  }
+  smlouvy.push({id:Date.now().toString(),klient:k,typ:document.getElementById('f-typ').value,pojistovna:document.getElementById('f-poj').value,cislo:document.getElementById('f-cislo').value.trim(),vyroci:v,tel:document.getElementById('f-tel').value.trim(),email:document.getElementById('f-email').value.trim(),adresa:document.getElementById('f-adresa').value.trim(),poznamka:document.getElementById('f-pozn').value.trim(),stav:'',log:[]});
   save();renderAll();msg.style.color='#3b6d11';msg.textContent='✓ Uloženo.';setTimeout(()=>msg.textContent='',3000);rstForm();
 }
-function rstForm(){['f-klient','f-cislo','f-tel','f-email','f-pozn'].forEach(id=>document.getElementById(id).value='');document.getElementById('f-vyroci').value='';document.getElementById('f-typ').value='auto';}
+function delFromEdit(){
+  if(!editId)return;
+  const s=smlouvy.find(x=>x.id===editId);
+  if(!s)return;
+  if(!confirm(`Smazat smlouvu klienta "${s.klient}"?\nTato akce je nevratná.`))return;
+  smlouvy=smlouvy.filter(x=>x.id!==editId);
+  save();closeMod('modal-edit');renderAll();
+}
+function rstForm(){['f-klient','f-cislo','f-tel','f-email','f-adresa','f-pozn'].forEach(id=>document.getElementById(id).value='');document.getElementById('f-vyroci').value='';document.getElementById('f-typ').value='auto';}
 function del(id){if(!confirm('Smazat smlouvu?'))return;smlouvy=smlouvy.filter(s=>s.id!==id);save();renderAll();}
 function openSablona(){document.getElementById('sab-poradce').value=sablona.poradce||'';document.getElementById('sab-predmet').value=sablona.predmet||'';document.getElementById('sab-text').value=sablona.text||'';document.getElementById('modal-sab').classList.add('open');}
 function saveSablona(){sablona={poradce:document.getElementById('sab-poradce').value,predmet:document.getElementById('sab-predmet').value,text:document.getElementById('sab-text').value};saveSab();renderMails();const m=document.getElementById('sab-msg');m.style.color='#3b6d11';m.textContent='✓ Uloženo.';setTimeout(()=>{m.textContent='';closeMod('modal-sab');},1500);}
@@ -509,7 +535,7 @@ async function parsePDF(input){
     status.innerHTML='<div class="status-ok"><i class="ti ti-check"></i>Úspěšně analyzováno</div>';
     document.getElementById('p-klient').value=parsed.klient||'';document.getElementById('p-typ').value=parsed.typ==='majetek'?'majetek':'auto';
     const ps=document.getElementById('p-poj');const opts=Array.from(ps.options).map(o=>o.value);ps.value=opts.includes(parsed.pojistovna)?parsed.pojistovna:'Jiná';
-    document.getElementById('p-cislo').value=parsed.cislo||'';document.getElementById('p-vyroci').value=parsed.vyroci||'';document.getElementById('p-email').value=parsed.email||'';document.getElementById('p-tel').value=parsed.tel||'';
+    document.getElementById('p-cislo').value=parsed.cislo||'';document.getElementById('p-vyroci').value=parsed.vyroci||'';document.getElementById('p-email').value=parsed.email||'';document.getElementById('p-tel').value=parsed.tel||'';document.getElementById('p-adresa').value=parsed.adresa||'';
     document.getElementById('parsed-fields').innerHTML=[['Klient',parsed.klient],['Typ',parsed.typ],['Pojišťovna',parsed.pojistovna],['Číslo',parsed.cislo],['Výročí',parsed.vyroci]].map(([k,v])=>`<div class="parse-field"><span class="parse-key">${k}</span><span style="font-weight:500">${v||'—'}</span></div>`).join('');
     result.style.display='block';
   }catch(e){status.innerHTML=`<div class="status-err"><i class="ti ti-alert-circle"></i>${e.message}</div>`;}
@@ -519,10 +545,143 @@ function toBase64(file){return new Promise((res,rej)=>{const r=new FileReader();
 function saveParsed(){
   const k=document.getElementById('p-klient').value.trim();const v=document.getElementById('p-vyroci').value;const msg=document.getElementById('pdf-save-msg');
   if(!k||!v){msg.style.color='#a32d2d';msg.textContent='Vyplňte jméno a datum výročí.';return;}
-  smlouvy.push({id:Date.now().toString(),klient:k,typ:document.getElementById('p-typ').value,pojistovna:document.getElementById('p-poj').value,cislo:document.getElementById('p-cislo').value.trim(),vyroci:v,tel:document.getElementById('p-tel').value.trim(),email:document.getElementById('p-email').value.trim(),poznamka:document.getElementById('p-pozn').value.trim(),stav:'',log:[]});
+  smlouvy.push({id:Date.now().toString(),klient:k,typ:document.getElementById('p-typ').value,pojistovna:document.getElementById('p-poj').value,cislo:document.getElementById('p-cislo').value.trim(),vyroci:v,tel:document.getElementById('p-tel').value.trim(),email:document.getElementById('p-email').value.trim(),adresa:document.getElementById('p-adresa').value.trim(),poznamka:document.getElementById('p-pozn').value.trim(),stav:'',log:[]});
   save();renderAll();msg.style.color='#3b6d11';msg.textContent='✓ Uloženo.';setTimeout(resetPDF,2000);
 }
-function resetPDF(){document.getElementById('pdf-result').style.display='none';document.getElementById('pdf-status').innerHTML='';document.getElementById('pdf-save-msg').textContent='';}
+function resetPDF(){document.getElementById('pdf-result').style.display='none';document.getElementById('pdf-status').innerHTML='';document.getElementById('pdf-save-msg').textContent='';['p-klient','p-cislo','p-tel','p-email','p-adresa','p-pozn'].forEach(id=>document.getElementById(id).value='');document.getElementById('p-vyroci').value='';}
+
+// ===== VÝPOVĚĎ =====
+const VP_ADRESY = {
+  'Kooperativa': 'Kooperativa pojišťovna, a.s.\nTemplová 747\n110 01 Praha 1',
+  'Česká pojišťovna': 'Česká pojišťovna a.s.\nSpálená 75/16\n113 04 Praha 1',
+  'Allianz': 'Allianz pojišťovna, a.s.\nV Mezihraní 1\n160 41 Praha 6',
+  'ČSOB': 'ČSOB Pojišťovna, a.s.\nPardubice, Masarykovo náměstí 1458\n530 02 Pardubice',
+  'Generali': 'Generali Česká pojišťovna a.s.\nBělehradská 132\n120 84 Praha 2',
+  'Uniqa': 'UNIQA pojišťovna, a.s.\nEvropská 136\n160 12 Praha 6',
+  'Slavia': 'Slavia pojišťovna a.s.\nRevoluční 1\n110 00 Praha 1',
+  'ČPP': 'Česká podnikatelská pojišťovna, a.s.\nPobřežní 665/23\n186 00 Praha 8',
+  'Jiná': '',
+};
+
+let vpTyp = 'konci';
+
+function openVypoved(id) {
+  const s = smlouvy.find(x => x.id === id);
+  if (!s) return;
+  document.getElementById('vp-id').value = id;
+  document.getElementById('vp-klient').value = s.klient || '';
+  document.getElementById('vp-cislo').value = s.cislo || '';
+  document.getElementById('vp-adresa').value = s.adresa || '';
+  // Set pojistovna
+  const psel = document.getElementById('vp-pojistovna');
+  const pmap = {'Kooperativa':'Kooperativa','Česká pojišťovna':'Česká pojišťovna','Allianz':'Allianz','ČSOB':'ČSOB','Generali':'Generali','Uniqa':'Uniqa','Slavia':'Slavia','ČPP':'ČPP','Jiná':'Jiná'};
+  psel.value = pmap[s.pojistovna] || 'Jiná';
+  updateVpAdresa();
+  // Set datum
+  const dnes = new Date();
+  document.getElementById('vp-datum').value = `${s.klient?.split(' ').pop() || '…'} dne ${dnes.getDate()}.${dnes.getMonth()+1}.${dnes.getFullYear()}`;
+  vpTyp = 'konci';
+  selectVpTyp('konci');
+  closeMod('modal-edit');
+  document.getElementById('modal-vypoved').classList.add('open');
+}
+
+function updateVpAdresa() {
+  const v = document.getElementById('vp-pojistovna').value;
+  document.getElementById('vp-adresa-poj').value = VP_ADRESY[v] || '';
+  updateVpPreview();
+}
+
+function selectVpTyp(typ) {
+  vpTyp = typ;
+  ['konci','zdrazeni','prodej'].forEach(t => {
+    const el = document.getElementById('vp-typ-'+t);
+    el.className = 'stav-opt' + (t === typ ? ' sel-kontakt' : '');
+  });
+  document.getElementById('vp-prodej-row').style.display = typ === 'prodej' ? 'flex' : 'none';
+  document.getElementById('vp-vozidlo-row').style.display = typ === 'prodej' ? 'flex' : 'none';
+  updateVpPreview();
+}
+
+function updateVpPreview() {
+  const poj = document.getElementById('vp-adresa-poj').value || document.getElementById('vp-pojistovna').value;
+  const klient = document.getElementById('vp-klient').value || '…';
+  const cislo = document.getElementById('vp-cislo').value || '…';
+  const adresa = document.getElementById('vp-adresa').value || 'ulice, město, PSČ';
+  const datum = document.getElementById('vp-datum').value || '…';
+  const poznamka = document.getElementById('vp-poznamka').value;
+  const datumProdeje = document.getElementById('vp-datum-prodeje').value || 'XX.XX.XXXX';
+  const vozidlo = document.getElementById('vp-vozidlo').value || '';
+
+  let vec = '';
+  let text = '';
+  if (vpTyp === 'konci') {
+    vec = `Výpověď pojistné smlouvy č. ${cislo} ke konci pojistného období`;
+    text = `Vypovídám výše uvedenou pojistnou smlouvu ke konci pojistného období v souladu s § 2807 občanského zákoníku.
+
+Současně žádám o zaslání potvrzení o době trvání a škodném průběhu pojištění.`;
+  } else if (vpTyp === 'zdrazeni') {
+    vec = `Výpověď pojistné smlouvy č. ${cislo} z důvodu změny výše pojistného`;
+    text = `Vypovídám výše uvedenou pojistnou smlouvu z důvodu změny výše pojistného v souladu s § 2808 občanského zákoníku.
+
+Současně žádám o zaslání potvrzení o době trvání a škodném průběhu pojištění.`;
+  } else if (vpTyp === 'prodej') {
+    vec = `Výpověď pojistné smlouvy č. ${cislo} z důvodu prodeje vozidla`;
+    text = `Vypovídám výše uvedenou smlouvu o pojištění odpovědnosti za škodu způsobenou provozem vozidla${vozidlo ? ' (' + vozidlo + ')' : ''} z důvodu prodeje vozidla k datu ${datumProdeje}.
+
+Současně žádám o zaslání potvrzení o délce bezeškodního průběhu pojištění a o vrácení přeplatku pojistného. V příloze zasílám doklad o prodeji vozidla.`;
+  }
+
+  if (poznamka) text += `
+
+${poznamka}`;
+
+  const adresaLines = adresa.split(',').map(s => s.trim());
+  const adresaStr = adresaLines.join('\n\t');
+
+  const preview = `${poj}
+
+
+V ${datum}
+
+
+Věc: ${vec}
+
+
+${text}
+
+
+S pozdravem
+
+
+	${klient}
+	${adresaLines[0] || ''}
+	${adresaLines.slice(1).join(', ') || ''}`;
+  document.getElementById('vp-preview').textContent = preview;
+}
+
+// Live update preview on any input change
+document.addEventListener('input', e => {
+  if (['vp-klient','vp-cislo','vp-adresa','vp-datum','vp-poznamka','vp-datum-prodeje','vp-vozidlo','vp-adresa-poj'].includes(e.target.id)) {
+    updateVpPreview();
+  }
+});
+
+function tiskVypoved() {
+  const preview = document.getElementById('vp-preview').textContent;
+  const klient = document.getElementById('vp-klient').value || 'vypoved';
+  const win = window.open('', '_blank');
+  win.document.write(`<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Výpověď – ${klient}</title>
+  <style>
+    body{font-family:'Times New Roman',serif;font-size:12pt;margin:2.5cm;line-height:1.8;color:#000}
+    pre{font-family:inherit;font-size:12pt;white-space:pre-wrap;line-height:1.8}
+    @media print{body{margin:2cm}}
+  </style></head><body><pre>${preview.replace(/</g,'&lt;').replace(/>/g,'&gt;')}</pre>
+  <script>window.onload=()=>{window.print();}<\/script></body></html>`);
+  win.document.close();
+}
+// ===== END VÝPOVĚĎ =====
+
 function closeMod(id){document.getElementById(id).classList.remove('open');}
 document.querySelectorAll('.overlay').forEach(o=>o.addEventListener('click',e=>{if(e.target===o)o.classList.remove('open');}));
 const dz=document.getElementById('dropzone');
@@ -531,5 +690,55 @@ dz.addEventListener('dragleave',()=>dz.classList.remove('drag'));
 dz.addEventListener('drop',e=>{e.preventDefault();dz.classList.remove('drag');const f=e.dataTransfer.files[0];if(f&&f.type==='application/pdf'){const inp=document.getElementById('pdf-input');const dt=new DataTransfer();dt.items.add(f);inp.files=dt.files;parsePDF(inp);}});
 load();
 </script>
+
+<!-- VÝPOVĚĎ MODAL -->
+<div class="overlay" id="modal-vypoved">
+  <div class="modal modal-lg">
+    <div class="modal-title">Generátor výpovědi</div>
+    <input type="hidden" id="vp-id">
+
+    <div class="sec-label">Typ výpovědi</div>
+    <div class="stav-picker" style="grid-template-columns:1fr 1fr 1fr;margin-bottom:1rem">
+      <div class="stav-opt" id="vp-typ-konci" onclick="selectVpTyp('konci')">📅 Ke konci pojistného období</div>
+      <div class="stav-opt" id="vp-typ-zdrazeni" onclick="selectVpTyp('zdrazeni')">💰 Změna výše pojistného</div>
+      <div class="stav-opt" id="vp-typ-prodej" onclick="selectVpTyp('prodej')">🚗 Prodej vozidla</div>
+    </div>
+
+    <div class="fg">
+      <div class="fl fgf"><label>Pojišťovna (adresát)</label>
+        <select id="vp-pojistovna" onchange="updateVpAdresa()">
+          <option value="Kooperativa">Kooperativa pojišťovna, a.s.</option>
+          <option value="Česká pojišťovna">Česká pojišťovna a.s.</option>
+          <option value="Allianz">Allianz pojišťovna, a.s.</option>
+          <option value="ČSOB">ČSOB Pojišťovna, a.s.</option>
+          <option value="Generali">Generali Česká pojišťovna a.s.</option>
+          <option value="Uniqa">UNIQA pojišťovna, a.s.</option>
+          <option value="Slavia">Slavia pojišťovna a.s.</option>
+          <option value="ČPP">Česká podnikatelská pojišťovna, a.s.</option>
+          <option value="Jiná">Jiná pojišťovna</option>
+        </select>
+      </div>
+      <div class="fl fgf"><label>Adresa pojišťovny</label><input type="text" id="vp-adresa-poj"></div>
+      <div class="fl"><label>Jméno klienta</label><input type="text" id="vp-klient"></div>
+      <div class="fl"><label>Číslo smlouvy</label><input type="text" id="vp-cislo"></div>
+      <div class="fl fgf"><label>Adresa klienta</label><input type="text" id="vp-adresa" placeholder="ulice, město, PSČ"></div>
+      <div class="fl"><label>Místo a datum</label><input type="text" id="vp-datum"></div>
+      <div class="fl" id="vp-prodej-row" style="display:none"><label>Datum prodeje vozidla</label><input type="text" id="vp-datum-prodeje" placeholder="DD.MM.RRRR"></div>
+      <div class="fl fgf" id="vp-vozidlo-row" style="display:none"><label>Popis vozidla (SPZ / typ)</label><input type="text" id="vp-vozidlo" placeholder="např. Škoda Octavia, SPZ 1AB 2345"></div>
+      <div class="fl fgf"><label>Doplňující poznámka (volitelné)</label><input type="text" id="vp-poznamka" placeholder="např. žádám o vrácení přeplatku pojistného"></div>
+    </div>
+
+    <div class="sec-label">Náhled výpovědi</div>
+    <div id="vp-preview" style="background:var(--bg2);border-radius:var(--radius);padding:14px;font-size:12px;line-height:1.8;white-space:pre-wrap;font-family:inherit;margin-bottom:1rem;min-height:200px;border:0.5px solid var(--border)"></div>
+
+    <div class="br" style="justify-content:space-between;align-items:center">
+      <div style="font-size:11px;color:var(--text2)"><i class="ti ti-printer"></i> Tisk = Ctrl+P po otevření náhledu</div>
+      <div style="display:flex;gap:8px">
+        <button class="bs" onclick="closeMod('modal-vypoved')">Zavřít</button>
+        <button class="bp" onclick="tiskVypoved()"><i class="ti ti-printer"></i> Tisknout / Uložit PDF</button>
+      </div>
+    </div>
+  </div>
+</div>
 </body>
 </html>
