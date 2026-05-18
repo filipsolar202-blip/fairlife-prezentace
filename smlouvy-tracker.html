@@ -131,11 +131,11 @@ input:focus,select:focus{outline:none;border-color:#378add;box-shadow:0 0 0 3px 
 
 <nav class="topnav">
   <div class="topnav-logo">⚡ Filip Solár CRM</div>
-  <button class="navtab active" onclick="showSection('auta',this)"><i class="ti ti-shield-check"></i>Auta + majetek<span class="navbadge" id="nb-auta">0</span></button>
-  <button class="navtab" onclick="showSection('zivotni',this)"><i class="ti ti-heart"></i>Životní<span class="navbadge warn" id="nb-ziv">0</span></button>
-  <button class="navtab" onclick="showSection('uvery',this)"><i class="ti ti-building-bank"></i>Úvěry + hypotéky<span class="navbadge warn" id="nb-uver">0</span></button>
-  <button class="navtab" onclick="showSection('adamek',this)"><i class="ti ti-user-plus"></i>Potenciál Adámek</button>
-  <button class="navtab" onclick="showSection('linhart',this)"><i class="ti ti-user-plus"></i>Potenciál Linhart</button>
+  <button class="navtab active" id="nav-auta" onclick="showSection('auta')"><i class="ti ti-shield-check"></i>Auta + majetek<span class="navbadge" id="nb-auta"></span></button>
+  <button class="navtab" id="nav-zivotni" onclick="showSection('zivotni')"><i class="ti ti-heart"></i>Životní<span class="navbadge warn" id="nb-ziv" style="display:none"></span></button>
+  <button class="navtab" id="nav-uvery" onclick="showSection('uvery')"><i class="ti ti-building-bank"></i>Úvěry + hypotéky<span class="navbadge warn" id="nb-uver" style="display:none"></span></button>
+  <button class="navtab" id="nav-adamek" onclick="showSection('adamek')"><i class="ti ti-user-plus"></i>Potenciál Adámek</button>
+  <button class="navtab" id="nav-linhart" onclick="showSection('linhart')"><i class="ti ti-user-plus"></i>Potenciál Linhart</button>
 </nav>
 
 <!-- ===== AUTA + MAJETEK ===== -->
@@ -144,6 +144,7 @@ input:focus,select:focus{outline:none;border-color:#378add;box-shadow:0 0 0 3px 
   <div class="section-header">
     <div class="section-title">🛡️ Auta + majetek</div>
     <div style="display:flex;gap:6px">
+      <button class="ibtn" onclick="openAutaPridat()"><i class="ti ti-plus"></i> Přidat smlouvu</button>
       <button class="ibtn" onclick="exportSection('auta')"><i class="ti ti-download"></i> Export</button>
       <button class="ibtn" onclick="openAutaImport()"><i class="ti ti-upload"></i> Import zálohy</button>
     </div>
@@ -322,6 +323,29 @@ input:focus,select:focus{outline:none;border-color:#378add;box-shadow:0 0 0 3px 
   </div>
 </div>
 
+
+<!-- MODAL – Přidat smlouvu Auta -->
+<div class="overlay" id="modal-auta-pridat">
+  <div class="modal">
+    <div class="modal-title">Přidat smlouvu – Auta + majetek<button class="bs" style="padding:4px 10px" onclick="closeOverlay('modal-auta-pridat')">✕</button></div>
+    <div class="fg">
+      <div class="fl fgf"><label>Jméno klienta *</label><input type="text" id="ap-klient" placeholder="Jan Novák"></div>
+      <div class="fl"><label>Typ *</label><select id="ap-typ"><option value="auto">Auto</option><option value="majetek">Majetek</option></select></div>
+      <div class="fl"><label>Pojišťovna</label><select id="ap-pojistovna"><option>Kooperativa</option><option>Česká pojišťovna</option><option>Allianz</option><option>ČSOB</option><option>Generali</option><option>Uniqa</option><option>Slavia</option><option>ČPP</option><option>Direct</option><option>Jiná</option></select></div>
+      <div class="fl"><label>Číslo smlouvy</label><input type="text" id="ap-cislo"></div>
+      <div class="fl"><label>Datum výročí *</label><input type="date" id="ap-vyroci"></div>
+      <div class="fl"><label>Telefon</label><input type="text" id="ap-tel"></div>
+      <div class="fl fgf"><label>Email klienta</label><input type="email" id="ap-email"></div>
+      <div class="fl fgf"><label>Adresa klienta</label><input type="text" id="ap-adresa" placeholder="ulice č.p., město, PSČ"></div>
+      <div class="fl fgf"><label>Poznámka (vozidlo, SPZ...)</label><input type="text" id="ap-poznamka"></div>
+    </div>
+    <div class="br">
+      <button class="bs" onclick="closeOverlay('modal-auta-pridat')">Zrušit</button>
+      <button class="bp" onclick="saveAutaPridat()"><i class="ti ti-check"></i> Uložit smlouvu</button>
+    </div>
+    <div id="ap-msg" style="margin-top:6px;font-size:12px"></div>
+  </div>
+</div>
 <!-- MODAL – Import zálohy auta -->
 <div class="overlay" id="modal-auta-import">
   <div class="modal">
@@ -427,11 +451,11 @@ function stavBadge(stav, opts){
 function lastLog(log){ if(!log||!log.length) return '<span style="color:var(--text3);font-size:11px">—</span>'; const l=log[log.length-1]; return `<span style="font-size:11px">${l.d}: ${l.t}</span>`; }
 
 // ===== NAVIGATION =====
-function showSection(id, el){
+function showSection(id){
   document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
   document.querySelectorAll('.navtab').forEach(b=>b.classList.remove('active'));
   document.getElementById('section-'+id).classList.add('active');
-  el.classList.add('active');
+  document.getElementById('nav-'+id).classList.add('active');
 }
 
 // ===== AUTA + MAJETEK =====
@@ -781,6 +805,38 @@ function saveSazba(){
 }
 
 // ===== IMPORT/EXPORT =====
+function openAutaPridat(){
+  ['ap-klient','ap-cislo','ap-tel','ap-email','ap-adresa','ap-poznamka'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+  document.getElementById('ap-vyroci').value='';
+  document.getElementById('ap-typ').value='auto';
+  document.getElementById('ap-msg').textContent='';
+  document.getElementById('modal-auta-pridat').classList.add('open');
+}
+function saveAutaPridat(){
+  const k=document.getElementById('ap-klient').value.trim();
+  const v=document.getElementById('ap-vyroci').value;
+  const msg=document.getElementById('ap-msg');
+  if(!k||!v){msg.style.color='#a32d2d';msg.textContent='Vyplňte jméno klienta a datum výročí.';return;}
+  // Duplicate check
+  const dupl=auta.filter(s=>s.klient.toLowerCase()===k.toLowerCase());
+  if(dupl.length&&!confirm(`Klient "${k}" již existuje (${dupl.length} smluv). Přidat přesto?`)) return;
+  auta.push({
+    id: Date.now().toString(),
+    klient: k,
+    typ: document.getElementById('ap-typ').value,
+    pojistovna: document.getElementById('ap-pojistovna').value,
+    cislo: document.getElementById('ap-cislo').value.trim(),
+    vyroci: v,
+    tel: document.getElementById('ap-tel').value.trim(),
+    email: document.getElementById('ap-email').value.trim(),
+    adresa: document.getElementById('ap-adresa').value.trim(),
+    poznamka: document.getElementById('ap-poznamka').value.trim(),
+    stav: '', log: []
+  });
+  saveAll(); renderAll();
+  msg.style.color='#3b6d11'; msg.textContent='✓ Smlouva uložena.';
+  setTimeout(()=>closeOverlay('modal-auta-pridat'),1500);
+}
 function openAutaImport(){ document.getElementById('modal-auta-import').classList.add('open'); }
 function doAutaImport(){
   const msg=document.getElementById('auta-import-msg');
