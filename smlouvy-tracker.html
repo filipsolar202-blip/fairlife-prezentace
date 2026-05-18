@@ -337,9 +337,16 @@ input:focus,select:focus{outline:none;border-color:#378add;box-shadow:0 0 0 3px 
       </div>
       <button class="ab success" onclick="openGcal()"><i class="ti ti-calendar-event"></i> Přidat do Google Kalendáře</button>
     </div>
-    <div class="br">
-      <button class="bs" onclick="closeModal()">Zrušit</button>
-      <button class="bp" onclick="saveModal()">Uložit změny</button>
+    <div class="br" style="justify-content:space-between;flex-wrap:wrap;gap:8px">
+      <div style="display:flex;gap:5px;flex-wrap:wrap">
+        <button class="ab" onclick="openEmailModal('vyroci')" style="background:var(--info-bg);color:var(--info-text);border-color:var(--info-border)"><i class="ti ti-mail"></i> Email vyroci</button>
+        <button class="ab" onclick="openEmailModal('vypoved')" style="background:var(--warn-bg);color:var(--warn-text);border-color:var(--warn-border)"><i class="ti ti-mail-forward"></i> Email vypoved</button>
+        <button class="ab" onclick="openVypovedFromModal()" style="background:var(--purple-bg);color:var(--purple-text);border-color:var(--purple-border)"><i class="ti ti-file-text"></i> Vypoved PDF</button>
+      </div>
+      <div style="display:flex;gap:8px">
+        <button class="bs" onclick="closeModal()">Zavrit</button>
+        <button class="bp" onclick="saveModal()">Ulozit zmeny</button>
+      </div>
     </div>
   </div>
 </div>
@@ -453,7 +460,7 @@ input:focus,select:focus{outline:none;border-color:#378add;box-shadow:0 0 0 3px 
 <!-- MODAL – Email klientovi -->
 <div class="overlay" id="modal-email">
   <div class="modal" style="max-width:580px">
-    <div class="modal-title">Připravit email klientovi<button class="bs" style="padding:4px 10px" onclick="closeOverlay('modal-email')">x</button></div>
+    <div class="modal-title"><span>Email klientovi: <span id="em-typ-label" style="color:var(--info-text)">informativni</span></span><button class="bs" style="padding:4px 10px" onclick="closeOverlay('modal-email')">x</button></div>
     <div class="fg">
       <div class="fl fgf"><label>Komu (email)</label><input type="email" id="em-to"></div>
       <div class="fl fgf"><label>Predmet</label><input type="text" id="em-subject"></div>
@@ -839,124 +846,77 @@ function openModal(type, id){
 
   editLog=[...(rec.log||[])];
   editStav=rec.stavKontakt||rec.stav||'';
-
   document.getElementById('modal-klient-name').textContent=rec.klient;
 
-  // Build fields
+  // Build fields HTML structure first (no values in HTML to avoid injection bugs)
   let fields='';
   if(type==='auta'){
-    fields=`<div class="fl"><label>Pojišťovna</label><input id="mf-pojistovna" value="${rec.pojistovna||''}"></div>
-    <div class="fl"><label>Číslo smlouvy</label><input id="mf-cislo" value="${rec.cislo||''}"></div>
-    <div class="fl"><label>Datum výročí</label><input type="date" id="mf-vyroci" value="${rec.vyroci||''}"></div>
-    <div class="fl"><label>Email klienta</label><input type="email" id="mf-email" value="${rec.email||''}"></div>
-    <div class="fl fgf"><label>Poznámka</label><input id="mf-poznamka" value="${rec.poznamka||''}"></div>`;
+    fields='<div class="fl"><label>Pojistovna</label><input id="mf-pojistovna"></div>'+
+      '<div class="fl"><label>Cislo smlouvy</label><input id="mf-cislo"></div>'+
+      '<div class="fl"><label>Datum vyroci</label><input type="date" id="mf-vyroci"></div>'+
+      '<div class="fl"><label>Email klienta</label><input type="email" id="mf-email"></div>'+
+      '<div class="fl fgf"><label>Adresa klienta</label><input id="mf-adresa"></div>'+
+      '<div class="fl fgf"><label>Poznamka</label><input id="mf-poznamka"></div>';
   } else if(type==='zivotni'){
-    fields=`<div class="fl"><label>Producent</label><input id="mf-producent" value="${rec.producent||''}"></div>
-    <div class="fl"><label>Produkt</label><input id="mf-produkt" value="${rec.produkt||''}"></div>
-    <div class="fl"><label>Cislo smlouvy</label><input id="mf-cislo" value="${rec.cislo||''}"></div>
-    <div class="fl"><label>Platba</label><input id="mf-platba" value="${rec.platba||''}"></div>
-    <div class="fl"><label>EUCS</label><select id="mf-eucs"><option value="Ne" ${(rec.eucs||'Ne')==='Ne'?'selected':''}>Ne</option><option value="Ano" ${rec.eucs==='Ano'?'selected':''}>Ano</option><option value="Nechce" ${rec.eucs==='Nechce'?'selected':''}>Nechce</option></select></div>
-    <div class="fl fgf"><label>Poznamka</label><input id="mf-poznamka" value="${rec.poznamka||''}"></div>`;
+    fields='<div class="fl"><label>Producent</label><input id="mf-producent"></div>'+
+      '<div class="fl"><label>Produkt</label><input id="mf-produkt"></div>'+
+      '<div class="fl"><label>Cislo smlouvy</label><input id="mf-cislo"></div>'+
+      '<div class="fl"><label>Platba</label><input id="mf-platba"></div>'+
+      '<div class="fl"><label>EUCS</label><select id="mf-eucs"><option value="Ne">Ne</option><option value="Ano">Ano</option><option value="Nechce">Nechce</option></select></div>'+
+      '<div class="fl"><label>Email klienta</label><input type="email" id="mf-email"></div>'+
+      '<div class="fl fgf"><label>Poznamka</label><input id="mf-poznamka"></div>';
   } else if(type==='uvery'){
-    fields=`<div class="fl"><label>Banka / producent</label><input id="mf-producent" value="${rec.producent||''}"></div>
-    <div class="fl"><label>Úrok (%)</label><input id="mf-urok" value="${rec.urok||''}"></div>
-    <div class="fl"><label>Datum fixace</label><input type="date" id="mf-fixace" value="${rec.fixace||''}"></div>
-    <div class="fl"><label>Výše úvěru</label><input id="mf-vyse" value="${rec.vyseUveru||''}"></div>
-    <div class="fl fgf"><label>Poznámka</label><input id="mf-poznamka" value="${rec.poznamka||''}"></div>`;
+    fields='<div class="fl"><label>Banka / producent</label><input id="mf-producent"></div>'+
+      '<div class="fl"><label>Urok (%)</label><input id="mf-urok"></div>'+
+      '<div class="fl"><label>Datum fixace</label><input type="date" id="mf-fixace"></div>'+
+      '<div class="fl"><label>Vyse uveru</label><input id="mf-vyse"></div>'+
+      '<div class="fl"><label>Email klienta</label><input type="email" id="mf-email"></div>'+
+      '<div class="fl fgf"><label>Poznamka</label><input id="mf-poznamka"></div>';
   } else {
-    fields=`<div class="fl"><label>Telefon / kontakt</label><input id="mf-kontakt" value="${rec.kontakt||''}"></div>
-    <div class="fl"><label>Produkt</label><input id="mf-produkt" value="${rec.produkt||''}"></div>
-    <div class="fl"><label>Výše smlouvy</label><input id="mf-vyse" value="${rec.vyseSml||''}"></div>
-    <div class="fl fgf"><label>Poznámka</label><input id="mf-poznamka" value="${rec.poznamka||''}"></div>`;
+    fields='<div class="fl"><label>Telefon / kontakt</label><input id="mf-kontakt"></div>'+
+      '<div class="fl"><label>Produkt</label><input id="mf-produkt"></div>'+
+      '<div class="fl"><label>Vyse smlouvy</label><input id="mf-vyse"></div>'+
+      '<div class="fl"><label>Email</label><input type="email" id="mf-email"></div>'+
+      '<div class="fl fgf"><label>Poznamka</label><input id="mf-poznamka"></div>';
   }
-  document.getElementById('modal-fields').innerHTML=fields;
+  document.getElementById('modal-fields').innerHTML = fields;
+
+  // NOW safely set values via JS (avoids HTML injection)
+  function setVal(id, val){ const el=document.getElementById(id); if(el) el.value=val||''; }
+  setVal('mf-pojistovna', rec.pojistovna);
+  setVal('mf-cislo', rec.cislo);
+  setVal('mf-vyroci', rec.vyroci);
+  setVal('mf-email', rec.email);
+  setVal('mf-adresa', rec.adresa);
+  setVal('mf-poznamka', rec.poznamka);
+  setVal('mf-producent', rec.producent);
+  setVal('mf-produkt', rec.produkt);
+  setVal('mf-platba', rec.platba);
+  setVal('mf-urok', rec.urok);
+  setVal('mf-fixace', rec.fixace);
+  setVal('mf-vyse', rec.vyseUveru||rec.vyseSml);
+  setVal('mf-kontakt', rec.kontakt);
+  const eucsEl=document.getElementById('mf-eucs'); if(eucsEl) eucsEl.value=rec.eucs||'Ne';
 
   // Stav options
   let opts;
   if(type==='auta'||type==='zivotni') opts=STAV_POJISTENI;
   else if(type==='uvery'){
-    const isHyp2=(modalCtx&&(modalCtx.typ==='Hypotéka'||modalCtx.typ==='Hypoteka'))||false;
-    // check actual record
-    const recForStav=uvery.find(x=>x.id===id);
-    const isHypRec=recForStav&&(recForStav.typ==='Hypotéka'||recForStav.typ==='Hypoteka');
+    const isHypRec=rec&&(rec.typ==='Hypotéka'||rec.typ==='Hypoteka');
     opts=isHypRec?STAV_HYPOTEKA:STAV_UVER;
-  }
-  else opts=STAV_KONTAKT;
-  document.getElementById('modal-stav-area').innerHTML=`<select id="modal-stav-sel" style="margin-bottom:4px">${opts.map(o=>`<option value="${o.id}" ${editStav===o.id?'selected':''}>${o.label}</option>`).join('')}</select>`;
+  } else opts=STAV_KONTAKT;
+  document.getElementById('modal-stav-area').innerHTML='<select id="modal-stav-sel" style="margin-bottom:4px;width:100%">'+opts.map(o=>'<option value="'+o.id+'"'+(editStav===o.id?' selected':'')+'>'+o.label+'</option>').join('')+'</select>';
 
-  // Google Cal area
-  const showGcal=(type==='adamek'||type==='linhart');
-  document.getElementById('gcal-label').style.display=showGcal?'block':'none';
-  document.getElementById('gcal-area').style.display=showGcal?'block':'none';
-  document.getElementById('gcal-note').value=rec.gcalNote||'';
-  document.getElementById('gcal-datetime').value=rec.gcalDatetime||'';
+  // Email + Výpověď buttons (always shown)
+  document.getElementById('gcal-label').style.display=(type==='adamek'||type==='linhart')?'block':'none';
+  document.getElementById('gcal-area').style.display=(type==='adamek'||type==='linhart')?'block':'none';
+  if(type==='adamek'||type==='linhart'){
+    setVal('gcal-note', rec.gcalNote);
+    setVal('gcal-datetime', rec.gcalDatetime);
+  }
 
   renderModalLog();
   document.getElementById('modal-sprava').classList.add('open');
-}
-
-function renderModalLog(){
-  const ll=document.getElementById('modal-log-list');
-  if(!editLog.length){ll.innerHTML='<div style="font-size:12px;color:var(--text3);padding:4px">Zatím žádné záznamy</div>';return;}
-  ll.innerHTML=editLog.map((l,i)=>`<div class="log-entry"><span class="log-d">${l.d}</span><span class="log-t">${l.t}</span><span class="log-x" onclick="removeModalLog(${i})"><i class="ti ti-x"></i></span></div>`).join('');
-}
-function addModalLog(){
-  const inp=document.getElementById('modal-log-input');
-  const txt=inp.value.trim(); if(!txt) return;
-  editLog.push({d:today(),t:txt}); inp.value='';
-  renderModalLog();
-}
-function removeModalLog(i){ editLog.splice(i,1); renderModalLog(); }
-document.addEventListener('keydown',e=>{ if(e.key==='Enter'&&document.activeElement.id==='modal-log-input'){e.preventDefault();addModalLog();} });
-
-function saveModal(){
-  editStav=document.getElementById('modal-stav-sel').value;
-  let arr;
-  if(modalType==='auta') arr=auta;
-  else if(modalType==='zivotni') arr=zivotni;
-  else if(modalType==='uvery') arr=uvery;
-  else if(modalType==='adamek') arr=adamek;
-  else arr=linhart;
-  const i=arr.findIndex(x=>x.id===modalId); if(i<0) return;
-
-  const upd={log:editLog};
-  if(modalType==='auta'||modalType==='zivotni'||modalType==='uvery') upd.stav=editStav;
-  else upd.stavKontakt=editStav;
-
-  // Read fields
-  const fPoj=document.getElementById('mf-pojistovna');
-  const fCislo=document.getElementById('mf-cislo');
-  const fVyroci=document.getElementById('mf-vyroci');
-  const fEmail=document.getElementById('mf-email');
-  const fPozn=document.getElementById('mf-poznamka');
-  const fProd=document.getElementById('mf-producent');
-  const fProdukt=document.getElementById('mf-produkt');
-  const fPlatba=document.getElementById('mf-platba');
-  const fUrok=document.getElementById('mf-urok');
-  const fFixace=document.getElementById('mf-fixace');
-  const fVyse=document.getElementById('mf-vyse');
-  const fKontakt=document.getElementById('mf-kontakt');
-  const fGcalNote=document.getElementById('gcal-note');
-  const fGcalDt=document.getElementById('gcal-datetime');
-
-  if(fPoj) upd.pojistovna=fPoj.value;
-  if(fCislo) upd.cislo=fCislo.value;
-  if(fVyroci) upd.vyroci=fVyroci.value;
-  if(fEmail) upd.email=fEmail.value;
-  if(fPozn) upd.poznamka=fPozn.value;
-  if(fProd) upd.producent=fProd.value;
-  if(fProdukt) upd.produkt=fProdukt.value;
-  if(fPlatba) upd.platba=fPlatba.value;
-  const fEucs=document.getElementById('mf-eucs'); if(fEucs) upd.eucs=fEucs.value;
-  if(fUrok) upd.urok=fUrok.value;
-  if(fFixace) upd.fixace=fFixace.value;
-  if(fVyse){ if(modalType==='uvery') upd.vyseUveru=fVyse.value; else upd.vyseSml=fVyse.value; }
-  if(fKontakt) upd.kontakt=fKontakt.value;
-  if(fGcalNote) upd.gcalNote=fGcalNote.value;
-  if(fGcalDt) upd.gcalDatetime=fGcalDt.value;
-
-  arr[i]={...arr[i],...upd};
-  saveAll(); closeModal(); renderAll();
 }
 
 function closeModal(){ document.getElementById('modal-sprava').classList.remove('open'); }
@@ -1274,6 +1234,7 @@ function updateVpPostup() {
 }
 
 function tiskVypoved() {
+  logEmailSent('Vygenerovana vypoved PDF', '');
   const preview = document.getElementById('vp-preview').textContent;
   const klient = document.getElementById('vp-klient').value || 'vypoved';
   const win = window.open('', '_blank');
@@ -1315,27 +1276,34 @@ const EMAIL_SABLONA = {
   kontakt: {
     predmet: 'Financni poradenstvi - {klient}',
     text: 'Vazeny/a {klient},\n\nkontaktuji Vas na doporuceni. Rad bych Vam predstavil moznosti optimalizace financniho portfolia.\n\nProsim, kontaktujte me nebo mi dejte vedet, kdy by Vam hovor vyhovoval.\n\nS pozdravem,\nFilip Solar'
+  },
+  vypoved: {
+    predmet: 'Vypoved pojistne smlouvy c. {cislo}',
+    text: 'Vazeny/a {klient},\n\nv priloze Vam zasilam vypoved pojistne smlouvy c. {cislo} u pojistovny {pojistovna}.\n\nVypoved prosim podepiste a zašlete pojistovne dle prilozenych instrukci.\n\nPo odeslani vypovedi me prosim informujte, abychom mohli pokrocit s dalšimi kroky.\n\nV pripade dotazu me nevahe kontaktovat.\n\nS pozdravem,\nFilip Solar'
   }
 };
 
-function openEmailModal() {
+function openEmailModal(emailTyp) {
   const klient = document.getElementById('modal-klient-name').textContent;
   const cislo = document.getElementById('mf-cislo') ? document.getElementById('mf-cislo').value : '';
   const pojistovna = document.getElementById('mf-pojistovna') ? document.getElementById('mf-pojistovna').value : '';
   const email = document.getElementById('mf-email') ? document.getElementById('mf-email').value : '';
   const stav = document.getElementById('modal-stav-sel') ? document.getElementById('modal-stav-sel').value : '';
 
-  let tmpl = EMAIL_SABLONA.vyroci;
-  if(stav==='prepojistit') tmpl = EMAIL_SABLONA.prepojistit;
+  let tmpl;
+  if(emailTyp==='vypoved') tmpl = EMAIL_SABLONA.vypoved;
+  else if(emailTyp==='prepojistit'||stav==='prepojistit') tmpl = EMAIL_SABLONA.prepojistit;
   else if(modalType==='uvery') tmpl = EMAIL_SABLONA.fixace;
   else if(modalType==='zivotni') tmpl = EMAIL_SABLONA.zivotni5;
   else if(modalType==='adamek'||modalType==='linhart') tmpl = EMAIL_SABLONA.kontakt;
+  else tmpl = EMAIL_SABLONA.vyroci;
 
   const fill = s => s.replace(/{klient}/g,klient).replace(/{cislo}/g,cislo||'---').replace(/{pojistovna}/g,pojistovna||'---');
 
   document.getElementById('em-to').value = email||'';
   document.getElementById('em-subject').value = fill(tmpl.predmet);
   document.getElementById('em-body').value = fill(tmpl.text);
+  document.getElementById('em-typ-label').textContent = emailTyp==='vypoved'?'Email s vypovedí':'Informativní email';
 
   document.getElementById('modal-email').classList.add('open');
 }
@@ -1344,7 +1312,26 @@ function openMailto() {
   const to = document.getElementById('em-to').value;
   const subject = encodeURIComponent(document.getElementById('em-subject').value);
   const body = encodeURIComponent(document.getElementById('em-body').value);
-  window.location.href = 'mailto:'+to+'?subject='+subject+'&body='+body;
+  const typLabel = document.getElementById('em-typ-label').textContent;
+  // Log the action to the record
+  logEmailSent(typLabel, to);
+  window.open('mailto:'+to+'?subject='+subject+'&body='+body, '_blank');
+}
+
+function logEmailSent(typ, to) {
+  if(!modalId||!modalType) return;
+  const logEntry = {d:today(), t:'Odeslan email: '+typ+(to?' na '+to:'')};
+  editLog.push(logEntry);
+  renderModalLog();
+  // Auto-save the log entry immediately
+  let arr;
+  if(modalType==='auta') arr=auta;
+  else if(modalType==='zivotni') arr=zivotni;
+  else if(modalType==='uvery') arr=uvery;
+  else if(modalType==='adamek') arr=adamek;
+  else arr=linhart;
+  const i=arr.findIndex(x=>x.id===modalId);
+  if(i>=0){ arr[i].log=[...editLog]; saveAll(); renderAll(); }
 }
 
 // ============================================================
