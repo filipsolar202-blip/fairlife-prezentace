@@ -428,18 +428,18 @@ const STAV_POJISTENI = [
   {id:'',label:'Bez stavu'},
   {id:'kontakt',label:'Ke kontaktování'},
   {id:'reseni',label:'V řešení'},
-  {id:'prepojistit',label:'🔥 K přepojištění'},
+  {id:'prepojistit',label:'K přepojištění'},
   {id:'vypoved',label:'Odeslaná výpověď'},
   {id:'vyrizeno',label:'Vyřízeno'},
   {id:'neprepojistuje',label:'Nepřepojišťuje'},
 ];
 const STAV_KONTAKT = [
-  {id:'',label:'Neoslovený'},
-  {id:'voláno',label:'📞 Voláno'},
-  {id:'sms',label:'💬 SMS'},
-  {id:'email',label:'📧 Email'},
-  {id:'domluveno',label:'📅 Domluvena schůzka'},
-  {id:'nezajem',label:'❌ Nezájem'},
+  {id:'',label:'Neosloven'},
+  {id:'volano',label:'Volano'},
+  {id:'sms',label:'SMS'},
+  {id:'email',label:'Email'},
+  {id:'domluveno',label:'Domluvena schuzka'},
+  {id:'nezajem',label:'Nezajem'},
 ];
 
 function stavBadge(stav, opts){
@@ -469,7 +469,7 @@ function renderAuta(){
   if(fs) data=data.filter(s=>s.stav===fs);
   data.sort((a,b)=>{
     const P={prepojistit:5,vypoved:4,reseni:3,kontakt:2,vyrizeno:0,neprepojistuje:1};
-    const pa=P[a.stav]||−1, pb=P[b.stav]||−1;
+    const pa=P[a.stav]||-1, pb=P[b.stav]||-1;
     if(pa!==pb) return pb-pa;
     return a.days-b.days;
   });
@@ -482,7 +482,7 @@ function renderAuta(){
     <div class="metric"><div class="metric-label">Celkem smluv</div><div class="metric-val">${auta.length}</div></div>
     <div class="metric"><div class="metric-label">Urgentní &lt;30 dní</div><div class="metric-val mv-d">${urgent}</div></div>
     <div class="metric"><div class="metric-label">Do 90 dní</div><div class="metric-val mv-w">${soon}</div></div>
-    <div class="metric"><div class="metric-label">🔥 K přepojištění</div><div class="metric-val mv-d">${prepoj}</div></div>
+    <div class="metric"><div class="metric-label">K přepojištění</div><div class="metric-val mv-d">${prepoj}</div></div>
   `;
   document.getElementById('nb-auta').textContent=urgent+prepoj;
   document.getElementById('nb-auta').className='navbadge'+(urgent+prepoj>0?'':' ok');
@@ -596,7 +596,7 @@ function renderUvery(){
     const vysoka=aktSazba&&urokNum&&(urokNum-aktSazba)>=0.5;
     const rowCls=vysoka?'row-urgent':d>=0&&d<=30?'row-urgent':d>=0&&d<=100?'row-warn':'';
     const fixB=d===9999?'<span class="badge b-neutral">—</span>':d<0?'<span class="badge b-neutral">Prošlá</span>':d<=30?`<span class="badge b-danger">Za ${d} dní</span>`:d<=100?`<span class="badge b-warn">Za ${d} dní</span>`:`<span class="badge b-info">Za ${d} dní</span>`;
-    const urokB=vysoka?`<span class="badge b-danger">${s.urok} ↑</span>`:`<span class="badge b-neutral">${s.urok||'—'}</span>`;
+    const urokB=vysoka?`<span class="badge b-danger">${s.urok} (+)</span>`:`<span class="badge b-neutral">${s.urok||'—'}</span>`;
     return `<tr class="${rowCls}">
       <td style="font-weight:500">${s.klient}</td>
       <td><span class="badge ${s.typ==='Hypotéka'?'b-info':'b-purple'}">${s.typ||'—'}</span></td>
@@ -834,7 +834,7 @@ function saveAutaPridat(){
     stav: '', log: []
   });
   saveAll(); renderAll();
-  msg.style.color='#3b6d11'; msg.textContent='✓ Smlouva uložena.';
+  msg.style.color='#3b6d11'; msg.textContent='Ulozeno.';
   setTimeout(()=>closeOverlay('modal-auta-pridat'),1500);
 }
 function openAutaImport(){ document.getElementById('modal-auta-import').classList.add('open'); }
@@ -843,7 +843,7 @@ function doAutaImport(){
   try{
     const arr=JSON.parse(document.getElementById('auta-import-json').value);
     auta=arr; saveAll(); renderAll();
-    msg.style.color='#3b6d11'; msg.textContent=`✓ Importováno ${arr.length} smluv.`;
+    msg.style.color='#3b6d11'; msg.textContent="Importovano "+arr.length+" zaznamu.";
     setTimeout(()=>closeOverlay('modal-auta-import'),2000);
   }catch(e){ msg.style.color='#a32d2d'; msg.textContent='Chyba v JSON'; }
 }
