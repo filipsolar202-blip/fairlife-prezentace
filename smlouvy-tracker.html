@@ -136,6 +136,7 @@ input:focus,select:focus{outline:none;border-color:#378add;box-shadow:0 0 0 3px 
   <button class="navtab" id="nav-uvery" onclick="showSection('uvery')"><i class="ti ti-building-bank"></i>Úvěry + hypotéky<span class="navbadge warn" id="nb-uver" style="display:none"></span></button>
   <button class="navtab" id="nav-adamek" onclick="showSection('adamek')"><i class="ti ti-user-plus"></i>Potenciál Adámek</button>
   <button class="navtab" id="nav-linhart" onclick="showSection('linhart')"><i class="ti ti-user-plus"></i>Potenciál Linhart</button>
+  <button class="navtab" id="nav-todo" onclick="showSection('todo')"><i class="ti ti-checkbox"></i>TO-DO<span class="navbadge" id="nb-todo" style="display:none"></span></button>
 </nav>
 
 <!-- ===== AUTA + MAJETEK ===== -->
@@ -282,6 +283,39 @@ input:focus,select:focus{outline:none;border-color:#378add;box-shadow:0 0 0 3px 
 </div>
 </div>
 
+
+<!-- ===== TO-DO ===== -->
+<div id="section-todo" class="section">
+<div class="wrap">
+  <div class="section-header">
+    <div class="section-title">Tydenni TO-DO</div>
+    <div style="display:flex;gap:6px;align-items:center">
+      <span style="font-size:12px;color:var(--text2)" id="todo-week-label"></span>
+      <a id="gcal-open-btn" href="https://calendar.google.com" target="_blank" class="ibtn"><i class="ti ti-brand-google"></i> Google Kalendar</a>
+      <button class="ibtn" onclick="renderTodo()"><i class="ti ti-refresh"></i> Obnovit</button>
+    </div>
+  </div>
+
+  <div class="info-box">
+    TO-DO se generuje automaticky z vsech sekci. Zahrnuje: vyroci smluv do 90 dni, fixace hypotek do 100 dni, zivotni 5 let do 90 dni, uvery 3 roky do 90 dni, a vsechny domluvene schuzky z potencialu.
+  </div>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.5rem" id="todo-grid">
+  </div>
+
+  <div class="sec-label">Tento tyden - vsechny aktivity</div>
+  <div id="todo-list"></div>
+
+  <!-- Custom TO-DO -->
+  <div class="sec-label" style="margin-top:1.5rem">Vlastni ukoly</div>
+  <div style="display:flex;gap:8px;margin-bottom:1rem">
+    <input type="text" id="todo-custom-input" placeholder="Pridat vlastni ukol..." style="flex:1">
+    <input type="date" id="todo-custom-date">
+    <button class="bp" onclick="addCustomTodo()" style="padding:8px 14px"><i class="ti ti-plus"></i></button>
+  </div>
+  <div id="todo-custom-list"></div>
+</div>
+</div>
 <!-- MODAL – Správa záznamu (univerzální) -->
 <div class="overlay" id="modal-sprava">
   <div class="modal">
@@ -347,6 +381,90 @@ input:focus,select:focus{outline:none;border-color:#378add;box-shadow:0 0 0 3px 
       <button class="bp" onclick="saveAutaPridat()"><i class="ti ti-check"></i> Uložit smlouvu</button>
     </div>
     <div id="ap-msg" style="margin-top:6px;font-size:12px"></div>
+  </div>
+</div>
+
+<!-- MODAL – Výpověď -->
+<div class="overlay" id="modal-vypoved">
+  <div class="modal" style="max-width:600px">
+    <div class="modal-title">Generátor výpovědi<button class="bs" style="padding:4px 10px" onclick="closeOverlay('modal-vypoved')">x</button></div>
+
+    <div class="sec-label">Typ výpovědi</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-bottom:1rem">
+      <div class="stav-opt-vp" id="vp-konci" onclick="selectVpTyp('konci')" style="padding:8px;border:0.5px solid var(--border2);border-radius:var(--radius);cursor:pointer;font-size:12px;text-align:center">Ke konci obdobi</div>
+      <div class="stav-opt-vp" id="vp-zdrazeni" onclick="selectVpTyp('zdrazeni')" style="padding:8px;border:0.5px solid var(--border2);border-radius:var(--radius);cursor:pointer;font-size:12px;text-align:center">Zdrazeni pojistneho</div>
+      <div class="stav-opt-vp" id="vp-prodej" onclick="selectVpTyp('prodej')" style="padding:8px;border:0.5px solid var(--border2);border-radius:var(--radius);cursor:pointer;font-size:12px;text-align:center">Prodej vozidla</div>
+      <div class="stav-opt-vp" id="vp-ziv_bezna" onclick="selectVpTyp('ziv_bezna')" style="padding:8px;border:0.5px solid var(--border2);border-radius:var(--radius);cursor:pointer;font-size:12px;text-align:center">Zivotni - bezna vypoved</div>
+      <div class="stav-opt-vp" id="vp-ziv_odstoupeni" onclick="selectVpTyp('ziv_odstoupeni')" style="padding:8px;border:0.5px solid var(--border2);border-radius:var(--radius);cursor:pointer;font-size:12px;text-align:center">Zivotni - odstoupeni 30 dni</div>
+      <div class="stav-opt-vp" id="vp-ziv_2mesice" onclick="selectVpTyp('ziv_2mesice')" style="padding:8px;border:0.5px solid var(--border2);border-radius:var(--radius);cursor:pointer;font-size:12px;text-align:center">Zivotni - vypoved do 2 mesicu</div>
+    </div>
+
+    <div class="fg">
+      <div class="fl fgf"><label>Pojistovna (adresat)</label>
+        <select id="vp-pojistovna" onchange="updateVpAll()">
+          <option value="Allianz">Allianz pojistovna, a. s.</option>
+          <option value="CPP">Ceska podnikatelska pojistovna, a. s.</option>
+          <option value="CSOB">CSOB Pojistovna, a. s.</option>
+          <option value="Direct">Direct pojistovna, a. s.</option>
+          <option value="Generali">Generali Ceska pojistovna, a. s.</option>
+          <option value="Kooperativa">Kooperativa pojistovna, a. s.</option>
+          <option value="Pillow">Pillow pojistovna, a. s.</option>
+          <option value="Slavia">Slavia pojistovna, a. s.</option>
+          <option value="Uniqa">Uniqa pojistovna, a. s.</option>
+          <option value="CeskaPoj">Ceska pojistovna a. s.</option>
+          <option value="Jina">Jina pojistovna</option>
+          <optgroup label="--- Zivotni pojistovny ---">
+            <option value="Kooperativa_ziv">Kooperativa - zivotni</option>
+            <option value="CSOB_ziv">CSOB - zivotni</option>
+            <option value="Generali_ziv">Generali - zivotni</option>
+            <option value="Uniqa_ziv">Uniqa - zivotni</option>
+            <option value="NN">NN Zivotni pojistovna</option>
+            <option value="MetLife">MetLife</option>
+            <option value="Allianz_ziv">Allianz - zivotni</option>
+          </optgroup>
+        </select>
+      </div>
+      <div class="fl fgf"><label>Adresa pojistovny</label><input type="text" id="vp-adresa-poj"></div>
+      <div class="fl"><label>Jmeno klienta</label><input type="text" id="vp-klient"></div>
+      <div class="fl"><label>Cislo smlouvy</label><input type="text" id="vp-cislo"></div>
+      <div class="fl fgf"><label>Adresa klienta</label><input type="text" id="vp-adresa-klient"></div>
+      <div class="fl"><label>Misto a datum</label><input type="text" id="vp-datum"></div>
+      <div class="fl" id="vp-prodej-datum-row" style="display:none"><label>Datum prodeje vozidla</label><input type="text" id="vp-datum-prodeje" placeholder="DD.MM.RRRR"></div>
+      <div class="fl fgf" id="vp-vozidlo-row" style="display:none"><label>Popis vozidla (SPZ / typ)</label><input type="text" id="vp-vozidlo"></div>
+      <div class="fl fgf"><label>Doplnujici poznamka (volitelne)</label><input type="text" id="vp-poznamka-extra"></div>
+    </div>
+
+    <div class="sec-label">Nahled výpovedi</div>
+    <div id="vp-preview" style="background:var(--bg2);border-radius:var(--radius);padding:14px;font-size:12px;line-height:1.8;white-space:pre-wrap;font-family:inherit;margin-bottom:1rem;min-height:160px;border:0.5px solid var(--border)"></div>
+
+    <div class="sec-label">Postup odeslání pro tuto pojistovnu</div>
+    <div id="vp-postup-box" style="background:var(--bg2);border-radius:var(--radius);padding:12px;margin-bottom:1rem;border:0.5px solid var(--border);font-size:12px"></div>
+
+    <div class="br" style="justify-content:space-between;align-items:center">
+      <div style="font-size:11px;color:var(--text2)">Tisk = Ctrl+P po otevreni nahledu</div>
+      <div style="display:flex;gap:8px">
+        <button class="bs" onclick="closeOverlay('modal-vypoved')">Zavrit</button>
+        <button class="bp" onclick="tiskVypoved()"><i class="ti ti-printer"></i> Tisknout / PDF</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL – Email klientovi -->
+<div class="overlay" id="modal-email">
+  <div class="modal" style="max-width:580px">
+    <div class="modal-title">Připravit email klientovi<button class="bs" style="padding:4px 10px" onclick="closeOverlay('modal-email')">x</button></div>
+    <div class="fg">
+      <div class="fl fgf"><label>Komu (email)</label><input type="email" id="em-to"></div>
+      <div class="fl fgf"><label>Predmet</label><input type="text" id="em-subject"></div>
+      <div class="fl fgf"><label>Text emailu</label><textarea id="em-body" style="height:200px;resize:vertical;line-height:1.6"></textarea></div>
+    </div>
+    <div class="br" style="justify-content:space-between">
+      <button class="bs" onclick="closeOverlay('modal-email')">Zavrit</button>
+      <div style="display:flex;gap:8px">
+        <button class="ab success" onclick="openMailto()"><i class="ti ti-send"></i> Otevrit v emailovem klientovi</button>
+      </div>
+    </div>
   </div>
 </div>
 <!-- MODAL – Import zálohy auta -->
@@ -942,8 +1060,444 @@ function exportSection(type){
 function closeOverlay(id){ document.getElementById(id).classList.remove('open'); }
 document.querySelectorAll('.overlay').forEach(o=>o.addEventListener('click',e=>{if(e.target===o)o.classList.remove('open');}));
 
+// ============================================================
+// VÝPOVĚĎ ENGINE
+// ============================================================
+const VP_ADRESY = {
+  'Allianz': 'Allianz pojistovna, a. s.\nKe Stvanici 656/3\n186 00 Praha 8',
+  'CPP': 'Ceska podnikatelska pojistovna, a. s.\nP. O. BOX 28\n664 42 Modrice',
+  'CSOB': 'CSOB Pojistovna, a. s.\nMasarykovo nam. 1458\n530 02 Pardubice',
+  'Direct': 'Direct pojistovna, a. s.\nNove sady 996/25\n602 00 Brno',
+  'Generali': 'Generali Ceska pojistovna, a. s.\nP. O. Box 305\n659 05 Brno',
+  'Kooperativa': 'Kooperativa pojistovna, a. s.\nBrnenska 634\n664 42 Modrice',
+  'Pillow': 'Pillow pojistovna, a. s.\nLibalova 2348/1\n149 00 Praha 4',
+  'Slavia': 'Slavia pojistovna, a. s.\nTaborska 940/31\n140 00 Praha 4',
+  'Uniqa': 'Uniqa pojistovna, a. s.\nEvropska 136\n160 12 Praha 6',
+  'CeskaPoj': 'Ceska pojistovna a. s.\nSpalena 75/16\n113 04 Praha 1',
+  'Jina': '',
+  // Životní pojišťovny
+  'Kooperativa_ziv': 'Kooperativa pojistovna, a. s.\nBrnenska 634\n664 42 Modrice',
+  'CSOB_ziv': 'CSOB Pojistovna, a. s.\nMasarykovo nam. 1458\n530 02 Pardubice',
+  'Generali_ziv': 'Generali Ceska pojistovna, a. s.\nP. O. Box 305\n659 05 Brno',
+  'Uniqa_ziv': 'Uniqa pojistovna, a. s.\nEvropska 136\n160 12 Praha 6',
+  'NN': 'NN Zivotni pojistovna N. V., pobocka pro CR\nBuldandstejn 786/3\n180 00 Praha 8',
+  'MetLife': 'MetLife Europe d.a.c., pobocka pro CR\nNa Prikope 17\n110 00 Praha 1',
+  'Allianz_ziv': 'Allianz pojistovna, a. s.\nKe Stvanici 656/3\n186 00 Praha 8',
+};
+
+const VP_POSTUPY = {
+  'Allianz': {email:'info@allianz.cz', info:'Vypoved staci prilozhit bez podpisu', lhuta:'Jednou za rok, nejméne 6 tydnu predem'},
+  'CPP': {email:'info@cpp.cz', info:'Vypoved je treba vytisknout, podepsat, vyfotit a prilozhit nebo podepsat elektronicky', lhuta:'Ke kazde platbe, nejméne 6 tydnu predem'},
+  'CSOB': {email:'www.csobpoj.cz/poslete-nam-vzkaz', info:'Staci vyplnit formular na webu', lhuta:'Jednou za rok, nejméne 6 tydnu predem'},
+  'Direct': {email:'info@direct.cz', info:'Vypoved staci prilozhit bez podpisu', lhuta:'Kdykoliv, ukonceni dohodou'},
+  'Generali': {email:'www.generaliceska.cz/napiste-nam', info:'Vypoved je treba vytisknout, podepsat, vyfotit a prilozhit nebo podepsat elektronicky', lhuta:'Jednou za rok, nejméne 6 tydnu predem'},
+  'Kooperativa': {email:'info@koop.cz', info:'Vypoved je treba vytisknout, podepsat, vyfotit a prilozhit nebo podepsat elektronicky', lhuta:'Ke kazde platbe, nejméne 6 tydnu predem'},
+  'Pillow': {email:'info@mypillow.cz', info:'Vypoved staci prilozhit bez podpisu', lhuta:'Ke kazde platbe, nejméne 2 tydny predem - POZOR na kratsi lhutu!'},
+  'Slavia': {email:'info@slavia-pojistovna.cz', info:'Vypoved staci prilozhit bez podpisu', lhuta:'Jednou za rok, nejméne 6 tydnu predem'},
+  'Uniqa': {email:'info@uniqa.cz', info:'Vypoved je treba vytisknout, podepsat, vyfotit a prilozhit nebo podepsat elektronicky', lhuta:'Jednou za rok, nejméne 6 tydnu predem'},
+  'CeskaPoj': {email:'info@cpp.cz', info:'Vypoved je treba vytisknout, podepsat, vyfotit a prilozhit nebo podepsat elektronicky', lhuta:'Jednou za rok, nejméne 6 tydnu predem'},
+  'Jina': {email:'', info:'Overit postup u konkretni pojistovny', lhuta:'Overit lhutu u konkretni pojistovny'},
+  // Životní pojišťovny
+  'Kooperativa_ziv': {
+    email:'info@koop.cz',
+    info:'Zadost o ukonceni smlouvy ke stazeni na koop.cz. Nutny vlastnorocni podpis. Dodat osobne, postou nebo datovou schrankou.',
+    lhuta:'Bezna vypoved: nejméne 6 tydnu pred vyrocim. Odstoupeni do 30 dni od uzavreni. Vypoved do 2 mesicu od pocatku (8denni lhuta).',
+    upozorneni:'Pozor na danove dopady - dodaneni odpoctu za poslednich 10 let pri predcasnem ukonceni. Mozna ztrata investic (odkupne).',
+    formular:'https://www.koop.cz/file/edee/dokumenty/formulare/zmeny-dokonceni-ukonceni-pojistne-smlouvy/Zadost-o-ukonceni-smlouvy.pdf'
+  },
+  'CSOB_ziv': {
+    email:'www.csobpoj.cz/jak-na-smlouvy/vypovedi-zivotniho-pojisteni',
+    info:'Vyrizeni pres klientsky portal nebo pisemne. Vlastnorocni podpis nutny.',
+    lhuta:'Bezna vypoved: nejméne 6 tydnu pred vyrocim. Odstoupeni do 30 dni od uzavreni. Vypoved do 2 mesicu od pocatku.',
+    upozorneni:'Pozor na danove dopady - dodaneni odpoctu za poslednich 10 let. Mozna ztrata odkupneho.',
+    formular:'https://www.csobpoj.cz/jak-na-smlouvy/vypovedi-zivotniho-pojisteni'
+  },
+  'Generali_ziv': {
+    email:'www.generaliceska.cz/ukoncit-pojisteni',
+    info:'Online vyrizeni pres portal nebo pisemna vypoved s podpisem. Formular ke stazeni na webu.',
+    lhuta:'Bezna vypoved: nejméne 6 tydnu pred vyrocim. Odstoupeni do 30 dni. Vypoved do 2 mesicu od pocatku.',
+    upozorneni:'Pozor na danove dopady - dodaneni odpoctu za poslednich 10 let. Mozna ztrata odkupneho.',
+    formular:'https://www.generaliceska.cz/ukoncit-pojisteni'
+  },
+  'Uniqa_ziv': {
+    email:'info@uniqa.cz',
+    info:'Pisemna vypoved s vlastnorocnim podpisem. Formulare ke stazeni na uniqa.cz.',
+    lhuta:'Bezna vypoved: nejméne 6 tydnu pred vyrocim. Odstoupeni do 30 dni. Vypoved do 2 mesicu od pocatku.',
+    upozorneni:'Pozor na danove dopady - dodaneni odpoctu za poslednich 10 let. Mozna ztrata odkupneho.',
+    formular:'https://www.uniqa.cz/dokumenty-ke-stazeni/'
+  },
+  'NN': {
+    email:'info@nn.cz',
+    info:'Pisemna vypoved nebo online pres klientsky portal na nn.cz.',
+    lhuta:'Bezna vypoved: nejméne 6 tydnu pred vyrocim. Odstoupeni do 30 dni. Vypoved do 2 mesicu od pocatku.',
+    upozorneni:'Pozor na danove dopady - dodaneni odpoctu za poslednich 10 let. Mozna ztrata odkupneho.',
+    formular:'https://www.nn.cz/poradna/pojistovna/ukonceni-smlouvy.html'
+  },
+  'MetLife': {
+    email:'info@metlife.cz',
+    info:'Formular k ukonceni ke stazeni na metlife.cz. Nutny vlastnorocni podpis.',
+    lhuta:'Bezna vypoved: nejméne 6 tydnu pred vyrocim. Odstoupeni do 30 dni. Vypoved do 2 mesicu od pocatku.',
+    upozorneni:'Pozor na danove dopady - dodaneni odpoctu za poslednich 10 let. Mozna ztrata odkupneho.',
+    formular:'https://www.metlife.cz/content/dam/metlifecom/cz/ke-stazeni/obecne-formulare-ke-stazeni/zadosti-pro-individualni-pojisteni/WA126_0725_formular_k_ukonceni_pojistne_smlouvy_FO_vepisovatelny.pdf'
+  },
+  'Allianz_ziv': {
+    email:'info@allianz.cz',
+    info:'Pisemna vypoved s vlastnorocnim podpisem nebo pres klientsky portal.',
+    lhuta:'Bezna vypoved: nejméne 6 tydnu pred vyrocim. Odstoupeni do 30 dni. Vypoved do 2 mesicu od pocatku.',
+    upozorneni:'Pozor na danove dopady - dodaneni odpoctu za poslednich 10 let. Mozna ztrata odkupneho.',
+    formular:'https://www.allianz.cz'
+  },
+};
+
+let vpTyp = 'konci';
+
+function mapPojistovnaToVpKey(pojistovna, typ) {
+  const p = (pojistovna||'').toLowerCase();
+  const isZiv = typ==='zivotni';
+  if(p.includes('kooperativa')||p.includes('koop')) return isZiv?'Kooperativa_ziv':'Kooperativa';
+  if(p.includes('csob')) return isZiv?'CSOB_ziv':'CSOB';
+  if(p.includes('generali')) return isZiv?'Generali_ziv':'Generali';
+  if(p.includes('uniqa')) return isZiv?'Uniqa_ziv':'Uniqa';
+  if(p.includes('allianz')) return isZiv?'Allianz_ziv':'Allianz';
+  if(p.includes('nn')||p.includes('nationale')) return 'NN';
+  if(p.includes('metlife')) return 'MetLife';
+  if(p.includes('cpp')||p.includes('podnikatelska')) return 'CPP';
+  if(p.includes('direct')) return 'Direct';
+  if(p.includes('pillow')) return 'Pillow';
+  if(p.includes('slavia')) return 'Slavia';
+  if(p.includes('ceska pojistovna')||p.includes('ceska pojišťovna')) return 'CeskaPoj';
+  return 'Jina';
+}
+
+function openVypovedFromModal() {
+  // Get current record data
+  const klient = document.getElementById('modal-klient-name').textContent;
+  const cislo = document.getElementById('mf-cislo') ? document.getElementById('mf-cislo').value : '';
+  const pojistovna = document.getElementById('mf-pojistovna') ? document.getElementById('mf-pojistovna').value : '';
+  const adresa = document.getElementById('mf-adresa') ? document.getElementById('mf-adresa').value : '';
+  const email = document.getElementById('mf-email') ? document.getElementById('mf-email').value : '';
+
+  const vpKey = mapPojistovnaToVpKey(pojistovna, modalType);
+  document.getElementById('vp-pojistovna').value = vpKey;
+  document.getElementById('vp-klient').value = klient;
+  document.getElementById('vp-cislo').value = cislo;
+  document.getElementById('vp-adresa-klient').value = adresa;
+  document.getElementById('vp-adresa-poj').value = VP_ADRESY[vpKey]||'';
+
+  const dnes = new Date();
+  const cityGuess = adresa ? adresa.split(',').slice(-2).map(x=>x.trim()).find(x=>x.length>2&&!/^\d/.test(x))||'...' : '...';
+  document.getElementById('vp-datum').value = cityGuess+' dne '+dnes.getDate()+'.'+(dnes.getMonth()+1)+'.'+dnes.getFullYear();
+  document.getElementById('vp-poznamka-extra').value = '';
+  document.getElementById('vp-datum-prodeje').value = '';
+  document.getElementById('vp-vozidlo').value = '';
+
+  vpTyp = modalType==='zivotni' ? 'ziv_bezna' : 'konci';
+  selectVpTyp(vpTyp);
+  closeModal();
+  document.getElementById('modal-vypoved').classList.add('open');
+}
+
+function selectVpTyp(typ) {
+  vpTyp = typ;
+  ['konci','zdrazeni','prodej','ziv_bezna','ziv_odstoupeni','ziv_2mesice'].forEach(t => {
+    const el = document.getElementById('vp-'+t);
+    if(el) el.style.background = t===typ ? 'var(--info-bg)' : '';
+  });
+  document.getElementById('vp-prodej-datum-row').style.display = typ==='prodej'?'flex':'none';
+  document.getElementById('vp-vozidlo-row').style.display = typ==='prodej'?'flex':'none';
+  updateVpAll();
+}
+
+function updateVpAll() {
+  const pojVal = document.getElementById('vp-pojistovna').value;
+  document.getElementById('vp-adresa-poj').value = VP_ADRESY[pojVal]||'';
+  updateVpPreview();
+  updateVpPostup();
+}
+
+function updateVpPreview() {
+  const pojVal = document.getElementById('vp-pojistovna').value;
+  const adresaPoj = document.getElementById('vp-adresa-poj').value || pojVal;
+  const klient = document.getElementById('vp-klient').value || '...';
+  const cislo = document.getElementById('vp-cislo').value || '...';
+  const adresaKlient = document.getElementById('vp-adresa-klient').value || '';
+  const datum = document.getElementById('vp-datum').value || '...';
+  const extra = document.getElementById('vp-poznamka-extra').value;
+  const datumProdeje = document.getElementById('vp-datum-prodeje').value || 'XX.XX.XXXX';
+  const vozidlo = document.getElementById('vp-vozidlo').value || '';
+
+  let vec = '', text = '';
+  if(vpTyp==='konci'){
+    vec = 'Vypoved smlouvy c. '+cislo+' ke konci pojistneho obdobi';
+    text = 'Vypovidam vyse uvedenou pojistnou smlouvu ke konci pojistneho obdobi.\n\nSoucasne zadam o zaslani potvrzeni o dobe trvani a skodnem prubehu pojisteni.';
+  } else if(vpTyp==='zdrazeni'){
+    vec = 'Vypoved smlouvy c. '+cislo+' z duvodu zmeny vyse pojistneho';
+    text = 'Vypovidam vyse uvedenou pojistnou smlouvu z duvodu zmeny vyse pojistneho.\n\nSoucasne zadam o zaslani potvrzeni o dobe trvani a skodnem prubehu pojisteni.';
+  } else if(vpTyp==='prodej'){
+    vec = 'Vypoved smlouvy c. '+cislo+' z duvodu prodeje vozidla';
+    text = 'Vypovidam vyse uvedenou smlouvu o pojisteni odpovednosti za skodu zpusobenou provozem vozidla'+(vozidlo?' ('+vozidlo+')':'')+' z duvodu prodeje vozidla k datu '+datumProdeje+'.\n\nSoucasne zadam o zaslani potvrzeni o delce bezeskodniho prubehu pojisteni a o vraceni preplatku pojistneho. V priloze zasilam doklad o prodeji vozidla.';
+  } else if(vpTyp==='ziv_bezna'){
+    vec = 'Vypoved zivotniho pojisteni c. '+cislo+' ke konci pojistneho obdobi';
+    text = 'Vypovidam vyse uvedenou smlouvu o zivotnim pojisteni ke konci pojistneho obdobi.\n\nSoucasne zadam o zaslani informace o vysi odkupneho a o dalsi postup pri ukonceni smlouvy.\n\nBeru na vedomi mozne danove dopady vyplyvajici z predcasneho ukonceni pojisteni.';
+  } else if(vpTyp==='ziv_odstoupeni'){
+    vec = 'Odstoupeni od smlouvy o zivotnim pojisteni c. '+cislo;
+    text = 'Ve lhute 30 dnu od uzavreni smlouvy odstupuji od vyse uvedene smlouvy o zivotnim pojisteni.\n\nZadam o vraceni zaplaceného pojistného v plné výsi a o potvrzeni o ukonceni smlouvy.';
+  } else if(vpTyp==='ziv_2mesice'){
+    vec = 'Vypoved zivotniho pojisteni c. '+cislo+' ve lhute 2 mesicu od pocatku';
+    text = 'Ve lhute 2 mesicu od pocatku pojisteni vypovidam vyse uvedenou smlouvu o zivotnim pojisteni s 8denni vypovednni lhutou.\n\nSoucasne zadam o zaslani informace o vysi pripadneho odkupneho a o dalsi postup pri ukonceni smlouvy.';
+  } else {
+    vec = 'Vypoved smlouvy c. '+cislo;
+    text = 'Vypovidam vyse uvedenou pojistnou smlouvu.';
+  }
+  if(extra) text += '\n\n'+extra;
+
+  const adresaPojLines = adresaPoj.split('\n');
+  const adresaKlientLines = adresaKlient ? adresaKlient.split(',').map(x=>x.trim()) : [];
+  const preview = adresaPojLines.join('\n')+'\n\n\nV '+datum+'\n\n\nVec: '+vec+'\n\n\n'+text+'\n\n\nS pozdravem\n\n\n'+klient+'\n'+adresaKlientLines.join('\n');
+  document.getElementById('vp-preview').textContent = preview;
+}
+
+function updateVpPostup() {
+  const pojVal = document.getElementById('vp-pojistovna').value;
+  const p = VP_POSTUPY[pojVal]||VP_POSTUPY['Jina'];
+  let html = '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px">'+
+    '<div><span style="color:var(--text2);font-size:11px">Email / formular:</span><br><strong style="font-size:12px">'+p.email+'</strong><br><span style="font-size:11px;color:var(--text2)">'+p.info+'</span></div>'+
+    '<div><span style="color:var(--text2);font-size:11px">Lhuta:</span><br><span style="font-size:12px">'+p.lhuta+'</span></div>'+
+    '</div>';
+  if(p.upozorneni){
+    html += '<div style="background:var(--warn-bg);color:var(--warn-text);border-radius:6px;padding:7px 10px;font-size:11px;margin-bottom:6px">Upozorneni: '+p.upozorneni+'</div>';
+  }
+  if(p.formular){
+    html += '<div style="font-size:11px"><a href="'+p.formular+'" target="_blank" style="color:var(--info-text)">Stahnout formular / otevrit portal pojistovny</a></div>';
+  }
+  document.getElementById('vp-postup-box').innerHTML = html;
+}
+
+function tiskVypoved() {
+  const preview = document.getElementById('vp-preview').textContent;
+  const klient = document.getElementById('vp-klient').value || 'vypoved';
+  const win = window.open('', '_blank');
+  win.document.write('<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Vypoved</title>'+
+  '<style>body{font-family:Times New Roman,serif;font-size:12pt;margin:0;padding:0;color:#000}'+
+  '.page{margin:2.5cm 3cm}p{margin:0;line-height:1.8}.vec{font-weight:bold}'+
+  '@media print{.page{margin:2cm}}</style></head><body>'+
+  '<div class="page"><pre style="font-family:inherit;font-size:12pt;line-height:1.8;white-space:pre-wrap">'+
+  preview.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')+'</pre></div>'+
+  '<script>window.onload=function(){window.print();}<\/script></body></html>');
+  win.document.close();
+}
+
+document.addEventListener('input', function(e) {
+  const vpIds = ['vp-klient','vp-cislo','vp-adresa-klient','vp-datum','vp-poznamka-extra','vp-datum-prodeje','vp-vozidlo','vp-adresa-poj'];
+  if(vpIds.includes(e.target.id)) updateVpPreview();
+});
+
+// ============================================================
+// EMAIL MODAL
+// ============================================================
+const EMAIL_SABLONA = {
+  prepojistit: {
+    predmet: 'Nabidka prepojisteni - {cislo}',
+    text: 'Vazeny/a {klient},\n\nblizi se vyroci Vasi pojistne smlouvy c. {cislo} ({pojistovna}).\n\nRad bych s Vami provedl revizi smlouvy a pripravil nabidku prepojisteni za vyhodnejsich podminek.\n\nProsim, kontaktujte me nebo mi dejte vedet, kdy by Vam telefonat vyhovoval.\n\nS pozdravem,\nFilip Solar'
+  },
+  vyroci: {
+    predmet: 'Vyroci pojistne smlouvy - {cislo}',
+    text: 'Vazeny/a {klient},\n\nblizi se vyroci Vasi pojistne smlouvy c. {cislo} u pojistovny {pojistovna}.\n\nRad bych s Vami smlouvu zkontroloval a pripad ne aktualizoval podminky.\n\nProsim, kontaktujte me nebo mi dejte vedet, kdy by Vam hovor vyhovoval.\n\nS pozdravem,\nFilip Solar'
+  },
+  fixace: {
+    predmet: 'Blizi se konec fixace hypoteky - {cislo}',
+    text: 'Vazeny/a {klient},\n\nblizi se konec fixacniho obdobi Vasi hypoteky c. {cislo} ({pojistovna}).\n\nRad bych s Vami probral moznosti refinancovani a aktualni nabidky bank. Soucasne trzni sazby mohou byt pro Vas vyhodne.\n\nProsim, kontaktujte me nebo mi dejte vedet, kdy by Vam hovor vyhovoval.\n\nS pozdravem,\nFilip Solar'
+  },
+  zivotni5: {
+    predmet: 'Revize zivotniho pojisteni - {cislo}',
+    text: 'Vazeny/a {klient},\n\nVase zivotni pojisteni c. {cislo} je jiz 5 let aktivni. Tato faze je idealnim casem pro revizi a aktualizaci smlouvy dle Vasi aktualni zivotni situace.\n\nRad bych s Vami probral, zda pojisteni stale odpovida Vasim potrebam.\n\nProsim, kontaktujte me nebo mi dejte vedet, kdy by Vam hovor vyhovoval.\n\nS pozdravem,\nFilip Solar'
+  },
+  kontakt: {
+    predmet: 'Financni poradenstvi - {klient}',
+    text: 'Vazeny/a {klient},\n\nkontaktuji Vas na doporuceni. Rad bych Vam predstavil moznosti optimalizace financniho portfolia.\n\nProsim, kontaktujte me nebo mi dejte vedet, kdy by Vam hovor vyhovoval.\n\nS pozdravem,\nFilip Solar'
+  }
+};
+
+function openEmailModal() {
+  const klient = document.getElementById('modal-klient-name').textContent;
+  const cislo = document.getElementById('mf-cislo') ? document.getElementById('mf-cislo').value : '';
+  const pojistovna = document.getElementById('mf-pojistovna') ? document.getElementById('mf-pojistovna').value : '';
+  const email = document.getElementById('mf-email') ? document.getElementById('mf-email').value : '';
+  const stav = document.getElementById('modal-stav-sel') ? document.getElementById('modal-stav-sel').value : '';
+
+  let tmpl = EMAIL_SABLONA.vyroci;
+  if(stav==='prepojistit') tmpl = EMAIL_SABLONA.prepojistit;
+  else if(modalType==='uvery') tmpl = EMAIL_SABLONA.fixace;
+  else if(modalType==='zivotni') tmpl = EMAIL_SABLONA.zivotni5;
+  else if(modalType==='adamek'||modalType==='linhart') tmpl = EMAIL_SABLONA.kontakt;
+
+  const fill = s => s.replace(/{klient}/g,klient).replace(/{cislo}/g,cislo||'---').replace(/{pojistovna}/g,pojistovna||'---');
+
+  document.getElementById('em-to').value = email||'';
+  document.getElementById('em-subject').value = fill(tmpl.predmet);
+  document.getElementById('em-body').value = fill(tmpl.text);
+
+  document.getElementById('modal-email').classList.add('open');
+}
+
+function openMailto() {
+  const to = document.getElementById('em-to').value;
+  const subject = encodeURIComponent(document.getElementById('em-subject').value);
+  const body = encodeURIComponent(document.getElementById('em-body').value);
+  window.location.href = 'mailto:'+to+'?subject='+subject+'&body='+body;
+}
+
+// ============================================================
+// TO-DO ENGINE
+// ============================================================
+const SK_CUSTOM_TODO = 'crm_custom_todo_v1';
+let customTodos = [];
+
+function loadCustomTodos(){
+  try{ customTodos = JSON.parse(localStorage.getItem(SK_CUSTOM_TODO)||'[]'); }catch(e){ customTodos=[]; }
+}
+function saveCustomTodos(){
+  localStorage.setItem(SK_CUSTOM_TODO, JSON.stringify(customTodos));
+}
+
+function getWeekRange(){
+  const now = new Date(); now.setHours(0,0,0,0);
+  const day = now.getDay();
+  const mon = new Date(now); mon.setDate(now.getDate() - (day===0?6:day-1));
+  const sun = new Date(mon); sun.setDate(mon.getDate()+6);
+  return {mon, sun};
+}
+
+function renderTodo(){
+  loadCustomTodos();
+  const {mon, sun} = getWeekRange();
+  const label = mon.getDate()+'.'+(mon.getMonth()+1)+'. - '+sun.getDate()+'.'+(sun.getMonth()+1)+'.'+sun.getFullYear();
+  const el = document.getElementById('todo-week-label');
+  if(el) el.textContent = 'Tyden: '+label;
+
+  const items = [];
+
+  // --- AUTA: vyroci do 90 dni ---
+  auta.forEach(s => {
+    const d = dtn(s.vyroci);
+    if(d<=90 && s.stav!=='vyrizeno' && s.stav!=='neprepojistuje'){
+      items.push({
+        cat:'Auta + majetek', klient:s.klient, detail:'Vyroci: '+fdate(s.vyroci)+' (za '+d+' dni)', urgency:d<30?'urgent':d<=70?'warn':'info',
+        onEdit:()=>openModal('auta',s.id)
+      });
+    }
+  });
+
+  // --- ŽIVOTNÍ: 5 let do 90 dni ---
+  zivotni.forEach(s => {
+    const d = days5(s.pocatek);
+    if(d>=0 && d<=90){
+      items.push({
+        cat:'Zivotni pojisteni', klient:s.klient, detail:'5 let od pocatku: '+date5(s.pocatek)+' (za '+d+' dni)', urgency:d<30?'urgent':'warn',
+        onEdit:()=>openModal('zivotni',s.id)
+      });
+    }
+  });
+
+  // --- ÚVĚRY: fixace do 100 dni ---
+  uvery.forEach(s => {
+    const d = dtnAbs(s.fixace);
+    if(d>=0 && d<=100){
+      items.push({
+        cat:'Uvery + hypoteky', klient:s.klient, detail:'Fixace: '+fdate(s.fixace)+' (za '+d+' dni)', urgency:d<30?'urgent':'warn',
+        onEdit:()=>openModal('uvery',s.id)
+      });
+    }
+    // 3 roky
+    const d3 = days3yr(s.datumUzavreni);
+    const isHyp = s.typ==='Hypotéka'||s.typ==='Hypoteka';
+    if(!isHyp && d3>=0 && d3<=90){
+      items.push({
+        cat:'Uvery + hypoteky', klient:s.klient, detail:'3 roky od uzavreni: za '+d3+' dni - moznost predefinovani', urgency:'warn',
+        onEdit:()=>openModal('uvery',s.id)
+      });
+    }
+  });
+
+  // --- POTENCIÁL: domluveno ---
+  adamek.filter(s=>s.stavKontakt==='domluveno').forEach(s=>{
+    items.push({cat:'Potencial Adamek', klient:s.klient, detail:'Domluvena schuzka'+( s.dalsiKontakt?' - '+s.dalsiKontakt:''), urgency:'info', onEdit:()=>openModal('adamek',s.id)});
+  });
+  linhart.filter(s=>s.stavKontakt==='domluveno').forEach(s=>{
+    items.push({cat:'Potencial Linhart', klient:s.klient, detail:'Domluvena schuzka'+(s.dalsiKontakt?' - '+s.dalsiKontakt:''), urgency:'info', onEdit:()=>openModal('linhart',s.id)});
+  });
+
+  // --- Sort: urgent first ---
+  items.sort((a,b)=>{const p={urgent:2,warn:1,info:0};return (p[b.urgency]||0)-(p[a.urgency]||0);});
+
+  // Metrics grid
+  const cats = ['Auta + majetek','Zivotni pojisteni','Uvery + hypoteky','Potencial Adamek','Potencial Linhart'];
+  const grid = document.getElementById('todo-grid');
+  if(grid){
+    grid.innerHTML = cats.map(c=>{
+      const n=items.filter(x=>x.cat===c).length;
+      return '<div class="metric"><div class="metric-label">'+c+'</div><div class="metric-val '+(n?'mv-w':'mv-ok')+'">'+n+'</div></div>';
+    }).join('');
+  }
+
+  // Badge
+  const nb = document.getElementById('nb-todo');
+  if(nb){ nb.textContent=items.length||''; nb.style.display=items.length?'':'none'; }
+
+  // List
+  const list = document.getElementById('todo-list');
+  if(!list) return;
+  if(!items.length){
+    list.innerHTML='<div class="empty"><i class="ti ti-check"></i>Zadne aktualni ukoly</div>';
+  } else {
+    list.innerHTML = items.map((item,i)=>{
+      const cls = item.urgency==='urgent'?'b-danger':item.urgency==='warn'?'b-warn':'b-info';
+      return '<div style="display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--bg);border:0.5px solid var(--border);border-radius:var(--radius);margin-bottom:6px">'+
+        '<span class="badge '+cls+'" style="flex-shrink:0">'+item.cat+'</span>'+
+        '<div style="flex:1;min-width:0"><div style="font-weight:500;font-size:13px">'+item.klient+'</div><div style="font-size:11px;color:var(--text2)">'+item.detail+'</div></div>'+
+        '<button class="ab" onclick="todoItems['+i+'].onEdit()"><i class="ti ti-edit"></i> Otevrit</button>'+
+      '</div>';
+    }).join('');
+  }
+  window.todoItems = items;
+
+  // Custom todos
+  renderCustomTodos();
+}
+
+function renderCustomTodos(){
+  const list = document.getElementById('todo-custom-list');
+  if(!list) return;
+  if(!customTodos.length){ list.innerHTML='<div style="font-size:12px;color:var(--text3);padding:4px">Zadne vlastni ukoly</div>'; return; }
+  list.innerHTML = customTodos.map((t,i)=>`
+    <div style="display:flex;align-items:center;gap:10px;padding:8px 12px;background:var(--bg2);border-radius:var(--radius);margin-bottom:5px">
+      <input type="checkbox" ${t.done?'checked':''} onchange="toggleCustomTodo(${i})" style="width:16px;height:16px;flex-shrink:0">
+      <div style="flex:1;text-decoration:${t.done?'line-through':''};color:${t.done?'var(--text3)':'var(--text)'}">
+        ${t.text}${t.date?' <span style="font-size:11px;color:var(--text2)">('+t.date+')</span>':''}
+      </div>
+      <button class="ab danger" onclick="deleteCustomTodo(${i})"><i class="ti ti-trash"></i></button>
+    </div>
+  `).join('');
+}
+
+function addCustomTodo(){
+  const inp = document.getElementById('todo-custom-input');
+  const dt = document.getElementById('todo-custom-date');
+  const txt = inp.value.trim(); if(!txt) return;
+  customTodos.push({text:txt, date:dt.value?fdate(dt.value):'', done:false});
+  inp.value=''; dt.value='';
+  saveCustomTodos(); renderCustomTodos();
+}
+
+function toggleCustomTodo(i){ customTodos[i].done=!customTodos[i].done; saveCustomTodos(); renderCustomTodos(); }
+function deleteCustomTodo(i){ customTodos.splice(i,1); saveCustomTodos(); renderCustomTodos(); }
+
+
 // ===== INIT =====
+loadCustomTodos();
 load();
+// Render todo on load too
+setTimeout(renderTodo, 300);
 </script>
 </body>
 </html>
