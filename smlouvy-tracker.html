@@ -125,6 +125,24 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:#378add;box-sh
 .custom-todo{display:flex;align-items:center;gap:8px;padding:8px 10px;background:var(--bg2);border-radius:var(--radius);margin-bottom:5px;font-size:13px}
 .custom-todo input[type=checkbox]{width:16px;height:16px;flex-shrink:0;cursor:pointer}
 @media(max-width:600px){.pc{grid-template-columns:40px 1fr}.pright{display:none}.metrics{grid-template-columns:repeat(2,1fr)}.fg{grid-template-columns:1fr}.fgf{grid-column:auto}.vp-typy{grid-template-columns:1fr 1fr}}
+.pc-group{background:var(--bg);border:0.5px solid var(--border);border-radius:0 var(--radius-lg) var(--radius-lg) 0;margin-bottom:5px;overflow:hidden}
+.pc-group-head{display:flex;align-items:start;gap:10px;padding:12px 14px;cursor:pointer;transition:background .1s}
+.pc-group-head:hover{background:var(--bg2)}
+.pc-group-head.urgent{border-left:3px solid #e24b4a}
+.pc-group-head.soon{border-left:3px solid #ef9f27}
+.pc-group-head.kontakt{border-left:3px solid #185fa5}
+.pc-group-head.ok{border-left:3px solid #639922}
+.pc-group-head.done{border-left:3px solid var(--border2);opacity:.65}
+.pc-group-head.hot{border-left:3px solid #a32d2d;background:var(--danger-bg)}
+.pc-group-head.hot:hover{background:#f8d7d7}
+.pc-group-head.purple{border-left:3px solid #534ab7;background:var(--purple-bg)}
+.sub-card.urgent{border-left-color:#e24b4a!important}
+.sub-card.soon{border-left-color:#ef9f27!important}
+.sub-card.hot{border-left-color:#a32d2d!important;background:var(--danger-bg)!important}
+.sub-card.purple{border-left-color:#534ab7!important;background:var(--purple-bg)!important}
+.sub-card.ok{border-left-color:#639922!important}
+.sub-card.kontakt{border-left-color:#185fa5!important}
+.count-badge{font-size:10px;background:var(--bg2);color:var(--text2);border:0.5px solid var(--border2);border-radius:10px;padding:1px 7px;font-weight:500}
 </style>
 </head>
 <body>
@@ -455,6 +473,80 @@ function makeCard({id, type, cls, bubbleVal, bubbleLabel, name, meta, tags, note
   </div>`;
 }
 
+// Group records by klient name, return sorted groups
+function groupByKlient(records, sortFn){
+  const map={};
+  records.forEach(r=>{
+    const key=(r.klient||'').trim().toLowerCase();
+    if(!map[key])map[key]={klient:r.klient||'',items:[]};
+    map[key].items.push(r);
+  });
+  const groups=Object.values(map);
+  if(sortFn)groups.sort(sortFn);
+  return groups;
+}
+
+// Grouped card: one card per klient, expandable
+let _expandedGroups={};
+function toggleGroup(gid){
+  _expandedGroups[gid]=!_expandedGroups[gid];
+  // Re-render the section that contains this group
+  const el=document.getElementById('grp-'+gid);
+  if(el){
+    const btn=document.getElementById('grp-btn-'+gid);
+    const body=document.getElementById('grp-body-'+gid);
+    if(_expandedGroups[gid]){body.style.display='block';if(btn)btn.innerHTML='<i class="ti ti-chevron-up"></i>';}
+    else{body.style.display='none';if(btn)btn.innerHTML='<i class="ti ti-chevron-down"></i>';}
+  }
+}
+
+function makeGroupCard({gid, cls, bubbleVal, bubbleLabel, name, countBadge, metaShort, subCards, urgBadge}){
+  const isExp=_expandedGroups[gid]||false;
+  return`<div class="pc-group" id="grp-${gid}">
+    <div class="pc-group-head ${cls}" onclick="toggleGroup('${gid}')">
+      <div class="bubble ${cls}" style="cursor:pointer">
+        <div class="bnum ${cls}">${bubbleVal!==undefined&&bubbleVal!==9999?bubbleVal:'?'}</div>
+        <div class="blbl">${bubbleLabel||'dni'}</div>
+      </div>
+      <div style="min-width:0;flex:1">
+        <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+          <div class="pname">${esc(name)}</div>
+          ${countBadge||''}
+          ${urgBadge||''}
+        </div>
+        <div class="pmeta">${metaShort||''}</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:6px">
+        <button class="ab" id="grp-btn-${gid}" onclick="event.stopPropagation();toggleGroup('${gid}')">
+          <i class="ti ${isExp?'ti-chevron-up':'ti-chevron-down'}"></i>
+        </button>
+      </div>
+    </div>
+    <div id="grp-body-${gid}" style="display:${isExp?'block':'none'};padding-left:58px;margin-top:4px">
+      ${subCards}
+    </div>
+  </div>`;
+}
+
+function makeSubCard({id, type, cls, meta, tags, note, log, date, dateLabel, btns}){
+  const logs=(log||[]).slice(-2);
+  const logHtml=logs.length?`<div class="plog" style="margin-top:4px;border-top:0.5px solid var(--border);padding-top:4px">${logs.map(l=>`<div class="log-item"><span class="log-date">${esc(l.d)}</span><span class="log-text">${esc(l.t)}</span></div>`).join('')}</div>`:'';
+  const noteHtml=note?`<div class="pnote">${esc(note)}</div>`:'';
+  return`<div style="background:var(--bg2);border-radius:var(--radius);padding:8px 10px;margin-bottom:5px;display:flex;align-items:start;gap:10px;border-left:3px solid var(--border2)" class="sub-card ${cls}">
+    <div style="flex:1;min-width:0">
+      <div class="pmeta" style="font-weight:500">${meta||''}</div>
+      <div style="display:flex;gap:4px;flex-wrap:wrap;margin-top:3px">${tags||''}</div>
+      ${noteHtml}
+      ${logHtml}
+    </div>
+    <div style="text-align:right;flex-shrink:0">
+      <div style="font-size:12px;font-weight:500">${date||''}</div>
+      ${dateLabel?`<div style="font-size:10px;color:var(--text2)">${dateLabel}</div>`:''}
+      <div style="display:flex;gap:4px;flex-wrap:wrap;justify-content:flex-end;margin-top:4px">${btns||''}</div>
+    </div>
+  </div>`;
+}
+
 function editBtn(type, id){return`<button class="ab" onclick="openModal('${type}','${id}')"><i class="ti ti-edit"></i> Sprava</button>`;}
 function delBtn(type, id){return`<button class="ab del" onclick="delRecord('${type}','${id}')"><i class="ti ti-trash"></i></button>`;}
 
@@ -521,14 +613,41 @@ function renderAuta(){
     if(!g.items.length)return;
     html+=sectionHead(g.title,g.icon,g.color,g.items.length,auta.length);
     if(g.collapsed){html+=`<div class="collapsed-list">${g.items.map(s=>esc(s.klient)).join(' · ')}</div>`;return;}
-    html+='<div class="plist">'+g.items.map(s=>{
-      const cl=urgCls(s.days,s.stav);
-      const typB=s.typ==='auto'?'<span class="badge b-info"><i class="ti ti-car" style="font-size:10px;vertical-align:-1px;margin-right:2px"></i>Auto</span>':'<span class="badge b-purple"><i class="ti ti-home" style="font-size:10px;vertical-align:-1px;margin-right:2px"></i>Majetek</span>';
-      return makeCard({id:s.id,type:'auta',cls:cl,bubbleVal:s.days,name:s.klient,
-        meta:(s.pojistovna||'—')+(s.cislo?' · '+s.cislo:'')+(s.tel?' · '+s.tel:''),
-        tags:typB+' '+stavBadge(s.stav,STAV_POJISTENI),
-        note:s.poznamka,log:s.log,date:fd(s.vyroci),
-        btns:editBtn('auta',s.id)+delBtn('auta',s.id)});
+    // Group by klient
+    const kGroups=groupByKlient(g.items,(a,b)=>a.items[0].days-b.items[0].days);
+    html+='<div class="plist">'+kGroups.map(kg=>{
+      const first=kg.items[0];
+      const cl=urgCls(first.days,first.stav);
+      // Best (min) days across all contracts
+      const minDays=Math.min(...kg.items.map(s=>s.days));
+      const gid='au_'+g.title.replace(/\s/g,'_')+'_'+kg.klient.replace(/\s/g,'_');
+      const countBadge=kg.items.length>1?`<span class="count-badge">${kg.items.length} smlouvy</span>`:'';
+      const allPoj=[...new Set(kg.items.map(s=>s.pojistovna||'').filter(Boolean))].join(', ');
+      const allTyp=kg.items.map(s=>s.typ==='auto'?'<span class="badge b-info"><i class="ti ti-car" style="font-size:10px;vertical-align:-1px;margin-right:2px"></i>Auto</span>':'<span class="badge b-purple"><i class="ti ti-home" style="font-size:10px;vertical-align:-1px;margin-right:2px"></i>Majetek</span>').join(' ');
+      const urgBadge=`<span class="badge ${minDays<30?'b-danger':minDays<70?'b-warn':minDays<=90?'b-info':'b-neutral'}">za ${minDays} dni</span>`;
+      if(kg.items.length===1){
+        // Single contract — show normal card
+        const s=first;
+        const typB=s.typ==='auto'?'<span class="badge b-info"><i class="ti ti-car" style="font-size:10px;vertical-align:-1px;margin-right:2px"></i>Auto</span>':'<span class="badge b-purple"><i class="ti ti-home" style="font-size:10px;vertical-align:-1px;margin-right:2px"></i>Majetek</span>';
+        return makeCard({id:s.id,type:'auta',cls:cl,bubbleVal:s.days,name:s.klient,
+          meta:(s.pojistovna||'—')+(s.cislo?' · '+s.cislo:'')+(s.tel?' · '+s.tel:''),
+          tags:typB+' '+stavBadge(s.stav,STAV_POJISTENI),
+          note:s.poznamka,log:s.log,date:fd(s.vyroci),
+          btns:editBtn('auta',s.id)+delBtn('auta',s.id)});
+      }
+      // Multiple contracts — grouped card
+      const subCards=kg.items.map(s=>{
+        const scl=urgCls(s.days,s.stav);
+        const typB=s.typ==='auto'?'<span class="badge b-info"><i class="ti ti-car" style="font-size:10px;vertical-align:-1px;margin-right:2px"></i>Auto</span>':'<span class="badge b-purple"><i class="ti ti-home" style="font-size:10px;vertical-align:-1px;margin-right:2px"></i>Majetek</span>';
+        return makeSubCard({id:s.id,type:'auta',cls:scl,
+          meta:(s.pojistovna||'—')+(s.cislo?' · '+s.cislo:''),
+          tags:typB+' '+stavBadge(s.stav,STAV_POJISTENI)+`<span class="badge b-neutral">za ${s.days} dni - ${fd(s.vyroci)}</span>`,
+          note:s.poznamka,log:s.log,date:'',
+          btns:editBtn('auta',s.id)+delBtn('auta',s.id)});
+      }).join('');
+      return makeGroupCard({gid,cls:cl,bubbleVal:minDays,name:kg.klient,countBadge,
+        metaShort:allPoj+(first.tel?' · '+first.tel:''),
+        urgBadge:allTyp,subCards});
     }).join('')+'</div>';
   });
   if(!html)html=`<div class="empty"><i class="ti ti-circle-check"></i>${auta.length?'Vsechny smlouvy v poradku':'Zatim zadne smlouvy'}</div>`;
@@ -633,19 +752,47 @@ function renderUver(){
   [['Hypoteky',hyp,'ti-home-dollar','#185fa5',true],['Ostatnni uvery',ost,'ti-credit-card','#3c3489',false]].forEach(([title,items,icon,color,isH])=>{
     if(!items.length)return;
     html+=sectionHead(title,icon,color,items.length,uvery.length);
-    html+='<div class="plist">'+items.map(s=>{
-      const urokNum=parseUrok(s.urok);
+    const kGrpsUver=groupByKlient(items,(a,b)=>{
+      const pa=isH?HYPPRIO[a.items[0].stav||'']||0:UVERPRIO[a.items[0].stav||'']||0;
+      const pb=isH?HYPPRIO[b.items[0].stav||'']||0:UVERPRIO[b.items[0].stav||'']||0;
+      if(pa!==pb)return pb-pa;
+      return a.items[0].dfix-b.items[0].dfix;
+    });
+    html+='<div class="plist">'+kGrpsUver.map(kg=>{
+      const first=kg.items[0];
+      const urokNum=parseUrok(first.urok);
       const vysokaSazba=isH&&aktSazba&&urokNum&&(urokNum-aktSazba)>=0.5;
-      const alert3r=!isH&&s.d3>=0&&s.d3<=90;
-      const cl=vysokaSazba||alert3r?'hot':s.dfix>=0&&s.dfix<=30?'urgent':s.dfix>=0&&s.dfix<=100?'soon':'ok';
+      const alert3r=!isH&&first.d3>=0&&first.d3<=90;
+      const cl=vysokaSazba||alert3r?'hot':first.dfix>=0&&first.dfix<=30?'urgent':first.dfix>=0&&first.dfix<=100?'soon':'ok';
       const stavOpts=isH?STAV_HYPOTEKA:STAV_UVER;
-      const urokBadge=vysokaSazba?`<span class="badge b-danger">${esc(s.urok)} (+)</span>`:`<span class="badge b-neutral">${esc(s.urok||'—')}</span>`;
-      const yr3Badge=alert3r?`<span class="badge b-warn">3 roky za ${s.d3}d</span>`:'';
-      return makeCard({cls:cl,bubbleVal:s.dfix>=0?s.dfix:null,name:s.klient,
-        meta:(s.producent||'—')+(s.cislo?' · '+s.cislo:'')+(s.vyseUveru?' · '+s.vyseUveru:''),
-        tags:stavBadge(s.stav,stavOpts)+urokBadge+yr3Badge,
-        note:s.poznamka,log:s.log,date:fd(s.fixace),dateLabel:'fixace',
-        btns:editBtn('uvery',s.id)+delBtn('uvery',s.id)});
+      const gid='uv_'+(isH?'h':'o')+'_'+kg.klient.replace(/[^a-z0-9]/gi,'_');
+      const makeUverSub=(s)=>{
+        const un=parseUrok(s.urok); const vs=isH&&aktSazba&&un&&(un-aktSazba)>=0.5; const a3=!isH&&s.d3>=0&&s.d3<=90;
+        const scl=vs||a3?'hot':s.dfix>=0&&s.dfix<=30?'urgent':s.dfix>=0&&s.dfix<=100?'soon':'ok';
+        const ub=vs?`<span class="badge b-danger">${esc(s.urok)} (+)</span>`:`<span class="badge b-neutral">${esc(s.urok||'—')}</span>`;
+        const y3=a3?`<span class="badge b-warn">3r za ${s.d3}d</span>`:'';
+        const fixB=s.dfix>=0?`<span class="badge ${s.dfix<30?'b-danger':s.dfix<100?'b-warn':'b-neutral'}">fixace ${fd(s.fixace)}</span>`:'';
+        return makeSubCard({cls:scl,meta:(s.producent||'—')+(s.cislo?' · '+s.cislo:'')+(s.vyseUveru?' · '+s.vyseUveru:''),
+          tags:stavBadge(s.stav,stavOpts)+ub+y3+fixB,note:s.poznamka,log:s.log,date:'',
+          btns:editBtn('uvery',s.id)+delBtn('uvery',s.id)});
+      };
+      if(kg.items.length===1){
+        const s=first;
+        const un=parseUrok(s.urok); const vs=isH&&aktSazba&&un&&(un-aktSazba)>=0.5; const a3=!isH&&s.d3>=0&&s.d3<=90;
+        const ub=vs?`<span class="badge b-danger">${esc(s.urok)} (+)</span>`:`<span class="badge b-neutral">${esc(s.urok||'—')}</span>`;
+        const y3=a3?`<span class="badge b-warn">3r za ${s.d3}d</span>`:'';
+        return makeCard({cls:cl,bubbleVal:s.dfix>=0?s.dfix:null,name:s.klient,
+          meta:(s.producent||'—')+(s.cislo?' · '+s.cislo:'')+(s.vyseUveru?' · '+s.vyseUveru:''),
+          tags:stavBadge(s.stav,stavOpts)+ub+y3,
+          note:s.poznamka,log:s.log,date:fd(s.fixace),dateLabel:'fixace',
+          btns:editBtn('uvery',s.id)+delBtn('uvery',s.id)});
+      }
+      const countBadge=`<span class="count-badge">${kg.items.length} smlouvy</span>`;
+      const minDfix=Math.min(...kg.items.map(s=>s.dfix>=0?s.dfix:9999));
+      const urokBadge=vysokaSazba?`<span class="badge b-danger">${esc(first.urok)} (+)</span>`:`<span class="badge b-neutral">${esc(first.urok||'—')}</span>`;
+      const subCards=kg.items.map(makeUverSub).join('');
+      return makeGroupCard({gid,cls:cl,bubbleVal:minDfix<9999?minDfix:null,name:kg.klient,countBadge,
+        metaShort:kg.items.map(s=>s.producent||'—').join(', '),urgBadge:urokBadge,subCards});
     }).join('')+'</div>';
   });
   if(!html)html='<div class="empty"><i class="ti ti-circle-check"></i>Zadne zaznamy</div>';
@@ -686,16 +833,34 @@ function renderPot(type,dataset,prefix){
     if(!g.items.length)return;
     html+=sectionHead(g.title,g.icon,g.color,g.items.length,dataset.length);
     if(g.collapsed){html+=`<div class="collapsed-list">${g.items.map(s=>esc(s.klient)).join(' · ')}</div>`;return;}
-    html+='<div class="plist">'+g.items.map(s=>{
-      const cl=s.stavKontakt==='domluveno'?'kontakt':!s.stavKontakt?'soon':'ok';
-      const stavK=STAV_KONTAKT.find(x=>x.id===(s.stavKontakt||''))||{label:'Neosloven'};
-      const stavBadgeHtml=`<span class="badge b-info">${esc(stavK.label)}</span>`;
-      return makeCard({cls:cl,bubbleVal:null,bubbleLabel:'',name:s.klient,
-        meta:(s.kontakt||'—')+(s.produkt?' · '+s.produkt:'')+(s.vyseSml?' · '+s.vyseSml:''),
-        tags:stavBadgeHtml,
-        note:s.poznamka,log:s.log,
-        date:s.dalsiKontakt||'',dateLabel:s.dalsiKontakt?'pristi kontakt':'',
-        btns:editBtn(type,s.id)+delBtn(type,s.id)});
+    const kGrpsPot=groupByKlient(g.items,(a,b)=>a.klient.localeCompare(b.klient));
+    html+='<div class="plist">'+kGrpsPot.map(kg=>{
+      const first=kg.items[0];
+      const cl=first.stavKontakt==='domluveno'?'kontakt':!first.stavKontakt?'soon':'ok';
+      const gid='pot_'+type+'_'+g.title.replace(/\s/g,'')+'_'+kg.klient.replace(/[^a-z0-9]/gi,'_');
+      if(kg.items.length===1){
+        const s=first;
+        const stavK=STAV_KONTAKT.find(x=>x.id===(s.stavKontakt||''))||{label:'Neosloven'};
+        return makeCard({cls:cl,bubbleVal:null,bubbleLabel:'',name:s.klient,
+          meta:(s.kontakt||'—')+(s.produkt?' · '+s.produkt:'')+(s.vyseSml?' · '+s.vyseSml:''),
+          tags:`<span class="badge b-info">${esc(stavK.label)}</span>`,
+          note:s.poznamka,log:s.log,
+          date:s.dalsiKontakt||'',dateLabel:s.dalsiKontakt?'pristi kontakt':'',
+          btns:editBtn(type,s.id)+delBtn(type,s.id)});
+      }
+      const countBadge=`<span class="count-badge">${kg.items.length} produkty</span>`;
+      const stavK=STAV_KONTAKT.find(x=>x.id===(first.stavKontakt||''))||{label:'Neosloven'};
+      const subCards=kg.items.map(s=>{
+        const sk=STAV_KONTAKT.find(x=>x.id===(s.stavKontakt||''))||{label:'Neosloven'};
+        return makeSubCard({cls:s.stavKontakt==='domluveno'?'kontakt':'ok',
+          meta:(s.produkt||'—')+(s.vyseSml?' · '+s.vyseSml:''),
+          tags:`<span class="badge b-info">${esc(sk.label)}</span>`,
+          note:s.poznamka,log:s.log,date:s.dalsiKontakt||'',dateLabel:s.dalsiKontakt?'pristi':'',
+          btns:editBtn(type,s.id)+delBtn(type,s.id)});
+      }).join('');
+      return makeGroupCard({gid,cls:cl,bubbleVal:null,bubbleLabel:'',name:kg.klient,countBadge,
+        metaShort:(first.kontakt||'—')+' · '+kg.items.map(s=>s.produkt||'—').join(', '),
+        urgBadge:`<span class="badge b-info">${esc(stavK.label)}</span>`,subCards});
     }).join('')+'</div>';
   });
   if(!html)html='<div class="empty"><i class="ti ti-circle-check"></i>Zadne zaznamy</div>';
