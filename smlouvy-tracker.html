@@ -163,7 +163,7 @@ input:focus,select:focus{outline:none;border-color:#378add;box-shadow:0 0 0 3px 
   </div>
   <div class="tbl-wrap">
     <table><thead><tr>
-      <th>Klient</th><th>Typ</th><th>Pojišťovna</th><th>Číslo</th><th>Výročí</th><th>Zbývá</th><th>Stav</th><th>Poslední aktivita</th><th>Akce</th>
+      <th>Klient</th><th>Typ</th><th>Pojistovna</th><th>Cislo</th><th>Vyroci</th><th>Zbyvá</th><th>Stav</th><th>Posledni aktivita</th><th>Upravit</th><th>Smazat</th>
     </tr></thead><tbody id="auta-tbody"></tbody></table>
   </div>
 </div>
@@ -188,7 +188,7 @@ input:focus,select:focus{outline:none;border-color:#378add;box-shadow:0 0 0 3px 
   </div>
   <div class="tbl-wrap">
     <table><thead><tr>
-      <th>Klient</th><th>Počátek</th><th>5 let dne</th><th>Zbývá do 5 let</th><th>Producent</th><th>Produkt</th><th>Číslo smlouvy</th><th>Platba</th><th>EUCS</th><th>Stav</th><th>Poslední aktivita</th><th>Akce</th>
+      <th>Klient</th><th>Pocatek</th><th>5 let dne</th><th>Zbyvá do 5 let</th><th>Producent</th><th>Produkt</th><th>Cislo smlouvy</th><th>Platba</th><th>EUCS</th><th>Stav</th><th>Posledni aktivita</th><th>Upravit</th><th>Smazat</th>
     </tr></thead><tbody id="ziv-tbody"></tbody></table>
   </div>
 </div>
@@ -210,14 +210,15 @@ input:focus,select:focus{outline:none;border-color:#378add;box-shadow:0 0 0 3px 
     <input type="text" id="uver-search" placeholder="Hledat klienta..." oninput="renderUvery()">
     <select id="uver-typ" onchange="renderUvery()"><option value="">Vše</option><option value="Hypotéka">Hypotéky</option><option value="Konsolidace">Konsolidace</option></select>
     <select id="uver-filter" onchange="renderUvery()">
-      <option value="">Vše</option>
-      <option value="fixace">Fixace do 100 dní</option>
-      <option value="vysoka">Vysoká sazba (0.5%+)</option>
+      <option value="">Vse</option>
+      <option value="fixace">Fixace do 100 dni</option>
+      <option value="vysoka">Vysoka sazba hypotek (0.5%+)</option>
+      <option value="3roky">Uvery blizi 3 roky</option>
     </select>
   </div>
   <div class="tbl-wrap">
     <table><thead><tr>
-      <th>Klient</th><th>Typ</th><th>Banka</th><th>Číslo</th><th>Výše úvěru</th><th>Úrok</th><th>Fixace do</th><th>Zbývá</th><th>LTV</th><th>Stav</th><th>Poslední aktivita</th><th>Akce</th>
+      <th>Klient</th><th>Typ</th><th>Banka</th><th>Cislo</th><th>Vyse uveru</th><th>Urok</th><th>Fixace do</th><th>Zbyvá</th><th>LTV</th><th>Stav</th><th>Posledni aktivita</th><th>Upravit</th><th>Smazat</th>
     </tr></thead><tbody id="uver-tbody"></tbody></table>
   </div>
 </div>
@@ -234,18 +235,19 @@ input:focus,select:focus{outline:none;border-color:#378add;box-shadow:0 0 0 3px 
   <div class="filter-row">
     <input type="text" id="adamek-search" placeholder="Hledat klienta..." oninput="renderAdamek()">
     <select id="adamek-stav" onchange="renderAdamek()">
-      <option value="">Vše</option>
-      <option value="neoslov">Neoslovený</option>
-      <option value="voláno">Voláno</option>
+      <option value="">Vse</option>
+      <option value="neoslov">Neosloven</option>
+      <option value="nedovolano">Nedovolano</option>
+      <option value="volano">Volano</option>
       <option value="sms">SMS</option>
       <option value="email">Email</option>
-      <option value="domluveno">Domluvena schůzka</option>
-      <option value="nezajem">Nezájem</option>
+      <option value="domluveno">Domluvena schuzka</option>
+      <option value="nezajem">Nechce</option>
     </select>
   </div>
   <div class="tbl-wrap">
     <table><thead><tr>
-      <th>Klient</th><th>Produkt</th><th>Smlouva</th><th>Výše</th><th>Datum uzavření</th><th>Kontakt</th><th>Způsob kontaktu</th><th>Poznámka</th><th>Příští kontakt</th><th>Akce</th>
+      <th>Klient</th><th>Produkt</th><th>Smlouva</th><th>Vyse</th><th>Datum uzavreni</th><th>Kontakt</th><th>Zpusob kontaktu</th><th>Poznamka</th><th>Pristi kontakt</th><th>Upravit</th><th>Smazat</th>
     </tr></thead><tbody id="adamek-tbody"></tbody></table>
   </div>
 </div>
@@ -262,18 +264,19 @@ input:focus,select:focus{outline:none;border-color:#378add;box-shadow:0 0 0 3px 
   <div class="filter-row">
     <input type="text" id="linhart-search" placeholder="Hledat klienta..." oninput="renderLinhart()">
     <select id="linhart-stav" onchange="renderLinhart()">
-      <option value="">Vše</option>
-      <option value="neoslov">Neoslovený</option>
-      <option value="voláno">Voláno</option>
+      <option value="">Vse</option>
+      <option value="neoslov">Neosloven</option>
+      <option value="nedovolano">Nedovolano</option>
+      <option value="volano">Volano</option>
       <option value="sms">SMS</option>
       <option value="email">Email</option>
-      <option value="domluveno">Domluvena schůzka</option>
-      <option value="nezajem">Nezájem</option>
+      <option value="domluveno">Domluvena schuzka</option>
+      <option value="nezajem">Nechce</option>
     </select>
   </div>
   <div class="tbl-wrap">
     <table><thead><tr>
-      <th>Klient</th><th>Produkt</th><th>Smlouva</th><th>Výše</th><th>Datum uzavření</th><th>Kontakt</th><th>Způsob kontaktu</th><th>Poznámka</th><th>Příští kontakt</th><th>Akce</th>
+      <th>Klient</th><th>Produkt</th><th>Smlouva</th><th>Vyse</th><th>Datum uzavreni</th><th>Kontakt</th><th>Zpusob kontaktu</th><th>Poznamka</th><th>Pristi kontakt</th><th>Upravit</th><th>Smazat</th>
     </tr></thead><tbody id="linhart-tbody"></tbody></table>
   </div>
 </div>
@@ -434,12 +437,36 @@ const STAV_POJISTENI = [
   {id:'neprepojistuje',label:'Nepřepojišťuje'},
 ];
 const STAV_KONTAKT = [
-  {id:'',label:'Neosloven'},
-  {id:'volano',label:'Volano'},
-  {id:'sms',label:'SMS'},
-  {id:'email',label:'Email'},
-  {id:'domluveno',label:'Domluvena schuzka'},
-  {id:'nezajem',label:'Nezajem'},
+  {id:'',label:'Neosloven',prio:6},
+  {id:'nedovolano',label:'Nedovolano',prio:5},
+  {id:'volano',label:'Volano',prio:4},
+  {id:'sms',label:'SMS',prio:3},
+  {id:'email',label:'Email',prio:3},
+  {id:'domluveno',label:'Domluvena schuzka',prio:2},
+  {id:'nezajem',label:'Nechce',prio:0},
+];
+
+// Stavy pro hypotéky — v pořadí procesu
+const STAV_HYPOTEKA = [
+  {id:'nabidka',label:'Nabidka',prio:9},
+  {id:'zadost',label:'Zadost',prio:8},
+  {id:'skoring',label:'Skoring',prio:7},
+  {id:'odhad',label:'Odhad',prio:6},
+  {id:'kompletace',label:'Kompletace',prio:5},
+  {id:'schvalovani',label:'Schvalovani',prio:4},
+  {id:'podpis',label:'Podpis',prio:3},
+  {id:'cerpani',label:'Cerpani',prio:2},
+  {id:'aktivni',label:'Aktivni',prio:1},
+  {id:'',label:'Bez stavu',prio:0},
+];
+
+// Stavy pro ostatní úvěry
+const STAV_UVER = [
+  {id:'',label:'Bez stavu',prio:0},
+  {id:'reseni',label:'V reseni',prio:3},
+  {id:'aktivni',label:'Aktivni',prio:1},
+  {id:'predefinovat',label:'Predefinovat (3 roky)',prio:5},
+  {id:'vyrizeno',label:'Vyrizeno',prio:2},
 ];
 
 function stavBadge(stav, opts){
@@ -503,6 +530,7 @@ function renderAuta(){
       <td>${stavBadge(s.stav,STAV_POJISTENI)}</td>
       <td>${lastLog(s.log)}</td>
       <td><button class="ab" onclick="openModal('auta','${s.id}')"><i class="ti ti-edit"></i></button></td>
+      <td><button class="ab danger" onclick="deleteRecord('auta','${s.id}')" title="Smazat"><i class="ti ti-trash"></i></button></td>
     </tr>`;
   }).join('');
 }
@@ -554,15 +582,31 @@ function renderZivotni(){
       <td>${s.produkt||'—'}</td>
       <td style="font-family:monospace;font-size:11px">${s.cislo||'—'}</td>
       <td>${s.platba||'—'}</td>
-      <td>${s.eucs||'—'}</td>
+      <td><span class="badge ${s.eucs==='Ano'?'b-success':s.eucs==='Nechce'?'b-danger':'b-neutral'}">${s.eucs||'Ne'}</span></td>
       <td><span class="badge ${s.stav==='Aktivní'?'b-success':'b-neutral'}">${s.stav||'—'}</span></td>
       <td>${lastLog(s.log)}</td>
       <td><button class="ab" onclick="openModal('zivotni','${s.id}')"><i class="ti ti-edit"></i></button></td>
+      <td><button class="ab danger" onclick="deleteRecord('zivotni','${s.id}')" title="Smazat"><i class="ti ti-trash"></i></button></td>
     </tr>`;
   }).join('');
 }
 
 // ===== ÚVĚRY =====
+function uverStavPrio(s){
+  if(s.typ==='Hypotéka'||s.typ==='Hypoteka'){
+    const sh=STAV_HYPOTEKA.find(x=>x.id===(s.stav||''));
+    return sh?sh.prio:0;
+  }
+  const su=STAV_UVER.find(x=>x.id===(s.stav||''));
+  return su?su.prio:0;
+}
+function days3yr(ds){
+  if(!ds) return 9999;
+  const t=new Date(); t.setHours(0,0,0,0);
+  const d=new Date(ds);
+  const yr3=new Date(d); yr3.setFullYear(d.getFullYear()+3);
+  return Math.round((yr3-t)/86400000);
+}
 function renderUvery(){
   const q=document.getElementById('uver-search').value.toLowerCase();
   const ft=document.getElementById('uver-typ').value;
@@ -620,8 +664,14 @@ function renderPotencial(dataset, prefix){
   const fs=document.getElementById(prefix+'-stav').value;
   let data=[...dataset];
   if(q) data=data.filter(s=>s.klient.toLowerCase().includes(q)||(s.smlouva||'').includes(q));
-  if(fs) data=data.filter(s=>(s.stavKontakt||'')===(fs==='neoslov'?'':fs));
   if(fs==='neoslov') data=data.filter(s=>!s.stavKontakt);
+  else if(fs) data=data.filter(s=>(s.stavKontakt||'')===fs);
+  // Sort by stav prio desc (neoslov first, nezajem last)
+  data.sort((a,b)=>{
+    const sa=STAV_KONTAKT.find(x=>x.id===(a.stavKontakt||''))||{prio:0};
+    const sb=STAV_KONTAKT.find(x=>x.id===(b.stavKontakt||''))||{prio:0};
+    return sb.prio-sa.prio;
+  });
 
   const neoslov=dataset.filter(s=>!s.stavKontakt).length;
   const doml=dataset.filter(s=>s.stavKontakt==='domluveno').length;
@@ -647,6 +697,7 @@ function renderPotencial(dataset, prefix){
       <td style="font-size:11px;max-width:150px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${s.poznamka||''}">${s.poznamka||'—'}</td>
       <td style="font-size:11px">${s.dalsiKontakt||'—'}</td>
       <td><button class="ab" onclick="openModal('${type}','${s.id}')"><i class="ti ti-edit"></i></button></td>
+      <td><button class="ab danger" onclick="deleteRecord('${type}','${s.id}')" title="Smazat"><i class="ti ti-trash"></i></button></td>
     </tr>`;
   }).join('');
 }
@@ -684,9 +735,10 @@ function openModal(type, id){
   } else if(type==='zivotni'){
     fields=`<div class="fl"><label>Producent</label><input id="mf-producent" value="${rec.producent||''}"></div>
     <div class="fl"><label>Produkt</label><input id="mf-produkt" value="${rec.produkt||''}"></div>
-    <div class="fl"><label>Číslo smlouvy</label><input id="mf-cislo" value="${rec.cislo||''}"></div>
+    <div class="fl"><label>Cislo smlouvy</label><input id="mf-cislo" value="${rec.cislo||''}"></div>
     <div class="fl"><label>Platba</label><input id="mf-platba" value="${rec.platba||''}"></div>
-    <div class="fl fgf"><label>Poznámka</label><input id="mf-poznamka" value="${rec.poznamka||''}"></div>`;
+    <div class="fl"><label>EUCS</label><select id="mf-eucs"><option value="Ne" ${(rec.eucs||'Ne')==='Ne'?'selected':''}>Ne</option><option value="Ano" ${rec.eucs==='Ano'?'selected':''}>Ano</option><option value="Nechce" ${rec.eucs==='Nechce'?'selected':''}>Nechce</option></select></div>
+    <div class="fl fgf"><label>Poznamka</label><input id="mf-poznamka" value="${rec.poznamka||''}"></div>`;
   } else if(type==='uvery'){
     fields=`<div class="fl"><label>Banka / producent</label><input id="mf-producent" value="${rec.producent||''}"></div>
     <div class="fl"><label>Úrok (%)</label><input id="mf-urok" value="${rec.urok||''}"></div>
@@ -702,7 +754,16 @@ function openModal(type, id){
   document.getElementById('modal-fields').innerHTML=fields;
 
   // Stav options
-  const opts=(type==='auta'||type==='zivotni'||type==='uvery')?STAV_POJISTENI:STAV_KONTAKT;
+  let opts;
+  if(type==='auta'||type==='zivotni') opts=STAV_POJISTENI;
+  else if(type==='uvery'){
+    const isHyp2=(modalCtx&&(modalCtx.typ==='Hypotéka'||modalCtx.typ==='Hypoteka'))||false;
+    // check actual record
+    const recForStav=uvery.find(x=>x.id===id);
+    const isHypRec=recForStav&&(recForStav.typ==='Hypotéka'||recForStav.typ==='Hypoteka');
+    opts=isHypRec?STAV_HYPOTEKA:STAV_UVER;
+  }
+  else opts=STAV_KONTAKT;
   document.getElementById('modal-stav-area').innerHTML=`<select id="modal-stav-sel" style="margin-bottom:4px">${opts.map(o=>`<option value="${o.id}" ${editStav===o.id?'selected':''}>${o.label}</option>`).join('')}</select>`;
 
   // Google Cal area
@@ -768,6 +829,7 @@ function saveModal(){
   if(fProd) upd.producent=fProd.value;
   if(fProdukt) upd.produkt=fProdukt.value;
   if(fPlatba) upd.platba=fPlatba.value;
+  const fEucs=document.getElementById('mf-eucs'); if(fEucs) upd.eucs=fEucs.value;
   if(fUrok) upd.urok=fUrok.value;
   if(fFixace) upd.fixace=fFixace.value;
   if(fVyse){ if(modalType==='uvery') upd.vyseUveru=fVyse.value; else upd.vyseSml=fVyse.value; }
@@ -780,6 +842,24 @@ function saveModal(){
 }
 
 function closeModal(){ document.getElementById('modal-sprava').classList.remove('open'); }
+
+function deleteRecord(type, id){
+  let arr, name='zaznam';
+  if(type==='auta'){ arr=auta; }
+  else if(type==='zivotni'){ arr=zivotni; }
+  else if(type==='uvery'){ arr=uvery; }
+  else if(type==='adamek'){ arr=adamek; }
+  else{ arr=linhart; }
+  const rec=arr.find(x=>x.id===id);
+  if(rec) name=rec.klient||'zaznam';
+  if(!confirm('Smazat zaznam: '+name+'? Tato akce je nevratna.')) return;
+  if(type==='auta') auta=auta.filter(x=>x.id!==id);
+  else if(type==='zivotni') zivotni=zivotni.filter(x=>x.id!==id);
+  else if(type==='uvery') uvery=uvery.filter(x=>x.id!==id);
+  else if(type==='adamek') adamek=adamek.filter(x=>x.id!==id);
+  else linhart=linhart.filter(x=>x.id!==id);
+  saveAll(); renderAll();
+}
 
 function openGcal(){
   const dt=document.getElementById('gcal-datetime').value;
