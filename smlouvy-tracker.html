@@ -970,20 +970,74 @@ function exportAll(){const blob=new Blob([JSON.stringify({version:10,clients,tem
 function openImport(){document.getElementById('import-json').value='';openModal('modal-import')}
 function importAll(){
   try{
-    const data=JSON.parse(document.getElementById('import-json').value);
-    const incoming=data.clients||data||[];
-    incoming.forEach(ic=>{
-      let c=clients.find(x=>norm(x.name)===norm(ic.name));
-      if(!c){c={id:uid(),contracts:[]};clients.push(c);}
-      ['name','phone','email','address','note'].forEach(k=>c[k]=c[k]||ic[k]||'');
-      (ic.contracts||[]).forEach(s=>{
-        if(!c.contracts.some(x=>x.number&&s.number&&x.number===s.number&&x.type===s.type))
-          c.contracts.push({...s,id:s.id||uid(),log:s.log||[],status:s.status||''});
+    const raw=document.getElementById('import-json').value.trim();
+    const data=JSON.parse(raw);
+
+    // Detect format
+    // OLD tracker format: array of {id, klient, typ, pojistovna, cislo, vyroci, stav, log, ...}
+    // NEW v10 format: {version:10, clients:[...]} or {clients:[...]}
+    // OLD v9 format: array of clients with .contracts
+
+    let imported=0;
+
+    // Case 1: v10/v9 format with clients
+    if(data.clients||(Array.isArray(data)&&data[0]&&data[0].contracts)){
+      const incoming=data.clients||data;
+      incoming.forEach(ic=>{
+        let c=clients.find(x=>norm(x.name)===norm(ic.name));
+        if(!c){c={id:uid(),name:ic.name||'',phone:ic.phone||'',email:ic.email||'',address:ic.address||ic.adresa||'',note:ic.note||'',contracts:[]};clients.push(c);}
+        else{['phone','email','address','note'].forEach(k=>c[k]=c[k]||ic[k]||'');}
+        (ic.contracts||[]).forEach(s=>{
+          if(!c.contracts.some(x=>x.number&&s.number&&x.number===s.number&&x.type===s.type)){
+            c.contracts.push({...s,id:s.id||uid(),log:s.log||[],status:s.status||''});
+            imported++;
+          }
+        });
       });
-    });
-    if(data.templates)templates=data.templates;
-    save();closeModal('modal-import');renderAll();alert('Import hotový.');
-  }catch(e){alert('Chyba v JSON importu.');}
+      if(data.templates)templates=data.templates;
+    }
+    // Case 2: Old tracker format - array of flat contract objects
+    else if(Array.isArray(data)&&data[0]&&(data[0].klient||data[0].vyroci)){
+      data.forEach(s=>{
+        if(!s.klient)return;
+        let c=clients.find(x=>norm(x.name)===norm(s.klient));
+        if(!c){c={id:uid(),name:s.klient,phone:s.tel||'',email:s.email||'',address:s.adresa||'',note:'',contracts:[]};clients.push(c);}
+        else{
+          if(s.tel&&!c.phone)c.phone=s.tel;
+          if(s.email&&!c.email)c.email=s.email;
+          if(s.adresa&&!c.address)c.address=s.adresa;
+        }
+        // Check duplicate
+        const exists=c.contracts.some(x=>x.number&&s.cislo&&x.number===s.cislo);
+        if(!exists){
+          c.contracts.push({
+            id:uid(),
+            type:s.typ==='auto'?'auto':s.typ==='majetek'?'majetek':'ostatní',
+            product:s.poznamka||'',
+            company:s.pojistovna||'',
+            number:s.cislo||'',
+            anniv:s.vyroci||'',
+            amount:'',rate:'',
+            status:s.stav||'',
+            note:s.poznamka||'',
+            source:s.typ==='auto'?'auto':'majetek',
+            log:s.log||[],
+            eucs:'Ne',
+          });
+          imported++;
+        }
+      });
+    }
+    else{
+      alert('Neznámý formát dat.');return;
+    }
+
+    save();closeModal('modal-import');renderAll();
+    alert('Import hotový. Přidáno '+imported+' smluv.');
+  }catch(e){
+    console.error(e);
+    alert('Chyba v JSON importu: '+e.message);
+  }
 }
 
 load();
