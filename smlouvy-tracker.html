@@ -284,7 +284,7 @@ const DEFAULT_LIN=[{"id": "lin_0", "klient": "Frýdlová Renata", "produkt": "At
 
 // ===== HELPERS =====
 function uid(){return Math.random().toString(36).slice(2)+Date.now().toString(36)}
-function norm(s){return(s||'').toLowerCase().normalize('NFD').replace(/\p{Diacritic}/gu,'')}
+function norm(s){try{return(s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');}catch(e){return(s||'').toLowerCase();}}
 function esc(s){const d=document.createElement('div');d.textContent=s||'';return d.innerHTML}
 function today(){return new Date().toLocaleDateString('cs-CZ',{day:'2-digit',month:'2-digit',year:'numeric'})}
 function fd(d){if(!d)return'—';if(d.includes('.')&&d.split('.').length===3)return d;const p=d.split('-');return p.length===3?p[2]+'.'+p[1]+'.'+p[0]:d}
@@ -329,6 +329,11 @@ function date5str(ds){
 
 function contractDays(s){
   const type=s.type||'';
+  const src=s.source||'';
+  // Potencial entries: anniv = datum uzavreni (past date), not upcoming anniversary
+  if(norm(src).includes('adamek')||norm(src).includes('linhart')||src==='Adámek'||src==='Linhart'){
+    return s.anniv?cDaysAbs(s.anniv):99999;
+  }
   if(type==='hypotéka'||type==='úvěr')return cDaysAbs(s.anniv);
   if(type==='život')return days5(s.anniv);
   return cDaysAnnual(s.anniv);
@@ -366,12 +371,24 @@ function clientCls(contracts){
   const statuses=contracts.map(x=>x.status||'');
   if(statuses.includes('prepojistit'))return'hot';
   if(statuses.includes('vypoved'))return'purple-b';
+  if(statuses.includes('domluveno'))return'kontakt';
+  // For potencial: use status-based coloring, not days
+  const src=contracts[0]?.source||'';
+  const isPot=norm(src).includes('adamek')||norm(src).includes('linhart')||src==='Adámek'||src==='Linhart';
+  if(isPot){
+    if(statuses.includes('reseni'))return'soon';
+    if(!statuses.filter(Boolean).length||statuses.every(s=>!s))return'soon'; // neosloven = highlight
+    return'ok';
+  }
   const d=relevantMinDays(contracts);
   if(d===null||d>=99999)return'ok';
   if(d<30)return'urgent';if(d<70)return'soon';if(d<=90)return'kontakt';return'ok';
 }
 function relevantMinDays(contracts){
-  const days=contracts.map(x=>contractDays(x)).filter(d=>d<99999);
+  const src=contracts[0]?.source||'';
+  const isPot=norm(src).includes('adamek')||norm(src).includes('linhart')||src==='Adámek'||src==='Linhart';
+  if(isPot)return null; // don't show days for potencial
+  const days=contracts.map(x=>contractDays(x)).filter(d=>d>=0&&d<99999);
   return days.length?Math.min(...days):null;
 }
 
@@ -447,8 +464,8 @@ function sectionContracts(section){
       if(section==='auta')match=(type==='auto'||type==='majetek')&&!src.includes('Adámek')&&!src.includes('Linhart');
       else if(section==='zivot')match=type==='život';
       else if(section==='uvery')match=(type==='hypotéka'||type==='úvěr');
-      else if(section==='adamek')match=src==='Adámek';
-      else if(section==='linhart')match=src==='Linhart';
+      else if(section==='adamek')match=norm(src).includes('adamek')||src==='Adámek';
+      else if(section==='linhart')match=norm(src).includes('linhart')||src==='Linhart';
       if(match)rows.push({client:c,contract:s,days:contractDays(s)});
     });
   });
@@ -465,9 +482,13 @@ function clientCard(client,contracts){
   const statusesArr=[...new Set(contracts.map(x=>x.status).filter(Boolean))];
   const isOpen=document.getElementById('client-'+id)?.classList.contains('open');
   const bv=minD!==null&&minD<99999?minD:'—';
+  const isPot=contracts[0]&&(norm(contracts[0].source||'').includes('adamek')||norm(contracts[0].source||'').includes('linhart')||contracts[0].source==='Adámek'||contracts[0].source==='Linhart');
+  const bubbleContent=isPot
+    ?`<i class="ti ti-user" style="font-size:20px"></i>`
+    :`<b>${bv}</b><span>dní</span>`;
   return`<div class="client ${cls}" id="client-${id}">
     <div class="client-head" onclick="toggleClient('${id}')">
-      <div class="bubble ${cls}"><b>${bv}</b><span>dní</span></div>
+      <div class="bubble ${cls}" style="font-size:${isPot?'20px':'inherit'}">${bubbleContent}</div>
       <div class="client-info">
         <div class="name">${esc(client.name)}${contracts.length>1?`<span class="badge">${contracts.length} smlouvy</span>`:''}</div>
         <div class="meta">${esc(client.phone||'—')} · ${esc(typesArr.join(', '))}</div>
@@ -560,47 +581,78 @@ function renderSection(section,title,icon,color){
   const under90=raw.filter(r=>r.days<=90).length;
   const activeStatuses=raw.filter(r=>['reseni','prepojistit','vypoved'].includes(r.contract.status)).length;
   const view=document.getElementById('view-'+section);
-  const sazBanner=section==='uvery'?`<div style="background:#e5f0fb;border:1px solid #85b7eb;border-radius:11px;padding:10px 14px;font-size:12px;color:var(--blue);margin-bottom:18px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px"><span><strong>Aktuální tržní sazba hypoték:</strong> ${aktSazba?aktSazba.toFixed(2)+'%':'není nastavena'}</span><button class="btn" onclick="openSazba()"><i class="ti ti-edit"></i> Aktualizovat</button></div>`:'';
-  const typeFilter=['auta','uvery'].includes(section)?`<select id="prod-${section}" onchange="renderSection('${section}','${title}','${icon}','${color}')"><option value="">Všechny typy</option>${section==='auta'?'<option>auto</option><option>majetek</option>':'<option>hypotéka</option><option>úvěr</option>'}</select>`:'';
-  view.innerHTML=`
-    <div class="head">
-      <h2><i class="ti ${icon}" style="color:${color}"></i>${title}</h2>
-      <div class="actions">
-        <button class="btn" onclick="openContractModal(null,null,'${section}')"><i class="ti ti-plus"></i>Přidat</button>
-        <button class="btn" onclick="exportAll()"><i class="ti ti-download"></i>Export</button>
-        <button class="btn" onclick="openImport()"><i class="ti ti-upload"></i>Import</button>
-        <a class="btn" target="_blank" href="https://drive.google.com/drive/folders/130YjntsN3-13QchctOZBqcFXvrDJbh_e"><i class="ti ti-brand-google-drive"></i>Drive</a>
+
+  // Preserve existing filter values to avoid losing focus on re-render
+  const existingQ=document.getElementById('q-'+section)?.value||'';
+  const existingSt=document.getElementById('st-'+section)?.value||'';
+  const existingProd=document.getElementById('prod-'+section)?.value||'';
+  const needsInit=!document.getElementById('q-'+section);
+
+  if(needsInit){
+    // First render - build full HTML structure
+    const sazBanner=section==='uvery'?`<div id="saz-banner-uvery" style="background:#e5f0fb;border:1px solid #85b7eb;border-radius:11px;padding:10px 14px;font-size:12px;color:var(--blue);margin-bottom:18px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px"><span><strong>Aktuální tržní sazba hypoték:</strong> <span id="saz-val">${aktSazba?aktSazba.toFixed(2)+'%':'není nastavena'}</span></span><button class="btn" onclick="openSazba()"><i class="ti ti-edit"></i> Aktualizovat</button></div>`:'';
+    const typeFilter=['auta','uvery'].includes(section)?`<select id="prod-${section}" onchange="renderSection('${section}','${title}','${icon}','${color}')"><option value="">Všechny typy</option>${section==='auta'?'<option>auto</option><option>majetek</option>':'<option>hypotéka</option><option>úvěr</option>'}</select>`:'';
+    view.innerHTML=`
+      <div class="head">
+        <h2><i class="ti ${icon}" style="color:${color}"></i>${title}</h2>
+        <div class="actions">
+          <button class="btn" onclick="openContractModal(null,null,'${section}')"><i class="ti ti-plus"></i>Přidat</button>
+          <button class="btn" onclick="exportAll()"><i class="ti ti-download"></i>Export</button>
+          <button class="btn" onclick="openImport()"><i class="ti ti-upload"></i>Import</button>
+          <a class="btn" target="_blank" href="https://drive.google.com/drive/folders/130YjntsN3-13QchctOZBqcFXvrDJbh_e"><i class="ti ti-brand-google-drive"></i>Drive</a>
+        </div>
       </div>
-    </div>
-    <div class="metrics">
-      ${metric('Klientů',clientsCount)}
-      ${metric('Smluv',total)}
-      ${metric('Do 30 dní',under30,'red')}
-      ${metric('Do 90 dní',under90,'orange')}
-      ${metric('V řešení / urgentní',activeStatuses,'purple')}
-    </div>
-    ${sazBanner}
-    <div class="filters">
-      <input id="q-${section}" oninput="renderSection('${section}','${title}','${icon}','${color}')" placeholder="Hledat klienta…">
-      ${typeFilter}
-      <select id="st-${section}" onchange="renderSection('${section}','${title}','${icon}','${color}')">
-        <option value="">Všechny stavy</option>
-        <option value="kontakt">Ke kontaktu</option><option value="reseni">V řešení</option>
-        <option value="prepojistit">K přepojištění</option><option value="vypoved">Odeslaná výpověď</option>
-        <option value="vyrizeno">Vyřízeno</option><option value="domluveno">Domluvená schůzka</option>
-        <option value="nedovolano">Nedovoláno</option><option value="nechce">Nechce</option>
-        <option value="sms">SMS</option><option value="email">Email</option>
-      </select>
-    </div>
-    <div id="list-${section}"></div>`;
+      <div class="metrics" id="metrics-${section}"></div>
+      ${sazBanner}
+      <div class="filters">
+        <input id="q-${section}" placeholder="Hledat klienta, smlouvu…">
+        ${typeFilter}
+        <select id="st-${section}">
+          <option value="">Všechny stavy</option>
+          <option value="kontakt">Ke kontaktu</option><option value="reseni">V řešení</option>
+          <option value="prepojistit">K přepojištění</option><option value="vypoved">Odeslaná výpověď</option>
+          <option value="vyrizeno">Vyřízeno</option><option value="domluveno">Domluvená schůzka</option>
+          <option value="nedovolano">Nedovoláno</option><option value="nechce">Nechce</option>
+          <option value="sms">SMS</option><option value="email">Email</option>
+        </select>
+      </div>
+      <div id="list-${section}"></div>`;
+    // Attach listeners ONCE - these survive re-renders because we only update list-X
+    document.getElementById('q-'+section).addEventListener('input',()=>renderSection(section,title,icon,color));
+    document.getElementById('st-'+section).addEventListener('change',()=>renderSection(section,title,icon,color));
+    const prodEl=document.getElementById('prod-'+section);
+    if(prodEl)prodEl.addEventListener('change',()=>renderSection(section,title,icon,color));
+  } else {
+    // Subsequent renders - only update metrics and list, preserve filter inputs
+    if(section==='uvery'){
+      const sv=document.getElementById('saz-val');
+      if(sv)sv.textContent=aktSazba?aktSazba.toFixed(2)+'%':'není nastavena';
+    }
+  }
+
+  // Always update metrics
+  const mEl=document.getElementById('metrics-'+section);
+  if(mEl)mEl.innerHTML=metric('Klientů',clientsCount)+metric('Smluv',total)+metric('Do 30 dní',under30,'red')+metric('Do 90 dní',under90,'orange')+metric('V řešení / urgentní',activeStatuses,'purple');
+
+  // Always update list only
   const list=document.getElementById('list-'+section);
+  if(!list)return;
   const groups=sortGroups(groupedRows(rows));
   list.innerHTML=groups.length
     ?`<div class="section-title"><span>Klienti (${groups.length}/${clientsCount})</span><span>${total} smluv</span></div>`+groups.map(g=>clientCard(g.client,g.contracts)).join('')
     :`<div class="empty"><i class="ti ti-circle-check"></i>Žádné záznamy</div>`;
 }
 
-function renderAll(){
+function renderAll(forceReinit){
+  if(forceReinit){
+    // Clear section views to force re-init of filters
+    ['auta','zivot','uvery','adamek','linhart'].forEach(s=>{
+      const el=document.getElementById('q-'+s);
+      if(el)el.value='';
+      const st=document.getElementById('st-'+s);
+      if(st)st.value='';
+    });
+  }
   renderSection('auta','Auta + majetek','ti-shield-check','#0b5cad');
   renderSection('zivot','Životní pojištění','ti-heart','#a62b2b');
   renderSection('uvery','Úvěry + hypotéky','ti-building-bank','#8a4d08');
@@ -1032,7 +1084,7 @@ function importAll(){
       alert('Neznámý formát dat.');return;
     }
 
-    save();closeModal('modal-import');renderAll();
+    save();closeModal('modal-import');renderAll(true);
     alert('Import hotový. Přidáno '+imported+' smluv.');
   }catch(e){
     console.error(e);
