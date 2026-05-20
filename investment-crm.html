@@ -280,12 +280,6 @@ let recs = [];
 let activeClient = null;
 let activeFilter = 'all';
 
-(function init(){
-  try { recs = JSON.parse(localStorage.getItem(SK)) || []; } catch{ recs = []; }
-  if(!recs.length) recs = [...SEED];
-  renderStats(); renderList();
-})();
-
 function save(){ localStorage.setItem(SK, JSON.stringify(recs)); }
 
 // ── HELPERS ────────────────────────────────────
@@ -298,6 +292,13 @@ const n   = v => parseFloat(String(v||0).replace(',','.'))||0;
 function pD(v){ if(!v) return null; const d=new Date(v); return isNaN(d)?null:d; }
 function daysToRedeem(e){ const d=pD(e); if(!d) return null; const r=new Date(d); r.setMonth(r.getMonth()+36); return Math.ceil((r-new Date())/86400000); }
 function redeemDt(e){ const d=pD(e); if(!d) return null; const r=new Date(d); r.setMonth(r.getMonth()+36); return r; }
+
+(function init(){
+  try { recs = JSON.parse(localStorage.getItem(SK)) || []; } catch{ recs = []; }
+  if(!recs.length) recs = [...SEED];
+  renderStats();
+  renderList();
+})();
 
 (function init(){
   try { recs = JSON.parse(localStorage.getItem(SK)) || []; } catch{ recs = []; }
