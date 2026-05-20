@@ -5,6 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Filip Solár CRM</title>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.47.0/tabler-icons.min.css">
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.min.js"></script>
 <style>
 :root{--bg:#fff;--bg2:#f6f6f5;--bg3:#eeeeec;--text:#1d1d1f;--muted:#676767;--muted2:#999;--line:rgba(0,0,0,.12);--line2:rgba(0,0,0,.22);--blue:#0b5cad;--green:#2f6b13;--orange:#8a4d08;--red:#a62b2b;--purple:#4a3ca0;--r:11px;--r2:16px;--shadow:0 8px 28px rgba(0,0,0,.08)}
 @media(prefers-color-scheme:dark){:root{--bg:#1d1d1b;--bg2:#282826;--bg3:#333330;--text:#f2f0eb;--muted:#aaa;--muted2:#777;--line:rgba(255,255,255,.12);--line2:rgba(255,255,255,.24);--shadow:0 10px 30px rgba(0,0,0,.35)}}
@@ -53,7 +55,9 @@ input:focus,select:focus,textarea:focus{border-color:var(--blue);box-shadow:0 0 
 .client-body .expand-hint{font-size:12px;color:var(--muted);padding:4px 0}
 /* CONTRACT ROW */
 .contract{background:var(--bg);border:1px solid var(--line);border-radius:var(--r);padding:12px 14px;display:flex;gap:12px;align-items:flex-start}
-.contract.urgent{border-left:3px solid var(--red)}.contract.soon{border-left:3px solid var(--orange)}.contract.hot{border-left:3px solid var(--red);background:#fdf3f3}.contract.purple-b{border-left:3px solid var(--purple);background:#f5f3ff}.contract.ok{border-left:3px solid var(--green)}.contract.kontakt{border-left:3px solid var(--blue)}
+.contract.urgent{border-left:3px solid var(--red)}.contract.soon{border-left:3px solid var(--orange)}.contract.hot{border-left:3px solid var(--red);background:#fdf3f3}.contract.purple-b{border-left:3px solid var(--purple);background:#f5f3ff}.contract.ok{border-left:3px solid var(--green)}.contract.kontakt{border-left:3px solid var(--blue)}.contract.rate-bad{border-left:4px solid var(--red);background:linear-gradient(90deg,rgba(166,43,43,.10),transparent 55%),var(--bg)}
+.client.rate-bad{border-left:4px solid var(--red);background:linear-gradient(90deg,rgba(166,43,43,.08),transparent 55%)}
+.badge.rate-bad{background:#fde8e8;color:var(--red);border-color:#f5a5a5;font-weight:800}
 .contract-info{flex:1;min-width:0}
 .contract-title{font-size:13px;font-weight:600;margin-bottom:3px}
 .contract-sub{font-size:12px;color:var(--muted);margin-bottom:4px}
@@ -269,9 +273,12 @@ input:focus,select:focus,textarea:focus{border-color:var(--blue);box-shadow:0 0 
 <!-- IMPORT MODAL -->
 <div class="overlay" id="modal-import">
   <div class="modal">
-    <h3>Import JSON</h3>
-    <div class="hint">Vlož export z této aplikace (verze 9 nebo 10). Import sloučí klienty podle jména a smlouvy podle čísla a typu.</div>
-    <textarea id="import-json" style="height:120px;font-family:monospace;font-size:11px"></textarea>
+    <h3>Import dat</h3>
+    <div class="hint">Nahraj JSON, CSV nebo XLSX. PDF je experimentální — aplikace se pokusí vytáhnout text a najít základní údaje, ale před uložením je vždy zkontroluj. Import slučuje klienty podle jména a smlouvy podle čísla + typu.</div>
+    <div class="field full" style="margin-bottom:12px"><label>Soubor</label><input type="file" id="import-file" accept=".json,.csv,.xlsx,.xls,.pdf,application/json,text/csv,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/pdf" multiple></div>
+    <div class="hint" id="import-status" style="display:none"></div>
+    <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin-bottom:8px">Volitelné vložení JSON / CSV textu</div>
+    <textarea id="import-json" placeholder="Sem můžeš vložit JSON nebo CSV ručně…" style="height:120px;font-family:monospace;font-size:11px"></textarea>
     <div class="row"><button class="btn" onclick="closeModal('modal-import')">Zavřít</button><button class="btn primary" onclick="importAll()">Importovat</button></div>
   </div>
 </div>
@@ -288,7 +295,10 @@ function norm(s){try{return(s||'').toLowerCase().normalize('NFD').replace(/[\u03
 function esc(s){const d=document.createElement('div');d.textContent=s||'';return d.innerHTML}
 function today(){return new Date().toLocaleDateString('cs-CZ',{day:'2-digit',month:'2-digit',year:'numeric'})}
 function fd(d){if(!d)return'—';if(d.includes('.')&&d.split('.').length===3)return d;const p=d.split('-');return p.length===3?p[2]+'.'+p[1]+'.'+p[0]:d}
-function parseUrok(s){if(!s)return null;return parseFloat((s+'').replace(',','.').replace('%','').trim())||null}
+function parseUrok(s){if(!s)return null;const m=(s+'').replace(/\s/g,'').replace(',','.').match(/-?\d+(\.\d+)?/);return m?parseFloat(m[0]):null}
+function isHypo(s){return (s.type||'')==='hypotéka'}
+function isBadMortgageRate(s){const r=parseUrok(s.rate);return !!(aktSazba&&isHypo(s)&&r!==null&&r>=aktSazba+0.5)}
+function badRateBadge(s){const r=parseUrok(s.rate);if(!isBadMortgageRate(s))return'';return `<span class="badge rate-bad">Sazba horší o ${(r-aktSazba).toFixed(2).replace('.',',')} %</span>`}
 
 // ===== DATE CALC =====
 function cDaysAnnual(ds){
@@ -476,7 +486,8 @@ function metric(label,val,cls){return`<div class="metric"><div class="l">${label
 
 function clientCard(client,contracts){
   const minD=relevantMinDays(contracts);
-  const cls=clientCls(contracts);
+  let cls=clientCls(contracts);
+  if(contracts.some(isBadMortgageRate))cls+=' rate-bad';
   const id=client.id+'_'+contracts[0].source;
   const typesArr=[...new Set(contracts.map(x=>x.type))];
   const statusesArr=[...new Set(contracts.map(x=>x.status).filter(Boolean))];
@@ -510,7 +521,8 @@ function clientCard(client,contracts){
 
 function contractCard(client,s){
   const d=contractDays(s);
-  const cls=contractCls(s);
+  let cls=contractCls(s);
+  if(isBadMortgageRate(s))cls+=' rate-bad';
   const logs=(s.log||[]).slice(-2);
   const logHtml=logs.length?`<div style="margin-top:6px;border-top:1px solid var(--line);padding-top:5px">${logs.map(l=>`<div style="font-size:11px;display:flex;gap:6px"><span style="color:var(--muted2);white-space:nowrap">${esc(l.d)}</span><span>${esc(l.t)}</span></div>`).join('')}</div>`:'';
   const noteHtml=s.note?`<div class="contract-note">${esc(s.note)}</div>`:'';
@@ -522,6 +534,7 @@ function contractCard(client,s){
       <div class="badges" style="margin-top:4px">
         ${daysBadge(d)}
         ${statusBadge(s.status)}
+        ${badRateBadge(s)}
         ${s.source?`<span class="badge">${esc(s.source)}</span>`:''}
         ${s.eucs&&s.eucs!=='Ne'?`<span class="badge blue">EUCS: ${esc(s.eucs)}</span>`:''}
       </div>
@@ -566,6 +579,9 @@ function sortGroups(groups){
     const pa=Math.max(...a.contracts.map(x=>STATUS_PRIO[x.status||'']||0));
     const pb=Math.max(...b.contracts.map(x=>STATUS_PRIO[x.status||'']||0));
     if(pa!==pb)return pb-pa;
+    const ra=a.contracts.some(isBadMortgageRate)?1:0;
+    const rb=b.contracts.some(isBadMortgageRate)?1:0;
+    if(ra!==rb)return rb-ra;
     const da=relevantMinDays(a.contracts)??99999;
     const db=relevantMinDays(b.contracts)??99999;
     return da-db;
@@ -580,6 +596,7 @@ function renderSection(section,title,icon,color){
   const under30=raw.filter(r=>r.days<30).length;
   const under90=raw.filter(r=>r.days<=90).length;
   const activeStatuses=raw.filter(r=>['reseni','prepojistit','vypoved'].includes(r.contract.status)).length;
+  const badRates=raw.filter(r=>isBadMortgageRate(r.contract)).length;
   const view=document.getElementById('view-'+section);
 
   // Preserve existing filter values to avoid losing focus on re-render
@@ -632,7 +649,7 @@ function renderSection(section,title,icon,color){
 
   // Always update metrics
   const mEl=document.getElementById('metrics-'+section);
-  if(mEl)mEl.innerHTML=metric('Klientů',clientsCount)+metric('Smluv',total)+metric('Do 30 dní',under30,'red')+metric('Do 90 dní',under90,'orange')+metric('V řešení / urgentní',activeStatuses,'purple');
+  if(mEl)mEl.innerHTML=metric('Klientů',clientsCount)+metric('Smluv',total)+metric('Do 30 dní',under30,'red')+metric('Do 90 dní',under90,'orange')+(section==='uvery'?metric('Horší sazba',badRates,'red'):metric('V řešení / urgentní',activeStatuses,'purple'));
 
   // Always update list only
   const list=document.getElementById('list-'+section);
@@ -960,7 +977,7 @@ function tiskVypoved(){
 
 // ===== SAZBA =====
 function openSazba(){document.getElementById('sazba-inp').value=aktSazba||'';openModal('modal-sazba');}
-function saveSazba(){const v=parseFloat(document.getElementById('sazba-inp').value);if(isNaN(v)||v<0||v>20){alert('Zadej platnou sazbu');return;}aktSazba=v;save();closeModal('modal-sazba');renderAll();}
+function saveSazba(){const v=parseFloat(document.getElementById('sazba-inp').value);if(isNaN(v)||v<0||v>20){alert('Zadej platnou sazbu');return;}aktSazba=v;save();closeModal('modal-sazba');renderAll();const n=sectionContracts('uvery').filter(r=>isBadMortgageRate(r.contract)).length;if(n)alert('Hotovo. Upozornění na horší sazbu: '+n+' hypoték.');}
 
 // ===== TODO =====
 function renderTodo(){
@@ -1019,78 +1036,141 @@ document.querySelectorAll('.overlay').forEach(o=>o.addEventListener('click',e=>{
 
 // ===== EXPORT/IMPORT =====
 function exportAll(){const blob=new Blob([JSON.stringify({version:10,clients,templates},null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='filip-crm-export-v10.json';a.click()}
-function openImport(){document.getElementById('import-json').value='';openModal('modal-import')}
-function importAll(){
-  try{
-    const raw=document.getElementById('import-json').value.trim();
-    const data=JSON.parse(raw);
+function openImport(){document.getElementById('import-json').value='';const f=document.getElementById('import-file');if(f)f.value='';const st=document.getElementById('import-status');if(st){st.style.display='none';st.textContent='';}openModal('modal-import')}
 
-    // Detect format
-    // OLD tracker format: array of {id, klient, typ, pojistovna, cislo, vyroci, stav, log, ...}
-    // NEW v10 format: {version:10, clients:[...]} or {clients:[...]}
-    // OLD v9 format: array of clients with .contracts
-
-    let imported=0;
-
-    // Case 1: v10/v9 format with clients
-    if(data.clients||(Array.isArray(data)&&data[0]&&data[0].contracts)){
-      const incoming=data.clients||data;
-      incoming.forEach(ic=>{
-        let c=clients.find(x=>norm(x.name)===norm(ic.name));
-        if(!c){c={id:uid(),name:ic.name||'',phone:ic.phone||'',email:ic.email||'',address:ic.address||ic.adresa||'',note:ic.note||'',contracts:[]};clients.push(c);}
-        else{['phone','email','address','note'].forEach(k=>c[k]=c[k]||ic[k]||'');}
-        (ic.contracts||[]).forEach(s=>{
-          if(!c.contracts.some(x=>x.number&&s.number&&x.number===s.number&&x.type===s.type)){
-            c.contracts.push({...s,id:s.id||uid(),log:s.log||[],status:s.status||''});
-            imported++;
-          }
-        });
-      });
-      if(data.templates)templates=data.templates;
-    }
-    // Case 2: Old tracker format - array of flat contract objects
-    else if(Array.isArray(data)&&data[0]&&(data[0].klient||data[0].vyroci)){
-      data.forEach(s=>{
-        if(!s.klient)return;
-        let c=clients.find(x=>norm(x.name)===norm(s.klient));
-        if(!c){c={id:uid(),name:s.klient,phone:s.tel||'',email:s.email||'',address:s.adresa||'',note:'',contracts:[]};clients.push(c);}
-        else{
-          if(s.tel&&!c.phone)c.phone=s.tel;
-          if(s.email&&!c.email)c.email=s.email;
-          if(s.adresa&&!c.address)c.address=s.adresa;
-        }
-        // Check duplicate
-        const exists=c.contracts.some(x=>x.number&&s.cislo&&x.number===s.cislo);
-        if(!exists){
-          c.contracts.push({
-            id:uid(),
-            type:s.typ==='auto'?'auto':s.typ==='majetek'?'majetek':'ostatní',
-            product:s.poznamka||'',
-            company:s.pojistovna||'',
-            number:s.cislo||'',
-            anniv:s.vyroci||'',
-            amount:'',rate:'',
-            status:s.stav||'',
-            note:s.poznamka||'',
-            source:s.typ==='auto'?'auto':'majetek',
-            log:s.log||[],
-            eucs:'Ne',
-          });
-          imported++;
-        }
-      });
-    }
-    else{
-      alert('Neznámý formát dat.');return;
-    }
-
-    save();closeModal('modal-import');renderAll(true);
-    alert('Import hotový. Přidáno '+imported+' smluv.');
-  }catch(e){
-    console.error(e);
-    alert('Chyba v JSON importu: '+e.message);
+function setImportStatus(msg){const st=document.getElementById('import-status');if(st){st.style.display='block';st.textContent=msg;}}
+function parseCSV(text){
+  const rows=[];let row=[],cell='',q=false;
+  for(let i=0;i<text.length;i++){
+    const ch=text[i],nx=text[i+1];
+    if(ch==='"'&&q&&nx==='"'){cell+='"';i++;continue;}
+    if(ch==='"'){q=!q;continue;}
+    if((ch===';'||ch===','||ch==='\t')&&!q){row.push(cell.trim());cell='';continue;}
+    if((ch==='\n'||ch==='\r')&&!q){if(ch==='\r'&&nx==='\n')i++;row.push(cell.trim());if(row.some(x=>x!==''))rows.push(row);row=[];cell='';continue;}
+    cell+=ch;
   }
+  row.push(cell.trim());if(row.some(x=>x!==''))rows.push(row);
+  if(!rows.length)return[];
+  // if comma parsing created one-cell rows, retry semicolon explicitly is not needed because parser accepts both
+  const head=rows.shift().map(h=>norm(h).replace(/[^a-z0-9]/g,''));
+  return rows.map(r=>{const o={};head.forEach((h,i)=>o[h]=r[i]||'');return o;});
 }
+function pick(o,keys){for(const k of keys){const nk=norm(k).replace(/[^a-z0-9]/g,'');if(o[nk])return o[nk];}return'';}
+function normalizeImportedRow(o,sourceHint){
+  const klient=pick(o,['klient','client','jmeno','jméno','name','nazevklienta']);
+  if(!klient)return null;
+  const typeRaw=pick(o,['typ','type','produkttyp','kategorie'])||pick(o,['produkt','product']);
+  const type=mapType(typeRaw);
+  const anniv=pick(o,['vyroci','výročí','fixace','pocatek','počátek','anniv','datum','datumuzavreni','datum počátku','datum fixace']);
+  return {
+    klient,
+    tel:pick(o,['tel','telefon','phone','mobil']),
+    email:pick(o,['email','mail']),
+    adresa:pick(o,['adresa','address']),
+    contract:{
+      id:uid(),
+      type,
+      product:pick(o,['produkt','product','nazevproduktu','název produktu'])||typeRaw,
+      company:pick(o,['pojistovna','pojišťovna','banka','company','producent','instituce']),
+      number:pick(o,['cislo','číslo','cisloumlouvy','číslo smlouvy','smlouva','number']),
+      anniv:toISODate(anniv),
+      amount:pick(o,['castka','částka','platba','vyse','výše','amount','vyseuveru','pojistne','pojistné']),
+      rate:pick(o,['urok','úrok','rate','sazba']),
+      eucs:pick(o,['eucs'])||'Ne',
+      status:mapStatus(pick(o,['stav','status','aktualnistav','aktuální stav'])),
+      note:pick(o,['poznamka','poznámka','note','notes']),
+      source:sourceHint||pick(o,['source','zdroj'])||'',
+      log:[],
+      datumUzavreni:toISODate(pick(o,['datumuzavreni','datum uzavření','sjednano','sjednáno']))
+    }
+  };
+}
+function toISODate(v){
+  if(!v)return'';v=(''+v).trim();
+  if(/^\d{4}-\d{2}-\d{2}$/.test(v))return v;
+  let m=v.match(/^(\d{1,2})[\.\/\-](\d{1,2})[\.\/\-](\d{4})$/);if(m)return `${m[3]}-${m[2].padStart(2,'0')}-${m[1].padStart(2,'0')}`;
+  m=v.match(/^(\d{4})[\.\/\-](\d{1,2})[\.\/\-](\d{1,2})$/);if(m)return `${m[1]}-${m[2].padStart(2,'0')}-${m[3].padStart(2,'0')}`;
+  return v;
+}
+function mergeImportedRows(rows,sourceHint){
+  let imported=0, skipped=0;
+  rows.forEach(o=>{
+    const r=normalizeImportedRow(o,sourceHint);if(!r){skipped++;return;}
+    let c=clients.find(x=>norm(x.name)===norm(r.klient));
+    if(!c){c={id:uid(),name:r.klient,phone:r.tel||'',email:r.email||'',address:r.adresa||'',note:'',contracts:[]};clients.push(c);}
+    else{if(r.tel&&!c.phone)c.phone=r.tel;if(r.email&&!c.email)c.email=r.email;if(r.adresa&&!c.address)c.address=r.adresa;}
+    const s=r.contract;
+    if(!s.source)s.source=s.type==='život'?'životní':(s.type==='hypotéka'||s.type==='úvěr')?'úvěry':s.type;
+    const exists=c.contracts.some(x=>x.number&&s.number&&x.number===s.number&&x.type===s.type);
+    if(!exists){c.contracts.push(s);imported++;}else skipped++;
+  });
+  return {imported,skipped};
+}
+async function rowsFromFile(file){
+  const name=file.name.toLowerCase();
+  if(name.endsWith('.json')){
+    const text=await file.text();return {kind:'json',data:JSON.parse(text)};
+  }
+  if(name.endsWith('.csv')){
+    const text=await file.text();return {kind:'rows',rows:parseCSV(text)};
+  }
+  if(name.endsWith('.xlsx')||name.endsWith('.xls')){
+    if(!window.XLSX)throw new Error('XLSX knihovna se nenačetla. Zkontroluj internetové připojení.');
+    const buf=await file.arrayBuffer();const wb=XLSX.read(buf,{type:'array'});let all=[];
+    wb.SheetNames.forEach(sn=>{all=all.concat(XLSX.utils.sheet_to_json(wb.Sheets[sn],{defval:''}));});
+    const normRows=all.map(row=>{const o={};Object.keys(row).forEach(k=>o[norm(k).replace(/[^a-z0-9]/g,'')]=String(row[k]??''));return o;});
+    return {kind:'rows',rows:normRows};
+  }
+  if(name.endsWith('.pdf')){
+    if(!window.pdfjsLib)throw new Error('PDF knihovna se nenačetla. Zkontroluj internetové připojení.');
+    pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.worker.min.js';
+    const buf=await file.arrayBuffer();const pdf=await pdfjsLib.getDocument({data:buf}).promise;let text='';
+    for(let i=1;i<=pdf.numPages;i++){const page=await pdf.getPage(i);const tc=await page.getTextContent();text+=tc.items.map(it=>it.str).join(' ')+'\n';}
+    const rows=guessRowsFromPdfText(text,file.name);
+    return {kind:'rows',rows};
+  }
+  throw new Error('Nepodporovaný soubor: '+file.name);
+}
+function guessRowsFromPdfText(text,filename){
+  // Konzervativní PDF fallback: vytvoří jednu položku, aby šla ručně zkontrolovat a upravit.
+  const cislo=(text.match(/(?:smlouva|č\.?)\s*[:#]?\s*([A-Z0-9\/\-]{5,})/i)||[])[1]||'';
+  const urok=(text.match(/(\d+[,.]\d+)\s*%/)||[])[0]||'';
+  return [{klient:'Zkontrolovat PDF: '+filename, produkt:'PDF import', cislo:cislo, urok:urok, poznamka:text.slice(0,800)}];
+}
+function importJsonData(data){
+  let imported=0, skipped=0;
+  if(data.clients||(Array.isArray(data)&&data[0]&&data[0].contracts)){
+    const incoming=data.clients||data;
+    incoming.forEach(ic=>{
+      let c=clients.find(x=>norm(x.name)===norm(ic.name));
+      if(!c){c={id:uid(),name:ic.name||'',phone:ic.phone||'',email:ic.email||'',address:ic.address||ic.adresa||'',note:ic.note||'',contracts:[]};clients.push(c);} else {['phone','email','address','note'].forEach(k=>c[k]=c[k]||ic[k]||'');}
+      (ic.contracts||[]).forEach(s=>{if(!c.contracts.some(x=>x.number&&s.number&&x.number===s.number&&x.type===s.type)){c.contracts.push({...s,id:s.id||uid(),log:s.log||[],status:s.status||''});imported++;}else skipped++;});
+    });
+    if(data.templates)templates=data.templates;
+  } else if(Array.isArray(data)&&data[0]&&(data[0].klient||data[0].vyroci||data[0].cislo)){
+    const r=mergeImportedRows(data.map(row=>{const o={};Object.keys(row).forEach(k=>o[norm(k).replace(/[^a-z0-9]/g,'')]=String(row[k]??''));return o;}));imported+=r.imported;skipped+=r.skipped;
+  } else throw new Error('Neznámý JSON formát dat.');
+  return {imported,skipped};
+}
+async function importAll(){
+  try{
+    let imported=0, skipped=0;
+    const files=[...(document.getElementById('import-file')?.files||[])];
+    const raw=document.getElementById('import-json').value.trim();
+    if(files.length){
+      for(const f of files){setImportStatus('Načítám '+f.name+'…');const res=await rowsFromFile(f);if(res.kind==='json'){const r=importJsonData(res.data);imported+=r.imported;skipped+=r.skipped;}else{const r=mergeImportedRows(res.rows);imported+=r.imported;skipped+=r.skipped;}}
+    }
+    if(raw){
+      const trimmed=raw.trim();
+      if(trimmed.startsWith('{')||trimmed.startsWith('[')){const r=importJsonData(JSON.parse(trimmed));imported+=r.imported;skipped+=r.skipped;}
+      else{const r=mergeImportedRows(parseCSV(trimmed));imported+=r.imported;skipped+=r.skipped;}
+    }
+    if(!files.length&&!raw)return alert('Vlož soubor nebo text k importu.');
+    save();closeModal('modal-import');renderAll(true);
+    alert('Import hotový. Přidáno '+imported+' smluv. Přeskočeno/sloučeno '+skipped+'.');
+  }catch(e){console.error(e);setImportStatus('Chyba: '+e.message);alert('Chyba importu: '+e.message);}
+}
+
 
 load();
 
