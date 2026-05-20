@@ -1,691 +1,89 @@
 <!DOCTYPE html>
 <html lang="cs">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Investment CRM — Solár Filip</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
-*{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'Inter',sans-serif;background:#f1f5f9;color:#1e293b;font-size:14px}
-
-/* HEADER */
-.hdr{background:#fff;border-bottom:1px solid #e2e8f0;padding:0 24px;height:58px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50;box-shadow:0 1px 4px rgba(0,0,0,.06)}
-.hdr-logo{display:flex;align-items:center;gap:10px}
-.hdr-icon{width:36px;height:36px;background:#2563eb;border-radius:9px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:13px}
-.hdr-title{font-size:15px;font-weight:700}
-.hdr-sub{font-size:11px;color:#94a3b8}
-.hdr-btns{display:flex;gap:8px;align-items:center}
-
-/* BUTTONS */
-.btn{padding:8px 14px;border-radius:7px;border:none;font-family:inherit;font-size:13px;font-weight:500;cursor:pointer;display:inline-flex;align-items:center;gap:5px;transition:all .15s;text-decoration:none}
-.btn-blue{background:#2563eb;color:#fff}.btn-blue:hover{background:#1d4ed8}
-.btn-gray{background:#f1f5f9;color:#475569;border:1px solid #e2e8f0}.btn-gray:hover{background:#e2e8f0}
-.btn-green{background:#dcfce7;color:#15803d;border:1px solid #86efac}.btn-green:hover{background:#bbf7d0}
-.btn-red{background:#fee2e2;color:#dc2626;border:1px solid #fca5a5}.btn-red:hover{background:#fecaca}
-.btn-sm{padding:5px 10px;font-size:12px}
-
-/* LAYOUT */
-.layout{display:flex;height:calc(100vh - 58px)}
-
-/* SIDEBAR */
-.sidebar{width:290px;min-width:290px;background:#fff;border-right:1px solid #e2e8f0;display:flex;flex-direction:column;overflow:hidden}
-.sb-search{padding:12px;border-bottom:1px solid #f1f5f9}
-.sb-search input{width:100%;border:1px solid #e2e8f0;border-radius:7px;padding:8px 12px;font-family:inherit;font-size:13px;outline:none;background:#f8fafc}
-.sb-search input:focus{border-color:#2563eb;background:#fff}
-.sb-filters{padding:8px 12px;border-bottom:1px solid #f1f5f9;display:flex;gap:5px}
-.fb{padding:4px 10px;border-radius:20px;font-size:11px;font-weight:500;cursor:pointer;border:1px solid #e2e8f0;background:#fff;color:#64748b;font-family:inherit}
-.fb.on{background:#2563eb;border-color:#2563eb;color:#fff}
-.fb.on.g{background:#16a34a;border-color:#16a34a}
-.fb.on.o{background:#d97706;border-color:#d97706}
-.sb-stats{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:#f1f5f9;border-bottom:1px solid #e2e8f0}
-.sb-stat{background:#fff;padding:8px 12px;text-align:center}
-.sb-stat-l{font-size:10px;color:#94a3b8;text-transform:uppercase;letter-spacing:.4px}
-.sb-stat-v{font-size:12px;font-weight:700;color:#1e293b;margin-top:2px}
-.sb-list{flex:1;overflow-y:auto;padding:6px}
-.sb-list::-webkit-scrollbar{width:3px}
-.sb-list::-webkit-scrollbar-thumb{background:#e2e8f0;border-radius:3px}
-
-/* CLIENT ROW */
-.crow{padding:10px 12px;border-radius:8px;cursor:pointer;margin-bottom:3px;border:1.5px solid #f1f5f9;background:#fff;transition:all .12s}
-.crow:hover{border-color:#cbd5e1;background:#f8fafc}
-.crow.sel{border-color:#2563eb;background:#eff6ff}
-.crow.elig{border-left:3px solid #16a34a;padding-left:9px}
-.crow.elig.sel{border-color:#16a34a;background:#f0fdf4}
-.crow-name{font-size:13px;font-weight:600;display:flex;align-items:center;gap:5px;margin-bottom:5px}
-.crow-vals{display:flex;justify-content:space-between;align-items:flex-end}
-.crow-cur{font-size:13px;font-weight:700;font-variant-numeric:tabular-nums}
-.crow-inv{font-size:10px;color:#94a3b8;margin-top:1px}
-.crow-pct{font-size:12px;font-weight:600;font-variant-numeric:tabular-nums}
-.up{color:#16a34a}.dn{color:#dc2626}
-.tag{display:inline-flex;padding:2px 6px;border-radius:20px;font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.3px}
-.tag-g{background:#dcfce7;color:#15803d}
-.tag-o{background:#fef3c7;color:#b45309}
-.tag-b{background:#dbeafe;color:#1d4ed8}
-.tag-gray{background:#f1f5f9;color:#64748b}
-.tag-r{background:#fee2e2;color:#dc2626}
-
-/* MAIN CONTENT */
-.main{flex:1;overflow-y:auto;padding:0}
-.main::-webkit-scrollbar{width:5px}
-.main::-webkit-scrollbar-thumb{background:#e2e8f0;border-radius:5px}
-
-/* WELCOME */
-.welcome{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;text-align:center;gap:12px;color:#94a3b8;padding:40px}
-.welcome-ico{font-size:48px;opacity:.3}
-.welcome h2{font-size:18px;font-weight:600;color:#475569}
-
-/* IMPORT PANEL */
-.import-panel{background:#fff;border-bottom:1px solid #e2e8f0;padding:20px 28px;display:none}
-.import-panel.open{display:block}
-.import-panel h3{font-size:15px;font-weight:700;margin-bottom:14px;display:flex;align-items:center;justify-content:space-between}
-.import-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;align-items:start}
-.drop-zone{border:2px dashed #cbd5e1;border-radius:10px;padding:24px;text-align:center;cursor:pointer;transition:all .2s;background:#f8fafc}
-.drop-zone:hover,.drop-zone.drag{border-color:#2563eb;background:#eff6ff}
-.drop-zone input{display:none}
-.drop-icon{font-size:28px;margin-bottom:6px}
-.drop-text{font-size:13px;color:#64748b;font-weight:500}
-.drop-sub{font-size:11px;color:#94a3b8;margin-top:3px}
-.import-info{font-size:12px;color:#64748b;line-height:1.8;background:#f8fafc;border-radius:8px;padding:12px;border:1px solid #e2e8f0}
-.import-info strong{color:#1e293b}
-
-/* ADD PANEL */
-.add-panel{background:#fff;border-bottom:1px solid #e2e8f0;padding:20px 28px;display:none}
-.add-panel.open{display:block}
-.add-panel h3{font-size:15px;font-weight:700;margin-bottom:14px;display:flex;align-items:center;justify-content:space-between}
-.form-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
-.fg{display:flex;flex-direction:column;gap:4px}
-.fg label{font-size:11px;font-weight:600;color:#64748b;text-transform:uppercase;letter-spacing:.4px}
-.fg input,.fg select{border:1px solid #e2e8f0;border-radius:7px;padding:8px 10px;font-family:inherit;font-size:13px;color:#1e293b;outline:none;background:#fff}
-.fg input:focus,.fg select:focus{border-color:#2563eb}
-.form-footer{display:flex;justify-content:flex-end;gap:8px;margin-top:14px;padding-top:14px;border-top:1px solid #f1f5f9}
-
-/* DETAIL */
-.detail{padding:24px 28px;display:none}
-.detail.open{display:block}
-.det-hdr{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:12px}
-.det-name{font-size:22px;font-weight:700;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
-.det-sub{font-size:12px;color:#94a3b8;margin-top:4px}
-.det-actions{display:flex;gap:7px;flex-wrap:wrap}
-
-/* STAT CARDS */
-.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-bottom:20px}
-.sc{background:#fff;border:1px solid #e2e8f0;border-radius:10px;padding:14px 16px;box-shadow:0 1px 2px rgba(0,0,0,.04)}
-.sc-l{font-size:10px;color:#94a3b8;text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px;font-weight:500}
-.sc-v{font-size:19px;font-weight:700;font-variant-numeric:tabular-nums;letter-spacing:-.3px}
-.sc-n{font-size:11px;color:#94a3b8;margin-top:3px}
-
-/* ELIGIBLE BANNER */
-.elig-box{background:#f0fdf4;border:1px solid #86efac;border-radius:10px;padding:14px 16px;margin-bottom:18px}
-.elig-box-title{font-size:11px;font-weight:700;color:#15803d;text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px}
-.elig-row{display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid rgba(21,128,61,.1)}
-.elig-row:last-of-type{border:none}
-.elig-name{font-size:13px;font-weight:500}
-.elig-date{font-size:11px;color:#64748b}
-.elig-val{font-size:14px;font-weight:700;color:#15803d;font-variant-numeric:tabular-nums}
-.elig-total{display:flex;justify-content:space-between;margin-top:8px;padding-top:8px;border-top:1px solid rgba(21,128,61,.15);font-weight:700}
-.elig-total span:last-child{color:#15803d;font-size:16px}
-
-/* SECTION TITLE */
-.sec{font-size:11px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.7px;margin:18px 0 10px;display:flex;align-items:center;gap:6px}
-
-/* FUND CARDS */
-.fcard{background:#fff;border:1px solid #e2e8f0;border-radius:10px;margin-bottom:8px;overflow:hidden;box-shadow:0 1px 2px rgba(0,0,0,.03)}
-.fcard.fe{border-left:3px solid #16a34a}
-.fcard-hdr{display:grid;grid-template-columns:1fr auto auto auto auto;align-items:center;gap:14px;padding:13px 15px;cursor:pointer;user-select:none}
-.fcard-hdr:hover{background:#f8fafc}
-.fcard-nm{font-size:13px;font-weight:600}
-.fcard-type{font-size:11px;color:#94a3b8;margin-top:2px;display:flex;gap:5px;flex-wrap:wrap;align-items:center}
-.fstat{text-align:right}
-.fstat-l{font-size:10px;color:#94a3b8;text-transform:uppercase;letter-spacing:.3px;margin-bottom:2px}
-.fstat-v{font-size:13px;font-weight:700;font-variant-numeric:tabular-nums}
-.chevron{color:#94a3b8;font-size:10px;transition:transform .2s;flex-shrink:0}
-.fcard.exp .chevron{transform:rotate(180deg)}
-.fbody{display:none;border-top:1px solid #f1f5f9}
-.fcard.exp .fbody{display:block}
-
-/* NOTICE */
-.notice-g{margin:10px 15px;padding:9px 12px;background:#f0fdf4;border:1px solid #86efac;border-radius:7px;font-size:12px;color:#15803d}
-.notice-o{margin:10px 15px;padding:9px 12px;background:#fffbeb;border:1px solid #fcd34d;border-radius:7px;font-size:12px;color:#b45309}
-
-/* TX ROW */
-.tx{margin:8px 15px;background:#f8fafc;border:1px solid #f1f5f9;border-radius:8px;padding:10px 12px}
-.tx-hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
-.tx-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:8px}
-.tg-l{font-size:10px;color:#94a3b8;text-transform:uppercase;letter-spacing:.3px;margin-bottom:2px}
-.tg-v{font-size:12px;font-weight:500;font-variant-numeric:tabular-nums}
-.tx-actions{display:flex;gap:5px;margin-top:8px;flex-wrap:wrap}
-.prog{display:flex;align-items:center;gap:7px;margin-top:8px;font-size:10px;color:#94a3b8}
-.prog-bar{flex:1;height:3px;background:#e2e8f0;border-radius:2px;overflow:hidden}
-.prog-fill{height:100%;border-radius:2px;background:linear-gradient(90deg,#6366f1,#2563eb)}
-.prog-fill.done{background:#16a34a}
-
-/* TOAST */
-.toast{position:fixed;bottom:20px;right:20px;padding:11px 16px;border-radius:8px;font-size:13px;font-weight:500;z-index:9999;opacity:0;transform:translateY(40px);transition:all .3s;pointer-events:none;max-width:280px}
-.toast.show{opacity:1;transform:translateY(0)}
-.toast.ok{background:#15803d;color:#fff}
-.toast.err{background:#dc2626;color:#fff}
-
-/* EMPTY */
-.empty{text-align:center;padding:30px;color:#94a3b8;font-size:13px}
-
-@media (max-width: 900px){
-  .hdr{height:auto;min-height:58px;padding:10px 14px;gap:10px;align-items:flex-start;flex-direction:column}
-  .hdr-btns{width:100%;overflow-x:auto;padding-bottom:2px}.btn{white-space:nowrap}
-  .layout{height:auto;min-height:calc(100vh - 58px);flex-direction:column}
-  .sidebar{width:100%;min-width:0;max-height:45vh;border-right:none;border-bottom:1px solid #e2e8f0}
-  .main{min-height:55vh}.detail{padding:18px 14px}.import-panel,.add-panel{padding:16px 14px}
-  .import-grid,.form-grid{grid-template-columns:1fr}.fcard-hdr{grid-template-columns:1fr;gap:8px;align-items:flex-start}.fstat{text-align:left}
-  .det-hdr{align-items:flex-start}.stats{grid-template-columns:1fr 1fr}.tx-grid{grid-template-columns:1fr 1fr}
-}
-@media (max-width: 520px){.stats,.tx-grid{grid-template-columns:1fr}.det-actions,.form-footer{width:100%;justify-content:flex-start}.elig-row{align-items:flex-start;gap:8px;flex-direction:column}}
-
+*{box-sizing:border-box} body{margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,sans-serif;background:#eef2f7;color:#172033;font-size:14px} button,input,select{font:inherit}
+.header{height:64px;background:#fff;border-bottom:1px solid #dfe7f1;display:flex;align-items:center;justify-content:space-between;padding:0 22px;position:sticky;top:0;z-index:5;box-shadow:0 1px 6px rgba(15,23,42,.06)}
+.brand{display:flex;align-items:center;gap:12px}.logo{width:38px;height:38px;border-radius:12px;background:#2563eb;color:#fff;display:grid;place-items:center;font-weight:800}.title{font-weight:800;font-size:16px}.sub{font-size:11px;color:#7b8aa0;margin-top:2px}
+.actions{display:flex;gap:8px;flex-wrap:wrap}.btn{border:1px solid #d7e0ec;border-radius:9px;background:#fff;color:#334155;padding:9px 13px;cursor:pointer;font-weight:650;font-size:13px}.btn:hover{background:#f8fafc}.btn.primary{background:#2563eb;border-color:#2563eb;color:#fff}.btn.green{background:#dcfce7;color:#166534;border-color:#86efac}.btn.red{background:#fee2e2;color:#991b1b;border-color:#fecaca}.btn.small{padding:6px 9px;font-size:12px}
+.wrap{display:grid;grid-template-columns:310px 1fr;height:calc(100vh - 64px)}.side{background:#fff;border-right:1px solid #dfe7f1;overflow:auto}.main{overflow:auto;padding:24px}
+.search{padding:14px;border-bottom:1px solid #edf2f7}.search input{width:100%;border:1px solid #d7e0ec;border-radius:10px;padding:10px 12px;background:#f8fafc;outline:none}.search input:focus{border-color:#2563eb;background:#fff}
+.filters{display:flex;gap:6px;padding:10px 14px;border-bottom:1px solid #edf2f7}.pill{border:1px solid #d7e0ec;background:#fff;border-radius:999px;padding:6px 10px;font-size:12px;font-weight:700;color:#64748b;cursor:pointer}.pill.active{background:#2563eb;color:#fff;border-color:#2563eb}
+.kpis{display:grid;grid-template-columns:1fr 1fr;border-bottom:1px solid #edf2f7;background:#edf2f7;gap:1px}.kpi{background:#fff;padding:10px;text-align:center}.kpi b{display:block;font-size:13px}.kpi span{font-size:10px;color:#8a99ab;text-transform:uppercase;letter-spacing:.04em}
+.client{margin:7px 8px;padding:12px;border:1px solid #edf2f7;border-radius:12px;background:#fff;cursor:pointer}.client:hover{background:#f8fafc;border-color:#cbd5e1}.client.active{background:#eff6ff;border-color:#2563eb}.client.eligible{border-left:4px solid #16a34a}.client-name{font-weight:800;display:flex;gap:6px;align-items:center;flex-wrap:wrap}.client-bottom{display:flex;justify-content:space-between;gap:8px;margin-top:8px}.muted{color:#8a99ab;font-size:12px}.money{font-weight:800;font-variant-numeric:tabular-nums}.pos{color:#15803d}.neg{color:#dc2626}
+.tag{display:inline-flex;align-items:center;border-radius:999px;padding:3px 7px;font-size:10px;font-weight:800;text-transform:uppercase}.tag.green{background:#dcfce7;color:#166534}.tag.orange{background:#fef3c7;color:#92400e}.tag.blue{background:#dbeafe;color:#1d4ed8}.tag.gray{background:#f1f5f9;color:#64748b}.tag.red{background:#fee2e2;color:#991b1b}
+.panel{display:none;background:#fff;border:1px solid #dfe7f1;border-radius:16px;padding:18px;margin-bottom:18px;box-shadow:0 1px 5px rgba(15,23,42,.05)}.panel.open{display:block}.panel-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}.panel h3{margin:0;font-size:16px}.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}.field label{display:block;color:#64748b;font-size:11px;font-weight:800;text-transform:uppercase;margin-bottom:5px}.field input,.field select{width:100%;border:1px solid #d7e0ec;border-radius:9px;padding:9px 10px;outline:none}.field input:focus,.field select:focus{border-color:#2563eb}.footer{display:flex;justify-content:flex-end;gap:8px;margin-top:14px;padding-top:14px;border-top:1px solid #edf2f7}
+.drop{border:2px dashed #cbd5e1;border-radius:14px;padding:28px;text-align:center;background:#f8fafc;cursor:pointer}.drop.drag,.drop:hover{border-color:#2563eb;background:#eff6ff}.help{background:#f8fafc;border:1px solid #edf2f7;border-radius:12px;padding:14px;color:#64748b;line-height:1.7;font-size:13px}
+.welcome{height:70vh;display:grid;place-items:center;text-align:center;color:#8a99ab}.welcome h2{color:#475569;margin:0 0 8px}.detail-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap;margin-bottom:16px}.detail-head h1{margin:0;font-size:26px}
+.cards{display:grid;grid-template-columns:repeat(4,minmax(150px,1fr));gap:12px;margin-bottom:18px}.card{background:#fff;border:1px solid #dfe7f1;border-radius:16px;padding:16px;box-shadow:0 1px 4px rgba(15,23,42,.04)}.card span{display:block;color:#8a99ab;font-size:11px;text-transform:uppercase;font-weight:800;margin-bottom:6px}.card b{font-size:20px;font-variant-numeric:tabular-nums}
+.notice{background:#f0fdf4;border:1px solid #86efac;border-radius:14px;padding:14px;margin-bottom:18px}.notice-title{font-size:12px;text-transform:uppercase;font-weight:900;color:#15803d;margin-bottom:8px}.eligible-row{display:flex;justify-content:space-between;gap:12px;border-top:1px solid rgba(22,163,74,.15);padding:9px 0}.eligible-row:first-of-type{border-top:0}
+.fund{background:#fff;border:1px solid #dfe7f1;border-radius:16px;margin-bottom:10px;overflow:hidden}.fund.eligible{border-left:4px solid #16a34a}.fund-head{display:grid;grid-template-columns:1fr auto auto auto 22px;gap:16px;align-items:center;padding:15px;cursor:pointer}.fund-head:hover{background:#f8fafc}.fund-name{font-weight:900}.fstat{text-align:right}.fstat span{display:block;color:#8a99ab;font-size:10px;text-transform:uppercase;font-weight:800}.fstat b{font-size:13px;font-variant-numeric:tabular-nums}.chev{transition:.2s}.fund.open .chev{transform:rotate(180deg)}.fund-body{display:none;border-top:1px solid #edf2f7;padding:10px 14px 14px}.fund.open .fund-body{display:block}
+.tx{background:#f8fafc;border:1px solid #edf2f7;border-radius:12px;padding:12px;margin-top:9px}.tx-top{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:10px}.tx-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(135px,1fr));gap:9px}.mini span{display:block;color:#8a99ab;font-size:10px;text-transform:uppercase;font-weight:800;margin-bottom:3px}.mini b{font-size:12px;font-variant-numeric:tabular-nums}.tx-actions{margin-top:10px;display:flex;gap:6px;flex-wrap:wrap}.progress{display:flex;align-items:center;gap:8px;margin-top:10px;color:#8a99ab;font-size:11px}.bar{height:4px;flex:1;border-radius:999px;background:#e2e8f0;overflow:hidden}.bar div{height:100%;background:#2563eb}.bar div.done{background:#16a34a}
+.toast{position:fixed;right:18px;bottom:18px;background:#0f172a;color:#fff;border-radius:12px;padding:12px 16px;box-shadow:0 12px 30px rgba(15,23,42,.25);opacity:0;transform:translateY(20px);pointer-events:none;transition:.25s;z-index:99}.toast.show{opacity:1;transform:translateY(0)}
+.empty{padding:24px;text-align:center;color:#8a99ab}
+@media(max-width:900px){.wrap{grid-template-columns:1fr;height:auto}.side{height:330px;border-right:0;border-bottom:1px solid #dfe7f1}.main{padding:14px}.cards{grid-template-columns:1fr 1fr}.grid{grid-template-columns:1fr}.fund-head{grid-template-columns:1fr;gap:8px}.fstat{text-align:left}.header{height:auto;gap:12px;align-items:flex-start;padding:12px;flex-direction:column}}
 </style>
 </head>
 <body>
-
-<div class="hdr">
-  <div class="hdr-logo">
-    <div class="hdr-icon">FS</div>
-    <div>
-      <div class="hdr-title">Investment CRM</div>
-      <div class="hdr-sub">Solár Filip · FairLife</div>
-    </div>
-  </div>
-  <div class="hdr-btns">
-    <button class="btn btn-gray" onclick="togglePanel('imp')">⬆ Import CSV</button>
-    <button class="btn btn-gray" onclick="dlTemplate()">⬇ Vzor CSV</button>
-    <button class="btn btn-blue" onclick="togglePanel('add')">+ Nový záznam</button>
-  </div>
-</div>
-
-<!-- IMPORT PANEL -->
-<div class="import-panel" id="imp">
-  <h3>Import CSV <button class="btn btn-gray btn-sm" onclick="togglePanel('imp')">✕ Zavřít</button></h3>
-  <div class="import-grid">
-    <div class="drop-zone" id="dz" onclick="document.getElementById('fi').click()">
-      <input type="file" id="fi" accept=".csv" onchange="handleCSV(event)">
-      <div class="drop-icon">📄</div>
-      <div class="drop-text">Klikněte nebo přetáhněte CSV</div>
-      <div class="drop-sub">Středník nebo čárka jako oddělovač · UTF-8</div>
-    </div>
-    <div class="import-info">
-      <strong>Povinné sloupce:</strong><br>
-      Investor · Fond · Čistá investice · Datum emise · Aktuální hodnota investice<br><br>
-      <strong>Datumový formát:</strong> YYYY-MM-DD nebo DD.MM.YYYY<br>
-      <strong>Čísla:</strong> tečka nebo čárka (1.74 nebo 1,74)<br><br>
-      Import přidá nové záznamy a aktualizuje existující.<br>
-      <em style="color:#94a3b8">Klíč: Investor + Fond + Datum emise</em>
-    </div>
-  </div>
-</div>
-
-<!-- ADD/EDIT PANEL -->
-<div class="add-panel" id="add">
-  <h3 id="addTitle">Nový záznam <button class="btn btn-gray btn-sm" onclick="closeAdd()">✕ Zavřít</button></h3>
-  <div class="form-grid">
-    <div class="fg"><label>Investor *</label><input id="fi_inv" placeholder="Příjmení Jméno"></div>
-    <div class="fg"><label>Fond *</label><input id="fi_fond" placeholder="Název fondu"></div>
-    <div class="fg"><label>Typ transakce</label>
-      <select id="fi_tx"><option>Platba</option><option>Konverze</option><option>Převod</option><option>Odkup</option></select>
-    </div>
-    <div class="fg"><label>Čistá investice (CZK) *</label><input id="fi_inv_c" type="number" placeholder="200000"></div>
-    <div class="fg"><label>Aktuální hodnota (CZK)</label><input id="fi_cur" type="number" placeholder="228000"></div>
-    <div class="fg"><label>Datum připsání</label><input id="fi_dp" type="date"></div>
-    <div class="fg"><label>Datum emise *</label><input id="fi_de" type="date"></div>
-    <div class="fg"><label>Poslední hodnota CP</label><input id="fi_nav" type="number" step="0.0001" placeholder="1.7400"></div>
-    <div class="fg"><label>Hodnota platná do</label><input id="fi_navdo" type="date"></div>
-    <div class="fg"><label>ISIN</label><input id="fi_isin" placeholder="CZ0008XXXXXX"></div>
-    <div class="fg"><label>Typ CP</label><input id="fi_typ" placeholder="Prioritní investiční akcie"></div>
-  </div>
-  <input type="hidden" id="fi_idx">
-  <div class="form-footer">
-    <button class="btn btn-gray" onclick="closeAdd()">Zrušit</button>
-    <button class="btn btn-blue" onclick="saveRec()">Uložit záznam</button>
-  </div>
-</div>
-
-<!-- LAYOUT -->
-<div class="layout">
-  <div class="sidebar">
-    <div class="sb-search">
-      <input id="sq" placeholder="🔍  Hledat klienta..." oninput="renderList()">
-    </div>
-    <div class="sb-filters">
-      <button class="fb on" onclick="setF('all',this)">Všichni</button>
-      <button class="fb g" onclick="setF('elig',this)">✓ Odkup</button>
-      <button class="fb o" onclick="setF('soon',this)">⏱ Brzy</button>
-    </div>
-    <div class="sb-stats" id="sbStats"></div>
-    <div class="sb-list" id="sbList"></div>
-  </div>
-  <div class="main" id="main">
-    <div class="welcome" id="welcome">
-      <div class="welcome-ico">💼</div>
-      <h2>Vyberte klienta</h2>
-      <p style="font-size:13px;color:#94a3b8;margin-top:6px">Klikněte na klienta vlevo pro detail portfolia</p>
-    </div>
-    <div class="detail" id="detail"></div>
-  </div>
-</div>
-
-<div class="toast" id="toast"></div>
-
+<header class="header"><div class="brand"><div class="logo">FS</div><div><div class="title">Investment CRM</div><div class="sub">Solár Filip · FairLife</div></div></div><div class="actions"><button class="btn" onclick="togglePanel('importPanel')">⬆ Import CSV</button><button class="btn" onclick="downloadTemplate()">⬇ Vzor CSV</button><button class="btn primary" onclick="openForm()">+ Nový záznam</button></div></header>
+<div class="wrap"><aside class="side"><div class="search"><input id="search" placeholder="🔍 Hledat klienta…" oninput="renderAll()"></div><div class="filters"><button class="pill active" data-filter="all" onclick="setFilter('all')">Všichni</button><button class="pill" data-filter="eligible" onclick="setFilter('eligible')">✓ Odkup</button><button class="pill" data-filter="soon" onclick="setFilter('soon')">⏱ Brzy</button></div><div class="kpis" id="sideStats"></div><div id="clientList"></div></aside><main class="main">
+<section class="panel" id="importPanel"><div class="panel-head"><h3>Import CSV</h3><button class="btn small" onclick="togglePanel('importPanel')">✕ Zavřít</button></div><div class="grid" style="grid-template-columns:1fr 1fr"><label class="drop" id="drop"><input type="file" id="fileInput" accept=".csv" style="display:none" onchange="handleFile(this.files[0])"><div style="font-size:32px">📄</div><b>Klikni nebo přetáhni CSV</b><div class="muted">oddělovač ; nebo , · UTF-8</div></label><div class="help"><b>Povinné minimum:</b><br>Investor, Fond, Čistá investice, Aktuální hodnota investice, Datum emise<br><br><b>Klíč pro aktualizaci:</b><br>Investor + Fond + Datum emise</div></div></section>
+<section class="panel" id="formPanel"><div class="panel-head"><h3 id="formTitle">Nový záznam</h3><button class="btn small" onclick="closeForm()">✕ Zavřít</button></div><div class="grid"><div class="field"><label>Investor *</label><input id="fInvestor"></div><div class="field"><label>Fond *</label><input id="fFond"></div><div class="field"><label>Typ transakce</label><select id="fTyp"><option>Platba</option><option>Konverze</option><option>Převod</option><option>Odkup</option></select></div><div class="field"><label>Čistá investice *</label><input id="fInvest" type="number"></div><div class="field"><label>Aktuální hodnota</label><input id="fCurrent" type="number"></div><div class="field"><label>Datum připsání</label><input id="fPayDate" type="date"></div><div class="field"><label>Datum emise</label><input id="fIssueDate" type="date"></div><div class="field"><label>Hodnota CP</label><input id="fNav" type="number" step="0.0001"></div><div class="field"><label>Hodnota platná do</label><input id="fNavTo" type="date"></div><div class="field"><label>ISIN</label><input id="fIsin"></div><div class="field"><label>Typ CP</label><input id="fSecurityType"></div></div><input type="hidden" id="editIndex"><div class="footer"><button class="btn" onclick="closeForm()">Zrušit</button><button class="btn primary" onclick="saveRecord()">Uložit</button></div></section>
+<div id="content" class="welcome"><div><div style="font-size:52px;opacity:.45">💼</div><h2>Vyber klienta</h2><div>Klikni vlevo na klienta a zobrazí se portfolio.</div></div></div>
+</main></div><div class="toast" id="toast"></div>
 <script>
+'use strict';
 const SEED = [{"Investor": "Česáková Petra", "Poradce": "Solár Filip", "Kód poradce": 13100104, "RČ": 7562090954, "IČO": null, "Spis": 65540, "Pokyn": 29752, "Fond": "Podfond ČSEF AQUA", "Typ CP": "Prémiové investiční akcie", "rp.ISIN": "CZ0008051877", "Typ transakce": "Platba", "Vstupní poplatek": 0, "Čistá investice": 400000, "Měna": "CZK", "Datum připsání platby": "2024-07-15", "Počet vydaných CP": 392195, "Upisovací hodnota": 1.0199, "Datum emise": "2024-09-09", "Poslední schválená hodnota CP": 1.2047, "Poslední schválená hodnota do": "2026-02-28", "Aktuální hodnota investice": 472477.3165}, {"Investor": "Česáková Petra", "Poradce": "Solár Filip", "Kód poradce": 13100104, "RČ": 7562090954, "IČO": null, "Spis": 47371, "Pokyn": 24197, "Fond": "REALIA Podfond Retail Parks", "Typ CP": "Prioritní investiční akcie I", "rp.ISIN": "CZ0008044880", "Typ transakce": "Platba", "Vstupní poplatek": 0, "Čistá investice": 400000, "Měna": "CZK", "Datum připsání platby": "2023-06-09", "Počet vydaných CP": 298819, "Upisovací hodnota": 1.3386, "Datum emise": "2023-08-01", "Poslední schválená hodnota CP": 1.7251, "Poslední schválená hodnota do": "2026-03-31", "Aktuální hodnota investice": 515492.6569}, {"Investor": "Česáková Petra", "Poradce": "Solár Filip", "Kód poradce": 13100104, "RČ": 7562090954, "IČO": null, "Spis": 30614, "Pokyn": 11825, "Fond": "ČSNF SICAV, a.s.", "Typ CP": "Prioritní investiční akcie", "rp.ISIN": "CZ0008043700", "Typ transakce": "Platba", "Vstupní poplatek": 0, "Čistá investice": 1200000, "Měna": "CZK", "Datum připsání platby": "2022-09-23", "Počet vydaných CP": 977517, "Upisovací hodnota": 1.2276, "Datum emise": "2023-01-17", "Poslední schválená hodnota CP": 0.574, "Poslední schválená hodnota do": "2025-11-30", "Aktuální hodnota investice": 561094.758}, {"Investor": "Česáková Petra", "Poradce": "Solár Filip", "Kód poradce": 13100104, "RČ": 7562090954, "IČO": null, "Spis": 30616, "Pokyn": 11826, "Fond": "r2p invest SICAV, a.s.", "Typ CP": "Prioritní investiční akcie", "rp.ISIN": "CZ0008043445", "Typ transakce": "Platba", "Vstupní poplatek": 0, "Čistá investice": 1000000, "Měna": "CZK", "Datum připsání platby": "2022-09-23", "Počet vydaných CP": 776518, "Upisovací hodnota": 1.2878, "Datum emise": "2022-11-04", "Poslední schválená hodnota CP": 1.74, "Poslední schválená hodnota do": "2026-02-28", "Aktuální hodnota investice": 1351141.32}, {"Investor": "Česáková Petra", "Poradce": "Solár Filip", "Kód poradce": 13100104, "RČ": 7562090954, "IČO": null, "Spis": 54474, "Pokyn": 26108, "Fond": "Vihorev.Capital SICAV, a.s.", "Typ CP": "Prioritní investiční akcie", "rp.ISIN": "CZ0008043569", "Typ transakce": "Platba", "Vstupní poplatek": 0, "Čistá investice": 200000, "Měna": "CZK", "Datum připsání platby": "2023-11-30", "Počet vydaných CP": 141562, "Upisovací hodnota": 1.4128, "Datum emise": "2024-01-15", "Poslední schválená hodnota CP": 1.6903, "Poslední schválená hodnota do": "2025-12-31", "Aktuální hodnota investice": 239282.2486}, {"Investor": "Husárová Michaela", "Poradce": "Solár Filip", "Kód poradce": 13100104, "RČ": 8256054026, "IČO": null, "Spis": 70782, "Pokyn": 32306, "Fond": "ČSNF SICAV, a.s.", "Typ CP": "Prioritní investiční akcie", "rp.ISIN": "CZ0008043700", "Typ transakce": "Platba", "Vstupní poplatek": 0, "Čistá investice": 400000, "Měna": "CZK", "Datum připsání platby": "2024-11-29", "Počet vydaných CP": 280249, "Upisovací hodnota": 1.4273, "Datum emise": "2025-03-03", "Poslední schválená hodnota CP": 0.574, "Poslední schválená hodnota do": "2025-11-30", "Aktuální hodnota investice": 160862.926}, {"Investor": "Husárová Michaela", "Poradce": "Solár Filip", "Kód poradce": 13100104, "RČ": 8256054026, "IČO": null, "Spis": 70783, "Pokyn": 32307, "Fond": "r2p invest SICAV, a.s.", "Typ CP": "Prioritní investiční akcie", "rp.ISIN": "CZ0008043445", "Typ transakce": "Platba", "Vstupní poplatek": 0, "Čistá investice": 500000, "Měna": "CZK", "Datum připsání platby": "2024-11-29", "Počet vydaných CP": 317641, "Upisovací hodnota": 1.5741, "Datum emise": "2024-12-27", "Poslední schválená hodnota CP": 1.74, "Poslední schválená hodnota do": "2026-02-28", "Aktuální hodnota investice": 552695.34}, {"Investor": "Husárová Michaela", "Poradce": "Solár Filip", "Kód poradce": 13100104, "RČ": 8256054026, "IČO": null, "Spis": 70785, "Pokyn": 32308, "Fond": "Vihorev.Capital SICAV, a.s.", "Typ CP": "Prioritní investiční akcie", "rp.ISIN": "CZ0008043569", "Typ transakce": "Platba", "Vstupní poplatek": 0, "Čistá investice": 400000, "Měna": "CZK", "Datum připsání platby": "2024-11-29", "Počet vydaných CP": 260213, "Upisovací hodnota": 1.5372, "Datum emise": "2025-01-27", "Poslední schválená hodnota CP": 1.6903, "Poslední schválená hodnota do": "2025-12-31", "Aktuální hodnota investice": 439838.0339}, {"Investor": "Husárová Michaela", "Poradce": "Solár Filip", "Kód poradce": 13100104, "RČ": 8256054026, "IČO": null, "Spis": 70786, "Pokyn": 32309, "Fond": "REALIA Podfond Retail Parks", "Typ CP": "Prioritní investiční akcie I", "rp.ISIN": "CZ0008044880", "Typ transakce": "Platba", "Vstupní poplatek": 0, "Čistá investice": 500000, "Měna": "CZK", "Datum připsání platby": "2024-11-29", "Počet vydaných CP": 332557, "Upisovací hodnota": 1.5035, "Datum emise": "2024-12-27", "Poslední schválená hodnota CP": 1.7251, "Poslední schválená hodnota do": "2026-03-31", "Aktuální hodnota investice": 573694.0807}, {"Investor": "Husárová Michaela", "Poradce": "Solár Filip", "Kód poradce": 13100104, "RČ": 8256054026, "IČO": null, "Spis": 70788, "Pokyn": 32311, "Fond": "SPILBERK investiční fond SICAV, a.s.", "Typ CP": "Prioritní investiční akcie", "rp.ISIN": "CZ0008042645", "Typ transakce": "Platba", "Vstupní poplatek": 0, "Čistá investice": 400000, "Měna": "CZK", "Datum připsání platby": "2024-11-29", "Počet vydaných CP": 210050, "Upisovací hodnota": 1.9043, "Datum emise": "2025-03-03", "Poslední schválená hodnota CP": 2.0528, "Poslední schválená hodnota do": "2025-12-31", "Aktuální hodnota investice": 431190.64}, {"Investor": "Husárová Michaela", "Poradce": "Solár Filip", "Kód poradce": 13100104, "RČ": 8256054026, "IČO": null, "Spis": 70789, "Pokyn": 32312, "Fond": "Českomoravský fond SICAV, a.s. Podfond AGUILA", "Typ CP": "Investiční akcie A", "rp.ISIN": "CZ0008044195", "Typ transakce": "Platba", "Vstupní poplatek": 0, "Čistá investice": 200000, "Měna": "CZK", "Datum připsání platby": "2024-11-29", "Počet vydaných CP": 145740, "Upisovací hodnota": 1.3723, "Datum emise": "2025-01-22", "Poslední schválená hodnota CP": 1.49, "Poslední schválená hodnota do": "2026-02-28", "Aktuální hodnota investice": 217152.6}, {"Investor": "Husárová Michaela", "Poradce": "Solár Filip", "Kód poradce": 13100104, "RČ": 8256054026, "IČO": null, "Spis": 70787, "Pokyn": 32310, "Fond": "Podfond ČSEF AQUA", "Typ CP": "Prémiové investiční akcie", "rp.ISIN": "CZ0008051877", "Typ transakce": "Platba", "Vstupní poplatek": 0, "Čistá investice": 400000, "Měna": "CZK", "Datum připsání platby": "2024-11-29", "Počet vydaných CP": 372647, "Upisovací hodnota": 1.0734, "Datum emise": "2025-01-24", "Poslední schválená hodnota CP": 1.2047, "Poslední schválená hodnota do": "2026-02-28", "Aktuální hodnota investice": 448927.8409}, {"Investor": "Němcová Eva", "Poradce": "Solár Filip", "Kód poradce": 13100104, "RČ": 7257290183, "IČO": null, "Spis": 61710, "Pokyn": 28511, "Fond": "Českomoravský fond SICAV, a.s. Podfond AGUILA", "Typ CP": "Investiční akcie A", "rp.ISIN": "CZ0008044195", "Typ transakce": "Platba", "Vstupní poplatek": 0, "Čistá investice": 100000, "Měna": "CZK", "Datum připsání platby": "2024-04-24", "Počet vydaných CP": 75769, "Upisovací hodnota": 1.3198, "Datum emise": "2024-08-06", "Poslední schválená hodnota CP": 1.49, "Poslední schválená hodnota do": "2026-02-28", "Aktuální hodnota investice": 112895.81}, {"Investor": "Němcová Eva", "Poradce": "Solár Filip", "Kód poradce": 13100104, "RČ": 7257290183, "IČO": null, "Spis": 61711, "Pokyn": 28512, "Fond": "Českomoravský fond SICAV, a.s. Podfond DOMUS", "Typ CP": "Investiční akcie A", "rp.ISIN": "CZ0008049137", "Typ transakce": "Platba", "Vstupní poplatek": 0, "Čistá investice": 100000, "Měna": "CZK", "Datum připsání platby": "2024-04-24", "Počet vydaných CP": 90810, "Upisovací hodnota": 1.1012, "Datum emise": "2024-08-09", "Poslední schválená hodnota CP": 1.2046, "Poslední schválená hodnota do": "2026-02-28", "Aktuální hodnota investice": 109389.726}, {"Investor": "Němcová Eva", "Poradce": "Solár Filip", "Kód poradce": 13100104, "RČ": 7257290183, "IČO": null, "Spis": 61711, "Pokyn": 40798, "Fond": "Českomoravský fond SICAV, a.s. Podfond DOMUS", "Typ CP": "Investiční akcie A", "rp.ISIN": "CZ0008049137", "Typ transakce": "Konverze", "Vstupní poplatek": 0, "Čistá investice": -106992.34, "Měna": "CZK", "Datum připsání platby": "2025-10-31", "Počet vydaných CP": -90810, "Upisovací hodnota": 0, "Datum emise": "2025-12-01", "Poslední schválená hodnota CP": 1.2046, "Poslední schválená hodnota do": "2026-02-28", "Aktuální hodnota investice": -109389.726}, {"Investor": "Němcová Eva", "Poradce": "Solár Filip", "Kód poradce": 13100104, "RČ": 7257290183, "IČO": null, "Spis": 61709, "Pokyn": 28510, "Fond": "REALIA Podfond Retail Parks", "Typ CP": "Prioritní investiční akcie I", "rp.ISIN": "CZ0008044880", "Typ transakce": "Platba", "Vstupní poplatek": 0, "Čistá investice": 200000, "Měna": "CZK", "Datum připsání platby": "2024-04-25", "Počet vydaných CP": 135630, "Upisovací hodnota": 1.4746, "Datum emise": "2024-05-16", "Poslední schválená hodnota CP": 1.7251, "Poslední schválená hodnota do": "2026-03-31", "Aktuální hodnota investice": 233975.313}, {"Investor": "Němcová Eva", "Poradce": "Solár Filip", "Kód poradce": 13100104, "RČ": 7257290183, "IČO": null, "Spis": 61708, "Pokyn": 28509, "Fond": "Vihorev.Capital SICAV, a.s.", "Typ CP": "Prioritní investiční akcie", "rp.ISIN": "CZ0008043569", "Typ transakce": "Platba", "Vstupní poplatek": 0, "Čistá investice": 200000, "Měna": "CZK", "Datum připsání platby": "2024-04-24", "Počet vydaných CP": 136742, "Upisovací hodnota": 1.4626, "Datum emise": "2024-07-04", "Poslední schválená hodnota CP": 1.6903, "Poslední schválená hodnota do": "2025-12-31", "Aktuální hodnota investice": 231135.0026}, {"Investor": "Němcová Eva", "Poradce": "Solár Filip", "Kód poradce": 13100104, "RČ": 7257290183, "IČO": null, "Spis": 61706, "Pokyn": 28508, "Fond": "r2p invest SICAV, a.s.", "Typ CP": "Prioritní investiční akcie", "rp.ISIN": "CZ0008043445", "Typ transakce": "Platba", "Vstupní poplatek": 0, "Čistá investice": 200000, "Měna": "CZK", "Datum připsání platby": "2024-04-25", "Počet vydaných CP": 133770, "Upisovací hodnota": 1.4951, "Datum emise": "2024-08-01", "Poslední schválená hodnota CP": 1.74, "Poslední schválená hodnota do": "2026-02-28", "Aktuální hodnota investice": 232759.8}, {"Investor": "Němcová Eva", "Poradce": "Solár Filip", "Kód poradce": 13100104, "RČ": 7257290183, "IČO": null, "Spis": 61705, "Pokyn": 28507, "Fond": "ČSNF SICAV, a.s.", "Typ CP": "Prioritní investiční akcie", "rp.ISIN": "CZ0008043700", "Typ transakce": "Platba", "Vstupní poplatek": 0, "Čistá investice": 200000, "Měna": "CZK", "Datum připsání platby": "2024-04-24", "Počet vydaných CP": 145868, "Upisovací hodnota": 1.3711, "Datum emise": "2024-08-16", "Poslední schválená hodnota CP": 0.574, "Poslední schválená hodnota do": "2025-11-30", "Aktuální hodnota investice": 83728.232}, {"Investor": "Němcová Eva", "Poradce": "Solár Filip", "Kód poradce": 13100104, "RČ": 7257290183, "IČO": null, "Spis": 102395, "Pokyn": 40799, "Fond": "Českomoravský fond SICAV, a.s. Podfond DOMUS", "Typ CP": "Prémiové investiční akcie", "rp.ISIN": "CZ0008044179", "Typ transakce": "Konverze", "Vstupní poplatek": 0, "Čistá investice": 106989.02, "Měna": "CZK", "Datum připsání platby": "2025-10-31", "Počet vydaných CP": 6083, "Upisovací hodnota": 0, "Datum emise": "2025-12-01", "Poslední schválená hodnota CP": 17.9684, "Poslední schválená hodnota do": "2026-02-28", "Aktuální hodnota investice": 109301.7772}, {"Investor": "Němeček Miroslav", "Poradce": "Solár Filip", "Kód poradce": 13100104, "RČ": 8005230079, "IČO": null, "Spis": 57888, "Pokyn": 26840, "Fond": "Českomoravský fond SICAV, a.s. Podfond AGUILA", "Typ CP": "Investiční akcie A", "rp.ISIN": "CZ0008044195", "Typ transakce": "Platba", "Vstupní poplatek": 0, "Čistá investice": 450000, "Měna": "CZK", "Datum připsání platby": "2024-02-07", "Počet vydaných CP": 344748, "Upisovací hodnota": 1.3053, "Datum emise": "2024-04-02", "Poslední schválená hodnota CP": 1.49, "Poslední schválená hodnota do": "2026-02-28", "Aktuální hodnota investice": 513674.52}, {"Investor": "Němeček Miroslav", "Poradce": "Solár Filip", "Kód poradce": 13100104, "RČ": 8005230079, "IČO": null, "Spis": 57886, "Pokyn": 26838, "Fond": "r2p invest SICAV, a.s.", "Typ CP": "Prioritní investiční akcie", "rp.ISIN": "CZ0008043445", "Typ transakce": "Platba", "Vstupní poplatek": 0, "Čistá investice": 500000, "Měna": "CZK", "Datum připsání platby": "2024-02-07", "Počet vydaných CP": 339535, "Upisovací hodnota": 1.4726, "Datum emise": "2024-03-27", "Poslední schválená hodnota CP": 1.74, "Poslední schválená hodnota do": "2026-02-28", "Aktuální hodnota investice": 590790.9}, {"Investor": "Němeček Miroslav", "Poradce": "Solár Filip", "Kód poradce": 13100104, "RČ": 8005230079, "IČO": null, "Spis": 57887, "Pokyn": 26839, "Fond": "Vihorev.Capital SICAV, a.s.", "Typ CP": "Prioritní investiční akcie", "rp.ISIN": "CZ0008043569", "Typ transakce": "Platba", "Vstupní poplatek": 0, "Čistá investice": 500000, "Měna": "CZK", "Datum připsání platby": "2024-02-07", "Počet vydaných CP": 346620, "Upisovací hodnota": 1.4425, "Datum emise": "2024-06-13", "Poslední schválená hodnota CP": 1.6903, "Poslední schválená hodnota do": "2025-12-31", "Aktuální hodnota investice": 585891.786}, {"Investor": "Němeček Miroslav", "Poradce": "Solár Filip", "Kód poradce": 13100104, "RČ": 8005230079, "IČO": null, "Spis": 33904, "Pokyn": 13035, "Fond": "ČSNF SICAV, a.s.", "Typ CP": "Prioritní investiční akcie", "rp.ISIN": "CZ0008043700", "Typ transakce": "Platba", "Vstupní poplatek": 0, "Čistá investice": 1000000, "Měna": "CZK", "Datum připsání platby": "2023-02-08", "Počet vydaných CP": 790513, "Upisovací hodnota": 1.265, "Datum emise": "2023-06-20", "Poslední schválená hodnota CP": 0.574, "Poslední schválená hodnota do": "2025-11-30", "Aktuální hodnota investice": 453754.462}, {"Investor": "Novotná Karolína", "Poradce": "Solár Filip", "Kód poradce": 13100104, "RČ": 151110047, "IČO": null, "Spis": 87690, "Pokyn": 34702, "Fond": "Českomoravský fond SICAV, a.s. Podfond AGUILA", "Typ CP": "Investiční akcie A", "rp.ISIN": "CZ0008044195", "Typ transakce": "Platba", "Vstupní poplatek": 0, "Čistá investice": 100000, "Měna": "CZK", "Datum připsání platby": "2025-03-14", "Počet vydaných CP": 71275, "Upisovací hodnota": 1.403, "Datum emise": "2025-06-13", "Poslední schválená hodnota CP": 1.49, "Poslední schválená hodnota do": "2026-02-28", "Aktuální hodnota investice": 106199.75}, {"Investor": "Novotná Karolína", "Poradce": "Solár Filip", "Kód poradce": 13100104, "RČ": 151110047, "IČO": null, "Spis": 69276, "Pokyn": 41390, "Fond": "r2p invest SICAV, a.s.", "Typ CP": "Prioritní investiční akcie", "rp.ISIN": "CZ0008043445", "Typ transakce": "Platba", "Vstupní poplatek": 0, "Čistá investice": 100000, "Měna": "CZK", "Datum připsání platby": "2026-03-02", "Počet vydaných CP": 0, "Upisovací hodnota": 0, "Datum emise": null, "Poslední schválená hodnota CP": 1.74, "Poslední schválená hodnota do": "2026-02-28", "Aktuální hodnota investice": 100000}, {"Investor": "Novotná Karolína", "Poradce": "Solár Filip", "Kód poradce": 13100104, "RČ": 151110047, "IČO": null, "Spis": 69281, "Pokyn": 41388, "Fond": "REALIA Podfond Retail Parks", "Typ CP": "Prioritní investiční akcie I", "rp.ISIN": "CZ0008044880", "Typ transakce": "Platba", "Vstupní poplatek": 0, "Čistá investice": 100000, "Měna": "CZK", "Datum připsání platby": "2026-03-02", "Počet vydaných CP": 57967, "Upisovací hodnota": 1.7251, "Datum emise": "2026-05-06", "Poslední schválená hodnota CP": 1.7251, "Poslední schválená hodnota do": "2026-03-31", "Aktuální hodnota investice": 99998.8717}, {"Investor": "Novotná Karolína", "Poradce": "Solár Filip", "Kód poradce": 13100104, "RČ": 151110047, "IČO": null, "Spis": 69279, "Pokyn": 31500, "Fond": "Podfond ČSEF AQUA", "Typ CP": "Prioritní investiční akcie", "rp.ISIN": "CZ0008047263", "Typ transakce": "Platba", "Vstupní poplatek": 0, "Čistá investice": 200000, "Měna": "CZK", "Datum připsání platby": "2024-10-30", "Počet vydaných CP": 156653, "Upisovací hodnota": 1.2767, "Datum emise": "2024-12-20", "Poslední schválená hodnota CP": 1.4398, "Poslední schválená hodnota do": "2026-02-28", "Aktuální hodnota investice": 225548.9894}, {"Investor": "Novotná Karolína", "Poradce": "Solár Filip", "Kód poradce": 13100104, "RČ": 151110047, "IČO": null, "Spis": 69276, "Pokyn": 31498, "Fond": "r2p invest SICAV, a.s.", "Typ CP": "Prioritní investiční akcie", "rp.ISIN": "CZ0008043445", "Typ transakce": "Platba", "Vstupní poplatek": 0, "Čistá investice": 200000, "Měna": "CZK", "Datum připsání platby": "2024-10-30", "Počet vydaných CP": 128000, "Upisovací hodnota": 1.5625, "Datum emise": "2024-11-25", "Poslední schválená hodnota CP": 1.74, "Poslední schválená hodnota do": "2026-02-28", "Aktuální hodnota investice": 222720}, {"Investor": "Novotná Karolína", "Poradce": "Solár Filip", "Kód poradce": 13100104, "RČ": 151110047, "IČO": null, "Spis": 87692, "Pokyn": 34704, "Fond": "GARTAL Investment fund SICAV a.s.", "Typ CP": "Růstové investiční akcie", "rp.ISIN": "CZ0008045135", "Typ transakce": "Platba", "Vstupní poplatek": 0, "Čistá investice": 200000, "Měna": "CZK", "Datum připsání platby": "2025-03-14", "Počet vydaných CP": 145011, "Upisovací hodnota": 1.3792, "Datum emise": "2025-06-17", "Poslední schválená hodnota CP": 1.4516, "Poslední schválená hodnota do": "2025-11-30", "Aktuální hodnota investice": 210497.9676}, {"Investor": "Novotná Karolína", "Poradce": "Solár Filip", "Kód poradce": 13100104, "RČ": 151110047, "IČO": null, "Spis": 87691, "Pokyn": 34703, "Fond": "Real Luxembourg investiční fond SICAV, a.s.", "Typ CP": "Prioritní investiční akcie", "rp.ISIN": "CZ0008050580", "Typ transakce": "Platba", "Vstupní poplatek": 0, "Čistá investice": 200000, "Měna": "CZK", "Datum připsání platby": "2025-03-14", "Počet vydaných CP": 176694, "Upisovací hodnota": 1.1319, "Datum emise": "2025-10-07", "Poslední schválená hodnota CP": 1.2405, "Poslední schválená hodnota do": "2026-01-31", "Aktuální hodnota investice": 219188.907}, {"Investor": "Novotná Karolína", "Poradce": "Solár Filip", "Kód poradce": 13100104, "RČ": 151110047, "IČO": null, "Spis": 69281, "Pokyn": 31502, "Fond": "REALIA Podfond Retail Parks", "Typ CP": "Prioritní investiční akcie I", "rp.ISIN": "CZ0008044880", "Typ transakce": "Platba", "Vstupní poplatek": 0, "Čistá investice": 200000, "Měna": "CZK", "Datum připsání platby": "2024-10-30", "Počet vydaných CP": 133146, "Upisovací hodnota": 1.5021, "Datum emise": "2024-11-25", "Poslední schválená hodnota CP": 1.7251, "Poslední schválená hodnota do": "2026-03-31", "Aktuální hodnota investice": 229690.1646}, {"Investor": "Novotná Karolína", "Poradce": "Solár Filip", "Kód poradce": 13100104, "RČ": 151110047, "IČO": null, "Spis": 69278, "Pokyn": 31499, "Fond": "ČSNF SICAV, a.s.", "Typ CP": "Prioritní investiční akcie", "rp.ISIN": "CZ0008043700", "Typ transakce": "Platba", "Vstupní poplatek": 0, "Čistá investice": 200000, "Měna": "CZK", "Datum připsání platby": "2024-10-30", "Počet vydaných CP": 140904, "Upisovací hodnota": 1.4194, "Datum emise": "2025-02-06", "Poslední schválená hodnota CP": 0.574, "Poslední schválená hodnota do": "2025-11-30", "Aktuální hodnota investice": 80878.896}, {"Investor": "Novotná Karolína", "Poradce": "Solár Filip", "Kód poradce": 13100104, "RČ": 151110047, "IČO": null, "Spis": 69280, "Pokyn": 31501, "Fond": "Vihorev.Capital SICAV, a.s.", "Typ CP": "Prioritní investiční akcie", "rp.ISIN": "CZ0008043569", "Typ transakce": "Platba", "Vstupní poplatek": 0, "Čistá investice": 200000, "Měna": "CZK", "Datum připsání platby": "2024-10-30", "Počet vydaných CP": 131010, "Upisovací hodnota": 1.5266, "Datum emise": "2025-01-13", "Poslední schválená hodnota CP": 1.6903, "Poslední schválená hodnota do": "2025-12-31", "Aktuální hodnota investice": 221446.203}, {"Investor": "Ondřejčková Milada", "Poradce": "Solár Filip", "Kód poradce": 13100104, "RČ": 7360213971, "IČO": null, "Spis": 94060, "Pokyn": 36957, "Fond": "SPILBERK investiční fond SICAV, a.s.", "Typ CP": "Prioritní investiční akcie", "rp.ISIN": "CZ0008042645", "Typ transakce": "Platba", "Vstupní poplatek": 0, "Čistá investice": 200000, "Měna": "CZK", "Datum připsání platby": "2025-07-30", "Počet vydaných CP": 100250, "Upisovací hodnota": 1.995, "Datum emise": "2025-12-05", "Poslední schválená hodnota CP": 2.0528, "Poslední schválená hodnota do": "2025-12-31", "Aktuální hodnota investice": 205793.2}, {"Investor": "Ondřejčková Milada", "Poradce": "Solár Filip", "Kód poradce": 13100104, "RČ": 7360213971, "IČO": null, "Spis": 94061, "Pokyn": 36958, "Fond": "Vihorev.Capital SICAV, a.s.", "Typ CP": "Prioritní investiční akcie", "rp.ISIN": "CZ0008043569", "Typ transakce": "Platba", "Vstupní poplatek": 0, "Čistá investice": 150000, "Měna": "CZK", "Datum připsání platby": "2025-07-31", "Počet vydaných CP": 91923, "Upisovací hodnota": 1.6318, "Datum emise": "2025-09-30", "Poslední schválená hodnota CP": 1.6903, "Poslední schválená hodnota do": "2025-12-31", "Aktuální hodnota investice": 155377.4469}, {"Investor": "Ondřejčková Milada", "Poradce": "Solár Filip", "Kód poradce": 13100104, "RČ": 7360213971, "IČO": null, "Spis": 94058, "Pokyn": 36956, "Fond": "r2p invest SICAV, a.s.", "Typ CP": "Prioritní investiční akcie", "rp.ISIN": "CZ0008043445", "Typ transakce": "Platba", "Vstupní poplatek": 0, "Čistá investice": 200000, "Měna": "CZK", "Datum připsání platby": "2025-07-30", "Počet vydaných CP": 120141, "Upisovací hodnota": 1.6647, "Datum emise": "2025-09-03", "Poslední schválená hodnota CP": 1.74, "Poslední schválená hodnota do": "2026-02-28", "Aktuální hodnota investice": 209045.34}, {"Investor": "Ondřejčková Milada", "Poradce": "Solár Filip", "Kód poradce": 13100104, "RČ": 7360213971, "IČO": null, "Spis": 94063, "Pokyn": 36960, "Fond": "GARTAL Investment fund SICAV a.s.", "Typ CP": "Růstové investiční akcie", "rp.ISIN": "CZ0008045135", "Typ transakce": "Platba", "Vstupní poplatek": 0, "Čistá investice": 150000, "Měna": "CZK", "Datum připsání platby": "2025-07-31", "Počet vydaných CP": 105977, "Upisovací hodnota": 1.4154, "Datum emise": "2025-09-12", "Poslední schválená hodnota CP": 1.4516, "Poslední schválená hodnota do": "2025-11-30", "Aktuální hodnota investice": 153836.2132}, {"Investor": "Ondřejčková Milada", "Poradce": "Solár Filip", "Kód poradce": 13100104, "RČ": 7360213971, "IČO": null, "Spis": 94064, "Pokyn": 36961, "Fond": "Podfond ČSEF AQUA", "Typ CP": "Prioritní investiční akcie", "rp.ISIN": "CZ0008047263", "Typ transakce": "Platba", "Vstupní poplatek": 0, "Čistá investice": 200000, "Měna": "CZK", "Datum připsání platby": "2025-07-31", "Počet vydaných CP": 147015, "Upisovací hodnota": 1.3604, "Datum emise": "2025-11-18", "Poslední schválená hodnota CP": 1.4398, "Poslední schválená hodnota do": "2026-02-28", "Aktuální hodnota investice": 211672.197}, {"Investor": "Ondřejčková Milada", "Poradce": "Solár Filip", "Kód poradce": 13100104, "RČ": 7360213971, "IČO": null, "Spis": 94062, "Pokyn": 36959, "Fond": "REALIA Podfond Retail Parks", "Typ CP": "Prioritní investiční akcie I", "rp.ISIN": "CZ0008044880", "Typ transakce": "Platba", "Vstupní poplatek": 0, "Čistá investice": 200000, "Měna": "CZK", "Datum připsání platby": "2025-07-31", "Počet vydaných CP": 124277, "Upisovací hodnota": 1.6093, "Datum emise": "2025-08-28", "Poslední schválená hodnota CP": 1.7251, "Poslední schválená hodnota do": "2026-03-31", "Aktuální hodnota investice": 214390.2527}, {"Investor": "Pešková Lenka", "Poradce": "Solár Filip", "Kód poradce": 13100104, "RČ": 7454300799, "IČO": null, "Spis": 35724, "Pokyn": 13722, "Fond": "r2p invest SICAV, a.s.", "Typ CP": "Prioritní investiční akcie", "rp.ISIN": "CZ0008043445", "Typ transakce": "Platba", "Vstupní poplatek": 0, "Čistá investice": 300000, "Měna": "CZK", "Datum připsání platby": "2023-04-04", "Počet vydaných CP": 220701, "Upisovací hodnota": 1.3593, "Datum emise": "2023-08-16", "Poslední schválená hodnota CP": 1.74, "Poslední schválená hodnota do": "2026-02-28", "Aktuální hodnota investice": 384019.74}, {"Investor": "Pešková Lenka", "Poradce": "Solár Filip", "Kód poradce": 13100104, "RČ": 7454300799, "IČO": null, "Spis": 35722, "Pokyn": 13721, "Fond": "ČSNF SICAV, a.s.", "Typ CP": "Prioritní investiční akcie", "rp.ISIN": "CZ0008043700", "Typ transakce": "Platba", "Vstupní poplatek": 0, "Čistá investice": 400000, "Měna": "CZK", "Datum připsání platby": "2023-04-04", "Počet vydaných CP": 312597, "Upisovací hodnota": 1.2796, "Datum emise": "2023-07-31", "Poslední schválená hodnota CP": 0.574, "Poslední schválená hodnota do": "2025-11-30", "Aktuální hodnota investice": 179430.678}, {"Investor": "Pokorný Petr", "Poradce": "Solár Filip", "Kód poradce": 13100104, "RČ": 520327246, "IČO": null, "Spis": 92146, "Pokyn": 36257, "Fond": "Vihorev.Capital SICAV, a.s.", "Typ CP": "Prioritní investiční akcie", "rp.ISIN": "CZ0008043569", "Typ transakce": "Platba", "Vstupní poplatek": 0, "Čistá investice": 350000, "Měna": "CZK", "Datum připsání platby": "2025-06-20", "Počet vydaných CP": 216049, "Upisovací hodnota": 1.62, "Datum emise": "2025-09-02", "Poslední schválená hodnota CP": 1.6903, "Poslední schválená hodnota do": "2025-12-31", "Aktuální hodnota investice": 365187.6247}, {"Investor": "Pokorný Petr", "Poradce": "Solár Filip", "Kód poradce": 13100104, "RČ": 520327246, "IČO": null, "Spis": 92144, "Pokyn": 36256, "Fond": "r2p invest SICAV, a.s.", "Typ CP": "Prioritní investiční akcie", "rp.ISIN": "CZ0008043445", "Typ transakce": "Platba", "Vstupní poplatek": 0, "Čistá investice": 350000, "Měna": "CZK", "Datum připsání platby": "2025-06-20", "Počet vydaných CP": 211646, "Upisovací hodnota": 1.6537, "Datum emise": "2025-08-21", "Poslední schválená hodnota CP": 1.74, "Poslední schválená hodnota do": "2026-02-28", "Aktuální hodnota investice": 368264.04}, {"Investor": "Pokorný Petr", "Poradce": "Solár Filip", "Kód poradce": 13100104, "RČ": 520327246, "IČO": null, "Spis": 92147, "Pokyn": 36258, "Fond": "GARTAL Investment fund SICAV a.s.", "Typ CP": "Růstové investiční akcie", "rp.ISIN": "CZ0008045135", "Typ transakce": "Platba", "Vstupní poplatek": 0, "Čistá investice": 250000, "Měna": "CZK", "Datum připsání platby": "2025-06-21", "Počet vydaných CP": 177784, "Upisovací hodnota": 1.4062, "Datum emise": "2025-08-04", "Poslední schválená hodnota CP": 1.4516, "Poslední schválená hodnota do": "2025-11-30", "Aktuální hodnota investice": 258071.2544}, {"Investor": "Pokorný Petr", "Poradce": "Solár Filip", "Kód poradce": 13100104, "RČ": 520327246, "IČO": null, "Spis": 92148, "Pokyn": 36259, "Fond": "Podfond ČSEF AQUA", "Typ CP": "Prémiové investiční akcie", "rp.ISIN": "CZ0008051877", "Typ transakce": "Platba", "Vstupní poplatek": 0, "Čistá investice": 250000, "Měna": "CZK", "Datum připsání platby": "2025-06-21", "Počet vydaných CP": 221670, "Upisovací hodnota": 1.1278, "Datum emise": "2025-11-10", "Poslední schválená hodnota CP": 1.2047, "Poslední schválená hodnota do": "2026-02-28", "Aktuální hodnota investice": 267045.849}, {"Investor": "Prejs Vladislav", "Poradce": "Solár Filip", "Kód poradce": 13100104, "RČ": 6402030547, "IČO": null, "Spis": 67059, "Pokyn": 34403, "Fond": "Podfond ČSEF AQUA", "Typ CP": "Prémiové investiční akcie", "rp.ISIN": "CZ0008051877", "Typ transakce": "Platba", "Vstupní poplatek": 0, "Čistá investice": 250000, "Měna": "CZK", "Datum připsání platby": "2025-02-27", "Počet vydaných CP": 229948, "Upisovací hodnota": 1.0872, "Datum emise": "2025-04-22", "Poslední schválená hodnota CP": 1.2047, "Poslední schválená hodnota do": "2026-02-28", "Aktuální hodnota investice": 277018.3556}, {"Investor": "Prejs Vladislav", "Poradce": "Solár Filip", "Kód poradce": 13100104, "RČ": 6402030547, "IČO": null, "Spis": 29997, "Pokyn": 34404, "Fond": "r2p invest SICAV, a.s.", "Typ CP": "Prioritní investiční akcie", "rp.ISIN": "CZ0008043445", "Typ transakce": "Platba", "Vstupní poplatek": 0, "Čistá investice": 250000, "Měna": "CZK", "Datum připsání platby": "2025-02-27", "Počet vydaných CP": 155598, "Upisovací hodnota": 1.6067, "Datum emise": "2025-04-02", "Poslední schválená hodnota CP": 1.74, "Poslední schválená hodnota do": "2026-02-28", "Aktuální hodnota investice": 270740.52}, {"Investor": "Prejs Vladislav", "Poradce": "Solár Filip", "Kód poradce": 13100104, "RČ": 6402030547, "IČO": null, "Spis": 95839, "Pokyn": 37707, "Fond": "GARTAL Investment fund SICAV a.s.", "Typ CP": "Růstové investiční akcie", "rp.ISIN": "CZ0008045135", "Typ transakce": "Platba", "Vstupní poplatek": 0, "Čistá investice": 300000, "Měna": "CZK", "Datum připsání platby": "2025-08-29", "Počet vydaných CP": 210585, "Upisovací hodnota": 1.4246, "Datum emise": "2025-09-22", "Poslední schválená hodnota CP": 1.4516, "Poslední schválená hodnota do": "2025-11-30", "Aktuální hodnota investice": 305685.186}, {"Investor": "Prejs Vladislav", "Poradce": "Solár Filip", "Kód poradce": 13100104, "RČ": 6402030547, "IČO": null, "Spis": 29994, "Pokyn": 11609, "Fond": "ČSNF SICAV, a.s.", "Typ CP": "Prioritní investiční akcie", "rp.ISIN": "CZ0008043700", "Typ transakce": "Platba", "Vstupní poplatek": 0, "Čistá investice": 800000, "Měna": "CZK", "Datum připsání platby": "2022-08-17", "Počet vydaných CP": 660229, "Upisovací hodnota": 1.2117, "Datum emise": "2022-12-14", "Poslední schválená hodnota CP": 0.574, "Poslední schválená hodnota do": "2025-11-30", "Aktuální hodnota investice": 378971.446}, {"Investor": "Prejs Vladislav", "Poradce": "Solár Filip", "Kód poradce": 13100104, "RČ": 6402030547, "IČO": null, "Spis": 67059, "Pokyn": 30570, "Fond": "Podfond ČSEF AQUA", "Typ CP": "Prémiové investiční akcie", "rp.ISIN": "CZ0008051877", "Typ transakce": "Platba", "Vstupní poplatek": 0, "Čistá investice": 300000, "Měna": "CZK", "Datum připsání platby": "2024-09-11", "Počet vydaných CP": 284117, "Upisovací hodnota": 1.0559, "Datum emise": "2024-12-10", "Poslední schválená hodnota CP": 1.2047, "Poslední schválená hodnota do": "2026-02-28", "Aktuální hodnota investice": 342275.7499}, {"Investor": "Prejs Vladislav", "Poradce": "Solár Filip", "Kód poradce": 13100104, "RČ": 6402030547, "IČO": null, "Spis": 29996, "Pokyn": 11610, "Fond": "Českomoravský fond SICAV, a.s. Podfond DOMUS", "Typ CP": "Prémiové investiční akcie", "rp.ISIN": "CZ0008044179", "Typ transakce": "Platba", "Vstupní poplatek": 0, "Čistá investice": 200000, "Měna": "CZK", "Datum připsání platby": "2022-08-10", "Počet vydaných CP": 13972, "Upisovací hodnota": 14.3136, "Datum emise": "2022-11-16", "Poslední schválená hodnota CP": 17.9684, "Poslední schválená hodnota do": "2026-02-28", "Aktuální hodnota investice": 251054.4848}, {"Investor": "Prejs Vladislav", "Poradce": "Solár Filip", "Kód poradce": 13100104, "RČ": 6402030547, "IČO": null, "Spis": 29997, "Pokyn": 26126, "Fond": "r2p invest SICAV, a.s.", "Typ CP": "Prioritní investiční akcie", "rp.ISIN": "CZ0008043445", "Typ transakce": "Platba", "Vstupní poplatek": 0, "Čistá investice": 250000, "Měna": "CZK", "Datum připsání platby": "2023-12-05", "Počet vydaných CP": 172354, "Upisovací hodnota": 1.4505, "Datum emise": "2024-01-26", "Poslední schválená hodnota CP": 1.74, "Poslední schválená hodnota do": "2026-02-28", "Aktuální hodnota investice": 299895.96}, {"Investor": "Prejs Vladislav", "Poradce": "Solár Filip", "Kód poradce": 13100104, "RČ": 6402030547, "IČO": null, "Spis": 29997, "Pokyn": 11611, "Fond": "r2p invest SICAV, a.s.", "Typ CP": "Prioritní investiční akcie", "rp.ISIN": "CZ0008043445", "Typ transakce": "Platba", "Vstupní poplatek": 0, "Čistá investice": 500000, "Měna": "CZK", "Datum připsání platby": "2022-08-16", "Počet vydaných CP": 391358, "Upisovací hodnota": 1.2776, "Datum emise": "2022-10-26", "Poslední schválená hodnota CP": 1.74, "Poslední schválená hodnota do": "2026-02-28", "Aktuální hodnota investice": 680962.92}, {"Investor": "Prejs Vladislav", "Poradce": "Solár Filip", "Kód poradce": 13100104, "RČ": 6402030547, "IČO": null, "Spis": 29994, "Pokyn": 26125, "Fond": "ČSNF SICAV, a.s.", "Typ CP": "Prioritní investiční akcie", "rp.ISIN": "CZ0008043700", "Typ transakce": "Platba", "Vstupní poplatek": 0, "Čistá investice": 250000, "Měna": "CZK", "Datum připsání platby": "2023-12-03", "Počet vydaných CP": 186567, "Upisovací hodnota": 1.34, "Datum emise": "2024-05-21", "Poslední schválená hodnota CP": 0.574, "Poslední schválená hodnota do": "2025-11-30", "Aktuální hodnota investice": 107089.458}, {"Investor": "Prejs Vladislav", "Poradce": "Solár Filip", "Kód poradce": 13100104, "RČ": 6402030547, "IČO": null, "Spis": 54762, "Pokyn": 26127, "Fond": "Vihorev.Capital SICAV, a.s.", "Typ CP": "Prioritní investiční akcie", "rp.ISIN": "CZ0008043569", "Typ transakce": "Platba", "Vstupní poplatek": 0, "Čistá investice": 100000, "Měna": "CZK", "Datum připsání platby": "2023-12-08", "Počet vydaných CP": 70293, "Upisovací hodnota": 1.4226, "Datum emise": "2024-05-15", "Poslední schválená hodnota CP": 1.6903, "Poslední schválená hodnota do": "2025-12-31", "Aktuální hodnota investice": 118816.2579}, {"Investor": "Prejs Vladislav", "Poradce": "Solár Filip", "Kód poradce": 13100104, "RČ": 6402030547, "IČO": null, "Spis": 29996, "Pokyn": 42749, "Fond": "Českomoravský fond SICAV, a.s. Podfond DOMUS", "Typ CP": "Prémiové investiční akcie", "rp.ISIN": "CZ0008044179", "Typ transakce": "Odkup", "Vstupní poplatek": 0, "Čistá investice": 0, "Měna": "CZK", "Datum připsání platby": "2026-03-29", "Počet vydaných CP": -13972, "Upisovací hodnota": 0, "Datum emise": null, "Poslední schválená hodnota CP": 17.9684, "Poslední schválená hodnota do": "2026-02-28", "Aktuální hodnota investice": -251054.4848}, {"Investor": "Solár Filip", "Poradce": "Solár Filip", "Kód poradce": 13100104, "RČ": 8111217994, "IČO": null, "Spis": 100517, "Pokyn": 40031, "Fond": "ČSNF SICAV, a.s.", "Typ CP": "Prioritní investiční akcie", "rp.ISIN": "CZ0008043700", "Typ transakce": "Převod", "Vstupní poplatek": 0, "Čistá investice": 433793.83, "Měna": "CZK", "Datum připsání platby": "2025-11-20", "Počet vydaných CP": 458120, "Upisovací hodnota": 0.9469, "Datum emise": "2025-11-20", "Poslední schválená hodnota CP": 0.574, "Poslední schválená hodnota do": "2025-11-30", "Aktuální hodnota investice": 262960.88}, {"Investor": "Solár Filip", "Poradce": "Solár Filip", "Kód poradce": 13100104, "RČ": 8111217994, "IČO": null, "Spis": 100519, "Pokyn": 40032, "Fond": "r2p invest SICAV, a.s.", "Typ CP": "Prioritní investiční akcie", "rp.ISIN": "CZ0008043445", "Typ transakce": "Převod", "Vstupní poplatek": 0, "Čistá investice": 587929.63, "Měna": "CZK", "Datum připsání platby": "2025-11-20", "Počet vydaných CP": 348630, "Upisovací hodnota": 1.6864, "Datum emise": "2025-11-20", "Poslední schválená hodnota CP": 1.74, "Poslední schválená hodnota do": "2026-02-28", "Aktuální hodnota investice": 606616.2}, {"Investor": "Solár Filip", "Poradce": "Solár Filip", "Kód poradce": 13100104, "RČ": 8111217994, "IČO": null, "Spis": 100520, "Pokyn": 40033, "Fond": "Vihorev.Capital SICAV, a.s.", "Typ CP": "Prioritní investiční akcie", "rp.ISIN": "CZ0008043569", "Typ transakce": "Převod", "Vstupní poplatek": 0, "Čistá investice": 154414.21, "Měna": "CZK", "Datum připsání platby": "2025-11-20", "Počet vydaných CP": 93296, "Upisovací hodnota": 1.6551, "Datum emise": "2025-11-20", "Poslední schválená hodnota CP": 1.6903, "Poslední schválená hodnota do": "2025-12-31", "Aktuální hodnota investice": 157698.2288}, {"Investor": "Solár Filip", "Poradce": "Solár Filip", "Kód poradce": 13100104, "RČ": 8111217994, "IČO": null, "Spis": 100521, "Pokyn": 40034, "Fond": "Českomoravský fond SICAV, a.s. Podfond AGUILA", "Typ CP": "Investiční akcie A", "rp.ISIN": "CZ0008044195", "Typ transakce": "Převod", "Vstupní poplatek": 0, "Čistá investice": 137063.25, "Měna": "CZK", "Datum připsání platby": "2025-11-20", "Počet vydaných CP": 94906, "Upisovací hodnota": 1.4442, "Datum emise": "2025-11-20", "Poslední schválená hodnota CP": 1.49, "Poslední schválená hodnota do": "2026-02-28", "Aktuální hodnota investice": 141409.94}, {"Investor": "Solárová Lucie", "Poradce": "Solár Filip", "Kód poradce": 13100104, "RČ": 8861240025, "IČO": null, "Spis": 48955, "Pokyn": 24751, "Fond": "r2p invest SICAV, a.s.", "Typ CP": "Prioritní investiční akcie", "rp.ISIN": "CZ0008043445", "Typ transakce": "Platba", "Vstupní poplatek": 0, "Čistá investice": 490000, "Měna": "CZK", "Datum připsání platby": "2023-08-10", "Počet vydaných CP": 348630, "Upisovací hodnota": 0, "Datum emise": "2023-09-29", "Poslední schválená hodnota CP": 1.74, "Poslední schválená hodnota do": "2026-02-28", "Aktuální hodnota investice": 606616.2}, {"Investor": "Solárová Lucie", "Poradce": "Solár Filip", "Kód poradce": 13100104, "RČ": 8861240025, "IČO": null, "Spis": 51829, "Pokyn": 25108, "Fond": "Českomoravský fond SICAV, a.s. Podfond AGUILA", "Typ CP": "Investiční akcie A", "rp.ISIN": "CZ0008044195", "Typ transakce": "Převod", "Vstupní poplatek": 0, "Čistá investice": -137063.25, "Měna": "CZK", "Datum připsání platby": "2025-11-20", "Počet vydaných CP": -94906, "Upisovací hodnota": 1.4442, "Datum emise": "2025-11-20", "Poslední schválená hodnota CP": 1.49, "Poslední schválená hodnota do": "2026-02-28", "Aktuální hodnota investice": -141409.94}, {"Investor": "Solárová Lucie", "Poradce": "Solár Filip", "Kód poradce": 13100104, "RČ": 8861240025, "IČO": null, "Spis": 48954, "Pokyn": 24750, "Fond": "ČSNF SICAV, a.s.", "Typ CP": "Prioritní investiční akcie", "rp.ISIN": "CZ0008043700", "Typ transakce": "Platba", "Vstupní poplatek": 0, "Čistá investice": 600000, "Měna": "CZK", "Datum připsání platby": "2023-08-10", "Počet vydaných CP": 458120, "Upisovací hodnota": 0, "Datum emise": "2023-10-13", "Poslední schválená hodnota CP": 0.574, "Poslední schválená hodnota do": "2025-11-30", "Aktuální hodnota investice": 262960.88}, {"Investor": "Solárová Lucie", "Poradce": "Solár Filip", "Kód poradce": 13100104, "RČ": 8861240025, "IČO": null, "Spis": 48954, "Pokyn": 24750, "Fond": "ČSNF SICAV, a.s.", "Typ CP": "Prioritní investiční akcie", "rp.ISIN": "CZ0008043700", "Typ transakce": "Převod", "Vstupní poplatek": 0, "Čistá investice": -433793.83, "Měna": "CZK", "Datum připsání platby": "2025-11-20", "Počet vydaných CP": -458120, "Upisovací hodnota": 0.9469, "Datum emise": "2025-11-20", "Poslední schválená hodnota CP": 0.574, "Poslední schválená hodnota do": "2025-11-30", "Aktuální hodnota investice": -262960.88}, {"Investor": "Solárová Lucie", "Poradce": "Solár Filip", "Kód poradce": 13100104, "RČ": 8861240025, "IČO": null, "Spis": 51829, "Pokyn": 25108, "Fond": "Českomoravský fond SICAV, a.s. Podfond AGUILA", "Typ CP": "Investiční akcie A", "rp.ISIN": "CZ0008044195", "Typ transakce": "Platba", "Vstupní poplatek": 0, "Čistá investice": 120000, "Měna": "CZK", "Datum připsání platby": "2023-09-20", "Počet vydaných CP": 94906, "Upisovací hodnota": 0, "Datum emise": "2023-12-05", "Poslední schválená hodnota CP": 1.49, "Poslední schválená hodnota do": "2026-02-28", "Aktuální hodnota investice": 141409.94}, {"Investor": "Solárová Lucie", "Poradce": "Solár Filip", "Kód poradce": 13100104, "RČ": 8861240025, "IČO": null, "Spis": 51828, "Pokyn": 25107, "Fond": "Vihorev.Capital SICAV, a.s.", "Typ CP": "Prioritní investiční akcie", "rp.ISIN": "CZ0008043569", "Typ transakce": "Převod", "Vstupní poplatek": 0, "Čistá investice": -154414.21, "Měna": "CZK", "Datum připsání platby": "2025-11-20", "Počet vydaných CP": -93296, "Upisovací hodnota": 1.6551, "Datum emise": "2025-11-20", "Poslední schválená hodnota CP": 1.6903, "Poslední schválená hodnota do": "2025-12-31", "Aktuální hodnota investice": -157698.2288}, {"Investor": "Solárová Lucie", "Poradce": "Solár Filip", "Kód poradce": 13100104, "RČ": 8861240025, "IČO": null, "Spis": 51828, "Pokyn": 25107, "Fond": "Vihorev.Capital SICAV, a.s.", "Typ CP": "Prioritní investiční akcie", "rp.ISIN": "CZ0008043569", "Typ transakce": "Platba", "Vstupní poplatek": 0, "Čistá investice": 130000, "Měna": "CZK", "Datum připsání platby": "2023-09-20", "Počet vydaných CP": 93296, "Upisovací hodnota": 0, "Datum emise": "2023-12-15", "Poslední schválená hodnota CP": 1.6903, "Poslední schválená hodnota do": "2025-12-31", "Aktuální hodnota investice": 157698.2288}, {"Investor": "Solárová Lucie", "Poradce": "Solár Filip", "Kód poradce": 13100104, "RČ": 8861240025, "IČO": null, "Spis": 48955, "Pokyn": 24751, "Fond": "r2p invest SICAV, a.s.", "Typ CP": "Prioritní investiční akcie", "rp.ISIN": "CZ0008043445", "Typ transakce": "Převod", "Vstupní poplatek": 0, "Čistá investice": -587929.63, "Měna": "CZK", "Datum připsání platby": "2025-11-20", "Počet vydaných CP": -348630, "Upisovací hodnota": 1.6864, "Datum emise": "2025-11-20", "Poslední schválená hodnota CP": 1.74, "Poslední schválená hodnota do": "2026-02-28", "Aktuální hodnota investice": -606616.2}, {"Investor": "Spatzalová Martina", "Poradce": "Solár Filip", "Kód poradce": 13100104, "RČ": 7655061040, "IČO": null, "Spis": 59901, "Pokyn": 27358, "Fond": "ČSNF SICAV, a.s.", "Typ CP": "Prioritní investiční akcie", "rp.ISIN": "CZ0008043700", "Typ transakce": "Platba", "Vstupní poplatek": 0, "Čistá investice": 250000, "Měna": "CZK", "Datum připsání platby": "2024-03-26", "Počet vydaných CP": 183365, "Upisovací hodnota": 1.3634, "Datum emise": "2024-08-29", "Poslední schválená hodnota CP": 0.574, "Poslední schválená hodnota do": "2025-11-30", "Aktuální hodnota investice": 105251.51}, {"Investor": "Spatzalová Martina", "Poradce": "Solár Filip", "Kód poradce": 13100104, "RČ": 7655061040, "IČO": null, "Spis": 59904, "Pokyn": 27360, "Fond": "Vihorev.Capital SICAV, a.s.", "Typ CP": "Prioritní investiční akcie", "rp.ISIN": "CZ0008043569", "Typ transakce": "Platba", "Vstupní poplatek": 0, "Čistá investice": 250000, "Měna": "CZK", "Datum připsání platby": "2024-03-26", "Počet vydaných CP": 172093, "Upisovací hodnota": 1.4527, "Datum emise": "2024-06-13", "Poslední schválená hodnota CP": 1.6903, "Poslední schválená hodnota do": "2025-12-31", "Aktuální hodnota investice": 290888.7979}, {"Investor": "Spatzalová Martina", "Poradce": "Solár Filip", "Kód poradce": 13100104, "RČ": 7655061040, "IČO": null, "Spis": 59902, "Pokyn": 27359, "Fond": "r2p invest SICAV, a.s.", "Typ CP": "Prioritní investiční akcie", "rp.ISIN": "CZ0008043445", "Typ transakce": "Platba", "Vstupní poplatek": 0, "Čistá investice": 250000, "Měna": "CZK", "Datum připsání platby": "2024-03-27", "Počet vydaných CP": 168452, "Upisovací hodnota": 1.4841, "Datum emise": "2024-07-31", "Poslední schválená hodnota CP": 1.74, "Poslední schválená hodnota do": "2026-02-28", "Aktuální hodnota investice": 293106.48}, {"Investor": "Spatzalová Martina", "Poradce": "Solár Filip", "Kód poradce": 13100104, "RČ": 7655061040, "IČO": null, "Spis": 59905, "Pokyn": 27361, "Fond": "Podfond ČSEF AQUA", "Typ CP": "Prioritní investiční akcie", "rp.ISIN": "CZ0008047263", "Typ transakce": "Platba", "Vstupní poplatek": 0, "Čistá investice": 250000, "Měna": "CZK", "Datum připsání platby": "2024-03-27", "Počet vydaných CP": 212314, "Upisovací hodnota": 1.1775, "Datum emise": "2024-07-11", "Poslední schválená hodnota CP": 1.4398, "Poslední schválená hodnota do": "2026-02-28", "Aktuální hodnota investice": 305689.6972}, {"Investor": "Strnad Jakub", "Poradce": "Solár Filip", "Kód poradce": 13100104, "RČ": 7604120029, "IČO": null, "Spis": 64362, "Pokyn": 29273, "Fond": "r2p invest SICAV, a.s.", "Typ CP": "Prioritní investiční akcie", "rp.ISIN": "CZ0008043445", "Typ transakce": "Platba", "Vstupní poplatek": 0, "Čistá investice": 250000, "Měna": "CZK", "Datum připsání platby": "2024-06-27", "Počet vydaných CP": 164744, "Upisovací hodnota": 1.5175, "Datum emise": "2024-08-22", "Poslední schválená hodnota CP": 1.74, "Poslední schválená hodnota do": "2026-02-28", "Aktuální hodnota investice": 286654.56}, {"Investor": "Strnad Jakub", "Poradce": "Solár Filip", "Kód poradce": 13100104, "RČ": 7604120029, "IČO": null, "Spis": 64365, "Pokyn": 29275, "Fond": "Českomoravský fond SICAV, a.s. Podfond AGUILA", "Typ CP": "Investiční akcie A", "rp.ISIN": "CZ0008044195", "Typ transakce": "Platba", "Vstupní poplatek": 0, "Čistá investice": 250000, "Měna": "CZK", "Datum připsání platby": "2024-06-27", "Počet vydaných CP": 187504, "Upisovací hodnota": 1.3333, "Datum emise": "2024-08-09", "Poslední schválená hodnota CP": 1.49, "Poslední schválená hodnota do": "2026-02-28", "Aktuální hodnota investice": 279380.96}, {"Investor": "Strnad Jakub", "Poradce": "Solár Filip", "Kód poradce": 13100104, "RČ": 7604120029, "IČO": null, "Spis": 64364, "Pokyn": 29274, "Fond": "Vihorev.Capital SICAV, a.s.", "Typ CP": "Prioritní investiční akcie", "rp.ISIN": "CZ0008043569", "Typ transakce": "Platba", "Vstupní poplatek": 0, "Čistá investice": 250000, "Měna": "CZK", "Datum připsání platby": "2024-06-27", "Počet vydaných CP": 168599, "Upisovací hodnota": 1.4828, "Datum emise": "2024-07-31", "Poslední schválená hodnota CP": 1.6903, "Poslední schválená hodnota do": "2025-12-31", "Aktuální hodnota investice": 284982.8897}, {"Investor": "Strnad Jakub", "Poradce": "Solár Filip", "Kód poradce": 13100104, "RČ": 7604120029, "IČO": null, "Spis": 64361, "Pokyn": 29272, "Fond": "ČSNF SICAV, a.s.", "Typ CP": "Prioritní investiční akcie", "rp.ISIN": "CZ0008043700", "Typ transakce": "Platba", "Vstupní poplatek": 0, "Čistá investice": 250000, "Měna": "CZK", "Datum připsání platby": "2024-06-27", "Počet vydaných CP": 180284, "Upisovací hodnota": 1.3867, "Datum emise": "2024-10-14", "Poslední schválená hodnota CP": 0.574, "Poslední schválená hodnota do": "2025-11-30", "Aktuální hodnota investice": 103483.016}, {"Investor": "Syrová Dagmar", "Poradce": "Solár Filip", "Kód poradce": 13100104, "RČ": 7157100797, "IČO": null, "Spis": 87560, "Pokyn": 34626, "Fond": "Podfond ČSEF AQUA", "Typ CP": "Prémiové investiční akcie", "rp.ISIN": "CZ0008051877", "Typ transakce": "Platba", "Vstupní poplatek": 0, "Čistá investice": 250000, "Měna": "CZK", "Datum připsání platby": "2025-03-17", "Počet vydaných CP": 227210, "Upisovací hodnota": 1.1003, "Datum emise": "2025-10-23", "Poslední schválená hodnota CP": 1.2047, "Poslední schválená hodnota do": "2026-02-28", "Aktuální hodnota investice": 273719.887}, {"Investor": "Syrová Dagmar", "Poradce": "Solár Filip", "Kód poradce": 13100104, "RČ": 7157100797, "IČO": null, "Spis": 87559, "Pokyn": 34625, "Fond": "GARTAL Investment fund SICAV a.s.", "Typ CP": "Růstové investiční akcie", "rp.ISIN": "CZ0008045135", "Typ transakce": "Platba", "Vstupní poplatek": 0, "Čistá investice": 150000, "Měna": "CZK", "Datum připsání platby": "2025-03-17", "Počet vydaných CP": 108758, "Upisovací hodnota": 1.3792, "Datum emise": "2025-06-17", "Poslední schválená hodnota CP": 1.4516, "Poslední schválená hodnota do": "2025-11-30", "Aktuální hodnota investice": 157873.1128}, {"Investor": "Syrová Dagmar", "Poradce": "Solár Filip", "Kód poradce": 13100104, "RČ": 7157100797, "IČO": null, "Spis": 87558, "Pokyn": 34624, "Fond": "r2p invest SICAV, a.s.", "Typ CP": "Prioritní investiční akcie", "rp.ISIN": "CZ0008043445", "Typ transakce": "Platba", "Vstupní poplatek": 0, "Čistá investice": 250000, "Měna": "CZK", "Datum připsání platby": "2025-03-17", "Počet vydaných CP": 154197, "Upisovací hodnota": 1.6213, "Datum emise": "2025-08-04", "Poslední schválená hodnota CP": 1.74, "Poslední schválená hodnota do": "2026-02-28", "Aktuální hodnota investice": 268302.78}, {"Investor": "Syrová Dagmar", "Poradce": "Solár Filip", "Kód poradce": 13100104, "RČ": 7157100797, "IČO": null, "Spis": 87556, "Pokyn": 34623, "Fond": "REALIA Podfond Retail Parks", "Typ CP": "Prioritní investiční akcie I", "rp.ISIN": "CZ0008044880", "Typ transakce": "Platba", "Vstupní poplatek": 0, "Čistá investice": 200000, "Měna": "CZK", "Datum připsání platby": "2025-03-17", "Počet vydaných CP": 125651, "Upisovací hodnota": 1.5917, "Datum emise": "2025-04-22", "Poslední schválená hodnota CP": 1.7251, "Poslední schválená hodnota do": "2026-03-31", "Aktuální hodnota investice": 216760.5401}, {"Investor": "Syrová Dagmar", "Poradce": "Solár Filip", "Kód poradce": 13100104, "RČ": 7157100797, "IČO": null, "Spis": 87555, "Pokyn": 34622, "Fond": "Vihorev.Capital SICAV, a.s.", "Typ CP": "Prioritní investiční akcie", "rp.ISIN": "CZ0008043569", "Typ transakce": "Platba", "Vstupní poplatek": 0, "Čistá investice": 150000, "Měna": "CZK", "Datum připsání platby": "2025-03-17", "Počet vydaných CP": 94625, "Upisovací hodnota": 1.5852, "Datum emise": "2025-07-07", "Poslední schválená hodnota CP": 1.6903, "Poslední schválená hodnota do": "2025-12-31", "Aktuální hodnota investice": 159944.6375}, {"Investor": "Šíma Pavel", "Poradce": "Solár Filip", "Kód poradce": 13100104, "RČ": 9607040509, "IČO": null, "Spis": 93742, "Pokyn": 36843, "Fond": "Vihorev.Capital SICAV, a.s.", "Typ CP": "Prioritní investiční akcie", "rp.ISIN": "CZ0008043569", "Typ transakce": "Platba", "Vstupní poplatek": 0, "Čistá investice": 150000, "Měna": "CZK", "Datum připsání platby": "2025-08-08", "Počet vydaných CP": 91257, "Upisovací hodnota": 1.6437, "Datum emise": "2025-09-30", "Poslední schválená hodnota CP": 1.6903, "Poslední schválená hodnota do": "2025-12-31", "Aktuální hodnota investice": 154251.7071}, {"Investor": "Šíma Pavel", "Poradce": "Solár Filip", "Kód poradce": 13100104, "RČ": 9607040509, "IČO": null, "Spis": 93746, "Pokyn": 36847, "Fond": "GARTAL Investment fund SICAV a.s.", "Typ CP": "Růstové investiční akcie", "rp.ISIN": "CZ0008045135", "Typ transakce": "Platba", "Vstupní poplatek": 0, "Čistá investice": 150000, "Měna": "CZK", "Datum připsání platby": "2025-07-30", "Počet vydaných CP": 105977, "Upisovací hodnota": 1.4154, "Datum emise": "2025-09-12", "Poslední schválená hodnota CP": 1.4516, "Poslední schválená hodnota do": "2025-11-30", "Aktuální hodnota investice": 153836.2132}, {"Investor": "Šíma Pavel", "Poradce": "Solár Filip", "Kód poradce": 13100104, "RČ": 9607040509, "IČO": null, "Spis": 93745, "Pokyn": 36846, "Fond": "r2p invest SICAV, a.s.", "Typ CP": "Prioritní investiční akcie", "rp.ISIN": "CZ0008043445", "Typ transakce": "Platba", "Vstupní poplatek": 0, "Čistá investice": 200000, "Měna": "CZK", "Datum připsání platby": "2025-08-04", "Počet vydaných CP": 119353, "Upisovací hodnota": 1.6757, "Datum emise": "2025-09-24", "Poslední schválená hodnota CP": 1.74, "Poslední schválená hodnota do": "2026-02-28", "Aktuální hodnota investice": 207674.22}, {"Investor": "Šíma Pavel", "Poradce": "Solár Filip", "Kód poradce": 13100104, "RČ": 9607040509, "IČO": null, "Spis": 93744, "Pokyn": 36845, "Fond": "Podfond ČSEF AQUA", "Typ CP": "Prioritní investiční akcie", "rp.ISIN": "CZ0008047263", "Typ transakce": "Platba", "Vstupní poplatek": 0, "Čistá investice": 200000, "Měna": "CZK", "Datum připsání platby": "2025-08-07", "Počet vydaných CP": 146649, "Upisovací hodnota": 1.3638, "Datum emise": "2025-11-25", "Poslední schválená hodnota CP": 1.4398, "Poslední schválená hodnota do": "2026-02-28", "Aktuální hodnota investice": 211145.2302}, {"Investor": "Šíma Pavel", "Poradce": "Solár Filip", "Kód poradce": 13100104, "RČ": 9607040509, "IČO": null, "Spis": 93743, "Pokyn": 36844, "Fond": "REALIA Podfond Retail Parks", "Typ CP": "Prioritní investiční akcie I", "rp.ISIN": "CZ0008044880", "Typ transakce": "Platba", "Vstupní poplatek": 0, "Čistá investice": 150000, "Měna": "CZK", "Datum připsání platby": "2025-07-31", "Počet vydaných CP": 93208, "Upisovací hodnota": 1.6093, "Datum emise": "2025-08-28", "Poslední schválená hodnota CP": 1.7251, "Poslední schválená hodnota do": "2026-03-31", "Aktuální hodnota investice": 160793.1208}, {"Investor": "Šíma Pavel", "Poradce": "Solár Filip", "Kód poradce": 13100104, "RČ": 9607040509, "IČO": null, "Spis": 93740, "Pokyn": 36842, "Fond": "EBM Residential podfond", "Typ CP": "Prioritní investiční akcie", "rp.ISIN": "CZ0008053014", "Typ transakce": "Platba", "Vstupní poplatek": 0, "Čistá investice": 150000, "Měna": "CZK", "Datum připsání platby": "2025-08-08", "Počet vydaných CP": 137677, "Upisovací hodnota": 1.0895, "Datum emise": "2025-10-03", "Poslední schválená hodnota CP": 1.1601, "Poslední schválená hodnota do": "2026-03-31", "Aktuální hodnota investice": 159719.0877}, {"Investor": "Trandafir Radivoje", "Poradce": "Solár Filip", "Kód poradce": 13100104, "RČ": 7410272617, "IČO": null, "Spis": 58597, "Pokyn": 29242, "Fond": "ČSNF SICAV, a.s.", "Typ CP": "Prioritní investiční akcie", "rp.ISIN": "CZ0008043700", "Typ transakce": "Platba", "Vstupní poplatek": 0, "Čistá investice": 100000, "Měna": "CZK", "Datum připsání platby": "2024-06-12", "Počet vydaných CP": 72113, "Upisovací hodnota": 1.3867, "Datum emise": "2024-10-14", "Poslední schválená hodnota CP": 0.574, "Poslední schválená hodnota do": "2025-11-30", "Aktuální hodnota investice": 41392.862}, {"Investor": "Trandafir Radivoje", "Poradce": "Solár Filip", "Kód poradce": 13100104, "RČ": 7410272617, "IČO": null, "Spis": 58597, "Pokyn": 27015, "Fond": "ČSNF SICAV, a.s.", "Typ CP": "Prioritní investiční akcie", "rp.ISIN": "CZ0008043700", "Typ transakce": "Platba", "Vstupní poplatek": 0, "Čistá investice": 400000, "Měna": "CZK", "Datum připsání platby": "2024-02-22", "Počet vydaných CP": 295115, "Upisovací hodnota": 1.3554, "Datum emise": "2024-07-31", "Poslední schválená hodnota CP": 0.574, "Poslední schválená hodnota do": "2025-11-30", "Aktuální hodnota investice": 169396.01}, {"Investor": "Trandafir Radivoje", "Poradce": "Solár Filip", "Kód poradce": 13100104, "RČ": 7410272617, "IČO": null, "Spis": 58598, "Pokyn": 27016, "Fond": "r2p invest SICAV, a.s.", "Typ CP": "Prioritní investiční akcie", "rp.ISIN": "CZ0008043445", "Typ transakce": "Platba", "Vstupní poplatek": 0, "Čistá investice": 400000, "Měna": "CZK", "Datum připsání platby": "2024-02-23", "Počet vydaných CP": 271628, "Upisovací hodnota": 1.4726, "Datum emise": "2024-03-27", "Poslední schválená hodnota CP": 1.74, "Poslední schválená hodnota do": "2026-02-28", "Aktuální hodnota investice": 472632.72}, {"Investor": "Trandafir Radivoje", "Poradce": "Solár Filip", "Kód poradce": 13100104, "RČ": 7410272617, "IČO": null, "Spis": 58600, "Pokyn": 27017, "Fond": "Vihorev.Capital SICAV, a.s.", "Typ CP": "Prioritní investiční akcie", "rp.ISIN": "CZ0008043569", "Typ transakce": "Platba", "Vstupní poplatek": 0, "Čistá investice": 400000, "Měna": "CZK", "Datum připsání platby": "2024-02-22", "Počet vydaných CP": 277296, "Upisovací hodnota": 1.4425, "Datum emise": "2024-06-13", "Poslední schválená hodnota CP": 1.6903, "Poslední schválená hodnota do": "2025-12-31", "Aktuální hodnota investice": 468713.4288}, {"Investor": "Trandafir Radivoje", "Poradce": "Solár Filip", "Kód poradce": 13100104, "RČ": 7410272617, "IČO": null, "Spis": 58601, "Pokyn": 27018, "Fond": "REALIA Podfond Retail Parks", "Typ CP": "Prioritní investiční akcie I", "rp.ISIN": "CZ0008044880", "Typ transakce": "Platba", "Vstupní poplatek": 0, "Čistá investice": 400000, "Měna": "CZK", "Datum připsání platby": "2024-02-23", "Počet vydaných CP": 273822, "Upisovací hodnota": 1.4608, "Datum emise": "2024-04-08", "Poslední schválená hodnota CP": 1.7251, "Poslední schválená hodnota do": "2026-03-31", "Aktuální hodnota investice": 472370.3322}, {"Investor": "Trandafir Radivoje", "Poradce": "Solár Filip", "Kód poradce": 13100104, "RČ": 7410272617, "IČO": null, "Spis": 64277, "Pokyn": 29239, "Fond": "Podfond ČSEF AQUA", "Typ CP": "Prémiové investiční akcie", "rp.ISIN": "CZ0008051877", "Typ transakce": "Platba", "Vstupní poplatek": 0, "Čistá investice": 400000, "Měna": "CZK", "Datum připsání platby": "2024-06-12", "Počet vydaných CP": 394671, "Upisovací hodnota": 1.0135, "Datum emise": "2024-07-30", "Poslední schválená hodnota CP": 1.2047, "Poslední schválená hodnota do": "2026-02-28", "Aktuální hodnota investice": 475460.1537}, {"Investor": "Trandafir Radivoje", "Poradce": "Solár Filip", "Kód poradce": 13100104, "RČ": 7410272617, "IČO": null, "Spis": 58598, "Pokyn": 29240, "Fond": "r2p invest SICAV, a.s.", "Typ CP": "Prioritní investiční akcie", "rp.ISIN": "CZ0008043445", "Typ transakce": "Platba", "Vstupní poplatek": 0, "Čistá investice": 100000, "Měna": "CZK", "Datum připsání platby": "2024-06-13", "Počet vydaných CP": 65897, "Upisovací hodnota": 1.5175, "Datum emise": "2024-08-22", "Poslední schválená hodnota CP": 1.74, "Poslední schválená hodnota do": "2026-02-28", "Aktuální hodnota investice": 114660.78}, {"Investor": "Trandafir Radivoje", "Poradce": "Solár Filip", "Kód poradce": 13100104, "RČ": 7410272617, "IČO": null, "Spis": 58600, "Pokyn": 29241, "Fond": "Vihorev.Capital SICAV, a.s.", "Typ CP": "Prioritní investiční akcie", "rp.ISIN": "CZ0008043569", "Typ transakce": "Platba", "Vstupní poplatek": 0, "Čistá investice": 100000, "Měna": "CZK", "Datum připsání platby": "2024-06-12", "Počet vydaných CP": 67439, "Upisovací hodnota": 1.4828, "Datum emise": "2024-07-31", "Poslední schválená hodnota CP": 1.6903, "Poslední schválená hodnota do": "2025-12-31", "Aktuální hodnota investice": 113992.1417}, {"Investor": "Trandafir Radivoje", "Poradce": "Solár Filip", "Kód poradce": 13100104, "RČ": 7410272617, "IČO": null, "Spis": 58601, "Pokyn": 29243, "Fond": "REALIA Podfond Retail Parks", "Typ CP": "Prioritní investiční akcie I", "rp.ISIN": "CZ0008044880", "Typ transakce": "Platba", "Vstupní poplatek": 0, "Čistá investice": 100000, "Měna": "CZK", "Datum připsání platby": "2024-06-12", "Počet vydaných CP": 67471, "Upisovací hodnota": 1.4821, "Datum emise": "2024-07-17", "Poslední schválená hodnota CP": 1.7251, "Poslední schválená hodnota do": "2026-03-31", "Aktuální hodnota investice": 116394.2221}];
-
-// ── STATE ──────────────────────────────────────
-const SK = 'crm3';
-let recs = [];
-let activeClient = null;
+const STORE_KEY = 'investment-crm-v5';
+let records = [];
+let selectedClient = null;
 let activeFilter = 'all';
-
-function save(){ localStorage.setItem(SK, JSON.stringify(recs)); }
-
-// ── HELPERS ────────────────────────────────────
-const czk = v => (v==null||isNaN(v)) ? '—' : new Intl.NumberFormat('cs-CZ',{style:'currency',currency:'CZK',maximumFractionDigits:0}).format(v);
-const pct = v => (v==null||isNaN(v)) ? '—' : (v>=0?'+':'')+v.toFixed(1)+'%';
-const dt  = v => { if(!v) return '—'; const d=new Date(v); return isNaN(d)?'—':d.toLocaleDateString('cs-CZ'); };
-const esc = s => String(s||'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[m]);
-const n   = v => parseFloat(String(v||0).replace(',','.'))||0;
-
-function pD(v){ if(!v) return null; const d=new Date(v); return isNaN(d)?null:d; }
-function daysToRedeem(e){ const d=pD(e); if(!d) return null; const r=new Date(d); r.setMonth(r.getMonth()+36); return Math.ceil((r-new Date())/86400000); }
-function redeemDt(e){ const d=pD(e); if(!d) return null; const r=new Date(d); r.setMonth(r.getMonth()+36); return r; }
-
-(function init(){
-  try { recs = JSON.parse(localStorage.getItem(SK)) || []; } catch{ recs = []; }
-  if(!recs.length) recs = [...SEED];
-  renderStats();
-  renderList();
-})();
-
-(function init(){
-  try { recs = JSON.parse(localStorage.getItem(SK)) || []; } catch{ recs = []; }
-  if(!recs.length) recs = [...SEED];
-  renderStats();
-  renderList();
-})();
-
-// ── AGGREGATE ──────────────────────────────────
-function getClients(){
-  const map={};
-  recs.forEach((r,i)=>{
-    const nm=r['Investor']||'?';
-    if(!map[nm]) map[nm]={name:nm,recs:[],idx:[]};
-    map[nm].recs.push(r); map[nm].idx.push(i);
-  });
-  return Object.values(map).map(c=>{
-    const inv = c.recs.reduce((s,r)=>{ const v=n(r['Čistá investice']); return s+(v>0?v:0); },0);
-    const cur = c.recs.reduce((s,r)=>s+n(r['Aktuální hodnota investice']),0);
-    const allDays = c.recs.map(r=>daysToRedeem(r['Datum emise']));
-    const hasElig = allDays.some(d=>d!==null&&d<=0);
-    const hasSoon = !hasElig && allDays.some(d=>d!==null&&d>0&&d<=180);
-    return {...c,inv,cur,hasElig,hasSoon};
-  }).sort((a,b)=>b.inv-a.inv);
-}
-
-// ── SIDEBAR STATS ──────────────────────────────
-function renderStats(){
-  const cl=getClients();
-  const ti=cl.reduce((s,c)=>s+c.inv,0);
-  const tc=cl.reduce((s,c)=>s+c.cur,0);
-  document.getElementById('sbStats').innerHTML=`
-    <div class="sb-stat"><div class="sb-stat-l">Klientů</div><div class="sb-stat-v">${cl.length}</div></div>
-    <div class="sb-stat"><div class="sb-stat-l">Způsobilých</div><div class="sb-stat-v" style="color:#16a34a">${cl.filter(c=>c.hasElig).length}</div></div>
-    <div class="sb-stat"><div class="sb-stat-l">Vloženo celkem</div><div class="sb-stat-v" style="font-size:11px">${czk(ti)}</div></div>
-    <div class="sb-stat"><div class="sb-stat-l">Hodnota celkem</div><div class="sb-stat-v" style="font-size:11px;color:#16a34a">${czk(tc)}</div></div>
-  `;
-}
-
-// ── CLIENT LIST ────────────────────────────────
-function setF(f,btn){
-  activeFilter=f;
-  document.querySelectorAll('.fb').forEach(b=>b.classList.remove('on'));
-  btn.classList.add('on');
-  renderList();
-}
-
-function renderList(){
-  const q=(document.getElementById('sq').value||'').toLowerCase();
-  let cl=getClients().filter(c=>c.name.toLowerCase().includes(q));
-  if(activeFilter==='elig') cl=cl.filter(c=>c.hasElig);
-  if(activeFilter==='soon') cl=cl.filter(c=>c.hasSoon);
-  const el=document.getElementById('sbList');
-  if(!cl.length){el.innerHTML='<div class="empty">Žádní klienti</div>';return;}
-  el.innerHTML=cl.map(c=>{
-    const p=c.inv>0?((c.cur-c.inv)/c.inv*100):0;
-    const funds=[...new Set(c.recs.map(r=>r['Fond']).filter(Boolean))].length;
-    return `<div class="crow ${c.hasElig?'elig':''} ${c.name===activeClient?'sel':''}" onclick='showClient(this.dataset.name)' data-name="${esc(c.name)}">
-      <div class="crow-name">${esc(c.name)}
-        ${c.hasElig?'<span class="tag tag-g">odkup</span>':''}
-        ${c.hasSoon?'<span class="tag tag-o">brzy</span>':''}
-      </div>
-      <div class="crow-vals">
-        <div><div class="crow-cur">${czk(c.cur)}</div><div class="crow-inv">Vloženo: ${czk(c.inv)}</div></div>
-        <div style="text-align:right"><div class="crow-pct ${p>=0?'up':'dn'}">${pct(p)}</div><div style="font-size:10px;color:#94a3b8">${funds} fond${funds===1?'':funds<5?'y':'ů'}</div></div>
-      </div>
-    </div>`;
-  }).join('');
-}
-
-// ── CLIENT DETAIL ──────────────────────────────
-function showClient(name){
-  activeClient=name;
-  // close panels
-  document.getElementById('imp').classList.remove('open');
-  document.getElementById('add').classList.remove('open');
-  renderList();
-  const cl=getClients().find(c=>c.name===name);
-  if(!cl) return;
-  document.getElementById('welcome').style.display='none';
-  const det=document.getElementById('detail');
-  det.classList.add('open');
-
-  const {recs:cr,inv,cur,hasElig,idx}=cl;
-  const profit=cur-inv;
-  const profitP=inv>0?(profit/inv*100):0;
-
-  // eligible funds
-  const eligRecs=cr.filter(r=>{ const d=daysToRedeem(r['Datum emise']); return d!==null&&d<=0&&n(r['Aktuální hodnota investice'])>0&&r['Typ transakce']!=='Odkup'; });
-  const eligTot=eligRecs.reduce((s,r)=>s+n(r['Aktuální hodnota investice']),0);
-  let eligHtml='';
-  if(eligRecs.length){
-    eligHtml=`<div class="elig-box">
-      <div class="elig-box-title">✅ Způsobilé k odkupu (po 36 měsících)</div>
-      ${eligRecs.map(r=>`<div class="elig-row">
-        <div><div class="elig-name">${esc(r['Fond'])}</div><div class="elig-date">Emise: ${dt(r['Datum emise'])} · Odkup od: ${dt(redeemDt(r['Datum emise']))}</div></div>
-        <div class="elig-val">${czk(n(r['Aktuální hodnota investice']))}</div>
-      </div>`).join('')}
-      <div class="elig-total"><span>Celkem způsobilé</span><span>${czk(eligTot)}</span></div>
-    </div>`;
-  }
-
-  // group by fond
-  const fm={};
-  cr.forEach((r,li)=>{ const f=r['Fond']||'?'; if(!fm[f]) fm[f]=[]; fm[f].push({r,gi:cl.idx[li]}); });
-
-  const fcards=Object.entries(fm).map(([fond,items])=>{
-    const fc=items.reduce((s,{r})=>s+n(r['Aktuální hodnota investice']),0);
-    const fi=items.reduce((s,{r})=>{ const v=n(r['Čistá investice']); return s+(v>0?v:0); },0);
-    const gain=fc-fi; const gp=fi>0?(gain/fi*100):0;
-    const isSold=items.some(({r})=>r['Typ transakce']==='Odkup');
-    const buyRec=items.find(({r})=>r['Typ transakce']==='Platba'&&r['Datum emise']);
-    const mainDays=buyRec?daysToRedeem(buyRec.r['Datum emise']):null;
-    const mainRedeem=buyRec?redeemDt(buyRec.r['Datum emise']):null;
-    const isEligF=mainDays!==null&&mainDays<=0&&!isSold;
-
-    let dayBadge='', notice='';
-    if(isSold) dayBadge='<span class="tag tag-gray">Odprodan</span>';
-    else if(mainDays!==null){
-      if(mainDays<=0){ dayBadge='<span class="tag tag-g">✓ Způsobilý</span>'; notice=`<div class="notice-g">✅ Způsobilý k odkupu od ${dt(mainRedeem)}</div>`; }
-      else if(mainDays<=180){ dayBadge=`<span class="tag tag-o">⏱ ${mainDays} dní</span>`; notice=`<div class="notice-o">⏱ Způsobilý za <strong>${mainDays} dní</strong> · ${dt(mainRedeem)}</div>`; }
-      else { const m=Math.ceil(mainDays/30.5); dayBadge=`<span class="tag tag-gray">${m} měs.</span>`; }
-    }
-
-    const txRows=items.map(({r,gi})=>{
-      const tv=n(r['Aktuální hodnota investice']), ti2=n(r['Čistá investice']), tg=tv-ti2;
-      const td=daysToRedeem(r['Datum emise']), tr2=redeemDt(r['Datum emise']), te=pD(r['Datum emise']);
-      let tp=0; if(te&&tr2) tp=Math.min(100,Math.max(0,((new Date()-te)/(tr2-te))*100));
-      const telig=td!==null&&td<=0;
-      return `<div class="tx">
-        <div class="tx-hdr">
-          <div style="display:flex;gap:5px;flex-wrap:wrap;align-items:center">
-            <span class="tag tag-b">${esc(r['Typ transakce']||'Platba')}</span>
-            <span style="font-size:11px;color:#94a3b8">${esc(r['rp.ISIN']||'')}</span>
-          </div>
-          <strong class="${tv>=0?'up':'dn'}" style="font-variant-numeric:tabular-nums">${czk(tv)}</strong>
-        </div>
-        <div class="tx-grid">
-          <div><div class="tg-l">Investováno</div><div class="tg-v">${czk(ti2)}</div></div>
-          <div><div class="tg-l">Výnos</div><div class="tg-v ${tg>=0?'up':'dn'}">${czk(tg)}</div></div>
-          <div><div class="tg-l">Datum připsání</div><div class="tg-v">${dt(r['Datum připsání platby'])}</div></div>
-          <div><div class="tg-l">Datum emise</div><div class="tg-v">${dt(r['Datum emise'])}</div></div>
-          <div><div class="tg-l">Poslední hodnota CP</div><div class="tg-v">${r['Poslední schválená hodnota CP']!=null?n(r['Poslední schválená hodnota CP']).toFixed(4):'—'}</div></div>
-          <div><div class="tg-l">Hodnota platná do</div><div class="tg-v">${dt(r['Poslední schválená hodnota do'])}</div></div>
-          <div><div class="tg-l">Počet CP</div><div class="tg-v">${r['Počet vydaných CP']!=null?Number(r['Počet vydaných CP']).toLocaleString('cs-CZ'):'—'}</div></div>
-          <div><div class="tg-l">Typ CP</div><div class="tg-v" style="font-size:11px">${esc(r['Typ CP']||'—')}</div></div>
-        </div>
-        ${r['Datum emise']?`<div class="prog"><span>Emise</span><div class="prog-bar"><div class="prog-fill ${telig?'done':''}" style="width:${tp}%"></div></div><span>${telig?'<span class="up">✓ způsobilý</span>':(td!==null?Math.ceil(td/30.5)+' měs.':'—')}</span></div>`:''}
-        <div class="tx-actions">
-          <button class="btn btn-gray btn-sm" onclick="editRec(${gi})">✏️ Upravit</button>
-          <button class="btn btn-red btn-sm" onclick="delRec(${gi},'${esc(name)}')">🗑 Smazat</button>
-          ${telig&&r['Typ transakce']!=='Odkup'?`<button class="btn btn-green btn-sm" onclick="quickSell(${gi},'${esc(name)}')">💸 Odprodej</button>`:''}
-        </div>
-      </div>`;
-    }).join('');
-
-    return `<div class="fcard ${isEligF?'fe':''}" id="fc_${CSS.escape(fond)}">
-      <div class="fcard-hdr" onclick="toggleF(this)">
-        <div><div class="fcard-nm">${esc(fond)}</div><div class="fcard-type">${dayBadge}</div></div>
-        <div class="fstat"><div class="fstat-l">Vloženo</div><div class="fstat-v">${czk(fi)}</div></div>
-        <div class="fstat"><div class="fstat-l">Aktuální</div><div class="fstat-v ${fc>=fi?'up':'dn'}">${czk(fc)}</div></div>
-        <div class="fstat"><div class="fstat-l">Výnos</div><div class="fstat-v ${gain>=0?'up':'dn'}">${pct(gp)}</div></div>
-        <span class="chevron">▼</span>
-      </div>
-      <div class="fbody">${notice}${txRows}<div style="height:8px"></div></div>
-    </div>`;
-  }).join('');
-
-  det.innerHTML=`
-    <div class="det-hdr">
-      <div>
-        <div class="det-name">${esc(name)} ${hasElig?'<span class="tag tag-g" style="font-size:12px;padding:4px 10px">✅ Odkup možný</span>':''}</div>
-        <div class="det-sub">${cr.length} transakcí · ${Object.keys(fm).length} fondů</div>
-      </div>
-      <div class="det-actions">
-        <button class="btn btn-gray btn-sm" onclick="exportJSON('${esc(name)}')">⬇ JSON</button>
-        <button class="btn btn-blue btn-sm" onclick="openAdd('${esc(name)}')">+ Přidat fond</button>
-      </div>
-    </div>
-    <div class="stats">
-      <div class="sc"><div class="sc-l">Investováno</div><div class="sc-v">${czk(inv)}</div></div>
-      <div class="sc"><div class="sc-l">Aktuální hodnota</div><div class="sc-v ${cur>=inv?'up':'dn'}">${czk(cur)}</div></div>
-      <div class="sc"><div class="sc-l">Čistý výnos</div><div class="sc-v ${profit>=0?'up':'dn'}">${czk(profit)}</div><div class="sc-n">${pct(profitP)}</div></div>
-      <div class="sc"><div class="sc-l">Počet fondů</div><div class="sc-v">${Object.keys(fm).length}</div></div>
-    </div>
-    ${eligHtml}
-    <div class="sec">📂 Investiční fondy</div>
-    ${fcards}
-  `;
-}
-
-function toggleF(hdr){ hdr.closest('.fcard').classList.toggle('exp'); }
-
-// ── ADD / EDIT ─────────────────────────────────
-function togglePanel(id){
-  const el=document.getElementById(id);
-  const isOpen=el.classList.contains('open');
-  document.getElementById('imp').classList.remove('open');
-  document.getElementById('add').classList.remove('open');
-  if(!isOpen) el.classList.add('open');
-}
-
-function openAdd(prefill){
-  document.getElementById('addTitle').innerHTML=prefill?`Přidat fond — ${esc(prefill)} <button class="btn btn-gray btn-sm" onclick="closeAdd()">✕ Zavřít</button>`:`Nový záznam <button class="btn btn-gray btn-sm" onclick="closeAdd()">✕ Zavřít</button>`;
-  ['fi_inv','fi_fond','fi_inv_c','fi_cur','fi_dp','fi_de','fi_nav','fi_navdo','fi_isin','fi_typ','fi_idx'].forEach(id=>{ const el=document.getElementById(id); if(el) el.value=''; });
-  document.getElementById('fi_tx').value='Platba';
-  if(prefill) document.getElementById('fi_inv').value=prefill;
-  document.getElementById('imp').classList.remove('open');
-  document.getElementById('add').classList.add('open');
-  document.getElementById('add').scrollIntoView({behavior:'smooth',block:'nearest'});
-}
-
-function closeAdd(){ document.getElementById('add').classList.remove('open'); document.getElementById('fi_idx').value=''; }
-
-function editRec(gi){
-  const r=recs[gi]; if(!r) return;
-  document.getElementById('addTitle').innerHTML=`Upravit záznam <button class="btn btn-gray btn-sm" onclick="closeAdd()">✕ Zavřít</button>`;
-  document.getElementById('fi_inv').value=r['Investor']||'';
-  document.getElementById('fi_fond').value=r['Fond']||'';
-  document.getElementById('fi_tx').value=r['Typ transakce']||'Platba';
-  document.getElementById('fi_inv_c').value=r['Čistá investice']||'';
-  document.getElementById('fi_cur').value=r['Aktuální hodnota investice']||'';
-  document.getElementById('fi_dp').value=r['Datum připsání platby']||'';
-  document.getElementById('fi_de').value=r['Datum emise']||'';
-  document.getElementById('fi_nav').value=r['Poslední schválená hodnota CP']||'';
-  document.getElementById('fi_navdo').value=r['Poslední schválená hodnota do']||'';
-  document.getElementById('fi_isin').value=r['rp.ISIN']||'';
-  document.getElementById('fi_typ').value=r['Typ CP']||'';
-  document.getElementById('fi_idx').value=gi;
-  document.getElementById('imp').classList.remove('open');
-  document.getElementById('add').classList.add('open');
-  document.getElementById('add').scrollIntoView({behavior:'smooth',block:'nearest'});
-}
-
-function saveRec(){
-  const inv=document.getElementById('fi_inv').value.trim();
-  const fond=document.getElementById('fi_fond').value.trim();
-  const investice=parseFloat(document.getElementById('fi_inv_c').value);
-  if(!inv||!fond||isNaN(investice)){ toast('Vyplňte povinná pole (Investor, Fond, Investice)','err'); return; }
-  const rec={
-    'Investor':inv,'Fond':fond,
-    'Typ transakce':document.getElementById('fi_tx').value,
-    'Čistá investice':investice,
-    'Aktuální hodnota investice':parseFloat(document.getElementById('fi_cur').value)||investice,
-    'Datum připsání platby':document.getElementById('fi_dp').value||null,
-    'Datum emise':document.getElementById('fi_de').value||null,
-    'Poslední schválená hodnota CP':parseFloat(document.getElementById('fi_nav').value)||null,
-    'Poslední schválená hodnota do':document.getElementById('fi_navdo').value||null,
-    'rp.ISIN':document.getElementById('fi_isin').value||null,
-    'Typ CP':document.getElementById('fi_typ').value||null,
-    'Poradce':'Solár Filip','Měna':'CZK','Vstupní poplatek':0,
-  };
-  const gi=document.getElementById('fi_idx').value;
-  if(gi!=='') recs[parseInt(gi)]={...recs[parseInt(gi)],...rec};
-  else recs.push(rec);
-  save(); renderStats(); renderList();
-  closeAdd();
-  toast(gi!==''?'Záznam aktualizován ✓':'Záznam přidán ✓','ok');
-  if(activeClient===inv) showClient(inv);
-  else if(!activeClient) showClient(inv);
-}
-
-function delRec(gi, name){
-  if(!confirm('Smazat tento záznam?')) return;
-  recs.splice(gi,1);
-  save(); renderStats(); renderList();
-  toast('Smazáno','ok');
-  if(activeClient===name) showClient(name);
-}
-
-function quickSell(gi, name){
-  const r=recs[gi];
-  const date=prompt('Datum odprodeje (YYYY-MM-DD):',new Date().toISOString().split('T')[0]);
-  if(!date) return;
-  const amtStr=prompt('Výnos z odprodeje (CZK) — ponech prázdné pro aktuální hodnotu:','');
-  let amt=amtStr?parseFloat(String(amtStr).replace(/\s/g,'').replace(',','.')):n(r['Aktuální hodnota investice']);
-  if(isNaN(amt)) amt=n(r['Aktuální hodnota investice']);
-  // Odkup držíme jako zápornou hodnotu, aby se správně odečetl z portfolia.
-  amt = -Math.abs(amt);
-  recs.push({'Investor':r['Investor'],'Fond':r['Fond'],'Typ transakce':'Odkup','Čistá investice':0,'Aktuální hodnota investice':amt,'Datum připsání platby':date,'Datum emise':null,'Poradce':'Solár Filip','Měna':'CZK','Vstupní poplatek':0,'rp.ISIN':r['rp.ISIN'],'Typ CP':r['Typ CP'],'Poslední schválená hodnota CP':r['Poslední schválená hodnota CP'],'Poslední schválená hodnota do':r['Poslední schválená hodnota do']});
-  save(); renderStats(); renderList();
-  toast('Odprodej zaznamenán ✓','ok');
-  showClient(name);
-}
-
-// ── EXPORT JSON ────────────────────────────────
-function exportJSON(name){
-  const cl=getClients().find(c=>c.name===name); if(!cl) return;
-  const fm={};
-  cl.recs.forEach(r=>{ const f=r['Fond']||'?'; if(!fm[f]) fm[f]=[]; fm[f].push(r); });
-  const out={investor:name,exportDate:new Date().toISOString().split('T')[0],
-    summary:{investovano:cl.inv,aktualniHodnota:cl.cur,cistýVynos:cl.cur-cl.inv,zhodnoceniPct:cl.inv>0?((cl.cur-cl.inv)/cl.inv*100):0},
-    fondy:Object.entries(fm).map(([fond,fr])=>{
-      const fc=fr.reduce((s,r)=>s+n(r['Aktuální hodnota investice']),0);
-      const fi=fr.reduce((s,r)=>{ const v=n(r['Čistá investice']); return s+(v>0?v:0); },0);
-      const mr=fr.find(r=>r['Datum emise'])||fr[0];
-      const days=daysToRedeem(mr?.['Datum emise']);
-      return {fond,isin:mr?.['rp.ISIN'],investovano:fi,aktualniHodnota:fc,cistýVynos:fc-fi,datumEmise:mr?.['Datum emise'],datumOdkupu:redeemDt(mr?.['Datum emise'])?.toISOString().split('T')[0],zpusobily:days!==null&&days<=0,dniDoOdkupu:days,posledniHodnotaCP:mr?.['Poslední schválená hodnota CP'],transakce:fr};
-    }),rawData:cl.recs};
-  const a=document.createElement('a');
-  a.href=URL.createObjectURL(new Blob([JSON.stringify(out,null,2)],{type:'application/json'}));
-  a.download=`${name.replace(/\s+/g,'_')}.json`; a.click();
-  toast('JSON exportován ✓','ok');
-}
-
-// ── CSV IMPORT ─────────────────────────────────
-const dz=document.getElementById('dz');
-dz.addEventListener('dragover',e=>{e.preventDefault();dz.classList.add('drag')});
-dz.addEventListener('dragleave',()=>dz.classList.remove('drag'));
-dz.addEventListener('drop',e=>{e.preventDefault();dz.classList.remove('drag');const f=e.dataTransfer.files[0];if(f) readCSV(f);});
-
-function handleCSV(e){ const f=e.target.files[0]; if(f) readCSV(f); e.target.value=''; }
-
-function readCSV(file){
-  const r=new FileReader();
-  r.onload=e=>{
-    let txt=e.target.result;
-    if(txt.includes('ï»¿')||txt.includes('\ufffd')){
-      const r2=new FileReader();
-      r2.onload=e2=>parseCSV(e2.target.result);
-      r2.readAsText(file,'windows-1250');
-    } else parseCSV(txt);
-  };
-  r.readAsText(file,'UTF-8');
-}
-
-function fDate(v){
-  if(!v) return null;
-  const s=String(v).trim().replace(/^\uFEFF/,'');
-  if(/^\d{4}-\d{2}-\d{2}/.test(s)) return s.substring(0,10);
-  const m=s.match(/^(\d{1,2})\.(\d{1,2})\.(\d{4})/);
-  if(m) return `${m[3]}-${m[2].padStart(2,'0')}-${m[1].padStart(2,'0')}`;
-  const d=new Date(s); return isNaN(d)?null:d.toISOString().split('T')[0];
-}
-
-function parseCSV(txt){
-  txt=txt.replace(/^\uFEFF/,'');
-  const lines=txt.split(/\r?\n/).filter(l=>l.trim());
-  if(lines.length<2){toast('Soubor je prázdný','err');return;}
-  const sep=(lines[0].match(/;/g)||[]).length>=(lines[0].match(/,/g)||[]).length?';':',';
-  function parseLine(l){const res=[];let c='',q=false;for(const ch of l){if(ch==='"'){q=!q;}else if(ch===sep&&!q){res.push(c.trim().replace(/^"|"$/g,''));c='';}else c+=ch;}res.push(c.trim().replace(/^"|"$/g,''));return res;}
-  const hdrs=parseLine(lines[0]);
-  if(!hdrs.includes('Investor')||!hdrs.includes('Fond')){toast('Chybí sloupce Investor nebo Fond','err');return;}
-  const rows=lines.slice(1).map(l=>{const v=parseLine(l);const o={};hdrs.forEach((h,i)=>o[h]=v[i]||null);return o;}).filter(r=>r['Investor']&&r['Fond']);
-  let added=0,updated=0;
-  for(const row of rows){
-    const inv=String(row['Investor']).trim();
-    const fond=String(row['Fond']).trim();
-    const emise=fDate(row['Datum emise']||row['datum_emise']);
-    const rec={'Investor':inv,'Fond':fond,'Typ CP':row['Typ CP']||null,
-      'Čistá investice':parseFloat(String(row['Čistá investice']||0).replace(/\s/g,'').replace(',','.'))||0,
-      'Aktuální hodnota investice':parseFloat(String(row['Aktuální hodnota investice']||0).replace(/\s/g,'').replace(',','.'))||0,
-      'Datum připsání platby':fDate(row['Datum připsání platby']),
-      'Datum emise':emise,
-      'Poslední schválená hodnota CP':parseFloat(String(row['Poslední schválená hodnota CP']||0).replace(',','.'))||null,
-      'Poslední schválená hodnota do':fDate(row['Poslední schválená hodnota do']),
-      'rp.ISIN':row['rp.ISIN']||row['ISIN']||null,
-      'Typ transakce':row['Typ transakce']||'Platba',
-      'Poradce':row['Poradce']||'Solár Filip','Měna':row['Měna']||'CZK','Vstupní poplatek':0,
-      'Počet vydaných CP':parseInt(row['Počet vydaných CP']||0)||0,
-      'Upisovací hodnota':parseFloat(String(row['Upisovací hodnota']||0).replace(',','.'))||0,
-    };
-    const idx=recs.findIndex(r=>r['Investor']===inv&&r['Fond']===fond&&r['Datum emise']===emise);
-    if(idx>=0){recs[idx]={...recs[idx],...rec};updated++;}else{recs.push(rec);added++;}
-  }
-  save();renderStats();renderList();
-  document.getElementById('imp').classList.remove('open');
-  toast(`Import: +${added} nových, ${updated} aktualizováno ✓`,'ok');
-  if(activeClient) showClient(activeClient);
-}
-
-// ── CSV TEMPLATE ───────────────────────────────
-function dlTemplate(){
-  const h='Investor;Fond;Typ CP;rp.ISIN;Typ transakce;Čistá investice;Aktuální hodnota investice;Datum připsání platby;Datum emise;Poslední schválená hodnota CP;Poslední schválená hodnota do;Počet vydaných CP;Upisovací hodnota;Měna';
-  const e='Novák Jan;r2p invest SICAV, a.s.;Prioritní investiční akcie;CZ0008043445;Platba;200000;228000;2023-05-10;2023-07-01;1.74;2026-02-28;133770;1.4951;CZK';
-  const a=document.createElement('a');
-  a.href=URL.createObjectURL(new Blob(['\uFEFF'+h+'\n'+e],{type:'text/csv;charset=utf-8'}));
-  a.download='vzor_import.csv';a.click();
-  toast('Vzor CSV stažen ✓','ok');
-}
-
-// ── TOAST ──────────────────────────────────────
-function toast(msg,type='ok'){
-  const t=document.getElementById('toast');
-  t.textContent=msg;t.className=`toast ${type} show`;
-  setTimeout(()=>t.classList.remove('show'),3500);
-}
+function num(v){ if (v === null || v === undefined || v === '') return 0; return Number(String(v).replace(/\s/g,'').replace(',','.')) || 0; }
+function money(v){ return Number.isFinite(Number(v)) ? new Intl.NumberFormat('cs-CZ',{style:'currency',currency:'CZK',maximumFractionDigits:0}).format(Number(v)) : '—'; }
+function percent(v){ return Number.isFinite(Number(v)) ? (v >= 0 ? '+' : '') + Number(v).toFixed(1) + '%' : '—'; }
+function html(s){ return String(s ?? '').replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
+function parseDate(v){ if (!v) return null; const s = String(v).trim(); if (/^\d{4}-\d{2}-\d{2}/.test(s)) return new Date(s.slice(0,10)+'T12:00:00'); const m=s.match(/^(\d{1,2})\.(\d{1,2})\.(\d{4})/); if(m) return new Date(`${m[3]}-${m[2].padStart(2,'0')}-${m[1].padStart(2,'0')}T12:00:00`); const d=new Date(s); return isNaN(d) ? null : d; }
+function dateOut(v){ const d=parseDate(v); return d ? d.toLocaleDateString('cs-CZ') : '—'; }
+function isoDate(v){ const d=parseDate(v); return d ? d.toISOString().slice(0,10) : null; }
+function addMonths(date, months){ const d = new Date(date); const day = d.getDate(); d.setMonth(d.getMonth()+months); if(d.getDate() !== day) d.setDate(0); return d; }
+function redeemDate(issue){ const d=parseDate(issue); return d ? addMonths(d,36) : null; }
+function daysToRedeem(issue){ const r=redeemDate(issue); if(!r) return null; return Math.ceil((r - new Date()) / 86400000); }
+function save(){ localStorage.setItem(STORE_KEY, JSON.stringify(records)); }
+function load(){ try { records = JSON.parse(localStorage.getItem(STORE_KEY) || '[]'); } catch(e) { records = []; } if(!Array.isArray(records) || !records.length) records = SEED.slice(); }
+function toast(msg){ const t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),2600); }
+function clients(){ const map = new Map(); records.forEach((r,index)=>{ const name=String(r['Investor']||'Neznámý klient').trim(); if(!map.has(name)) map.set(name,{name,rows:[],indexes:[]}); map.get(name).rows.push(r); map.get(name).indexes.push(index); }); return [...map.values()].map(c=>{ const invested=c.rows.reduce((s,r)=>s+Math.max(0,num(r['Čistá investice'])),0); const current=c.rows.reduce((s,r)=>s+num(r['Aktuální hodnota investice']),0); const ds=c.rows.map(r=>daysToRedeem(r['Datum emise'])); const eligible=c.rows.some(r=>daysToRedeem(r['Datum emise'])!==null&&daysToRedeem(r['Datum emise'])<=0&&num(r['Aktuální hodnota investice'])>0&&r['Typ transakce']!=='Odkup'); const soon=!eligible&&ds.some(d=>d!==null&&d>0&&d<=180); return {...c,invested,current,profit:current-invested,profitPct:invested?(current-invested)/invested*100:0,eligible,soon}; }).sort((a,b)=>b.invested-a.invested); }
+function renderAll(){ renderStats(); renderList(); if(selectedClient) renderDetail(selectedClient); }
+function renderStats(){ const cs=clients(); const inv=cs.reduce((s,c)=>s+c.invested,0); const cur=cs.reduce((s,c)=>s+c.current,0); document.getElementById('sideStats').innerHTML = `<div class="kpi"><span>Klientů</span><b>${cs.length}</b></div><div class="kpi"><span>Odkup</span><b class="pos">${cs.filter(c=>c.eligible).length}</b></div><div class="kpi"><span>Vloženo</span><b>${money(inv)}</b></div><div class="kpi"><span>Hodnota</span><b class="pos">${money(cur)}</b></div>`; }
+function setFilter(f){ activeFilter=f; document.querySelectorAll('.pill').forEach(b=>b.classList.toggle('active',b.dataset.filter===f)); renderList(); }
+function renderList(){ const q=document.getElementById('search').value.trim().toLowerCase(); let cs=clients().filter(c=>c.name.toLowerCase().includes(q)); if(activeFilter==='eligible') cs=cs.filter(c=>c.eligible); if(activeFilter==='soon') cs=cs.filter(c=>c.soon); const el=document.getElementById('clientList'); if(!cs.length){ el.innerHTML='<div class="empty">Žádní klienti</div>'; return; } el.innerHTML=cs.map(c=>{ const funds=new Set(c.rows.map(r=>r['Fond']).filter(Boolean)).size; return `<div class="client ${c.eligible?'eligible':''} ${c.name===selectedClient?'active':''}" onclick="selectClient(${JSON.stringify(c.name)})"><div class="client-name">${html(c.name)}${c.eligible?'<span class="tag green">odkup</span>':''}${c.soon?'<span class="tag orange">brzy</span>':''}</div><div class="client-bottom"><div><div class="money">${money(c.current)}</div><div class="muted">Vloženo: ${money(c.invested)}</div></div><div style="text-align:right"><div class="money ${c.profitPct>=0?'pos':'neg'}">${percent(c.profitPct)}</div><div class="muted">${funds} fondů</div></div></div></div>`; }).join(''); }
+function selectClient(name){ selectedClient=name; closePanels(); renderList(); renderDetail(name); }
+function closePanels(){ document.getElementById('importPanel').classList.remove('open'); document.getElementById('formPanel').classList.remove('open'); }
+function renderDetail(name){ const c=clients().find(x=>x.name===name); if(!c){ document.getElementById('content').innerHTML='<div class="empty">Klient nenalezen</div>'; return; } const byFund=new Map(); c.rows.forEach((r,i)=>{ const f=r['Fond']||'Bez názvu fondu'; if(!byFund.has(f)) byFund.set(f,[]); byFund.get(f).push({r,index:c.indexes[i]}); }); const eligRows=c.rows.filter(r=>daysToRedeem(r['Datum emise'])!==null&&daysToRedeem(r['Datum emise'])<=0&&num(r['Aktuální hodnota investice'])>0&&r['Typ transakce']!=='Odkup'); const eligTotal=eligRows.reduce((s,r)=>s+num(r['Aktuální hodnota investice']),0); const eligHtml=eligRows.length?`<div class="notice"><div class="notice-title">Způsobilé k odkupu po 36 měsících</div>${eligRows.map(r=>`<div class="eligible-row"><div><b>${html(r['Fond'])}</b><div class="muted">Emise: ${dateOut(r['Datum emise'])} · odkup od: ${dateOut(redeemDate(r['Datum emise']))}</div></div><b class="pos">${money(num(r['Aktuální hodnota investice']))}</b></div>`).join('')}<div class="eligible-row"><b>Celkem způsobilé</b><b class="pos">${money(eligTotal)}</b></div></div>`:''; const fundsHtml=[...byFund.entries()].map(([fond,items])=>fundCard(fond,items)).join(''); document.getElementById('content').className=''; document.getElementById('content').innerHTML=`<div class="detail-head"><div><h1>${html(name)} ${c.eligible?'<span class="tag green">odkup možný</span>':''}</h1><div class="muted">${c.rows.length} transakcí · ${byFund.size} fondů</div></div><div class="actions"><button class="btn" onclick="exportClient(${JSON.stringify(name)})">⬇ JSON</button><button class="btn primary" onclick="openForm(${JSON.stringify(name)})">+ Přidat fond</button><button class="btn red" onclick="deleteClient(${JSON.stringify(name)})">🗑 Smazat klienta</button></div></div><div class="cards"><div class="card"><span>Investováno</span><b>${money(c.invested)}</b></div><div class="card"><span>Aktuální hodnota</span><b class="${c.current>=c.invested?'pos':'neg'}">${money(c.current)}</b></div><div class="card"><span>Čistý výnos</span><b class="${c.profit>=0?'pos':'neg'}">${money(c.profit)}</b><div class="muted">${percent(c.profitPct)}</div></div><div class="card"><span>Fondů</span><b>${byFund.size}</b></div></div>${eligHtml}<h3 style="margin:18px 0 10px">📂 Investiční fondy</h3>${fundsHtml}`; }
+function fundCard(fond,items){ const current=items.reduce((s,x)=>s+num(x.r['Aktuální hodnota investice']),0); const invested=items.reduce((s,x)=>s+Math.max(0,num(x.r['Čistá investice'])),0); const profit=current-invested; const pp=invested?profit/invested*100:0; const sold=items.some(x=>x.r['Typ transakce']==='Odkup'); const base=items.find(x=>x.r['Datum emise']&&x.r['Typ transakce']!=='Odkup')||items.find(x=>x.r['Datum emise'])||items[0]; const d=daysToRedeem(base?.r?.['Datum emise']); const eligible=d!==null&&d<=0&&!sold; const badge=sold?'<span class="tag gray">odprodán</span>':eligible?'<span class="tag green">způsobilý</span>':(d!==null&&d<=180?`<span class="tag orange">${d} dní</span>`:(d!==null?`<span class="tag gray">${Math.ceil(d/30.5)} měs.</span>`:'')); return `<div class="fund ${eligible?'eligible':''}"><div class="fund-head" onclick="this.parentElement.classList.toggle('open')"><div><div class="fund-name">${html(fond)}</div><div style="margin-top:5px">${badge}</div></div><div class="fstat"><span>Vloženo</span><b>${money(invested)}</b></div><div class="fstat"><span>Aktuální</span><b class="${current>=invested?'pos':'neg'}">${money(current)}</b></div><div class="fstat"><span>Výnos</span><b class="${pp>=0?'pos':'neg'}">${percent(pp)}</b></div><div class="chev">▼</div></div><div class="fund-body"><div class="tx-actions" style="justify-content:flex-end;margin:0 0 10px"><button class="btn small red" onclick="event.stopPropagation(); deleteFund(${JSON.stringify(fond)})">🗑 Smazat celý fond</button></div>${items.map(x=>txRow(x.r,x.index)).join('')}</div></div>`; }
+function txRow(r,index){ const current=num(r['Aktuální hodnota investice']); const inv=num(r['Čistá investice']); const gain=current-inv; const d=daysToRedeem(r['Datum emise']); const rd=redeemDate(r['Datum emise']); const issue=parseDate(r['Datum emise']); const p=issue&&rd?Math.max(0,Math.min(100,(new Date()-issue)/(rd-issue)*100)):0; const eligible=d!==null&&d<=0&&r['Typ transakce']!=='Odkup'; return `<div class="tx"><div class="tx-top"><div><span class="tag blue">${html(r['Typ transakce']||'Platba')}</span> <span class="muted">${html(r['rp.ISIN']||'')}</span></div><b class="${current>=0?'pos':'neg'}">${money(current)}</b></div><div class="tx-grid"><div class="mini"><span>Investováno</span><b>${money(inv)}</b></div><div class="mini"><span>Výnos</span><b class="${gain>=0?'pos':'neg'}">${money(gain)}</b></div><div class="mini"><span>Datum připsání</span><b>${dateOut(r['Datum připsání platby'])}</b></div><div class="mini"><span>Datum emise</span><b>${dateOut(r['Datum emise'])}</b></div><div class="mini"><span>Hodnota CP</span><b>${r['Poslední schválená hodnota CP']!=null?num(r['Poslední schválená hodnota CP']).toFixed(4):'—'}</b></div><div class="mini"><span>Platná do</span><b>${dateOut(r['Poslední schválená hodnota do'])}</b></div><div class="mini"><span>Počet CP</span><b>${r['Počet vydaných CP']!=null?Number(r['Počet vydaných CP']).toLocaleString('cs-CZ'):'—'}</b></div><div class="mini"><span>Typ CP</span><b>${html(r['Typ CP']||'—')}</b></div></div>${r['Datum emise']?`<div class="progress"><span>Emise</span><div class="bar"><div class="${eligible?'done':''}" style="width:${p}%"></div></div><span>${eligible?'✓ způsobilý':(d!==null?Math.ceil(d/30.5)+' měs.':'—')}</span></div>`:''}<div class="tx-actions"><button class="btn small" onclick="event.stopPropagation(); editRecord(${index})">✏️ Upravit</button><button class="btn small red" onclick="event.stopPropagation(); deleteRecord(${index})">🗑 Smazat</button>${eligible?`<button class="btn small green" onclick="event.stopPropagation(); sellRecord(${index})">💸 Odprodej</button>`:''}</div></div>`; }
+function togglePanel(id){ const p=document.getElementById(id); const open=p.classList.contains('open'); closePanels(); if(!open) p.classList.add('open'); }
+function openForm(prefill=''){ closePanels(); document.getElementById('formPanel').classList.add('open'); document.getElementById('formTitle').textContent=prefill?'Přidat fond — '+prefill:'Nový záznam'; ['fInvestor','fFond','fInvest','fCurrent','fPayDate','fIssueDate','fNav','fNavTo','fIsin','fSecurityType','editIndex'].forEach(id=>document.getElementById(id).value=''); document.getElementById('fTyp').value='Platba'; if(prefill) document.getElementById('fInvestor').value=prefill; window.scrollTo({top:0,behavior:'smooth'}); }
+function closeForm(){ document.getElementById('formPanel').classList.remove('open'); document.getElementById('editIndex').value=''; }
+function editRecord(index){ const r=records[index]; if(!r) return; openForm(); document.getElementById('formTitle').textContent='Upravit záznam'; document.getElementById('editIndex').value=index; document.getElementById('fInvestor').value=r['Investor']||''; document.getElementById('fFond').value=r['Fond']||''; document.getElementById('fTyp').value=r['Typ transakce']||'Platba'; document.getElementById('fInvest').value=num(r['Čistá investice']); document.getElementById('fCurrent').value=num(r['Aktuální hodnota investice']); document.getElementById('fPayDate').value=isoDate(r['Datum připsání platby'])||''; document.getElementById('fIssueDate').value=isoDate(r['Datum emise'])||''; document.getElementById('fNav').value=r['Poslední schválená hodnota CP']||''; document.getElementById('fNavTo').value=isoDate(r['Poslední schválená hodnota do'])||''; document.getElementById('fIsin').value=r['rp.ISIN']||''; document.getElementById('fSecurityType').value=r['Typ CP']||''; }
+function formRecord(){ const investor=document.getElementById('fInvestor').value.trim(); const fond=document.getElementById('fFond').value.trim(); const invested=num(document.getElementById('fInvest').value); if(!investor||!fond) throw new Error('Vyplň investora a fond.'); return {'Investor':investor,'Poradce':'Solár Filip','Fond':fond,'Typ transakce':document.getElementById('fTyp').value,'Čistá investice':invested,'Aktuální hodnota investice':document.getElementById('fCurrent').value===''?invested:num(document.getElementById('fCurrent').value),'Datum připsání platby':document.getElementById('fPayDate').value||null,'Datum emise':document.getElementById('fIssueDate').value||null,'Poslední schválená hodnota CP':document.getElementById('fNav').value===''?null:num(document.getElementById('fNav').value),'Poslední schválená hodnota do':document.getElementById('fNavTo').value||null,'rp.ISIN':document.getElementById('fIsin').value||null,'Typ CP':document.getElementById('fSecurityType').value||null,'Měna':'CZK'}; }
+function saveRecord(){ try{ const rec=formRecord(); const idx=document.getElementById('editIndex').value; if(idx==='') records.push(rec); else records[Number(idx)]={...records[Number(idx)],...rec}; selectedClient=rec['Investor']; save(); closeForm(); renderAll(); toast('Záznam uložen ✓'); } catch(e){ toast(e.message); } }
+function refreshAfterDelete(){ save(); const exists=selectedClient&&clients().some(c=>c.name===selectedClient); if(!exists) selectedClient=null; renderAll(); }
+function deleteRecord(index){ if(!confirm('Opravdu smazat tento záznam?')) return; records.splice(index,1); refreshAfterDelete(); toast('Záznam smazán'); }
+function deleteFund(fond){ if(!selectedClient) return; const count=records.filter(r=>r['Investor']===selectedClient&&r['Fond']===fond).length; if(!count) return; if(!confirm(`Opravdu smazat celý fond „${fond}“ u klienta ${selectedClient}?\nSmaže se ${count} záznamů.`)) return; records=records.filter(r=>!(r['Investor']===selectedClient&&r['Fond']===fond)); refreshAfterDelete(); toast('Fond smazán'); }
+function deleteClient(name){ const count=records.filter(r=>r['Investor']===name).length; if(!count) return; if(!confirm(`Opravdu smazat celého klienta „${name}“?\nSmaže se ${count} záznamů/fondů.`)) return; records=records.filter(r=>r['Investor']!==name); selectedClient=null; refreshAfterDelete(); toast('Klient smazán'); }
+function sellRecord(index){ const r=records[index]; if(!r) return; const date=prompt('Datum odprodeje (YYYY-MM-DD):',new Date().toISOString().slice(0,10)); if(!date) return; const value=prompt('Částka odprodeje v CZK (prázdné = aktuální hodnota):',''); records.push({...r,'Typ transakce':'Odkup','Čistá investice':0,'Aktuální hodnota investice':value===''?-Math.abs(num(r['Aktuální hodnota investice'])):num(value),'Datum připsání platby':date,'Datum emise':null}); save(); renderAll(); toast('Odprodej zaznamenán ✓'); }
+function exportClient(name){ const c=clients().find(x=>x.name===name); if(!c) return; const blob=new Blob([JSON.stringify(c,null,2)],{type:'application/json'}); const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=name.replace(/\s+/g,'_')+'.json'; a.click(); URL.revokeObjectURL(a.href); }
+function splitCSVLine(line,sep){ const out=[]; let cur='',q=false; for(let i=0;i<line.length;i++){ const ch=line[i]; if(ch==='"'){ if(q&&line[i+1]==='"'){cur+='"'; i++;} else q=!q; } else if(ch===sep&&!q){ out.push(cur.trim()); cur=''; } else cur+=ch; } out.push(cur.trim()); return out.map(x=>x.replace(/^"|"$/g,'')); }
+function parseCSVText(text){ text=text.replace(/^\uFEFF/,''); const lines=text.split(/\r?\n/).filter(l=>l.trim()); if(lines.length<2) throw new Error('CSV je prázdné.'); const sep=(lines[0].match(/;/g)||[]).length>=(lines[0].match(/,/g)||[]).length?';':','; const headers=splitCSVLine(lines[0],sep).map(h=>h.replace(/^\uFEFF/,'').trim()); const rows=[]; for(const line of lines.slice(1)){ const vals=splitCSVLine(line,sep); const o={}; headers.forEach((h,i)=>o[h]=vals[i]??''); if(o['Investor']&&o['Fond']) rows.push(o); } return rows; }
+function handleFile(file){ if(!file) return; const reader=new FileReader(); reader.onload=e=>{ try{ importRows(parseCSVText(e.target.result)); } catch(err){ toast(err.message); } }; reader.readAsText(file,'UTF-8'); }
+function importRows(rows){ let added=0,updated=0; rows.forEach(row=>{ const rec={'Investor':String(row['Investor']||'').trim(),'Fond':String(row['Fond']||'').trim(),'Typ CP':row['Typ CP']||null,'rp.ISIN':row['rp.ISIN']||row['ISIN']||null,'Typ transakce':row['Typ transakce']||'Platba','Čistá investice':num(row['Čistá investice']),'Aktuální hodnota investice':num(row['Aktuální hodnota investice']),'Datum připsání platby':isoDate(row['Datum připsání platby']),'Datum emise':isoDate(row['Datum emise']),'Poslední schválená hodnota CP':row['Poslední schválená hodnota CP']?num(row['Poslední schválená hodnota CP']):null,'Poslední schválená hodnota do':isoDate(row['Poslední schválená hodnota do']),'Počet vydaných CP':num(row['Počet vydaných CP']),'Upisovací hodnota':num(row['Upisovací hodnota']),'Poradce':row['Poradce']||'Solár Filip','Měna':row['Měna']||'CZK'}; const keyDate=rec['Datum emise']; const i=records.findIndex(r=>r['Investor']===rec['Investor']&&r['Fond']===rec['Fond']&&isoDate(r['Datum emise'])===keyDate); if(i>=0){ records[i]={...records[i],...rec}; updated++; } else { records.push(rec); added++; } }); save(); closePanels(); renderAll(); toast(`Import hotov: +${added}, aktualizováno ${updated}`); }
+function downloadTemplate(){ const csv='Investor;Fond;Typ CP;rp.ISIN;Typ transakce;Čistá investice;Aktuální hodnota investice;Datum připsání platby;Datum emise;Poslední schválená hodnota CP;Poslední schválená hodnota do;Počet vydaných CP;Upisovací hodnota;Měna\nNovák Jan;r2p invest SICAV, a.s.;Prioritní investiční akcie;CZ0008043445;Platba;200000;228000;2023-05-10;2023-07-01;1.74;2026-02-28;133770;1.4951;CZK'; const a=document.createElement('a'); a.href=URL.createObjectURL(new Blob(['\uFEFF'+csv],{type:'text/csv;charset=utf-8'})); a.download='vzor_import_investice.csv'; a.click(); URL.revokeObjectURL(a.href); }
+const drop=document.getElementById('drop'); drop.onclick=()=>document.getElementById('fileInput').click(); drop.ondragover=e=>{e.preventDefault();drop.classList.add('drag')}; drop.ondragleave=()=>drop.classList.remove('drag'); drop.ondrop=e=>{e.preventDefault();drop.classList.remove('drag');handleFile(e.dataTransfer.files[0]);};
+window.addEventListener('DOMContentLoaded',()=>{ load(); renderAll(); });
 </script>
 </body>
 </html>
