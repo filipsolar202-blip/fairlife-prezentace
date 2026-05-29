@@ -322,6 +322,16 @@ const dt  = v => { if(!v) return '—'; const d=new Date(v); return isNaN(d)?'�
 const esc = s => String(s||'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[m]);
 const n   = v => parseFloat(String(v||0).replace(/\s/g,'').replace(',','.'))||0;
 
+function normKey(v){
+  return String(v || '')
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g,'')
+    .replace(/\s+/g,' ')
+    .trim();
+}
+
+
 function fundKeyFromParts(fond, isin, typ){ return [normKey(fond), normKey(isin), normKey(typ)].join('|'); }
 function fundKey(r){ return fundKeyFromParts(r?.['Fond'], r?.['rp.ISIN']||r?.['ISIN'], r?.['Typ CP']); }
 function currentNav(r){ const fv=fundValues[fundKey(r)]; return n(fv?.nav) || n(r?.['Poslední schválená hodnota CP']); }
