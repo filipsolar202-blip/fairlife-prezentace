@@ -341,19 +341,18 @@ function curVal(r){
   if(qty && nav) return qty*nav;
   return n(r?.['Aktuální hodnota investice']);
 }
+function isWithdrawal(r){ return normKey(r?.['Typ transakce']) === 'odkup'; }
+function withdrawalVal(r){ return isWithdrawal(r) ? Math.abs(curVal(r) || n(r?.['Aktuální hodnota investice']) || n(r?.['Čistá investice'])) : 0; }
+function investedVal(r){
+  if(isWithdrawal(r)) return -withdrawalVal(r);
+  const v=n(r?.['Čistá investice']);
+  return v>0 ? v : 0;
+}
 function navDate(r){ return fundValues[fundKey(r)]?.date || r?.['Poslední schválená hodnota do'] || null; }
 
 function pD(v){ if(!v) return null; const d=new Date(v); return isNaN(d)?null:d; }
 function daysToRedeem(e){ const d=pD(e); if(!d) return null; const r=new Date(d); r.setMonth(r.getMonth()+36); return Math.ceil((r-new Date())/86400000); }
 function redeemDt(e){ const d=pD(e); if(!d) return null; const r=new Date(d); r.setMonth(r.getMonth()+36); return r; }
-
-(function init(){
-  try { recs = JSON.parse(localStorage.getItem(SK)) || []; } catch{ recs = []; }
-  try { fundValues = JSON.parse(localStorage.getItem(FSK)) || {}; } catch{ fundValues = {}; }
-  if(!recs.length) recs = [...SEED];
-  renderStats();
-  renderList();
-})();
 
 (function init(){
   try { recs = JSON.parse(localStorage.getItem(SK)) || []; } catch{ recs = []; }
@@ -372,7 +371,7 @@ function getClients(){
     map[nm].recs.push(r); map[nm].idx.push(i);
   });
   return Object.values(map).map(c=>{
-    const inv = c.recs.reduce((s,r)=>{ const v=n(r['Čistá investice']); return s+(v>0?v:0); },0);
+    const inv = c.recs.reduce((s,r)=>s+investedVal(r),0);
     const cur = c.recs.reduce((s,r)=>s+curVal(r),0);
     const allDays = c.recs.map(r=>daysToRedeem(r['Datum emise']));
     const hasElig = allDays.some(d=>d!==null&&d<=0);
@@ -465,9 +464,11 @@ function showClient(name){
 
   const fcards=Object.entries(fm).map(([fond,items])=>{
     const fc=items.reduce((s,{r})=>s+curVal(r),0);
-    const fi=items.reduce((s,{r})=>{ const v=n(r['Čistá investice']); return s+(v>0?v:0); },0);
+    const fi=items.reduce((s,{r})=>s+investedVal(r),0);
     const gain=fc-fi; const gp=fi>0?(gain/fi*100):0;
-    const isSold=items.some(({r})=>r['Typ transakce']==='Odkup');
+    const totalQty=items.reduce((s,{r})=>s+n(r['Počet vydaných CP']),0);
+    const isSold=items.some(({r})=>isWithdrawal(r)) && (totalQty<=0 || fc<=0);
+    const hasWithdrawal=items.some(({r})=>isWithdrawal(r));
     const buyRec=items.find(({r})=>r['Typ transakce']==='Platba'&&r['Datum emise']);
     const mainDays=buyRec?daysToRedeem(buyRec.r['Datum emise']):null;
     const mainRedeem=buyRec?redeemDt(buyRec.r['Datum emise']):null;
@@ -480,6 +481,7 @@ function showClient(name){
       else if(mainDays<=180){ dayBadge=`<span class="tag tag-o">⏱ ${mainDays} dní</span>`; notice=`<div class="notice-o">⏱ Způsobilý za <strong>${mainDays} dní</strong> · ${dt(mainRedeem)}</div>`; }
       else { const m=Math.ceil(mainDays/30.5); dayBadge=`<span class="tag tag-gray">${m} měs.</span>`; }
     }
+    if(hasWithdrawal && !isSold) dayBadge += '<span class="tag tag-o">částečný odkup</span>'; 
 
     const txRows=items.map(({r,gi})=>{
       const tv=curVal(r), ti2=n(r['Čistá investice']), tg=tv-ti2;
@@ -495,8 +497,8 @@ function showClient(name){
           <div style="text-align:right"><strong class="${tv>=0?'up':'dn'}" style="font-variant-numeric:tabular-nums">${czk(tv)}</strong><br>${n(r['Počet vydaných CP'])&&currentNav(r)?'<span class="calc-badge">CP × NAV</span>':'<span class="manual-badge">ručně</span>'}</div>
         </div>
         <div class="tx-grid">
-          <div><div class="tg-l">Investováno</div><div class="tg-v">${czk(ti2)}</div></div>
-          <div><div class="tg-l">Výnos</div><div class="tg-v ${tg>=0?'up':'dn'}">${czk(tg)}</div></div>
+          <div><div class="tg-l">${isWithdrawal(r)?'Vybráno':'Investováno'}</div><div class="tg-v">${isWithdrawal(r)?czk(withdrawalVal(r)):czk(ti2)}</div></div>
+          <div><div class="tg-l">Výnos</div><div class="tg-v ${tg>=0?'up':'dn'}">${isWithdrawal(r)?'—':czk(tg)}</div></div>
           <div><div class="tg-l">Datum připsání</div><div class="tg-v">${dt(r['Datum připsání platby'])}</div></div>
           <div><div class="tg-l">Datum emise</div><div class="tg-v">${dt(r['Datum emise'])}</div></div>
           <div><div class="tg-l">Poslední hodnota CP</div><div class="tg-v">${currentNav(r)?currentNav(r).toFixed(4):'—'}</div></div>
@@ -665,10 +667,10 @@ function quickSell(gi, name){
   const r=recs[gi];
   const date=prompt('Datum odprodeje (YYYY-MM-DD):',new Date().toISOString().split('T')[0]);
   if(!date) return;
-  const amtStr=prompt('Výnos z odprodeje (CZK) — ponech prázdné pro aktuální hodnotu:','');
-  let amt=amtStr?parseFloat(String(amtStr).replace(/\s/g,'').replace(',','.')):curVal(r);
-  if(isNaN(amt)) amt=curVal(r);
-  // Odkup držíme jako zápornou hodnotu, aby se správně odečetl z portfolia.
+  const amtStr=prompt('Částka odkupu / výběru (CZK):','');
+  let amt=parseFloat(String(amtStr||'').replace(/\s/g,'').replace(',','.'));
+  if(isNaN(amt) || amt<=0) return;
+  // Odkup držíme jako zápornou hodnotu portfolia a zároveň snižuje netto vložený kapitál.
   amt = -Math.abs(amt);
   recs.push({'Investor':r['Investor'],'Fond':r['Fond'],'Typ transakce':'Odkup','Čistá investice':0,'Aktuální hodnota investice':amt,'Datum připsání platby':date,'Datum emise':null,'Poradce':'Solár Filip','Měna':'CZK','Vstupní poplatek':0,'rp.ISIN':r['rp.ISIN'],'Typ CP':r['Typ CP'],'Poslední schválená hodnota CP':r['Poslední schválená hodnota CP'],'Poslední schválená hodnota do':r['Poslední schválená hodnota do']});
   save(); renderStats(); renderList();
@@ -685,7 +687,7 @@ function exportJSON(name){
     summary:{investovano:cl.inv,aktualniHodnota:cl.cur,cistýVynos:cl.cur-cl.inv,zhodnoceniPct:cl.inv>0?((cl.cur-cl.inv)/cl.inv*100):0},
     fondy:Object.entries(fm).map(([fond,fr])=>{
       const fc=fr.reduce((s,r)=>s+curVal(r),0);
-      const fi=fr.reduce((s,r)=>{ const v=n(r['Čistá investice']); return s+(v>0?v:0); },0);
+      const fi=fr.reduce((s,r)=>s+investedVal(r),0);
       const mr=fr.find(r=>r['Datum emise'])||fr[0];
       const days=daysToRedeem(mr?.['Datum emise']);
       return {fond,isin:mr?.['rp.ISIN'],investovano:fi,aktualniHodnota:fc,cistýVynos:fc-fi,datumEmise:mr?.['Datum emise'],datumOdkupu:redeemDt(mr?.['Datum emise'])?.toISOString().split('T')[0],zpusobily:days!==null&&days<=0,dniDoOdkupu:days,posledniHodnotaCP:mr?.['Poslední schválená hodnota CP'],transakce:fr};
