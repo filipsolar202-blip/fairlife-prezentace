@@ -1239,6 +1239,7 @@ function selectFundMaster(key){
   toast('Fond načten do formuláře','ok');
 }
 function addOrUpdateFundMaster(){
+  const oldKey=(document.getElementById('fv_fond').value||'').trim();
   const company=(document.getElementById('fv_company_new').value||'').trim()||'Nezařazeno';
   const fond=(document.getElementById('fv_fond_new').value||'').trim();
   const isin=(document.getElementById('fv_isin_new').value||'').trim();
@@ -1248,13 +1249,39 @@ function addOrUpdateFundMaster(){
   const date=document.getElementById('fv_date_new').value||new Date().toISOString().split('T')[0];
   if(!fond){ toast('Zadej název fondu','err'); return; }
   if(!isin){ toast('Doplň ISIN fondu. Centrální fond bez ISINu by se mohl špatně párovat.','err'); return; }
-  const key=fundKeyFromParts(fond, isin, typ);
-  fundValues[key]={nav:nav||null,date,fond:cleanFundName(fond,company),company,isin,typ,product};
+
+  const newKey=fundKeyFromParts(fond, isin, typ);
+  const oldFund = uniqueFunds().find(x=>x.key===oldKey);
+  const oldFondNorm = normKey(oldFund?.fond || fond);
+  const oldCompanyNorm = normKey(oldFund?.company || company);
+
+  // Důležité: při doplnění ISINu se starý fond původně identifikoval podle názvu.
+  // Proto musíme aktualizovat i transakce, které ještě ISIN nemají a sedí názvem/společností.
+  let changed=0;
   recs.forEach(r=>{
-    if(fundKey(r)===key){ r['Investiční společnost']=company; r['Typ produktu']=product; r['Fond']=cleanFundName(fond,company); r['rp.ISIN']=isin||r['rp.ISIN']; r['Typ CP']=typ||r['Typ CP']; if(nav){ r['Poslední schválená hodnota CP']=nav; r['Poslední schválená hodnota do']=date; if(effectiveQty(r)) r['Aktuální hodnota investice']=curVal(r); } }
+    const sameOldKey = oldKey && fundKey(r)===oldKey;
+    const sameNewKey = fundKey(r)===newKey;
+    const sameNameNoIsin = !((r['rp.ISIN']||r['ISIN']||'').trim()) && normKey(r['Fond'])===oldFondNorm && (!oldCompanyNorm || normKey(companyOf(r))===oldCompanyNorm);
+    if(sameOldKey || sameNewKey || sameNameNoIsin){
+      r['Investiční společnost']=company;
+      r['Typ produktu']=product;
+      r['Fond']=cleanFundName(fond,company);
+      r['rp.ISIN']=isin;
+      if(typ) r['Typ CP']=typ;
+      if(nav){
+        r['Poslední schválená hodnota CP']=nav;
+        r['Poslední schválená hodnota do']=date;
+        if(effectiveQty(r)) r['Aktuální hodnota investice']=curVal(r);
+      }
+      changed++;
+    }
   });
+
+  if(oldKey && oldKey!==newKey && fundValues[oldKey]) delete fundValues[oldKey];
+  fundValues[newKey]={nav:nav||null,date,fond:cleanFundName(fond,company),company,isin,typ,product};
+  normalizeFundValuesKeys();
   save(); renderStats(); renderList(); renderFundPanel(); if(activeClient) showClient(activeClient);
-  toast('Fond uložen ✓','ok');
+  toast(`Fond uložen ✓ Aktualizováno záznamů: ${changed}`,'ok');
 }
 function deleteFundMaster(key){
   const f=uniqueFunds().find(x=>x.key===key); if(!f) return;
