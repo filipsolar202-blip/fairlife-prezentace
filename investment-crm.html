@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Investment CRM — Solár Filip</title>
+<title>Investment CRM v15 — Solár Filip</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
@@ -190,6 +190,9 @@ body{font-family:'Inter',sans-serif;background:#f1f5f9;color:#1e293b;font-size:1
 /* EMPTY */
 .empty{text-align:center;padding:30px;color:#94a3b8;font-size:13px}
 
+
+.product-line{margin:10px 0 8px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:9px;padding:8px 12px;font-weight:800;color:#475569;display:flex;justify-content:space-between;align-items:center}.product-line small{color:#94a3b8;font-weight:600}.tag-purple{background:#ede9fe;color:#6d28d9}.rec-box{margin:10px 15px;padding:10px 12px;background:#f5f3ff;border:1px solid #ddd6fe;border-radius:8px;color:#5b21b6;font-size:12px}.rec-actions{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}.tax-mini{display:inline-flex;align-items:center;gap:4px;background:#eff6ff;color:#1d4ed8;border-radius:999px;padding:2px 7px;font-size:10px;font-weight:700;text-transform:uppercase}.opf-note{margin-top:4px;font-size:11px;color:#64748b}
+
 @media (max-width: 900px){
   .hdr{height:auto;min-height:58px;padding:10px 14px;gap:10px;align-items:flex-start;flex-direction:column}
   .hdr-btns{width:100%;overflow-x:auto;padding-bottom:2px}.btn{white-space:nowrap}
@@ -216,7 +219,7 @@ body{font-family:'Inter',sans-serif;background:#f1f5f9;color:#1e293b;font-size:1
   <div class="hdr-btns">
     <button class="btn btn-gray" id="privacyBtn" onclick="togglePrivacy()">🙈 Skrýt klienty</button>
     <button class="btn btn-gray" onclick="togglePanel('imp')">⬆ Import CSV</button>
-    <button class="btn btn-gray" onclick="togglePanel('funds')">📈 Hodnoty fondů</button>
+    <button class="btn btn-gray" onclick="togglePanel('funds')">📈 Fondy / NAV</button>
     <button class="btn btn-gray" onclick="dlBackupJSON()">💾 Záloha JSON</button>
     <button class="btn btn-gray" onclick="dlTemplate()">⬇ Vzor CSV</button>
     <button class="btn btn-blue" onclick="togglePanel('add')">+ Nový záznam</button>
@@ -255,6 +258,7 @@ body{font-family:'Inter',sans-serif;background:#f1f5f9;color:#1e293b;font-size:1
     <div class="fg"><label>Název fondu</label><input id="fv_fond_new" placeholder="Julius Meinl Sub-Fund 2024 tř.A_CZK"></div>
     <div class="fg"><label>ISIN</label><input id="fv_isin_new" placeholder="CZ0008XXXXXX"></div>
     <div class="fg"><label>Typ CP</label><input id="fv_typ_new" placeholder="Prioritní investiční akcie"></div>
+    <div class="fg"><label>Typ produktu</label><select id="fv_product_new"><option>FKI</option><option>Retail / OPF</option><option>ETF / fondy</option><option>DIP</option><option>DPS</option><option>Jiné</option></select></div>
     <div class="fg"><label>Hodnota CP</label><input id="fv_nav_new" type="number" step="0.0001" placeholder="1.7400"></div>
     <div class="fg"><label>Platné do / k datu</label><input id="fv_date_new" type="date"></div>
     <button class="btn btn-blue" onclick="addOrUpdateFundMaster()">Uložit / přidat fond</button>
@@ -278,6 +282,7 @@ body{font-family:'Inter',sans-serif;background:#f1f5f9;color:#1e293b;font-size:1
     <div class="fg"><label>Investor *</label><input id="fi_inv" placeholder="Příjmení Jméno"></div>
     <div class="fg"><label>Fond *</label><input id="fi_fond" placeholder="Název fondu"></div>
     <div class="fg"><label>Investiční společnost</label><input id="fi_company" placeholder="Avant / Codya / Efekta / J&T / Wood OPF…"></div>
+    <div class="fg"><label>Typ produktu</label><select id="fi_product"><option>FKI</option><option>Retail / OPF</option><option>ETF / fondy</option><option>DIP</option><option>DPS</option><option>Jiné</option></select></div>
     <div class="fg"><label>Typ transakce</label>
       <select id="fi_tx"><option>Platba</option><option>Konverze</option><option>Převod</option><option>Odkup</option></select>
     </div>
@@ -285,6 +290,9 @@ body{font-family:'Inter',sans-serif;background:#f1f5f9;color:#1e293b;font-size:1
     <div class="fg"><label>Aktuální hodnota (CZK)</label><input id="fi_cur" type="number" placeholder="záloha, když není počet CP"></div>
     <div class="fg"><label>Počet CP</label><input id="fi_qty" type="number" step="0.0001" placeholder="automaticky z investice / upisovací hodnoty"></div>
     <div class="fg"><label>Upisovací hodnota CP</label><input id="fi_upis" type="number" step="0.0001" placeholder="1.3429"></div>
+    <div class="fg"><label>Pravidelná investice</label><select id="fi_freq"><option>Jednorázově</option><option>Měsíčně</option><option>Kvartálně</option><option>Ročně</option><option>Ručně</option></select></div>
+    <div class="fg"><label>Pravidelná částka</label><input id="fi_regular_amount" type="number" placeholder="5000"></div>
+    <div class="fg"><label>Den v měsíci</label><input id="fi_regular_day" type="number" min="1" max="31" placeholder="15"></div>
     <div class="fg"><label>Datum připsání</label><input id="fi_dp" type="date"></div>
     <div class="fg"><label>Datum emise *</label><input id="fi_de" type="date"></div>
     <div class="fg"><label>Poslední hodnota CP</label><input id="fi_nav" type="number" step="0.0001" placeholder="1.7400"></div>
@@ -392,6 +400,35 @@ function cleanFundName(fond, company){
     if(re.test(f)) f=f.replace(re,'').trim();
   }
   return f || String(fond||'').trim();
+}
+function productTypeOf(r){
+  const raw=String(r?.['Typ produktu']||r?.['Produktový typ']||'').trim();
+  if(raw) return raw;
+  const f=normKey((r?.['Fond']||'')+' '+companyOf(r));
+  if(f.includes('vigo') || f.includes('public') || f.includes('wood opf') || f.includes('opf')) return 'Retail / OPF';
+  if(f.includes('dip')) return 'DIP';
+  if(f.includes('dps')) return 'DPS';
+  return 'FKI';
+}
+function productGroupOf(r){
+  const p=productTypeOf(r);
+  if(normKey(p).includes('retail') || normKey(p).includes('opf')) return 'Retail / OPF';
+  if(normKey(p).includes('etf')) return 'ETF / fondy';
+  if(normKey(p).includes('dip')) return 'DIP';
+  if(normKey(p).includes('dps')) return 'DPS';
+  if(normKey(p).includes('jine') || normKey(p).includes('jiné')) return 'Jiné';
+  return 'FKI';
+}
+function taxTestMonths(r){ return 36; }
+function nextRegularDate(items){
+  const ds=items.map(({r})=>pD(r['Datum připsání platby'])||pD(r['Datum emise'])).filter(Boolean).sort((a,b)=>b-a);
+  const base=ds[0]||todayDate();
+  const d=new Date(base); d.setMonth(d.getMonth()+1);
+  return d.toISOString().split('T')[0];
+}
+function regularInfo(items){
+  const src=items.map(x=>x.r).find(r=>n(r['Pravidelná částka'])||r['Frekvence investice'])||items[0]?.r||{};
+  return {freq:src['Frekvence investice']||'Jednorázově', amount:n(src['Pravidelná částka']), day:n(src['Den pravidelné investice'])};
 }
 function taxTestInfo(recs){
   const active=recs.filter(r=>!isWithdrawal(r) && curVal(r)>0 && r['Datum emise']);
@@ -670,6 +707,7 @@ function showClient(name){
           <div><div class="tg-l">Počet CP</div><div class="tg-v">${effectiveQty(r)?Number(effectiveQty(r)).toLocaleString('cs-CZ',{maximumFractionDigits:4}):'—'}</div></div>
           <div><div class="tg-l">Upisovací hodnota</div><div class="tg-v">${n(r['Upisovací hodnota'])?n(r['Upisovací hodnota']).toFixed(4):'—'}</div></div>
           <div><div class="tg-l">Typ CP</div><div class="tg-v" style="font-size:11px">${esc(r['Typ CP']||'—')}</div></div>
+          <div><div class="tg-l">Typ produktu</div><div class="tg-v" style="font-size:11px">${esc(productTypeOf(r))}</div></div>
         </div>
         ${r['Datum emise']?`<div class="prog"><span>Emise</span><div class="prog-bar"><div class="prog-fill ${telig?'done':''}" style="width:${tp}%"></div></div><span>${telig?'<span class="up">✓ způsobilý</span>':(td!==null?Math.ceil(td/30.5)+' měs.':'—')}</span></div>`:''}
         <div class="tx-actions">
@@ -680,9 +718,9 @@ function showClient(name){
       </div>`;
     }).join('');
 
-    return {comp, card:`<div class="fcard ${isSold?'sold':(gain<0?'loss':(isEligF?'fe':''))}" id="fc_${CSS.escape(fond)}">
+    return {comp, product:productGroupOf(items.find(({r})=>!isWithdrawal(r))?.r || items[0]?.r || {}), card:`<div class="fcard ${isSold?'sold':(gain<0?'loss':(isEligF?'fe':''))}" id="fc_${CSS.escape(fond)}">
       <div class="fcard-hdr" onclick="toggleF(this)">
-        <div><div class="fcard-nm">${esc(fond)}</div><div class="fcard-type"><span class="tag tag-gray">${esc(comp)}</span>${dayBadge}</div></div>
+        <div><div class="fcard-nm">${esc(fond)}</div><div class="fcard-type"><span class="tag tag-gray">${esc(comp)}</span><span class="tag tag-purple">${esc(productGroupOf(items.find(({r})=>!isWithdrawal(r))?.r || items[0]?.r || {}))}</span>${dayBadge}</div></div>
         <div class="fstat"><div class="fstat-l">${isSold?'Původně vloženo':'Vloženo'}</div><div class="fstat-v">${czk(isSold?met.deposits:fi)}</div></div>
         <div class="fstat"><div class="fstat-l">${isSold?'Vybráno':'Aktuální'}</div><div class="fstat-v ${isSold?'up':(fc>=fi?'up':'dn')}">${czk(isSold?met.withdrawalsRealized:fc)}</div></div>
         <div class="fstat"><div class="fstat-l">${isSold?'Realizovaný výnos':'Výnos'}</div><div class="fstat-v ${gain>=0?'up':'dn'}">${isSold?czk(gain):pct(gp)}</div></div>
@@ -690,12 +728,16 @@ function showClient(name){
         <button class="btn btn-red btn-sm" onclick="event.stopPropagation(); delFundByKey(decodeURIComponent('${encodeURIComponent(k)}'),'${esc(name)}')">🗑 Fond</button>
         <span class="chevron">▼</span>
       </div>
-      <div class="fbody">${notice}${txRows}<div style="height:8px"></div></div>
+      <div class="fbody">${notice}${(productGroupOf(items.find(({r})=>!isWithdrawal(r))?.r || items[0]?.r || {})==='Retail / OPF'||regularInfo(items).amount)?`<div class="rec-box"><strong>Pravidelná / retailová investice</strong><div class="opf-note">${regularInfo(items).freq}${regularInfo(items).amount?' · '+czk(regularInfo(items).amount):''}${regularInfo(items).day?' · den v měsíci: '+regularInfo(items).day:''} · každá tranše má vlastní 36měsíční daňový test</div><div class="rec-actions"><button class="btn btn-blue btn-sm" onclick="event.stopPropagation(); genMonthlyBuy('${esc(name)}', decodeURIComponent('${encodeURIComponent(k)}'))">+ Vygenerovat měsíční nákup</button></div></div>`:''}${txRows}<div style="height:8px"></div></div>
     </div>`};
   });
   const fcards=[...new Set(fundCards.map(x=>x.comp||'Nezařazeno'))].map(comp=>{
     const cards=fundCards.filter(x=>(x.comp||'Nezařazeno')===comp);
-    return `<div class="company-section"><span>🏢 ${esc(comp)}</span><small>${cards.length} fond${cards.length===1?'':cards.length<5?'y':'ů'}</small></div>` + cards.map(x=>x.card).join('');
+    const products=[...new Set(cards.map(x=>x.product||'FKI'))];
+    return `<div class="company-section"><span>🏢 ${esc(comp)}</span><small>${cards.length} fond${cards.length===1?'':cards.length<5?'y':'ů'}</small></div>` + products.map(prod=>{
+      const pcards=cards.filter(x=>(x.product||'FKI')===prod);
+      return `<div class="product-line"><span>${esc(prod)}</span><small>${pcards.length} fond${pcards.length===1?'':pcards.length<5?'y':'ů'}</small></div>` + pcards.map(x=>x.card).join('');
+    }).join('');
   }).join('');
 
   det.innerHTML=`
@@ -746,8 +788,10 @@ function togglePanel(id){
 
 function openAdd(prefill){
   document.getElementById('addTitle').innerHTML=prefill?`Přidat fond — ${esc(prefill)} <button class="btn btn-gray btn-sm" onclick="closeAdd()">✕ Zavřít</button>`:`Nový záznam <button class="btn btn-gray btn-sm" onclick="closeAdd()">✕ Zavřít</button>`;
-  ['fi_inv','fi_fond','fi_company','fi_inv_c','fi_cur','fi_qty','fi_upis','fi_dp','fi_de','fi_nav','fi_navdo','fi_isin','fi_typ','fi_idx'].forEach(id=>{ const el=document.getElementById(id); if(el) el.value=''; });
+  ['fi_inv','fi_fond','fi_company','fi_inv_c','fi_cur','fi_qty','fi_upis','fi_regular_amount','fi_regular_day','fi_dp','fi_de','fi_nav','fi_navdo','fi_isin','fi_typ','fi_idx'].forEach(id=>{ const el=document.getElementById(id); if(el) el.value=''; });
   document.getElementById('fi_tx').value='Platba';
+  document.getElementById('fi_product').value='FKI';
+  document.getElementById('fi_freq').value='Jednorázově';
   if(prefill) document.getElementById('fi_inv').value=prefill;
   document.getElementById('imp').classList.remove('open');
   document.getElementById('add').classList.add('open');
@@ -763,10 +807,14 @@ function editRec(gi){
   document.getElementById('fi_fond').value=r['Fond']||'';
   document.getElementById('fi_company').value=companyOf(r)||'';
   document.getElementById('fi_tx').value=r['Typ transakce']||'Platba';
+  document.getElementById('fi_product').value=productTypeOf(r)||'FKI';
+  document.getElementById('fi_freq').value=r['Frekvence investice']||'Jednorázově';
   document.getElementById('fi_inv_c').value=r['Čistá investice']||'';
   document.getElementById('fi_cur').value=r['Aktuální hodnota investice']||'';
   document.getElementById('fi_qty').value=r['Počet vydaných CP']||'';
   document.getElementById('fi_upis').value=r['Upisovací hodnota']||'';
+  document.getElementById('fi_regular_amount').value=r['Pravidelná částka']||'';
+  document.getElementById('fi_regular_day').value=r['Den pravidelné investice']||'';
   document.getElementById('fi_dp').value=r['Datum připsání platby']||'';
   document.getElementById('fi_de').value=r['Datum emise']||'';
   document.getElementById('fi_nav').value=r['Poslední schválená hodnota CP']||'';
@@ -787,6 +835,10 @@ function saveRec(){
   const company=(document.getElementById('fi_company').value||'').trim() || inferCompany(fond);
   const rec={
     'Investor':inv,'Fond':fond,'Investiční společnost':company,
+    'Typ produktu':document.getElementById('fi_product').value||'FKI',
+    'Frekvence investice':document.getElementById('fi_freq').value||'Jednorázově',
+    'Pravidelná částka':parseFloat(document.getElementById('fi_regular_amount').value)||0,
+    'Den pravidelné investice':parseInt(document.getElementById('fi_regular_day').value)||null,
     'Typ transakce':document.getElementById('fi_tx').value,
     'Čistá investice':investice,
     'Aktuální hodnota investice':parseFloat(document.getElementById('fi_cur').value)||investice,
@@ -803,7 +855,7 @@ function saveRec(){
   if(!rec['Počet vydaných CP'] && rec['Čistá investice'] && rec['Upisovací hodnota']) rec['Počet vydaných CP'] = rec['Čistá investice'] / rec['Upisovací hodnota'];
   if(rec['Počet vydaných CP'] && rec['Poslední schválená hodnota CP']) rec['Aktuální hodnota investice'] = rec['Počet vydaných CP'] * rec['Poslední schválená hodnota CP'];
   const fk=fundKey(rec);
-  if(rec['Poslední schválená hodnota CP']) fundValues[fk]={nav:rec['Poslední schválená hodnota CP'],date:rec['Poslední schválená hodnota do']||new Date().toISOString().split('T')[0],fond:rec['Fond'],isin:rec['rp.ISIN'],typ:rec['Typ CP']};
+  if(rec['Poslední schválená hodnota CP']) fundValues[fk]={nav:rec['Poslední schválená hodnota CP'],date:rec['Poslední schválená hodnota do']||new Date().toISOString().split('T')[0],fond:rec['Fond'],company:company,isin:rec['rp.ISIN'],typ:rec['Typ CP'],product:rec['Typ produktu']};
   const gi=document.getElementById('fi_idx').value;
   if(gi!=='') recs[parseInt(gi)]={...recs[parseInt(gi)],...rec};
   else recs.push(rec);
@@ -838,11 +890,46 @@ function addBuyToFund(name, key){
   document.getElementById('fi_fond').value=base['Fond']||'';
   document.getElementById('fi_company').value=companyOf(base)||'';
   document.getElementById('fi_tx').value='Platba';
+  document.getElementById('fi_product').value=productTypeOf(base)||'FKI';
+  document.getElementById('fi_freq').value=base['Frekvence investice']||'Jednorázově';
+  document.getElementById('fi_regular_amount').value=base['Pravidelná částka']||'';
+  document.getElementById('fi_regular_day').value=base['Den pravidelné investice']||'';
   document.getElementById('fi_nav').value=currentNav(base)||base['Poslední schválená hodnota CP']||'';
   document.getElementById('fi_navdo').value=navDate(base)||'';
   document.getElementById('fi_isin').value=base['rp.ISIN']||base['ISIN']||'';
   document.getElementById('fi_typ').value=base['Typ CP']||'';
   document.getElementById('fi_idx').value='';
+}
+
+
+function genMonthlyBuy(name, key){
+  const cl=getClients().find(c=>c.name===name); if(!cl) return;
+  const items=cl.idx.map((gi,i)=>({r:cl.recs[i],gi})).filter(x=>fundKey(x.r)===key);
+  const base=items.find(({r})=>!isWithdrawal(r))?.r || items[0]?.r; if(!base) return;
+  const info=regularInfo(items);
+  const suggestedDate=nextRegularDate(items);
+  const date=prompt('Datum měsíčního nákupu (YYYY-MM-DD):', suggestedDate); if(!date) return;
+  const amountStr=prompt('Částka investice (CZK):', info.amount || '5000'); if(!amountStr) return;
+  const amount=parseFloat(String(amountStr).replace(/\s/g,'').replace(',','.')); if(!amount || amount<=0){ toast('Neplatná částka','err'); return; }
+  const navStr=prompt('Upisovací hodnota / cena CP pro tento nákup:', currentNav(base) || base['Upisovací hodnota'] || ''); if(!navStr) return;
+  const nav=parseFloat(String(navStr).replace(/\s/g,'').replace(',','.')); if(!nav || nav<=0){ toast('Neplatná hodnota CP','err'); return; }
+  const qty=amount/nav;
+  const rec={...base};
+  rec['Investor']=name;
+  rec['Typ transakce']='Platba';
+  rec['Typ produktu']=productTypeOf(base);
+  rec['Čistá investice']=amount;
+  rec['Aktuální hodnota investice']=qty*(currentNav(base)||nav);
+  rec['Počet vydaných CP']=qty;
+  rec['Upisovací hodnota']=nav;
+  rec['Datum připsání platby']=date;
+  rec['Datum emise']=date;
+  rec['Frekvence investice']=info.freq || 'Měsíčně';
+  rec['Pravidelná částka']=info.amount || amount;
+  rec['Den pravidelné investice']=info.day || (new Date(date).getDate());
+  rec['Poradce']='Solár Filip'; rec['Měna']='CZK'; rec['Vstupní poplatek']=0;
+  recs.push(rec); save(); renderStats(); renderList(); showClient(name);
+  toast('Měsíční nákup přidán ✓','ok');
 }
 
 function delFundByKey(key, name){
@@ -916,7 +1003,7 @@ function exportJSON(name){
 
 
 function dlBackupJSON(){
-  const backup={version:13,exportDate:new Date().toISOString(),records:recs,fundValues:fundValues};
+  const backup={version:15,exportDate:new Date().toISOString(),records:recs,fundValues:fundValues};
   const a=document.createElement('a');
   a.href=URL.createObjectURL(new Blob([JSON.stringify(backup,null,2)],{type:'application/json'}));
   a.download='investment-crm-zaloha-'+new Date().toISOString().split('T')[0]+'.json';
@@ -1003,7 +1090,7 @@ function parseCSV(txt){
     const emise=fDate(row['Datum emise']||row['datum_emise']);
     const company=String(row['Investiční společnost']||row['Investicni spolecnost']||row['Společnost']||row['Spolecnost']||row['Producent']||'').trim() || inferCompany(rawFond);
     const fond=cleanFundName(rawFond, company);
-    const rec={'Investor':inv,'Fond':fond,'Investiční společnost':company,'Typ CP':row['Typ CP']||null,
+    const rec={'Investor':inv,'Fond':fond,'Investiční společnost':company,'Typ CP':row['Typ CP']||null,'Typ produktu':row['Typ produktu']||row['Produktový typ']||'', 'Frekvence investice':row['Frekvence investice']||'Jednorázově', 'Pravidelná částka':parseFloat(String(row['Pravidelná částka']||0).replace(/\s/g,'').replace(',','.'))||0, 'Den pravidelné investice':parseInt(row['Den pravidelné investice']||0)||null,
       'Čistá investice':parseFloat(String(row['Čistá investice']||0).replace(/\s/g,'').replace(',','.'))||0,
       'Aktuální hodnota investice':parseFloat(String(row['Aktuální hodnota investice']||0).replace(/\s/g,'').replace(',','.'))||0,
       'Datum připsání platby':fDate(row['Datum připsání platby']),
@@ -1034,16 +1121,16 @@ function uniqueFunds(){
     const k=fundKey(r);
     const comp=companyOf(r);
     const clean=cleanFundName(r['Fond']||'', comp);
-    if(!m[k]) m[k]={key:k,fond:clean,company:comp,isin:r['rp.ISIN']||r['ISIN']||'',typ:r['Typ CP']||'',count:0,clients:new Set(),qty:0,nav:currentNav(r),date:navDate(r),manual:false};
+    if(!m[k]) m[k]={key:k,fond:clean,company:comp,product:productTypeOf(r),isin:r['rp.ISIN']||r['ISIN']||'',typ:r['Typ CP']||'',count:0,clients:new Set(),qty:0,nav:currentNav(r),date:navDate(r),manual:false};
     m[k].count++;
     if(r['Investor']) m[k].clients.add(r['Investor']);
     m[k].qty+=n(r['Počet vydaných CP']);
     const fv=fundValues[k];
-    if(fv){ m[k].nav=n(fv.nav); m[k].date=fv.date; m[k].company=fv.company||m[k].company; m[k].fond=cleanFundName(fv.fond||m[k].fond,m[k].company); m[k].isin=fv.isin||m[k].isin; m[k].typ=fv.typ||m[k].typ; }
+    if(fv){ m[k].nav=n(fv.nav); m[k].date=fv.date; m[k].company=fv.company||m[k].company; m[k].product=fv.product||m[k].product; m[k].fond=cleanFundName(fv.fond||m[k].fond,m[k].company); m[k].isin=fv.isin||m[k].isin; m[k].typ=fv.typ||m[k].typ; }
   });
   // ručně založené fondy bez klientů
   Object.entries(fundValues).forEach(([k,fv])=>{
-    if(!m[k]) m[k]={key:k,fond:cleanFundName(fv.fond||'',fv.company),company:fv.company||'Nezařazeno',isin:fv.isin||'',typ:fv.typ||'',count:0,clients:new Set(),qty:0,nav:n(fv.nav),date:fv.date,manual:true};
+    if(!m[k]) m[k]={key:k,fond:cleanFundName(fv.fond||'',fv.company),company:fv.company||'Nezařazeno',product:fv.product||'FKI',isin:fv.isin||'',typ:fv.typ||'',count:0,clients:new Set(),qty:0,nav:n(fv.nav),date:fv.date,manual:true};
   });
   return Object.values(m).sort((a,b)=>(a.company||'').localeCompare(b.company||'','cs') || a.fond.localeCompare(b.fond,'cs'));
 }
@@ -1057,18 +1144,21 @@ function renderFundPanel(){
     const chosen=list.find(f=>f.key===sel.value)||list[0];
     if(chosen){
       document.getElementById('fv_nav').value=chosen.nav||''; document.getElementById('fv_date').value=fDate(chosen.date)||'';
-      document.getElementById('fv_company_new').value=chosen.company||''; document.getElementById('fv_fond_new').value=chosen.fond||''; document.getElementById('fv_isin_new').value=chosen.isin||''; document.getElementById('fv_typ_new').value=chosen.typ||''; document.getElementById('fv_nav_new').value=chosen.nav||''; document.getElementById('fv_date_new').value=fDate(chosen.date)||'';
+      document.getElementById('fv_company_new').value=chosen.company||''; document.getElementById('fv_fond_new').value=chosen.fond||''; document.getElementById('fv_isin_new').value=chosen.isin||''; document.getElementById('fv_typ_new').value=chosen.typ||''; document.getElementById('fv_product_new').value=chosen.product||'FKI'; document.getElementById('fv_nav_new').value=chosen.nav||''; document.getElementById('fv_date_new').value=fDate(chosen.date)||'';
     }
-    sel.onchange=()=>{ const f=list.find(x=>x.key===sel.value); if(f){ document.getElementById('fv_nav').value=f.nav||''; document.getElementById('fv_date').value=fDate(f.date)||''; document.getElementById('fv_company_new').value=f.company||''; document.getElementById('fv_fond_new').value=f.fond||''; document.getElementById('fv_isin_new').value=f.isin||''; document.getElementById('fv_typ_new').value=f.typ||''; document.getElementById('fv_nav_new').value=f.nav||''; document.getElementById('fv_date_new').value=fDate(f.date)||''; } };
+    sel.onchange=()=>{ const f=list.find(x=>x.key===sel.value); if(f){ document.getElementById('fv_nav').value=f.nav||''; document.getElementById('fv_date').value=fDate(f.date)||''; document.getElementById('fv_company_new').value=f.company||''; document.getElementById('fv_fond_new').value=f.fond||''; document.getElementById('fv_isin_new').value=f.isin||''; document.getElementById('fv_typ_new').value=f.typ||''; document.getElementById('fv_product_new').value=f.product||'FKI'; document.getElementById('fv_nav_new').value=f.nav||''; document.getElementById('fv_date_new').value=fDate(f.date)||''; } };
   }
   const table=document.getElementById('fundValueTable');
   if(!table) return;
   if(!list.length){ table.innerHTML='<div class="empty">Zatím žádné fondy</div>'; return; }
   const groups={}; list.forEach(f=>{ const c=f.company||'Nezařazeno'; if(!groups[c]) groups[c]=[]; groups[c].push(f); });
-  table.innerHTML=Object.entries(groups).map(([comp,items])=>`<div class="company-section"><span>🏢 ${esc(comp)}</span><small>${items.length} fond${items.length===1?'':items.length<5?'y':'ů'}</small></div>`+
+  table.innerHTML=Object.entries(groups).map(([comp,items])=>{
+    const prods=[...new Set(items.map(f=>f.product||'FKI'))];
+    return `<div class="company-section"><span>🏢 ${esc(comp)}</span><small>${items.length} fond${items.length===1?'':items.length<5?'y':'ů'}</small></div>`+
+    prods.map(prod=>{ const pitems=items.filter(f=>(f.product||'FKI')===prod); return `<div class="product-line"><span>${esc(prod)}</span><small>${pitems.length} fond${pitems.length===1?'':pitems.length<5?'y':'ů'}</small></div>`+
     `<div class="fund-row head"><div>Fond</div><div>Hodnota CP</div><div>Platnost</div><div>Klientů</div><div>Transakcí</div><div>Akce</div></div>`+
-    items.map(f=>`<div class="fund-row"><div><strong>${esc(f.fond)}</strong><div style="color:#94a3b8;font-size:11px">${esc(f.isin||'bez ISIN')} · ${esc(f.typ||'typ CP neuveden')}</div></div><div><strong>${f.nav?Number(f.nav).toFixed(4):'—'}</strong></div><div>${dt(f.date)}</div><div>${f.clients.size}</div><div>${f.count}</div><div style="display:flex;gap:6px;flex-wrap:wrap"><button class="btn btn-gray btn-sm" onclick="selectFundMaster(decodeURIComponent('${encodeURIComponent(f.key)}'))">Upravit</button><button class="btn btn-red btn-sm" onclick="deleteFundMaster(decodeURIComponent('${encodeURIComponent(f.key)}'))">Smazat</button></div></div>`).join('')
-  ).join('');
+    pitems.map(f=>`<div class="fund-row"><div><strong>${esc(f.fond)}</strong><div style="color:#94a3b8;font-size:11px">${esc(f.product||'FKI')} · ${esc(f.isin||'bez ISIN')} · ${esc(f.typ||'typ CP neuveden')}</div></div><div><strong>${f.nav?Number(f.nav).toFixed(4):'—'}</strong></div><div>${dt(f.date)}</div><div>${f.clients.size}</div><div>${f.count}</div><div style="display:flex;gap:6px;flex-wrap:wrap"><button class="btn btn-gray btn-sm" onclick="selectFundMaster(decodeURIComponent('${encodeURIComponent(f.key)}'))">Upravit</button><button class="btn btn-red btn-sm" onclick="deleteFundMaster(decodeURIComponent('${encodeURIComponent(f.key)}'))">Smazat</button></div></div>`).join('')}).join('')
+  }).join('');
 }
 function selectFundMaster(key){
   const f=uniqueFunds().find(x=>x.key===key); if(!f) return;
@@ -1076,6 +1166,7 @@ function selectFundMaster(key){
   document.getElementById('fv_fond_new').value=f.fond||'';
   document.getElementById('fv_isin_new').value=f.isin||'';
   document.getElementById('fv_typ_new').value=f.typ||'';
+  document.getElementById('fv_product_new').value=f.product||'FKI';
   document.getElementById('fv_nav_new').value=f.nav||'';
   document.getElementById('fv_date_new').value=fDate(f.date)||'';
   document.getElementById('fv_fond').value=key;
@@ -1086,13 +1177,14 @@ function addOrUpdateFundMaster(){
   const fond=(document.getElementById('fv_fond_new').value||'').trim();
   const isin=(document.getElementById('fv_isin_new').value||'').trim();
   const typ=(document.getElementById('fv_typ_new').value||'').trim();
+  const product=document.getElementById('fv_product_new').value||'FKI';
   const nav=n(document.getElementById('fv_nav_new').value);
   const date=document.getElementById('fv_date_new').value||new Date().toISOString().split('T')[0];
   if(!fond){ toast('Zadej název fondu','err'); return; }
   const key=fundKeyFromParts(fond, isin, typ);
-  fundValues[key]={nav:nav||null,date,fond:cleanFundName(fond,company),company,isin,typ};
+  fundValues[key]={nav:nav||null,date,fond:cleanFundName(fond,company),company,isin,typ,product};
   recs.forEach(r=>{
-    if(fundKey(r)===key){ r['Investiční společnost']=company; r['Fond']=cleanFundName(fond,company); r['rp.ISIN']=isin||r['rp.ISIN']; r['Typ CP']=typ||r['Typ CP']; if(nav){ r['Poslední schválená hodnota CP']=nav; r['Poslední schválená hodnota do']=date; if(effectiveQty(r)) r['Aktuální hodnota investice']=curVal(r); } }
+    if(fundKey(r)===key){ r['Investiční společnost']=company; r['Typ produktu']=product; r['Fond']=cleanFundName(fond,company); r['rp.ISIN']=isin||r['rp.ISIN']; r['Typ CP']=typ||r['Typ CP']; if(nav){ r['Poslední schválená hodnota CP']=nav; r['Poslední schválená hodnota do']=date; if(effectiveQty(r)) r['Aktuální hodnota investice']=curVal(r); } }
   });
   save(); renderStats(); renderList(); renderFundPanel(); if(activeClient) showClient(activeClient);
   toast('Fond uložen ✓','ok');
@@ -1110,7 +1202,7 @@ function saveFundValue(){
   const date=document.getElementById('fv_date').value || new Date().toISOString().split('T')[0];
   if(!key || !nav){ toast('Vyber fond a zadej hodnotu CP','err'); return; }
   const f=uniqueFunds().find(x=>x.key===key);
-  fundValues[key]={nav,date,fond:cleanFundName(f?.fond||'',f?.company),company:f?.company||'',isin:f?.isin||'',typ:f?.typ||''};
+  fundValues[key]={nav,date,fond:cleanFundName(f?.fond||'',f?.company),company:f?.company||'',product:f?.product||'FKI',isin:f?.isin||'',typ:f?.typ||''};
   recs.forEach(r=>{ if(fundKey(r)===key){ r['Poslední schválená hodnota CP']=nav; r['Poslední schválená hodnota do']=date; if(n(r['Počet vydaných CP'])) r['Aktuální hodnota investice']=curVal(r); } });
   save(); renderStats(); renderList(); renderFundPanel();
   if(activeClient) showClient(activeClient);
@@ -1119,8 +1211,8 @@ function saveFundValue(){
 
 // ── CSV TEMPLATE ───────────────────────────────
 function dlTemplate(){
-  const h='Investor;Fond;Investiční společnost;Typ CP;rp.ISIN;Typ transakce;Čistá investice;Aktuální hodnota investice;Datum připsání platby;Datum emise;Poslední schválená hodnota CP;Poslední schválená hodnota do;Počet vydaných CP;Upisovací hodnota;Měna';
-  const e='Novák Jan;r2p invest SICAV, a.s.;Avant;Prioritní investiční akcie;CZ0008043445;Platba;200000;228000;2023-05-10;2023-07-01;1.74;2026-02-28;133770;1.4951;CZK';
+  const h='Investor;Fond;Investiční společnost;Typ produktu;Frekvence investice;Pravidelná částka;Den pravidelné investice;Typ CP;rp.ISIN;Typ transakce;Čistá investice;Aktuální hodnota investice;Datum připsání platby;Datum emise;Poslední schválená hodnota CP;Poslední schválená hodnota do;Počet vydaných CP;Upisovací hodnota;Měna';
+  const e='Novák Jan;VIGO PUBLIC I.PODFOND tř.A_CZK;Codya;Retail / OPF;Měsíčně;5000;15;Investiční akcie;CZ0008XXXXXX;Platba;5000;5000;2026-05-15;2026-05-15;1.1925;2026-05-31;4192.872;1.1925;CZK';
   const a=document.createElement('a');
   a.href=URL.createObjectURL(new Blob(['\uFEFF'+h+'\n'+e],{type:'text/csv;charset=utf-8'}));
   a.download='vzor_import.csv';a.click();
