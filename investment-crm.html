@@ -134,6 +134,9 @@ body{font-family:'Inter',sans-serif;background:#f1f5f9;color:#1e293b;font-size:1
 .fcard.fe{border-left:3px solid #16a34a}
 .fcard.sold{border-left:3px solid #64748b;background:#f8fafc}
 .fcard.sold .fcard-hdr{background:#f8fafc}
+.fcard.loss{opacity:.68;border-left:3px solid #dc2626}
+.fcard.loss .fcard-hdr{background:#fff7f7}
+.fcard.loss:hover{opacity:.9}
 .privacy-mask .sb-stat-v,.privacy-mask .crow-cur,.privacy-mask .crow-inv,.privacy-mask .crow-pct,.privacy-mask .crow .tag,.privacy-mask .crow div[style*="font-size:10px"]{display:none!important}
 .fcard-hdr{display:grid;grid-template-columns:1fr auto auto auto auto;align-items:center;gap:14px;padding:13px 15px;cursor:pointer;user-select:none}
 .fcard-hdr:hover{background:#f8fafc}
@@ -213,6 +216,7 @@ body{font-family:'Inter',sans-serif;background:#f1f5f9;color:#1e293b;font-size:1
     <button class="btn btn-gray" id="privacyBtn" onclick="togglePrivacy()">🙈 Skrýt klienty</button>
     <button class="btn btn-gray" onclick="togglePanel('imp')">⬆ Import CSV</button>
     <button class="btn btn-gray" onclick="togglePanel('funds')">📈 Hodnoty fondů</button>
+    <button class="btn btn-gray" onclick="dlBackupJSON()">💾 Záloha JSON</button>
     <button class="btn btn-gray" onclick="dlTemplate()">⬇ Vzor CSV</button>
     <button class="btn btn-blue" onclick="togglePanel('add')">+ Nový záznam</button>
   </div>
@@ -266,7 +270,8 @@ body{font-family:'Inter',sans-serif;background:#f1f5f9;color:#1e293b;font-size:1
     </div>
     <div class="fg"><label>Čistá investice (CZK) *</label><input id="fi_inv_c" type="number" placeholder="200000"></div>
     <div class="fg"><label>Aktuální hodnota (CZK)</label><input id="fi_cur" type="number" placeholder="záloha, když není počet CP"></div>
-    <div class="fg"><label>Počet CP</label><input id="fi_qty" type="number" step="0.0001" placeholder="133770"></div>
+    <div class="fg"><label>Počet CP</label><input id="fi_qty" type="number" step="0.0001" placeholder="automaticky z investice / upisovací hodnoty"></div>
+    <div class="fg"><label>Upisovací hodnota CP</label><input id="fi_upis" type="number" step="0.0001" placeholder="1.3429"></div>
     <div class="fg"><label>Datum připsání</label><input id="fi_dp" type="date"></div>
     <div class="fg"><label>Datum emise *</label><input id="fi_de" type="date"></div>
     <div class="fg"><label>Poslední hodnota CP</label><input id="fi_nav" type="number" step="0.0001" placeholder="1.7400"></div>
@@ -352,7 +357,7 @@ function inferCompany(fond){
 }
 function companyOf(r){ return (r && (r['Investiční společnost']||r['Investicni spolecnost']||r['Společnost']||r['Spolecnost']||r['Producent'])) || inferCompany(r?.['Fond']); }
 
-function fundKeyFromParts(fond, isin, typ){ return [normKey(fond), normKey(isin), normKey(typ)].join('|'); }
+function fundKeyFromParts(fond, isin, typ){ const i=normKey(isin); const t=normKey(typ); if(i) return ['isin',i,t].join('|'); return ['fond',normKey(fond),t].join('|'); }
 function fundKey(r){ return fundKeyFromParts(r?.['Fond'], r?.['rp.ISIN']||r?.['ISIN'], r?.['Typ CP']); }
 function currentNav(r){ const fv=fundValues[fundKey(r)]; return n(fv?.nav) || n(r?.['Poslední schválená hodnota CP']); }
 function isWithdrawal(r){ return normKey(r?.['Typ transakce']) === 'odkup'; }
@@ -360,9 +365,10 @@ function todayDate(){ const d=new Date(); d.setHours(0,0,0,0); return d; }
 function pD(v){ if(!v) return null; const d=new Date(v); if(isNaN(d)) return null; d.setHours(0,0,0,0); return d; }
 function isFutureWithdrawal(r){ const d=pD(r?.['Datum připsání platby']); return isWithdrawal(r) && d && d > todayDate(); }
 function withdrawalVal(r){ return isWithdrawal(r) ? Math.abs(n(r?.['Aktuální hodnota investice']) || n(r?.['Čistá investice'])) : 0; }
+function effectiveQty(r){ const q=n(r?.['Počet vydaných CP']); if(q) return q; const inv=n(r?.['Čistá investice']); const up=n(r?.['Upisovací hodnota']); if(inv && up && !isWithdrawal(r)) return inv/up; return 0; }
 function curVal(r){
   if(isWithdrawal(r)) return isFutureWithdrawal(r) ? 0 : -withdrawalVal(r);
-  const qty=n(r?.['Počet vydaných CP']);
+  const qty=effectiveQty(r);
   const nav=currentNav(r);
   if(qty && nav) return qty*nav;
   return n(r?.['Aktuální hodnota investice']);
@@ -383,7 +389,14 @@ function clientMetrics(recs){
   const totalReturnPct = totalInvested>0 ? (totalProfit/totalInvested*100) : 0;
   const activeProfit = currentValue - netInvested;
   const activeReturnPct = netInvested>0 ? (activeProfit/netInvested*100) : 0;
-  return {totalInvested, withdrawn, scheduledWithdrawn, currentValue, netInvested, totalProfit, totalReturnPct, activeProfit, activeReturnPct};
+  const firstDate = earliestInvestDate(recs);
+  const years = firstDate ? Math.max((todayDate()-firstDate)/31557600000, 1/365) : 0;
+  const annualizedReturnPct = (totalInvested>0 && years>0 && (currentValue+withdrawn)>0) ? (Math.pow((currentValue+withdrawn)/totalInvested, 1/years)-1)*100 : 0;
+  return {totalInvested, withdrawn, scheduledWithdrawn, currentValue, netInvested, totalProfit, totalReturnPct, activeProfit, activeReturnPct, firstDate, years, annualizedReturnPct};
+}
+function earliestInvestDate(recs){
+  const ds = recs.filter(r=>!isWithdrawal(r) && depositVal(r)>0).map(r=>pD(r['Datum připsání platby'])||pD(r['Datum emise'])).filter(Boolean).sort((a,b)=>a-b);
+  return ds[0] || null;
 }
 function navDate(r){ return fundValues[fundKey(r)]?.date || r?.['Poslední schválená hodnota do'] || null; }
 
@@ -495,7 +508,7 @@ function fundMetrics(items){
   const deposits = items.reduce((s,{r})=>s+depositVal(r),0);
   const withdrawalsRealized = items.reduce((s,{r})=>s+(isWithdrawal(r)&&!isFutureWithdrawal(r)?withdrawalVal(r):0),0);
   const withdrawalsScheduled = items.reduce((s,{r})=>s+(isWithdrawal(r)&&isFutureWithdrawal(r)?withdrawalVal(r):0),0);
-  const activeQty = items.reduce((s,{r})=>s+n(r['Počet vydaných CP']),0);
+  const activeQty = items.reduce((s,{r})=>s+effectiveQty(r),0);
   const activeValueRaw = items.reduce((s,{r})=>s+curVal(r),0);
   const activeValue = Math.max(0, activeValueRaw);
   const netInvested = deposits - withdrawalsRealized;
@@ -528,12 +541,22 @@ function showClient(name){
   const histProfit=m.totalProfit;
   const histP=m.totalReturnPct;
 
-  // group by fond
+  // group by real fund key: primarily ISIN + Typ CP, fallback to fund name
   const fm={};
-  cr.forEach((r,li)=>{ const f=r['Fond']||'?'; if(!fm[f]) fm[f]=[]; fm[f].push({r,gi:cl.idx[li]}); });
+  cr.forEach((r,li)=>{
+    const k=fundKey(r) || normKey(r['Fond']) || '?';
+    if(!fm[k]) fm[k]={name:r['Fond']||'?',items:[]};
+    // prefer clean fund name without company prefix where possible
+    if(!isWithdrawal(r) && r['Fond']){
+      const nm=String(r['Fond']);
+      if(!fm[k].name || nm.length < fm[k].name.length) fm[k].name=nm;
+    }
+    fm[k].items.push({r,gi:cl.idx[li]});
+  });
 
   // eligible funds - only active unsold positions
-  const eligFunds=Object.entries(fm).map(([fond,items])=>{
+  const eligFunds=Object.entries(fm).map(([k,grp])=>{
+    const fond=grp.name; const items=grp.items;
     const met=fundMetrics(items);
     const activeBuy=items.find(({r})=>!isWithdrawal(r) && daysToRedeem(r['Datum emise'])!==null && daysToRedeem(r['Datum emise'])<=0 && curVal(r)>0);
     return {fond,items,met,activeBuy};
@@ -551,7 +574,8 @@ function showClient(name){
     </div>`;
   }
 
-  const fcards=Object.entries(fm).sort(([af,ai],[bf,bi])=>{ const ac=companyOf(ai.find(({r})=>!isWithdrawal(r))?.r||ai[0]?.r||{}); const bc=companyOf(bi.find(({r})=>!isWithdrawal(r))?.r||bi[0]?.r||{}); return ac.localeCompare(bc,'cs') || af.localeCompare(bf,'cs'); }).map(([fond,items])=>{
+  const fcards=Object.entries(fm).sort(([ak,ag],[bk,bg])=>{ const ai=ag.items, bi=bg.items; const ac=companyOf(ai.find(({r})=>!isWithdrawal(r))?.r||ai[0]?.r||{}); const bc=companyOf(bi.find(({r})=>!isWithdrawal(r))?.r||bi[0]?.r||{}); return ac.localeCompare(bc,'cs') || ag.name.localeCompare(bg.name,'cs'); }).map(([k,grp])=>{
+    const fond=grp.name; const items=grp.items;
     const met=fundMetrics(items);
     const fc=met.activeValue;
     const fi=met.sold ? met.deposits : Math.max(0, met.netInvested);
@@ -595,7 +619,8 @@ function showClient(name){
           <div><div class="tg-l">Datum emise</div><div class="tg-v">${dt(r['Datum emise'])}</div></div>
           <div><div class="tg-l">Poslední hodnota CP</div><div class="tg-v">${currentNav(r)?currentNav(r).toFixed(4):'—'}</div></div>
           <div><div class="tg-l">Hodnota platná do</div><div class="tg-v">${dt(navDate(r))}</div></div>
-          <div><div class="tg-l">Počet CP</div><div class="tg-v">${r['Počet vydaných CP']!=null?Number(r['Počet vydaných CP']).toLocaleString('cs-CZ'):'—'}</div></div>
+          <div><div class="tg-l">Počet CP</div><div class="tg-v">${effectiveQty(r)?Number(effectiveQty(r)).toLocaleString('cs-CZ',{maximumFractionDigits:4}):'—'}</div></div>
+          <div><div class="tg-l">Upisovací hodnota</div><div class="tg-v">${n(r['Upisovací hodnota'])?n(r['Upisovací hodnota']).toFixed(4):'—'}</div></div>
           <div><div class="tg-l">Typ CP</div><div class="tg-v" style="font-size:11px">${esc(r['Typ CP']||'—')}</div></div>
         </div>
         ${r['Datum emise']?`<div class="prog"><span>Emise</span><div class="prog-bar"><div class="prog-fill ${telig?'done':''}" style="width:${tp}%"></div></div><span>${telig?'<span class="up">✓ způsobilý</span>':(td!==null?Math.ceil(td/30.5)+' měs.':'—')}</span></div>`:''}
@@ -607,13 +632,14 @@ function showClient(name){
       </div>`;
     }).join('');
 
-    return `<div class="fcard ${isSold?'sold':(isEligF?'fe':'')}" id="fc_${CSS.escape(fond)}">
+    return `<div class="fcard ${isSold?'sold':(gain<0?'loss':(isEligF?'fe':''))}" id="fc_${CSS.escape(fond)}">
       <div class="fcard-hdr" onclick="toggleF(this)">
         <div><div class="fcard-nm">${esc(fond)}</div><div class="fcard-type"><span class="tag tag-gray">${esc(comp)}</span>${dayBadge}</div></div>
         <div class="fstat"><div class="fstat-l">${isSold?'Původně vloženo':'Vloženo'}</div><div class="fstat-v">${czk(isSold?met.deposits:fi)}</div></div>
         <div class="fstat"><div class="fstat-l">${isSold?'Vybráno':'Aktuální'}</div><div class="fstat-v ${isSold?'up':(fc>=fi?'up':'dn')}">${czk(isSold?met.withdrawalsRealized:fc)}</div></div>
         <div class="fstat"><div class="fstat-l">${isSold?'Realizovaný výnos':'Výnos'}</div><div class="fstat-v ${gain>=0?'up':'dn'}">${isSold?czk(gain):pct(gp)}</div></div>
-        <button class="btn btn-red btn-sm" onclick="event.stopPropagation(); delFund(decodeURIComponent('${encodeURIComponent(fond)}'),'${esc(name)}')">🗑 Fond</button>
+        <button class="btn btn-blue btn-sm" onclick="event.stopPropagation(); addBuyToFund('${esc(name)}', decodeURIComponent('${encodeURIComponent(k)}'))">+ Dokup</button>
+        <button class="btn btn-red btn-sm" onclick="event.stopPropagation(); delFundByKey(decodeURIComponent('${encodeURIComponent(k)}'),'${esc(name)}')">🗑 Fond</button>
         <span class="chevron">▼</span>
       </div>
       <div class="fbody">${notice}${txRows}<div style="height:8px"></div></div>
@@ -627,6 +653,7 @@ function showClient(name){
         <div class="det-sub">${cr.length} transakcí · ${Object.keys(fm).length} fondů</div>
       </div>
       <div class="det-actions">
+        <button class="btn btn-gray btn-sm" onclick="exportClientHTML('${esc(name)}')">🌐 HTML pro klienta</button>
         <button class="btn btn-gray btn-sm" onclick="exportJSON('${esc(name)}')">⬇ JSON</button>
         <button class="btn btn-red btn-sm" onclick="delClient('${esc(name)}')">🗑 Smazat klienta</button>
         <button class="btn btn-blue btn-sm" onclick="openAdd('${esc(name)}')">+ Přidat fond</button>
@@ -636,6 +663,7 @@ function showClient(name){
       <div class="sc"><div class="sc-l">Aktuálně vloženo netto</div><div class="sc-v">${czk(m.netInvested)}</div><div class="sc-n">Po odečtení realizovaných odkupů</div></div>
       <div class="sc"><div class="sc-l">Aktuální hodnota</div><div class="sc-v ${cur>=m.netInvested?'up':'dn'}">${czk(cur)}</div></div>
       <div class="sc"><div class="sc-l">Aktuální výnos</div><div class="sc-v ${profit>=0?'up':'dn'}">${czk(profit)}</div><div class="sc-n">${pct(profitP)}</div></div>
+      <div class="sc"><div class="sc-l">Průměrný výnos p.a.</div><div class="sc-v ${m.annualizedReturnPct>=0?'up':'dn'}">${pct(m.annualizedReturnPct)}</div><div class="sc-n">Od ${dt(m.firstDate)}</div></div>
       <div class="sc"><div class="sc-l">Počet fondů</div><div class="sc-v">${Object.keys(fm).length}</div></div>
     </div>
     <div class="stats">
@@ -665,7 +693,7 @@ function togglePanel(id){
 
 function openAdd(prefill){
   document.getElementById('addTitle').innerHTML=prefill?`Přidat fond — ${esc(prefill)} <button class="btn btn-gray btn-sm" onclick="closeAdd()">✕ Zavřít</button>`:`Nový záznam <button class="btn btn-gray btn-sm" onclick="closeAdd()">✕ Zavřít</button>`;
-  ['fi_inv','fi_fond','fi_company','fi_inv_c','fi_cur','fi_qty','fi_dp','fi_de','fi_nav','fi_navdo','fi_isin','fi_typ','fi_idx'].forEach(id=>{ const el=document.getElementById(id); if(el) el.value=''; });
+  ['fi_inv','fi_fond','fi_company','fi_inv_c','fi_cur','fi_qty','fi_upis','fi_dp','fi_de','fi_nav','fi_navdo','fi_isin','fi_typ','fi_idx'].forEach(id=>{ const el=document.getElementById(id); if(el) el.value=''; });
   document.getElementById('fi_tx').value='Platba';
   if(prefill) document.getElementById('fi_inv').value=prefill;
   document.getElementById('imp').classList.remove('open');
@@ -685,7 +713,7 @@ function editRec(gi){
   document.getElementById('fi_inv_c').value=r['Čistá investice']||'';
   document.getElementById('fi_cur').value=r['Aktuální hodnota investice']||'';
   document.getElementById('fi_qty').value=r['Počet vydaných CP']||'';
-  document.getElementById('fi_qty').value=r['Počet vydaných CP']||'';
+  document.getElementById('fi_upis').value=r['Upisovací hodnota']||'';
   document.getElementById('fi_dp').value=r['Datum připsání platby']||'';
   document.getElementById('fi_de').value=r['Datum emise']||'';
   document.getElementById('fi_nav').value=r['Poslední schválená hodnota CP']||'';
@@ -710,7 +738,7 @@ function saveRec(){
     'Čistá investice':investice,
     'Aktuální hodnota investice':parseFloat(document.getElementById('fi_cur').value)||investice,
     'Počet vydaných CP':parseFloat(document.getElementById('fi_qty').value)||0,
-    'Počet vydaných CP':parseFloat(document.getElementById('fi_qty').value)||0,
+    'Upisovací hodnota':parseFloat(document.getElementById('fi_upis').value)||0,
     'Datum připsání platby':document.getElementById('fi_dp').value||null,
     'Datum emise':document.getElementById('fi_de').value||null,
     'Poslední schválená hodnota CP':parseFloat(document.getElementById('fi_nav').value)||null,
@@ -719,6 +747,8 @@ function saveRec(){
     'Typ CP':document.getElementById('fi_typ').value||null,
     'Poradce':'Solár Filip','Měna':'CZK','Vstupní poplatek':0,
   };
+  if(!rec['Počet vydaných CP'] && rec['Čistá investice'] && rec['Upisovací hodnota']) rec['Počet vydaných CP'] = rec['Čistá investice'] / rec['Upisovací hodnota'];
+  if(rec['Počet vydaných CP'] && rec['Poslední schválená hodnota CP']) rec['Aktuální hodnota investice'] = rec['Počet vydaných CP'] * rec['Poslední schválená hodnota CP'];
   const fk=fundKey(rec);
   if(rec['Poslední schválená hodnota CP']) fundValues[fk]={nav:rec['Poslední schválená hodnota CP'],date:rec['Poslední schválená hodnota do']||new Date().toISOString().split('T')[0],fond:rec['Fond'],isin:rec['rp.ISIN'],typ:rec['Typ CP']};
   const gi=document.getElementById('fi_idx').value;
@@ -743,6 +773,37 @@ Smaže se ${cnt} záznamů.`)) return;
   document.getElementById('detail').classList.remove('open');
   document.getElementById('welcome').style.display='flex';
   toast('Klient smazán','ok');
+}
+
+function addBuyToFund(name, key){
+  const cl=getClients().find(c=>c.name===name);
+  if(!cl) return;
+  const base=cl.recs.find(r=>fundKey(r)===key && !isWithdrawal(r)) || cl.recs.find(r=>fundKey(r)===key);
+  openAdd(name);
+  if(!base) return;
+  document.getElementById('addTitle').innerHTML=`Dokup — ${esc(base['Fond']||'fond')} <button class="btn btn-gray btn-sm" onclick="closeAdd()">✕ Zavřít</button>`;
+  document.getElementById('fi_fond').value=base['Fond']||'';
+  document.getElementById('fi_company').value=companyOf(base)||'';
+  document.getElementById('fi_tx').value='Platba';
+  document.getElementById('fi_nav').value=currentNav(base)||base['Poslední schválená hodnota CP']||'';
+  document.getElementById('fi_navdo').value=navDate(base)||'';
+  document.getElementById('fi_isin').value=base['rp.ISIN']||base['ISIN']||'';
+  document.getElementById('fi_typ').value=base['Typ CP']||'';
+  document.getElementById('fi_idx').value='';
+}
+
+function delFundByKey(key, name){
+  const cnt = recs.filter(r => r['Investor'] === name && fundKey(r) === key).length;
+  if(!cnt) return;
+  const sample = recs.find(r => r['Investor'] === name && fundKey(r) === key);
+  const label = sample?.['Fond'] || 'fond';
+  if(!confirm(`Smazat fond ${label} u klienta ${name}?
+Smaže se ${cnt} záznamů / tranší.`)) return;
+  recs = recs.filter(r => !(r['Investor'] === name && fundKey(r) === key));
+  save(); renderStats(); renderList();
+  const still = recs.some(r => r['Investor'] === name);
+  if(still) showClient(name); else { activeClient=null; document.getElementById('detail').classList.remove('open'); document.getElementById('welcome').style.display='flex'; }
+  toast('Fond smazán','ok');
 }
 
 function delFund(fond, name){
@@ -786,7 +847,7 @@ function exportJSON(name){
   const fm={};
   cl.recs.forEach(r=>{ const f=r['Fond']||'?'; if(!fm[f]) fm[f]=[]; fm[f].push(r); });
   const out={investor:name,exportDate:new Date().toISOString().split('T')[0],
-    summary:{investovanoNetto:cl.metrics.netInvested, investovanoHistoricky:cl.metrics.totalInvested, vybrano:cl.metrics.withdrawn, planovaneOdkupy:cl.metrics.scheduledWithdrawn, aktualniHodnota:cl.cur, aktualniVynos:cl.metrics.activeProfit, historickyVynos:cl.metrics.totalProfit, historickeZhodnoceniPct:cl.metrics.totalReturnPct},
+    summary:{investovanoNetto:cl.metrics.netInvested, investovanoHistoricky:cl.metrics.totalInvested, vybrano:cl.metrics.withdrawn, planovaneOdkupy:cl.metrics.scheduledWithdrawn, aktualniHodnota:cl.cur, aktualniVynos:cl.metrics.activeProfit, historickyVynos:cl.metrics.totalProfit, historickeZhodnoceniPct:cl.metrics.totalReturnPct, prumernyVynosPaPct:cl.metrics.annualizedReturnPct},
     fondy:Object.entries(fm).map(([fond,fr])=>{
       const fc=fr.reduce((s,r)=>s+curVal(r),0);
       const fi=fr.reduce((s,r)=>s+investedVal(r),0);
@@ -798,6 +859,47 @@ function exportJSON(name){
   a.href=URL.createObjectURL(new Blob([JSON.stringify(out,null,2)],{type:'application/json'}));
   a.download=`${name.replace(/\s+/g,'_')}.json`; a.click();
   toast('JSON exportován ✓','ok');
+}
+
+
+function dlBackupJSON(){
+  const backup={version:13,exportDate:new Date().toISOString(),records:recs,fundValues:fundValues};
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(new Blob([JSON.stringify(backup,null,2)],{type:'application/json'}));
+  a.download='investment-crm-zaloha-'+new Date().toISOString().split('T')[0]+'.json';
+  a.click();
+  toast('Záloha JSON stažena ✓','ok');
+}
+
+function exportClientHTML(name){
+  const cl=getClients().find(c=>c.name===name); if(!cl) return;
+  const m=cl.metrics;
+  const fm={};
+  cl.recs.forEach(r=>{ const k=fundKey(r); if(!fm[k]) fm[k]={name:r['Fond']||'?', items:[]}; fm[k].items.push(r); });
+  const rows=Object.values(fm).map(g=>{
+    const deposits=g.items.reduce((s,r)=>s+depositVal(r),0);
+    const withdrawn=g.items.reduce((s,r)=>s+(isWithdrawal(r)&&!isFutureWithdrawal(r)?withdrawalVal(r):0),0);
+    const cur=g.items.reduce((s,r)=>s+curVal(r),0);
+    const profit=cur+withdrawn-deposits;
+    const p=deposits>0?profit/deposits*100:0;
+    const comp=companyOf(g.items[0]||{});
+    return `<tr><td>${esc(g.name)}</td><td>${esc(comp)}</td><td>${czk(deposits)}</td><td>${czk(withdrawn)}</td><td>${czk(cur)}</td><td class="${profit>=0?'up':'dn'}">${czk(profit)}</td><td class="${p>=0?'up':'dn'}">${pct(p)}</td></tr>`;
+  }).join('');
+  const html=`<!DOCTYPE html><html lang="cs"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Investiční report – ${esc(name)}</title><style>
+    body{font-family:Inter,Arial,sans-serif;background:#f1f5f9;color:#1e293b;margin:0;padding:32px} .wrap{max-width:1100px;margin:auto} h1{margin:0 0 6px;font-size:28px}.sub{color:#64748b;margin-bottom:22px}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px;margin:20px 0}.card{background:#fff;border:1px solid #e2e8f0;border-radius:14px;padding:18px}.label{font-size:11px;color:#94a3b8;text-transform:uppercase;font-weight:700;letter-spacing:.5px}.val{font-size:24px;font-weight:800;margin-top:7px}.up{color:#16a34a}.dn{color:#dc2626}table{width:100%;border-collapse:collapse;background:#fff;border-radius:14px;overflow:hidden;border:1px solid #e2e8f0}th,td{text-align:left;padding:12px;border-bottom:1px solid #e2e8f0;font-size:13px}th{background:#f8fafc;color:#64748b;text-transform:uppercase;font-size:11px;letter-spacing:.4px} .foot{margin-top:18px;color:#94a3b8;font-size:12px}
+  </style></head><body><div class="wrap"><h1>Investiční report – ${esc(name)}</h1><div class="sub">Vygenerováno ${dt(new Date().toISOString())}</div><div class="grid">
+    <div class="card"><div class="label">Aktuálně vloženo netto</div><div class="val">${czk(m.netInvested)}</div></div>
+    <div class="card"><div class="label">Aktuální hodnota</div><div class="val ${m.currentValue>=m.netInvested?'up':'dn'}">${czk(m.currentValue)}</div></div>
+    <div class="card"><div class="label">Celkem investováno</div><div class="val">${czk(m.totalInvested)}</div></div>
+    <div class="card"><div class="label">Celkem vybráno</div><div class="val">${czk(m.withdrawn)}</div></div>
+    <div class="card"><div class="label">Vyděláno za spolupráci</div><div class="val ${m.totalProfit>=0?'up':'dn'}">${czk(m.totalProfit)}</div></div>
+    <div class="card"><div class="label">Průměrný výnos p.a.</div><div class="val ${m.annualizedReturnPct>=0?'up':'dn'}">${pct(m.annualizedReturnPct)}</div></div>
+  </div><table><thead><tr><th>Fond</th><th>Společnost</th><th>Vloženo</th><th>Vybráno</th><th>Aktuální hodnota</th><th>Výnos celkem</th><th>%</th></tr></thead><tbody>${rows}</tbody></table><div class="foot">Report je informativní. Odkupy jsou započteny jako vybrané prostředky, ne jako ztráta.</div></div></body></html>`;
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(new Blob([html],{type:'text/html;charset=utf-8'}));
+  a.download=`report-${name.replace(/\s+/g,'_')}.html`;
+  a.click();
+  toast('HTML report klienta stažen ✓','ok');
 }
 
 // ── CSV IMPORT ─────────────────────────────────
