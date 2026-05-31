@@ -444,7 +444,15 @@ function taxTestInfo(recs){
   return {label:months<=1 ? x.d+' dní' : months+' měsíců',days:x.d,date:x.date,eligible:false};
 }
 
-function fundKeyFromParts(fond, isin, typ){ const i=normKey(isin); const t=normKey(typ); if(i) return ['isin',i,t].join('|'); return ['fond',normKey(fond),t].join('|'); }
+function fundKeyFromParts(fond, isin, typ){
+  // ISIN je hlavní identifikátor cenného papíru.
+  // Pokud má více záznamů stejný ISIN, musí se ve správě fondů sloučit dohromady,
+  // i když se liší název fondu nebo typ CP je jednou vyplněný a jednou prázdný.
+  const i=normKey(isin);
+  const t=normKey(typ);
+  if(i) return ['isin',i].join('|');
+  return ['fond',normKey(fond),t].join('|');
+}
 function fundKey(r){ return fundKeyFromParts(r?.['Fond'], r?.['rp.ISIN']||r?.['ISIN'], r?.['Typ CP']); }
 function currentNav(r){ const fv=fundValues[fundKey(r)]; return n(fv?.nav) || n(r?.['Poslední schválená hodnota CP']); }
 function isWithdrawal(r){ return normKey(r?.['Typ transakce']) === 'odkup'; }
@@ -487,12 +495,36 @@ function earliestInvestDate(recs){
 }
 function navDate(r){ return fundValues[fundKey(r)]?.date || r?.['Poslední schválená hodnota do'] || null; }
 
+function normalizeFundValuesKeys(){
+  const merged={};
+  Object.entries(fundValues||{}).forEach(([oldKey,fv])=>{
+    const key=fundKeyFromParts(fv?.fond, fv?.isin, fv?.typ);
+    if(!key || key==='fond||') return;
+    if(!merged[key]) merged[key]={...fv};
+    else{
+      merged[key]={
+        ...merged[key],
+        ...fv,
+        nav:n(fv?.nav)||n(merged[key]?.nav)||null,
+        date:fv?.date||merged[key]?.date||null,
+        fond:fv?.fond||merged[key]?.fond||'',
+        company:fv?.company||merged[key]?.company||'',
+        product:fv?.product||merged[key]?.product||'FKI',
+        isin:fv?.isin||merged[key]?.isin||'',
+        typ:fv?.typ||merged[key]?.typ||''
+      };
+    }
+  });
+  fundValues=merged;
+}
+
 function daysToRedeem(e){ const d=pD(e); if(!d) return null; const r=new Date(d); r.setMonth(r.getMonth()+36); return Math.ceil((r-new Date())/86400000); }
 function redeemDt(e){ const d=pD(e); if(!d) return null; const r=new Date(d); r.setMonth(r.getMonth()+36); return r; }
 
 (function init(){
   try { recs = JSON.parse(localStorage.getItem(SK)) || []; } catch{ recs = []; }
   try { fundValues = JSON.parse(localStorage.getItem(FSK)) || {}; } catch{ fundValues = {}; }
+  normalizeFundValuesKeys();
   if(!recs.length) recs = [...SEED];
   renderStats();
   renderList();
