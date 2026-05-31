@@ -221,6 +221,8 @@ body{font-family:'Inter',sans-serif;background:#f1f5f9;color:#1e293b;font-size:1
     <button class="btn btn-gray" onclick="togglePanel('imp')">⬆ Import CSV</button>
     <button class="btn btn-gray" onclick="togglePanel('funds')">📈 Fondy / NAV</button>
     <button class="btn btn-gray" onclick="dlBackupJSON()">💾 Záloha JSON</button>
+    <button class="btn btn-gray" onclick="document.getElementById('backupFile').click()">↥ Obnovit JSON</button>
+    <input type="file" id="backupFile" accept=".json" style="display:none" onchange="restoreBackupJSON(event)">
     <button class="btn btn-gray" onclick="dlTemplate()">⬇ Vzor CSV</button>
     <button class="btn btn-blue" onclick="togglePanel('add')">+ Nový záznam</button>
   </div>
@@ -238,11 +240,11 @@ body{font-family:'Inter',sans-serif;background:#f1f5f9;color:#1e293b;font-size:1
     </div>
     <div class="import-info">
       <strong>Povinné sloupce:</strong><br>
-      Investor · Fond · Čistá investice · Datum emise · Aktuální hodnota investice<br><br>
+      Investor · Fond · ISIN · Čistá investice · Datum emise · Aktuální hodnota investice<br><br>
       <strong>Datumový formát:</strong> YYYY-MM-DD nebo DD.MM.YYYY<br>
       <strong>Čísla:</strong> tečka nebo čárka (1.74 nebo 1,74)<br><br>
       Import přidá nové záznamy a aktualizuje existující.<br>
-      <em style="color:#94a3b8">Klíč: Investor + Fond + Datum emise</em>
+      <em style="color:#94a3b8">Klíč: Investor + ISIN + Typ CP + Datum emise. Investovaný fond bez ISINu se nenaimportuje.</em>
     </div>
   </div>
 </div>
@@ -831,7 +833,10 @@ function saveRec(){
   const inv=document.getElementById('fi_inv').value.trim();
   const fond=document.getElementById('fi_fond').value.trim();
   const investice=parseFloat(document.getElementById('fi_inv_c').value);
+  const typTrans=document.getElementById('fi_tx').value;
+  const isinVal=(document.getElementById('fi_isin').value||'').trim();
   if(!inv||!fond||isNaN(investice)){ toast('Vyplňte povinná pole (Investor, Fond, Investice)','err'); return; }
+  if(investice>0 && normKey(typTrans)!=='odkup' && !isinVal){ toast('Doplň ISIN. Investovaný fond bez ISINu neuložím, aby se fondy nespárovaly špatně.','err'); return; }
   const company=(document.getElementById('fi_company').value||'').trim() || inferCompany(fond);
   const rec={
     'Investor':inv,'Fond':fond,'Investiční společnost':company,
@@ -839,7 +844,7 @@ function saveRec(){
     'Frekvence investice':document.getElementById('fi_freq').value||'Jednorázově',
     'Pravidelná částka':parseFloat(document.getElementById('fi_regular_amount').value)||0,
     'Den pravidelné investice':parseInt(document.getElementById('fi_regular_day').value)||null,
-    'Typ transakce':document.getElementById('fi_tx').value,
+    'Typ transakce':typTrans,
     'Čistá investice':investice,
     'Aktuální hodnota investice':parseFloat(document.getElementById('fi_cur').value)||investice,
     'Počet vydaných CP':parseFloat(document.getElementById('fi_qty').value)||0,
@@ -848,7 +853,7 @@ function saveRec(){
     'Datum emise':document.getElementById('fi_de').value||null,
     'Poslední schválená hodnota CP':parseFloat(document.getElementById('fi_nav').value)||null,
     'Poslední schválená hodnota do':document.getElementById('fi_navdo').value||null,
-    'rp.ISIN':document.getElementById('fi_isin').value||null,
+    'rp.ISIN':isinVal||null,
     'Typ CP':document.getElementById('fi_typ').value||null,
     'Poradce':'Solár Filip','Měna':'CZK','Vstupní poplatek':0,
   };
@@ -1003,12 +1008,32 @@ function exportJSON(name){
 
 
 function dlBackupJSON(){
-  const backup={version:15,exportDate:new Date().toISOString(),records:recs,fundValues:fundValues};
+  const backup={version:16,exportDate:new Date().toISOString(),records:recs,fundValues:fundValues};
   const a=document.createElement('a');
   a.href=URL.createObjectURL(new Blob([JSON.stringify(backup,null,2)],{type:'application/json'}));
   a.download='investment-crm-zaloha-'+new Date().toISOString().split('T')[0]+'.json';
   a.click();
   toast('Záloha JSON stažena ✓','ok');
+}
+
+function restoreBackupJSON(e){
+  const file=e.target.files && e.target.files[0];
+  if(!file) return;
+  const reader=new FileReader();
+  reader.onload=ev=>{
+    try{
+      const data=JSON.parse(ev.target.result);
+      const records=Array.isArray(data) ? data : (data.records||[]);
+      const funds=data.fundValues||{};
+      if(!Array.isArray(records)) throw new Error('Chybí records');
+      if(!confirm(`Obnovit zálohu? Přepíše se aktuální tabulka (${records.length} záznamů).`)) return;
+      recs=records; fundValues=funds; ensureCompanies(); save(); renderStats(); renderList(); renderFundPanel(); activeClient=null;
+      document.getElementById('detail').classList.remove('open'); document.getElementById('welcome').style.display='flex';
+      toast('Záloha obnovena ✓','ok');
+    }catch(err){ toast('JSON zálohu se nepodařilo načíst','err'); console.error(err); }
+    e.target.value='';
+  };
+  reader.readAsText(file,'UTF-8');
 }
 
 function exportClientHTML(name){
@@ -1083,6 +1108,15 @@ function parseCSV(txt){
   const hdrs=parseLine(lines[0]);
   if(!hdrs.includes('Investor')||!hdrs.includes('Fond')){toast('Chybí sloupce Investor nebo Fond','err');return;}
   const rows=lines.slice(1).map(l=>{const v=parseLine(l);const o={};hdrs.forEach((h,i)=>o[h]=v[i]||null);return o;}).filter(r=>r['Investor']&&r['Fond']);
+  const missingIsin=rows.filter(r=>{
+    const amt=parseFloat(String(r['Čistá investice']||r['Cista investice']||0).replace(/\s/g,'').replace(',','.'))||0;
+    const cur=parseFloat(String(r['Aktuální hodnota investice']||r['Aktualni hodnota investice']||0).replace(/\s/g,'').replace(',','.'))||0;
+    const qty=parseFloat(String(r['Počet vydaných CP']||r['Pocet vydanych CP']||0).replace(/\s/g,'').replace(',','.'))||0;
+    const tx=normKey(r['Typ transakce']||'Platba');
+    const isin=String(r['rp.ISIN']||r['ISIN']||'').trim();
+    return (amt>0||cur>0||qty>0) && tx!=='odkup' && !isin;
+  });
+  if(missingIsin.length){ toast(`Import zastaven: ${missingIsin.length} investovaných řádků nemá ISIN. Doplň ISIN a nahraj znovu.`, 'err'); return; }
   let added=0,updated=0;
   for(const row of rows){
     const inv=String(row['Investor']).trim();
@@ -1103,7 +1137,7 @@ function parseCSV(txt){
       'Počet vydaných CP':parseInt(row['Počet vydaných CP']||0)||0,
       'Upisovací hodnota':parseFloat(String(row['Upisovací hodnota']||0).replace(',','.'))||0,
     };
-    const idx=recs.findIndex(r=>r['Investor']===inv&&r['Fond']===fond&&r['Datum emise']===emise);
+    const idx=recs.findIndex(r=>r['Investor']===inv && fundKey(r)===fundKey(rec) && r['Datum emise']===emise);
     if(idx>=0){recs[idx]={...recs[idx],...rec};updated++;}else{recs.push(rec);added++;}
   }
   save();renderStats();renderList();
@@ -1157,7 +1191,7 @@ function renderFundPanel(){
     return `<div class="company-section"><span>🏢 ${esc(comp)}</span><small>${items.length} fond${items.length===1?'':items.length<5?'y':'ů'}</small></div>`+
     prods.map(prod=>{ const pitems=items.filter(f=>(f.product||'FKI')===prod); return `<div class="product-line"><span>${esc(prod)}</span><small>${pitems.length} fond${pitems.length===1?'':pitems.length<5?'y':'ů'}</small></div>`+
     `<div class="fund-row head"><div>Fond</div><div>Hodnota CP</div><div>Platnost</div><div>Klientů</div><div>Transakcí</div><div>Akce</div></div>`+
-    pitems.map(f=>`<div class="fund-row"><div><strong>${esc(f.fond)}</strong><div style="color:#94a3b8;font-size:11px">${esc(f.product||'FKI')} · ${esc(f.isin||'bez ISIN')} · ${esc(f.typ||'typ CP neuveden')}</div></div><div><strong>${f.nav?Number(f.nav).toFixed(4):'—'}</strong></div><div>${dt(f.date)}</div><div>${f.clients.size}</div><div>${f.count}</div><div style="display:flex;gap:6px;flex-wrap:wrap"><button class="btn btn-gray btn-sm" onclick="selectFundMaster(decodeURIComponent('${encodeURIComponent(f.key)}'))">Upravit</button><button class="btn btn-red btn-sm" onclick="deleteFundMaster(decodeURIComponent('${encodeURIComponent(f.key)}'))">Smazat</button></div></div>`).join('')}).join('')
+    pitems.map(f=>`<div class="fund-row"><div><strong>${esc(f.fond)}</strong><div style="color:#94a3b8;font-size:11px">${esc(f.product||'FKI')} · ${f.isin?esc(f.isin):'<span style="color:#dc2626;font-weight:800">⚠ DOPLNIT ISIN</span>'} · ${esc(f.typ||'typ CP neuveden')}</div></div><div><strong>${f.nav?Number(f.nav).toFixed(4):'—'}</strong></div><div>${dt(f.date)}</div><div>${f.clients.size}</div><div>${f.count}</div><div style="display:flex;gap:6px;flex-wrap:wrap"><button class="btn btn-gray btn-sm" onclick="selectFundMaster(decodeURIComponent('${encodeURIComponent(f.key)}'))">Upravit</button><button class="btn btn-red btn-sm" onclick="deleteFundMaster(decodeURIComponent('${encodeURIComponent(f.key)}'))">Smazat</button></div></div>`).join('')}).join('')
   }).join('');
 }
 function selectFundMaster(key){
@@ -1181,6 +1215,7 @@ function addOrUpdateFundMaster(){
   const nav=n(document.getElementById('fv_nav_new').value);
   const date=document.getElementById('fv_date_new').value||new Date().toISOString().split('T')[0];
   if(!fond){ toast('Zadej název fondu','err'); return; }
+  if(!isin){ toast('Doplň ISIN fondu. Centrální fond bez ISINu by se mohl špatně párovat.','err'); return; }
   const key=fundKeyFromParts(fond, isin, typ);
   fundValues[key]={nav:nav||null,date,fond:cleanFundName(fond,company),company,isin,typ,product};
   recs.forEach(r=>{
