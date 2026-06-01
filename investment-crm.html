@@ -190,6 +190,16 @@ body{font-family:'Inter',sans-serif;background:#f1f5f9;color:#1e293b;font-size:1
 .aum-legend-row span:first-child{display:flex;align-items:center;gap:8px;min-width:0}
 .aum-dot{width:12px;height:12px;border-radius:50%;flex:0 0 12px}
 .aum-table{border:1px solid #e2e8f0;border-radius:12px;overflow:hidden;background:#fff}
+
+.aum-company-list{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px;margin:12px 0 16px}
+.aum-company-card{background:#fff;border:1px solid #dbeafe;border-radius:12px;padding:12px;cursor:pointer;transition:.15s;display:flex;justify-content:space-between;gap:12px;align-items:center}
+.aum-company-card:hover{border-color:#2563eb;box-shadow:0 2px 8px rgba(37,99,235,.10);transform:translateY(-1px)}
+.aum-company-card.on{border-color:#2563eb;background:#eff6ff}
+.aum-company-name{font-size:13px;font-weight:800;color:#1e293b}
+.aum-company-meta{font-size:11px;color:#64748b;margin-top:3px}
+.aum-company-value{text-align:right;font-size:14px;font-weight:900;color:#16a34a;white-space:nowrap}
+.aum-subtitle{font-size:12px;color:#64748b;margin:8px 0 10px}
+
 .aum-row{display:grid;grid-template-columns:2fr 120px 120px 120px 100px 100px;gap:10px;align-items:center;padding:10px 12px;border-bottom:1px solid #f1f5f9;font-size:12px}
 .aum-row:last-child{border-bottom:none}
 .aum-row.head{background:#f8fafc;color:#64748b;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.4px}
@@ -913,7 +923,7 @@ function togglePanel(id){
   const aumEl=document.getElementById('aum'); if(aumEl) aumEl.classList.remove('open');
   if(!isOpen) el.classList.add('open');
   if(id==='funds' && !isOpen) renderFundPanel();
-  if(id==='aum' && !isOpen) renderAumPanel();
+  if(id==='aum' && !isOpen){ renderAumPanel(); setTimeout(renderAumPanel,0); }
 }
 
 function openAdd(prefill){
@@ -1461,26 +1471,48 @@ function donutGradient(groups,total){
   let start=0;
   return groups.slice(0,12).map((g,i)=>{ const end=start+(g.value/total*100); const seg=`${AUM_COLORS[i%AUM_COLORS.length]} ${start.toFixed(2)}% ${end.toFixed(2)}%`; start=end; return seg; }).join(',');
 }
+function setAumFilter(v){
+  const inp=document.getElementById('aumSearch');
+  if(inp) inp.value=v||'';
+  renderAumPanel();
+}
 function renderAumPanel(){
   const box=document.getElementById('aumContent'); if(!box) return;
-  const {list,total}=aumData();
+  const data=aumData();
+  const list=data.list||[];
+  const total=data.total||0;
   const q=normKey(document.getElementById('aumSearch')?.value||'');
   const min=n(document.getElementById('aumMin')?.value||0);
-  const filtered=list.filter(f=>(!q || normKey([f.fond,f.company,f.product,f.isin,f.typ].join(' ')).includes(q)) && f.current>=min).sort((a,b)=>b.current-a.current);
   const mode=document.getElementById('aumMode')?.value||'company';
+
+  const allCompanies=groupAum(list,'company');
+  const filtered=list.filter(f=>(!q || normKey([f.fond,f.company,f.product,f.isin,f.typ].join(' ')).includes(q)) && f.current>=min).sort((a,b)=>b.current-a.current);
   const groups=groupAum(filtered,mode);
   const filteredTotal=filtered.reduce((s,f)=>s+f.current,0);
   const totalInvested=filtered.reduce((s,f)=>s+f.invested,0);
   const totalClients=new Set(); filtered.forEach(f=>f.clients.forEach(c=>totalClients.add(c)));
   const totalProfit=filteredTotal-totalInvested;
+
+  const companyCards=allCompanies.map((g,i)=>{
+    const isOn=q && normKey(g.name).includes(q);
+    return `<div class="aum-company-card ${isOn?'on':''}" onclick="setAumFilter('${esc(g.name).replace(/'/g,'&#39;')}')">
+      <div><div class="aum-company-name">🏢 ${esc(g.name)}</div><div class="aum-company-meta">${g.count} fond${g.count===1?'':g.count<5?'y':'ů'} · ${g.clients.size} klient${g.clients.size===1?'':g.clients.size<5?'i':'ů'}</div></div>
+      <div class="aum-company-value">${czk(g.value)}<div class="aum-company-meta">${total?pct(g.value/total*100):'—'}</div></div>
+    </div>`;
+  }).join('');
+
   const legend=groups.slice(0,8).map((g,i)=>`<div class="aum-legend-row"><span><i class="aum-dot" style="background:${AUM_COLORS[i%AUM_COLORS.length]}"></i><span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(g.name)}</span></span><strong>${filteredTotal?pct(g.value/filteredTotal*100):'—'}</strong></div>`).join('');
+
   const byCompany={}; filtered.forEach(f=>{ const c=f.company||'Nezařazeno'; if(!byCompany[c]) byCompany[c]=[]; byCompany[c].push(f); });
   const rows=Object.entries(byCompany).sort((a,b)=>b[1].reduce((s,f)=>s+f.current,0)-a[1].reduce((s,f)=>s+f.current,0)).map(([comp,items])=>{
     const sum=items.reduce((s,f)=>s+f.current,0);
-    return `<div class="company-section"><span>🏢 ${esc(comp)}</span><small>${czk(sum)} · ${items.length} fond${items.length===1?'':items.length<5?'y':'ů'}</small></div>`+
+    const inv=items.reduce((s,f)=>s+f.invested,0);
+    const clients=new Set(); items.forEach(f=>f.clients.forEach(c=>clients.add(c)));
+    return `<div class="company-section"><span>🏢 ${esc(comp)}</span><small>${czk(sum)} · ${items.length} fond${items.length===1?'':items.length<5?'y':'ů'} · ${clients.size} klient${clients.size===1?'':clients.size<5?'i':'ů'}</small></div>`+
     `<div class="aum-row head"><div>Fond</div><div>AUM</div><div>Podíl</div><div>Investováno</div><div>Klientů</div><div>Transakcí</div></div>`+
     items.sort((a,b)=>b.current-a.current).map(f=>`<div class="aum-row ${f.profit<0?'loss':''}"><div><strong>${esc(f.fond)}</strong><div style="color:#94a3b8;font-size:11px">${esc(f.product)} · ${f.isin?esc(f.isin):'<span style="color:#dc2626;font-weight:800">⚠ ISIN chybí</span>'} · ${esc(f.typ||'typ CP neuveden')}</div></div><div><strong>${czk(f.current)}</strong></div><div>${filteredTotal?pct(f.current/filteredTotal*100):'—'}</div><div>${czk(f.invested)}</div><div>${f.clients.size}</div><div>${f.tx}</div></div>`).join('');
   }).join('');
+
   box.innerHTML=`<div class="aum-grid">
     <div class="aum-card"><div class="aum-card-l">Celkové AUM</div><div class="aum-card-v">${czk(total)}</div></div>
     <div class="aum-card"><div class="aum-card-l">Zobrazené AUM</div><div class="aum-card-v">${czk(filteredTotal)}</div></div>
@@ -1489,9 +1521,11 @@ function renderAumPanel(){
     <div class="aum-card"><div class="aum-card-l">Celkem investováno</div><div class="aum-card-v">${czk(totalInvested)}</div></div>
     <div class="aum-card"><div class="aum-card-l">Rozdíl AUM vs. vklady</div><div class="aum-card-v ${totalProfit>=0?'up':'dn'}">${czk(totalProfit)}</div></div>
   </div>
+  <div class="aum-subtitle">Kliknutím na investiční společnost zobrazíš její AUM a fondy.</div>
+  <div class="aum-company-list">${companyCards||'<div class="empty">Bez dat</div>'}</div>
   <div class="aum-layout">
     <div class="aum-chartbox"><div class="aum-donut" style="background:conic-gradient(${donutGradient(groups,filteredTotal)})"></div><div class="aum-legend">${legend||'<div class="empty">Bez dat</div>'}</div></div>
-    <div class="aum-table">${rows||'<div class="empty">Žádné AUM k zobrazení</div>'}</div>
+    <div class="aum-table">${rows||'<div class="empty">Žádné AUM k zobrazení. Zruš filtr nebo sniž minimální hodnotu.</div>'}</div>
   </div>`;
 }
 function exportAumCSV(){
