@@ -1,1022 +1,313 @@
 <!doctype html>
 <html lang="cs">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>V2 WWDC Edition | Filip Solár</title>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Finance, které dávají smysl | Filip Solár</title>
 <style>
 :root{
-  --ink:#071726;
-  --soft:#4d6477;
-  --line:rgba(255,255,255,.68);
-  --glass:rgba(255,255,255,.42);
-  --glass-strong:rgba(255,255,255,.72);
-  --blue:#1f74d8;
-  --green:#16a269;
-  --purple:#7657d9;
-  --amber:#db8d16;
-  --shadow:0 28px 90px rgba(13,48,84,.16);
-  --radius:28px;
+  --green:#1da857;--blue:#2378dc;--purple:#6c4fd4;--orange:#e8870f;
+  --ink:#07213a;--muted:#3a5a74;
+  --sh:0 22px 70px rgba(10,50,100,.14);
 }
-*{box-sizing:border-box}
-html,body{margin:0;width:100%;height:100%;overflow:hidden}
+*,::before,::after{box-sizing:border-box;margin:0;padding:0}
+html,body{width:100%;height:100%;overflow:hidden}
 body{
-  font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
+  font-family:-apple-system,"SF Pro Display","Helvetica Neue",Inter,sans-serif;
   color:var(--ink);
   background:
-    linear-gradient(160deg,#e8f6ff 0%,#f7fcff 34%,#e4f8ee 68%,#fff8ea 100%);
-}
-body:before{
-  content:"";
-  position:fixed;
-  inset:-22%;
-  background:
-    conic-gradient(from 210deg at 50% 48%,rgba(39,120,220,.22),rgba(44,190,138,.20),rgba(242,174,65,.18),rgba(118,87,217,.16),rgba(39,120,220,.22));
-  filter:blur(58px);
-  opacity:.72;
-  animation:drift 24s ease-in-out infinite alternate;
-  pointer-events:none;
-}
-body:after{
-  content:"";
-  position:fixed;
-  inset:0;
-  background:
-    linear-gradient(115deg,transparent 0 21%,rgba(255,255,255,.42) 32%,transparent 45% 100%),
-    repeating-linear-gradient(90deg,rgba(255,255,255,.10) 0 1px,transparent 1px 72px);
-  opacity:.58;
-  pointer-events:none;
-}
-button{font:inherit;color:inherit}
-.app{
-  position:relative;
-  z-index:1;
-  height:100vh;
-  padding:22px 30px 26px;
-  display:grid;
-  grid-template-rows:auto 1fr;
-  gap:18px;
-}
-.topbar{
-  height:44px;
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-}
-.brand{
-  font-size:28px;
-  line-height:1;
-  font-weight:760;
-  letter-spacing:0;
-}
-.brand em{
-  color:var(--blue);
-  font-style:italic;
-  font-weight:360;
-}
-.trust{
-  display:flex;
-  align-items:center;
-  gap:10px;
-  color:#173b58;
-  font-size:18px;
-  font-weight:690;
-}
-.trust-mark{
-  width:35px;
-  height:35px;
-  border-radius:13px;
-  display:grid;
-  place-items:center;
-  background:rgba(255,255,255,.56);
-  border:1px solid var(--line);
-  box-shadow:inset 0 1px rgba(255,255,255,.85),0 14px 32px rgba(20,72,124,.12);
-  color:var(--blue);
-  font-size:12px;
-  font-weight:820;
-}
-.stage{
-  position:relative;
-  min-height:0;
-  border-radius:38px;
-  overflow:hidden;
-  background:rgba(255,255,255,.25);
-  border:1px solid rgba(255,255,255,.84);
-  box-shadow:inset 0 1px rgba(255,255,255,.9),inset 0 -1px rgba(37,113,190,.12),var(--shadow);
-  backdrop-filter:blur(34px) saturate(175%);
-  isolation:isolate;
-}
-.stage:before{
-  content:"";
-  position:absolute;
-  inset:16px;
-  border-radius:30px;
-  border:1px solid rgba(255,255,255,.32);
-  pointer-events:none;
-}
-.stage:after{
-  content:"";
-  position:absolute;
-  left:8%;
-  right:8%;
-  top:12%;
-  height:52%;
-  border-radius:48%;
-  background:linear-gradient(180deg,rgba(255,255,255,.46),rgba(255,255,255,0));
-  transform:perspective(900px) rotateX(64deg);
-  filter:blur(10px);
-  pointer-events:none;
-  z-index:-1;
-}
-.constellation{
-  position:absolute;
-  inset:0;
-  width:100%;
-  height:100%;
-  pointer-events:none;
-}
-.path{
-  fill:none;
-  stroke:rgba(255,255,255,.72);
-  stroke-width:1.7;
-  stroke-dasharray:7 12;
-  filter:drop-shadow(0 0 10px rgba(60,130,220,.42));
-  transition:opacity .35s ease,stroke .35s ease,stroke-width .35s ease;
-}
-.core{
-  position:absolute;
-  left:50%;
-  top:50%;
-  transform:translate(-50%,-50%);
-  width:min(32vw,420px);
-  aspect-ratio:1;
-  border:0;
-  background:transparent;
-  cursor:pointer;
-  z-index:8;
-  transition:transform .45s cubic-bezier(.2,1,.22,1),opacity .35s ease,filter .35s ease;
-}
-.core-disc{
-  position:absolute;
-  inset:0;
-  border-radius:50%;
-  background:
-    radial-gradient(circle at 36% 22%,rgba(255,255,255,.96),rgba(255,255,255,.56) 34%,rgba(255,255,255,.28) 68%),
-    linear-gradient(145deg,rgba(255,255,255,.72),rgba(255,255,255,.30));
-  border:1px solid rgba(255,255,255,.92);
-  box-shadow:
-    inset 0 2px rgba(255,255,255,.96),
-    inset 0 -16px 42px rgba(46,132,196,.13),
-    0 0 0 28px rgba(255,255,255,.08),
-    0 36px 100px rgba(16,62,112,.18);
-  backdrop-filter:blur(36px) saturate(185%);
-  animation:breathe 6.8s ease-in-out infinite;
-}
-.core-content{
-  position:absolute;
-  inset:14%;
-  display:grid;
-  place-items:center;
-  text-align:center;
-}
-.core-kicker{
-  font-size:clamp(14px,1.2vw,18px);
-  color:#557085;
-  font-weight:650;
-  text-transform:uppercase;
-  letter-spacing:.18em;
-}
-.core-title{
-  margin-top:8px;
-  font-size:clamp(58px,8vw,126px);
-  line-height:.86;
-  font-weight:820;
-  letter-spacing:0;
-}
-.core-values{
-  margin-top:18px;
-  display:grid;
-  grid-template-columns:repeat(4,auto);
-  justify-content:center;
-  gap:9px;
-}
-.core-values span{
-  padding:7px 12px;
-  border-radius:999px;
-  background:rgba(255,255,255,.46);
-  border:1px solid rgba(255,255,255,.76);
-  color:#294b64;
-  font-size:clamp(12px,1vw,14px);
-  font-weight:680;
-}
-.area{
-  position:absolute;
-  width:min(19vw,245px);
-  height:154px;
-  border:0;
-  padding:0;
-  background:transparent;
-  cursor:pointer;
-  z-index:10;
-  transform-style:preserve-3d;
-  transition:transform .42s cubic-bezier(.2,1,.22,1),opacity .35s ease,filter .35s ease;
-}
-.area-inner{
-  width:100%;
-  height:100%;
-  border-radius:var(--radius);
-  display:grid;
-  grid-template-rows:64px auto;
-  align-items:center;
-  justify-items:center;
-  padding:22px 18px 18px;
-  background:linear-gradient(145deg,rgba(255,255,255,.72),rgba(255,255,255,.27));
-  border:1px solid rgba(255,255,255,.84);
-  box-shadow:inset 0 1px rgba(255,255,255,.92),0 24px 62px rgba(15,64,114,.12);
-  backdrop-filter:blur(30px) saturate(180%);
-  transition:box-shadow .35s ease,background .35s ease;
-}
-.area:hover{transform:translateY(-7px) scale(1.025)}
-.area svg{
-  width:54px;
-  height:54px;
-  stroke:currentColor;
-  stroke-width:1.7;
-  fill:none;
-  stroke-linecap:round;
-  stroke-linejoin:round;
-}
-.area span{
-  font-size:clamp(22px,2vw,30px);
-  font-weight:760;
-  letter-spacing:0;
-}
-.a-home{left:8.8%;top:13%;color:var(--green)}
-.a-wealth{right:8.8%;top:13%;color:var(--blue)}
-.a-protect{left:8.8%;bottom:13%;color:var(--purple)}
-.a-plan{right:8.8%;bottom:13%;color:var(--amber)}
-.ambient-label{
-  position:absolute;
-  left:50%;
-  bottom:34px;
-  transform:translateX(-50%);
-  font-size:clamp(30px,4vw,62px);
-  line-height:1;
-  font-weight:760;
-  color:rgba(7,23,38,.06);
-  letter-spacing:0;
-  pointer-events:none;
-  white-space:nowrap;
-}
-.detail{
-  position:absolute;
-  inset:auto 34px 34px 34px;
-  min-height:290px;
-  display:grid;
-  grid-template-columns:minmax(260px,.82fr) minmax(520px,1.6fr);
-  gap:18px;
-  z-index:24;
-  opacity:0;
-  pointer-events:none;
-  transform:translateY(36px) scale(.985);
-  transition:opacity .34s ease,transform .42s cubic-bezier(.2,1,.22,1);
-}
-.detail.show{
-  opacity:1;
-  pointer-events:auto;
-  transform:none;
-}
-.sheet{
-  position:relative;
-  border-radius:30px;
-  background:linear-gradient(145deg,rgba(255,255,255,.78),rgba(255,255,255,.38));
-  border:1px solid rgba(255,255,255,.9);
-  box-shadow:inset 0 1px rgba(255,255,255,.95),0 28px 80px rgba(12,55,100,.16);
-  backdrop-filter:blur(34px) saturate(185%);
-  overflow:hidden;
-}
-.sheet:before{
-  content:"";
-  position:absolute;
-  inset:0;
-  background:linear-gradient(132deg,rgba(255,255,255,.74),transparent 31%,rgba(255,255,255,.18) 62%,transparent);
-  pointer-events:none;
-}
-.detail-main{
-  padding:26px;
-  display:flex;
-  flex-direction:column;
-  gap:18px;
-}
-.detail-main .meta{
-  display:flex;
-  align-items:center;
-  gap:12px;
-  font-size:12px;
-  color:#567187;
-  font-weight:760;
-  text-transform:uppercase;
-  letter-spacing:.17em;
-}
-.mini-icon{
-  width:44px;
-  height:44px;
-  border-radius:16px;
-  display:grid;
-  place-items:center;
-  background:rgba(255,255,255,.62);
-  border:1px solid rgba(255,255,255,.84);
-}
-.mini-icon svg{width:25px;height:25px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
-.detail-main h2{
-  margin:0;
-  font-size:clamp(40px,4.2vw,70px);
-  line-height:.9;
-  font-weight:820;
-  letter-spacing:0;
-}
-.detail-main p{
-  margin:0;
-  color:#38576d;
-  font-size:17px;
-  line-height:1.42;
-  font-weight:450;
-}
-.subnav{
-  display:grid;
-  gap:8px;
-  margin-top:auto;
-}
-.subnav button{
-  min-height:44px;
-  border:1px solid rgba(255,255,255,.72);
-  border-radius:16px;
-  background:rgba(255,255,255,.38);
-  color:#173650;
-  text-align:left;
-  padding:10px 12px;
-  font-size:14px;
-  font-weight:670;
-  cursor:pointer;
-  transition:background .2s ease,transform .2s ease;
-}
-.subnav button:hover,.subnav button.active{
-  background:rgba(255,255,255,.76);
-  transform:translateX(3px);
-}
-.detail-value{
-  padding:26px;
-  display:grid;
-  grid-template-rows:auto 1fr;
-  gap:18px;
-}
-.value-copy{
-  display:grid;
-  grid-template-columns:minmax(260px,.9fr) minmax(320px,1.1fr);
-  gap:18px;
-  align-items:start;
-}
-.value-copy h3{
-  margin:0;
-  font-size:clamp(28px,2.9vw,46px);
-  line-height:1;
-  font-weight:790;
-  letter-spacing:0;
-}
-.value-copy p{
-  margin:0;
-  color:#35546a;
-  font-size:16px;
-  line-height:1.48;
-  font-weight:450;
-}
-.proof-grid{
-  display:grid;
-  grid-template-columns:repeat(4,1fr);
-  gap:10px;
-  align-content:end;
-}
-.proof{
-  position:relative;
-  min-height:158px;
-  border-radius:22px;
-  padding:18px;
-  display:flex;
-  flex-direction:column;
-  justify-content:space-between;
-  background:rgba(255,255,255,.46);
-  border:1px solid rgba(255,255,255,.82);
-  box-shadow:inset 0 1px rgba(255,255,255,.9);
-  overflow:hidden;
-}
-.proof svg{width:34px;height:34px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
-.proof b{
-  display:block;
-  font-size:15px;
-  line-height:1.15;
-  font-weight:760;
-}
-.proof small{
-  display:block;
-  margin-top:7px;
-  color:#5b7589;
-  font-size:12px;
-  line-height:1.25;
-}
-.proof .time{
-  position:absolute;
-  inset:0;
-  display:grid;
-  align-content:center;
-  gap:10px;
-  padding:18px;
-  background:rgba(255,255,255,.88);
-  opacity:0;
-  transform:translateY(10px);
-  transition:opacity .22s ease,transform .22s ease;
-}
-.proof:hover .time,.proof:focus-within .time{
-  opacity:1;
-  transform:none;
-}
-.time-row{
-  display:flex;
-  justify-content:space-between;
-  gap:14px;
-  color:#173650;
-  font-size:13px;
-}
-.time-row strong{font-weight:820}
-.about-panel{
-  position:absolute;
-  inset:34px;
-  z-index:30;
-  display:grid;
-  grid-template-columns:minmax(360px,.75fr) minmax(560px,1.25fr);
-  gap:18px;
-  opacity:0;
-  pointer-events:none;
-  transform:scale(.98);
-  transition:opacity .34s ease,transform .42s cubic-bezier(.2,1,.22,1);
-}
-.about-panel.show{
-  opacity:1;
-  pointer-events:auto;
-  transform:none;
-}
-.work{
-  padding:34px;
-}
-.work h2{
-  margin:0 0 24px;
-  font-size:clamp(48px,5vw,86px);
-  line-height:.88;
-  font-weight:820;
-  letter-spacing:0;
-}
-.work-list{
-  display:grid;
-  gap:12px;
-}
-.work-item{
-  display:grid;
-  grid-template-columns:40px 1fr;
-  align-items:center;
-  gap:12px;
-  min-height:54px;
-  padding:10px 12px;
-  border-radius:18px;
-  background:rgba(255,255,255,.44);
-  border:1px solid rgba(255,255,255,.74);
-  font-size:16px;
-  font-weight:650;
-}
-.check{
-  width:30px;
-  height:30px;
-  border-radius:50%;
-  display:grid;
-  place-items:center;
-  background:rgba(22,162,105,.14);
-  color:var(--green);
-}
-.check svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:2.3;stroke-linecap:round;stroke-linejoin:round}
-.references{
-  padding:34px;
-  display:grid;
-  grid-template-rows:auto 1fr;
-  gap:18px;
-}
-.references h3{
-  margin:0;
-  color:#61798d;
-  font-size:13px;
-  text-transform:uppercase;
-  letter-spacing:.2em;
-  font-weight:820;
-}
-.quotes{
-  display:grid;
-  grid-template-columns:repeat(3,1fr);
-  gap:12px;
-  align-items:stretch;
-}
-.quote{
-  border-radius:24px;
-  padding:22px;
-  background:rgba(255,255,255,.46);
-  border:1px solid rgba(255,255,255,.82);
-  display:flex;
-  flex-direction:column;
-  justify-content:space-between;
-  min-height:220px;
-}
-.quote p{
-  margin:0;
-  color:#16364f;
-  font-size:18px;
-  line-height:1.35;
-  font-weight:520;
-}
-.quote b{
-  margin-top:18px;
-  color:#5a7488;
-  font-size:13px;
-  font-weight:720;
-}
-.close{
-  position:absolute;
-  right:20px;
-  top:20px;
-  width:42px;
-  height:42px;
-  border-radius:15px;
-  border:1px solid rgba(255,255,255,.82);
-  background:rgba(255,255,255,.58);
-  display:grid;
-  place-items:center;
-  cursor:pointer;
-  z-index:40;
-  box-shadow:inset 0 1px rgba(255,255,255,.9),0 14px 32px rgba(15,64,114,.12);
-}
-.close svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round}
-.state-detail .core{opacity:.22;filter:blur(1px);transform:translate(-50%,-50%) scale(.84)}
-.state-detail .area:not(.active){opacity:.18;filter:blur(2px) saturate(.8);transform:scale(.94)}
-.state-detail .area.active{transform:translateY(-10px) scale(1.06)}
-.state-detail .area.active .area-inner{background:rgba(255,255,255,.76);box-shadow:inset 0 1px rgba(255,255,255,.94),0 34px 84px rgba(15,64,114,.18)}
-.state-detail .ambient-label{opacity:.28}
-.state-about .area,.state-about .detail,.state-about .ambient-label{opacity:.08;filter:blur(3px);pointer-events:none}
-.state-about .core{opacity:.10;filter:blur(3px);pointer-events:none}
-.state-detail .path,.state-about .path{opacity:.08}
-.state-detail.home .p-home,.state-detail.wealth .p-wealth,.state-detail.protect .p-protect,.state-detail.plan .p-plan{
-  opacity:1;
-  stroke:currentColor;
-  stroke-width:3;
-}
-@keyframes drift{
-  from{transform:translate3d(-2%,0,0) rotate(-4deg) scale(1.02)}
-  to{transform:translate3d(2%,1.5%,0) rotate(5deg) scale(1.08)}
-}
-@keyframes breathe{
-  0%,100%{transform:scale(1)}
-  50%{transform:scale(1.035)}
-}
-@media(max-width:1120px){
-  html,body{overflow:auto;height:auto}
-  .app{height:auto;min-height:100vh;padding:18px}
-  .stage{min-height:1120px}
-  .core{width:min(58vw,360px);top:34%}
-  .area{width:calc(50% - 46px);height:132px}
-  .a-home{left:26px;top:40px}.a-wealth{right:26px;top:40px}.a-protect{left:26px;bottom:auto;top:650px}.a-plan{right:26px;bottom:auto;top:650px}
-  .detail{inset:790px 22px auto;grid-template-columns:1fr;min-height:0}
-  .value-copy{grid-template-columns:1fr}
-  .proof-grid{grid-template-columns:repeat(2,1fr)}
-  .about-panel{inset:22px;grid-template-columns:1fr}
-  .quotes{grid-template-columns:1fr}
-}
-@media(max-width:700px){
-  .topbar{height:auto;gap:12px;align-items:flex-start}
-  .brand{font-size:23px}.trust{font-size:15px}
-  .stage{min-height:1320px;border-radius:28px}
-  .core{width:78vw;top:300px}
-  .core-values{grid-template-columns:repeat(2,auto)}
-  .area{width:calc(100% - 36px);left:18px;right:auto;height:112px}
-  .area-inner{grid-template-columns:58px 1fr;grid-template-rows:1fr;justify-items:start;padding:18px}
-  .area svg{width:42px;height:42px}.area span{font-size:24px}
-  .a-home{top:28px}.a-wealth{top:156px}.a-protect{top:844px}.a-plan{top:972px}
-  .detail{inset:1095px 14px auto}
-  .proof-grid{grid-template-columns:1fr}
-  .about-panel{inset:14px}
-  .work,.references{padding:24px}
-  .quote{min-height:160px}
-}
+    radial-gradient(ellipse 940px 560px at 6% 0%,rgba(255,255,255,.96),transparent 56%),
+    radial-gradient(ellipse 760px 560px at 97% 10%,rgba(183,226,255,.9),transparent 56%),
+    radial-gradient(ellipse 820px 600px at 50% 104%,rgba(88,226,205,.5),transparent 56%),
+    linear-gradient(148deg,#d2eafc 0%,#ecf8ff 46%,#caf5ec 100%);
+}
+body::before{content:"";position:fixed;inset:-18%;pointer-events:none;background:linear-gradient(112deg,transparent 0 24%,rgba(255,255,255,.36) 34%,transparent 48% 100%);filter:blur(18px);opacity:.7;animation:lightSweep 14s ease-in-out infinite alternate}
+.page{height:100vh;padding:14px 26px 18px;position:relative;display:flex;flex-direction:column;gap:5px}
+.brand{position:absolute;top:15px;left:26px;font-size:25px;font-weight:780;letter-spacing:-.06em;z-index:10;user-select:none}
+.brand em{font-style:italic;color:var(--blue);font-weight:260}
+.badge-wrap{position:absolute;top:14px;right:26px;z-index:10}
+.badge-pill{display:inline-flex;align-items:center;padding:5px 14px;border-radius:999px;background:rgba(255,255,255,.52);border:1px solid rgba(255,255,255,.88);box-shadow:inset 0 1px rgba(255,255,255,.9),0 5px 16px rgba(10,50,100,.07);font-size:11.5px;font-weight:750;color:var(--blue);letter-spacing:.07em}
+.hero{text-align:center;flex-shrink:0;padding-top:17px}
+.hero h1{font-size:clamp(40px,4.6vw,74px);font-weight:830;letter-spacing:-.075em;line-height:.88}
+.hero h1 em{font-style:italic;font-weight:250;color:var(--blue)}
+.hero p{margin-top:6px;font-size:13px;color:rgba(58,90,116,.74);font-weight:480;letter-spacing:.01em}
+.stage{flex:1;min-height:0;position:relative;border-radius:42px;background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.9);box-shadow:inset 0 2px rgba(255,255,255,.85),var(--sh);backdrop-filter:blur(36px) saturate(180%);overflow:hidden}
+.stage::before{content:"";position:absolute;inset:0;border-radius:42px;pointer-events:none;background:radial-gradient(680px 360px at 50% 47%,rgba(255,255,255,.4),transparent 62%),linear-gradient(132deg,rgba(255,255,255,.56),transparent 28%,rgba(255,255,255,.14) 62%,transparent)}
+.stage::after{content:"";position:absolute;inset:18px;border-radius:34px;pointer-events:none;border:1px solid rgba(255,255,255,.32);box-shadow:inset 0 0 52px rgba(255,255,255,.18)}
+.lines{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:1}
+.ln{stroke:rgba(255,255,255,.45);stroke-width:1.5;stroke-dasharray:4 8;fill:none;transition:opacity .4s}
+.hub{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);z-index:6;width:214px;height:214px;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;background:rgba(255,255,255,.54);border:1.5px solid rgba(255,255,255,.92);box-shadow:inset 0 2px rgba(255,255,255,.96),0 0 0 22px rgba(255,255,255,.045),var(--sh);backdrop-filter:blur(44px) saturate(215%);cursor:pointer;outline:none;transition:transform .42s cubic-bezier(.2,1,.25,1),opacity .38s,filter .38s,box-shadow .3s;animation:hubBreath 6.5s ease-in-out infinite}
+.hub:hover{transform:translate(-50%,-50%) scale(1.07);box-shadow:inset 0 2px rgba(255,255,255,.96),0 0 0 28px rgba(255,255,255,.06),0 36px 96px rgba(10,50,100,.22)}
+.hub-eyebrow{font-size:10px;font-weight:800;letter-spacing:.26em;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+.hub-klient{font-size:36px;font-weight:920;letter-spacing:-.06em;color:var(--blue);margin-bottom:12px;line-height:1}
+.hub-4{display:grid;grid-template-columns:1fr 1fr;gap:3px 14px}
+.hub-4 span{font-size:14px;font-weight:720;letter-spacing:-.025em;color:var(--ink)}
+.nd{position:absolute;z-index:5;width:158px;height:158px;border-radius:28px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:9px;text-align:center;background:rgba(255,255,255,.3);border:1px solid rgba(255,255,255,.86);box-shadow:inset 0 2px rgba(255,255,255,.85),var(--sh);backdrop-filter:blur(28px) saturate(165%);cursor:pointer;transition:transform .38s cubic-bezier(.2,1,.25,1),opacity .38s,filter .38s,box-shadow .3s;padding:20px}
+.nd:hover{transform:translateY(-5px) scale(1.05);box-shadow:inset 0 2px rgba(255,255,255,.9),0 28px 72px rgba(10,50,100,.18)}
+.nd-ico{font-size:38px;line-height:1}
+.nd-name{font-size:16px;font-weight:780;letter-spacing:-.04em;line-height:1.1}
+.nd1{top:8%;left:7%;border-top:2px solid rgba(29,168,87,.5)}
+.nd2{top:8%;right:7%;border-top:2px solid rgba(35,120,220,.5)}
+.nd3{bottom:8%;left:7%;border-top:2px solid rgba(108,79,212,.5)}
+.nd4{bottom:8%;right:7%;border-top:2px solid rgba(232,135,15,.5)}
+.glass-panel{position:absolute;inset:13px;z-index:20;border-radius:38px;background:rgba(255,255,255,.26);border:1px solid rgba(255,255,255,.88);box-shadow:inset 0 2.5px rgba(255,255,255,.92),0 34px 100px rgba(10,50,100,.18);backdrop-filter:blur(48px) saturate(210%);padding:28px 30px;display:none;opacity:0;transform:scale(.955) translateY(8px);transition:opacity .3s cubic-bezier(.2,1,.25,1),transform .3s cubic-bezier(.2,1,.25,1);pointer-events:none}
+.glass-panel.open{display:grid;pointer-events:auto}
+.glass-panel.vis{opacity:1;transform:none}
+#det{grid-template-columns:1fr 1fr;gap:24px;align-items:start}
+.det-l,.det-r{display:flex;flex-direction:column;gap:14px}
+.det-head{display:flex;align-items:center;gap:15px}
+.det-icon{width:58px;height:58px;border-radius:20px;flex-shrink:0;display:grid;place-items:center;font-size:28px;background:rgba(255,255,255,.55);border:1px solid rgba(255,255,255,.9);box-shadow:inset 0 1.5px rgba(255,255,255,.88),0 10px 26px rgba(10,50,100,.08)}
+.det-title{font-size:27px;font-weight:860;letter-spacing:-.06em;line-height:1}
+.det-hint{font-size:13px;color:var(--muted);font-weight:460;margin-top:3px}
+.subs-list{display:flex;flex-direction:column;gap:6px}
+.sub{display:flex;align-items:center;gap:11px;padding:10px 13px;border-radius:17px;background:rgba(255,255,255,.34);border:1px solid rgba(255,255,255,.74);box-shadow:inset 0 1px rgba(255,255,255,.8);cursor:pointer;transition:background .2s,transform .22s cubic-bezier(.2,1,.25,1),box-shadow .2s}
+.sub:hover,.sub.on{background:rgba(255,255,255,.62);transform:translateX(4px);box-shadow:inset 0 1px rgba(255,255,255,.92),0 7px 20px rgba(10,50,100,.08)}
+.s-ico{width:31px;height:31px;border-radius:10px;display:grid;place-items:center;font-size:14px;background:rgba(210,235,255,.58);color:var(--blue);flex-shrink:0}
+.s-txt{flex:1}
+.s-txt h4{font-size:13px;font-weight:720;margin-bottom:1px}
+.s-txt p{font-size:11px;color:var(--muted);font-weight:430}
+.s-arr{color:var(--blue);font-size:15px;font-weight:700}
+.val-eyebrow{font-size:9.5px;font-weight:820;letter-spacing:.24em;text-transform:uppercase;margin-bottom:4px}
+.val-title{font-size:20px;font-weight:840;letter-spacing:-.04em;line-height:1.1;margin-bottom:8px}
+.val-desc{font-size:13px;line-height:1.5;color:var(--muted);font-weight:440;margin-bottom:12px}
+.sav-head{font-size:9.5px;font-weight:760;letter-spacing:.2em;text-transform:uppercase;color:#83a0b4;margin-bottom:7px}
+.savings{display:flex;flex-direction:column;gap:6px}
+.sav{position:relative;display:flex;align-items:center;gap:11px;padding:9px 13px;border-radius:15px;background:rgba(255,255,255,.33);border:1px solid rgba(255,255,255,.72);transition:background .18s;cursor:default}
+.sav:hover{background:rgba(255,255,255,.58)}
+.sav:hover .tip{opacity:1;transform:translateX(-50%) translateY(0);pointer-events:auto}
+.sav-icon{font-size:17px;line-height:1}
+.sav-lbl{font-size:12.5px;font-weight:640;flex:1}
+.sav-pill{font-size:10.5px;font-weight:820;padding:3px 9px;border-radius:999px;background:rgba(29,168,87,.12);color:var(--green);border:1px solid rgba(29,168,87,.22);white-space:nowrap}
+.tip{position:absolute;bottom:calc(100% + 8px);left:50%;transform:translateX(-50%) translateY(5px);background:rgba(5,25,48,.91);color:#fff;padding:10px 14px;border-radius:13px;font-size:11.5px;white-space:nowrap;opacity:0;pointer-events:none;transition:opacity .2s,transform .2s;z-index:80;backdrop-filter:blur(18px);box-shadow:0 8px 30px rgba(0,0,0,.3)}
+.tip::after{content:"";position:absolute;top:100%;left:50%;transform:translateX(-50%);border:5px solid transparent;border-top-color:rgba(5,25,48,.91)}
+.tip strong{display:block;margin-bottom:7px;font-size:12.5px}
+.t-row{display:flex;justify-content:space-between;gap:20px;margin:2px 0;font-size:11px}
+.t-row .tl{color:rgba(255,255,255,.55)}
+.t-row .tv{font-weight:720}
+.t-row .tv.ok{color:#4cd87d}
+#fp{grid-template-columns:1fr 1fr;gap:32px;align-items:start}
+.fp-l,.fp-r{display:flex;flex-direction:column;gap:0}
+.fp-title{font-size:30px;font-weight:855;letter-spacing:-.065em;line-height:1.05;margin-bottom:8px}
+.fp-intro{font-size:14px;color:var(--muted);line-height:1.52;margin-bottom:18px;font-weight:430}
+.checks{display:flex;flex-direction:column;gap:9px}
+.chk{display:flex;align-items:flex-start;gap:13px;padding:12px 15px;border-radius:17px;background:rgba(255,255,255,.38);border:1px solid rgba(255,255,255,.8);box-shadow:inset 0 1px rgba(255,255,255,.86)}
+.chk-mark{width:25px;height:25px;border-radius:50%;flex-shrink:0;background:rgba(29,168,87,.14);border:1px solid rgba(29,168,87,.3);display:grid;place-items:center;font-size:12px;color:var(--green);margin-top:1px}
+.chk strong{display:block;font-size:13.5px;font-weight:720;margin-bottom:2px}
+.chk span{font-size:11.5px;color:var(--muted);font-weight:420}
+.qt-head{font-size:9.5px;font-weight:780;letter-spacing:.22em;text-transform:uppercase;color:#83a0b4;margin-bottom:10px}
+.quotes{display:flex;flex-direction:column;gap:8px}
+.quote{padding:14px 16px;border-radius:17px;border:1px solid rgba(255,255,255,.88);background:rgba(208,238,255,.38);font-size:13px;font-style:italic;color:var(--ink);line-height:1.44}
+.quote b{display:block;margin-top:6px;font-style:normal;font-size:11px;font-weight:650;color:var(--muted)}
+.cls{position:absolute;top:17px;right:17px;width:33px;height:33px;border-radius:50%;background:rgba(255,255,255,.46);border:1px solid rgba(255,255,255,.82);cursor:pointer;display:grid;place-items:center;font-size:17px;color:var(--muted);box-shadow:inset 0 1px rgba(255,255,255,.86);transition:background .18s,transform .18s;z-index:90;outline:none}
+.cls:hover{background:rgba(255,255,255,.72);transform:scale(1.12)}
+.stage.has-panel .nd{opacity:0;filter:blur(2px);pointer-events:none;transform:scale(.91)}
+.stage.has-panel .hub{opacity:0;filter:blur(1.5px);pointer-events:none;transform:translate(-50%,-50%) scale(.88)}
+.stage.has-panel .ln{opacity:.1}
+@keyframes lightSweep{from{transform:translateX(-3%) rotate(-2deg)}to{transform:translateX(4%) rotate(3deg)}}
+@keyframes hubBreath{0%,100%{box-shadow:inset 0 2px rgba(255,255,255,.96),0 0 0 22px rgba(255,255,255,.045),var(--sh)}50%{box-shadow:inset 0 2px rgba(255,255,255,.96),0 0 0 31px rgba(255,255,255,.065),0 34px 92px rgba(10,50,100,.2)}}
+@keyframes subIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.subs-list .sub{animation:subIn .28s cubic-bezier(.2,1,.25,1) both}
+.subs-list .sub:nth-child(1){animation-delay:.04s}
+.subs-list .sub:nth-child(2){animation-delay:.09s}
+.subs-list .sub:nth-child(3){animation-delay:.14s}
+.subs-list .sub:nth-child(4){animation-delay:.19s}
+.c-green{color:var(--green)}.c-blue{color:var(--blue)}.c-purple{color:var(--purple)}.c-orange{color:var(--orange)}
 </style>
 </head>
 <body>
-<div class="app">
-  <header class="topbar">
-    <div class="brand"><em>Filip</em> Solár</div>
-    <div class="trust"><span class="trust-mark">BT</span>Broker Trust</div>
+<div class="page">
+  <div class="brand"><em>Filip</em> Solár</div>
+  <div class="badge-wrap"><span class="badge-pill">BT · Broker Trust</span></div>
+  <header class="hero">
+    <h1>Finance kolem <em>klienta</em>.</h1>
+    <p>Nejdřív člověk. Pak strategie. Až potom produkty.</p>
   </header>
-
   <main class="stage" id="stage">
-    <svg class="constellation" viewBox="0 0 1600 900" preserveAspectRatio="none" aria-hidden="true">
-      <path class="path p-home" d="M342 184 C510 248,650 334,800 450"></path>
-      <path class="path p-wealth" d="M1258 184 C1090 248,950 334,800 450"></path>
-      <path class="path p-protect" d="M342 716 C510 652,650 566,800 450"></path>
-      <path class="path p-plan" d="M1258 716 C1090 652,950 566,800 450"></path>
+    <svg class="lines" viewBox="0 0 1600 760" preserveAspectRatio="none">
+      <path class="ln" d="M340 170 C520 290,650 338,800 380"/>
+      <path class="ln" d="M1260 170 C1080 290,950 338,800 380"/>
+      <path class="ln" d="M340 590 C520 470,650 422,800 380"/>
+      <path class="ln" d="M1260 590 C1080 470,950 422,800 380"/>
     </svg>
-
-    <button class="core" type="button" data-action="about" aria-label="Klient">
-      <span class="core-disc"></span>
-      <span class="core-content">
-        <span>
-          <span class="core-kicker">střed</span>
-          <span class="core-title">KLIENT</span>
-          <span class="core-values"><span>Klid</span><span>Jistota</span><span>Růst</span><span>Svoboda</span></span>
-        </span>
-      </span>
+    <button class="hub" id="hub" onclick="openFilip()">
+      <div class="hub-eyebrow">na prvním místě</div>
+      <div class="hub-klient">KLIENT</div>
+      <div class="hub-4">
+        <span>Klid</span><span>Jistota</span>
+        <span>Růst</span><span>Svoboda</span>
+      </div>
     </button>
-
-    <button class="area a-home" type="button" data-area="home" aria-label="Bydlení">
-      <span class="area-inner">
-        <svg viewBox="0 0 48 48" aria-hidden="true"><path d="M7 23.5 24 9l17 14.5"></path><path d="M12 22v17h24V22"></path><path d="M20 39V27h8v12"></path></svg>
-        <span>Bydlení</span>
-      </span>
-    </button>
-
-    <button class="area a-wealth" type="button" data-area="wealth" aria-label="Majetek">
-      <span class="area-inner">
-        <svg viewBox="0 0 48 48" aria-hidden="true"><path d="M8 37h32"></path><path d="M13 33V21"></path><path d="M24 33V13"></path><path d="M35 33V17"></path><path d="M10 19l14-10 14 6"></path></svg>
-        <span>Majetek</span>
-      </span>
-    </button>
-
-    <button class="area a-protect" type="button" data-area="protect" aria-label="Ochrana">
-      <span class="area-inner">
-        <svg viewBox="0 0 48 48" aria-hidden="true"><path d="M24 6 38 12v12c0 9-6 15-14 18-8-3-14-9-14-18V12l14-6Z"></path><path d="m17 24 5 5 10-11"></path></svg>
-        <span>Ochrana</span>
-      </span>
-    </button>
-
-    <button class="area a-plan" type="button" data-area="plan" aria-label="Plán">
-      <span class="area-inner">
-        <svg viewBox="0 0 48 48" aria-hidden="true"><path d="M13 14c6-7 16-7 22 0 6 7 6 17 0 24-6 7-16 7-22 0-6-7-6-17 0-24Z"></path><path d="M17 25h14"></path><path d="M24 18v14"></path></svg>
-        <span>Plán</span>
-      </span>
-    </button>
-
-    <div class="ambient-label">finance jako celek</div>
-
-    <section class="detail" id="detail" aria-live="polite">
-      <article class="sheet detail-main">
-        <div class="meta"><span class="mini-icon" id="detailIcon"></span><span id="detailMeta">Oblast</span></div>
-        <h2 id="detailTitle">Bydlení</h2>
-        <p id="detailLead"></p>
-        <div class="subnav" id="subnav"></div>
-      </article>
-      <article class="sheet detail-value">
-        <div class="value-copy">
-          <h3 id="valueTitle"></h3>
-          <p id="valueText"></p>
+    <div class="nd nd1" onclick="openArea('q1')">
+      <div class="nd-ico c-green">🏠</div>
+      <div class="nd-name">Bydlení</div>
+    </div>
+    <div class="nd nd2" onclick="openArea('q2')">
+      <div class="nd-ico c-blue" style="font-size:32px;font-weight:900">↗</div>
+      <div class="nd-name">Majetek</div>
+    </div>
+    <div class="nd nd3" onclick="openArea('q3')">
+      <div class="nd-ico c-purple">🛡</div>
+      <div class="nd-name">Ochrana</div>
+    </div>
+    <div class="nd nd4" onclick="openArea('q4')">
+      <div class="nd-ico c-orange" style="font-size:32px;font-weight:900">∞</div>
+      <div class="nd-name">Plán</div>
+    </div>
+    <!-- DETAIL PANEL -->
+    <div class="glass-panel" id="det">
+      <button class="cls" onclick="closeAll()">✕</button>
+      <div class="det-l">
+        <div class="det-head">
+          <div class="det-icon" id="d-ico">🏠</div>
+          <div>
+            <div class="det-title" id="d-title">—</div>
+            <div class="det-hint" id="d-hint">—</div>
+          </div>
         </div>
-        <div class="proof-grid" id="proofGrid"></div>
-      </article>
-    </section>
-
-    <section class="about-panel" id="aboutPanel" aria-live="polite">
-      <button class="close" type="button" data-action="close" aria-label="Zavřít">
-        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"></path></svg>
-      </button>
-      <article class="sheet work">
-        <h2>Jak pracuji</h2>
-        <div class="work-list">
-          <div class="work-item"><span class="check"><svg viewBox="0 0 24 24"><path d="m5 13 4 4L19 7"></path></svg></span>vysvětluji lidsky</div>
-          <div class="work-item"><span class="check"><svg viewBox="0 0 24 24"><path d="m5 13 4 4L19 7"></path></svg></span>propojuji finance do celku</div>
-          <div class="work-item"><span class="check"><svg viewBox="0 0 24 24"><path d="m5 13 4 4L19 7"></path></svg></span>hlídám pravidelný servis</div>
-          <div class="work-item"><span class="check"><svg viewBox="0 0 24 24"><path d="m5 13 4 4L19 7"></path></svg></span>posílám shrnutí a videoprezentace</div>
+        <div class="subs-list" id="subs-list"></div>
+      </div>
+      <div class="det-r">
+        <div class="val-eyebrow c-green" id="v-eye">Přidaná hodnota</div>
+        <div class="val-title" id="v-title">—</div>
+        <div class="val-desc" id="v-desc">—</div>
+        <div class="sav-head">Kolik vám ušetřím času →</div>
+        <div class="savings" id="sav-list"></div>
+      </div>
+    </div>
+    <!-- FILIP PANEL -->
+    <div class="glass-panel" id="fp">
+      <button class="cls" onclick="closeAll()">✕</button>
+      <div class="fp-l">
+        <div class="fp-title">Jak pracuji</div>
+        <div class="fp-intro">Moje role není přidat další produkt. Moje role je dát klientovi klid, souvislosti a jasný další krok.</div>
+        <div class="checks">
+          <div class="chk"><div class="chk-mark">✔</div><div><strong>Vysvětluji lidsky</strong><span>Bez bankovních frází a zbytečné odborné mlhy.</span></div></div>
+          <div class="chk"><div class="chk-mark">✔</div><div><strong>Propojuji finance do celku</strong><span>Hypotéka, investice a pojištění spolu souvisí.</span></div></div>
+          <div class="chk"><div class="chk-mark">✔</div><div><strong>Hlídám pravidelný servis</strong><span>Výročí, revize a změny v životě nezůstávají na klientovi.</span></div></div>
+          <div class="chk"><div class="chk-mark">✔</div><div><strong>Dávám jasný výstup po schůzce</strong><span>Shrnutí nebo videoprezentace, aby bylo zřejmé, co dál.</span></div></div>
         </div>
-      </article>
-      <article class="sheet references">
-        <h3>Co říkají klienti</h3>
+      </div>
+      <div class="fp-r">
+        <div class="qt-head">Důkaz v praxi</div>
         <div class="quotes">
-          <div class="quote"><p>Konečně jsem pochopil, co vlastně podepisuji.</p><b>Petr Š., Praha</b></div>
-          <div class="quote"><p>Poprvé mám přehled o všech smlouvách na jednom místě.</p><b>Lukáš N., Praha</b></div>
-          <div class="quote"><p>Schůzka byla věcná, srozumitelná a bez tlaku.</p><b>Věra K., Litomyšl</b></div>
+          <div class="quote">„Konečně jsem pochopil, co vlastně podepisuji."<b>— Petr Š., Praha</b></div>
+          <div class="quote">„Konečně chápu, proč je pojištění nastavené právě tak."<b>— Věra K., Litomyšl</b></div>
+          <div class="quote">„Poprvé mám přehled o všech smlouvách na jednom místě."<b>— Lukáš N., Praha</b></div>
         </div>
-      </article>
-    </section>
+      </div>
+    </div>
   </main>
 </div>
-
 <script>
-const icons={
-  home:'<svg viewBox="0 0 48 48" aria-hidden="true"><path d="M7 23.5 24 9l17 14.5"></path><path d="M12 22v17h24V22"></path><path d="M20 39V27h8v12"></path></svg>',
-  wealth:'<svg viewBox="0 0 48 48" aria-hidden="true"><path d="M8 37h32"></path><path d="M13 33V21"></path><path d="M24 33V13"></path><path d="M35 33V17"></path><path d="M10 19l14-10 14 6"></path></svg>',
-  protect:'<svg viewBox="0 0 48 48" aria-hidden="true"><path d="M24 6 38 12v12c0 9-6 15-14 18-8-3-14-9-14-18V12l14-6Z"></path><path d="m17 24 5 5 10-11"></path></svg>',
-  plan:'<svg viewBox="0 0 48 48" aria-hidden="true"><path d="M13 14c6-7 16-7 22 0 6 7 6 17 0 24-6 7-16 7-22 0-6-7-6-17 0-24Z"></path><path d="M17 25h14"></path><path d="M24 18v14"></path></svg>',
-  bank:'<svg viewBox="0 0 48 48"><path d="M8 19h32"></path><path d="M12 19v18"></path><path d="M20 19v18"></path><path d="M28 19v18"></path><path d="M36 19v18"></path><path d="M7 37h34"></path><path d="M24 8 9 16h30L24 8Z"></path></svg>',
-  clock:'<svg viewBox="0 0 48 48"><path d="M24 8a16 16 0 1 0 0 32 16 16 0 0 0 0-32Z"></path><path d="M24 16v10l7 4"></path></svg>',
-  target:'<svg viewBox="0 0 48 48"><path d="M24 8a16 16 0 1 0 0 32 16 16 0 0 0 0-32Z"></path><path d="M24 15a9 9 0 1 0 0 18 9 9 0 0 0 0-18Z"></path><path d="M24 22v4h4"></path></svg>',
-  shield:'<svg viewBox="0 0 48 48"><path d="M24 6 38 12v12c0 9-6 15-14 18-8-3-14-9-14-18V12l14-6Z"></path><path d="m17 24 5 5 10-11"></path></svg>',
-  video:'<svg viewBox="0 0 48 48"><path d="M10 16h20a4 4 0 0 1 4 4v8a4 4 0 0 1-4 4H10V16Z"></path><path d="m34 21 6-4v14l-6-4"></path></svg>',
-  sync:'<svg viewBox="0 0 48 48"><path d="M36 15a15 15 0 0 0-25 7"></path><path d="M36 9v6h-6"></path><path d="M12 33a15 15 0 0 0 25-7"></path><path d="M12 39v-6h6"></path></svg>',
-  file:'<svg viewBox="0 0 48 48"><path d="M15 8h14l7 7v25H15V8Z"></path><path d="M29 8v8h7"></path><path d="M20 25h12"></path><path d="M20 31h10"></path></svg>',
-  chart:'<svg viewBox="0 0 48 48"><path d="M9 38h30"></path><path d="M13 31l8-8 6 5 9-12"></path><path d="M31 16h5v5"></path></svg>',
-  grid:'<svg viewBox="0 0 48 48"><path d="M10 10h12v12H10z"></path><path d="M26 10h12v12H26z"></path><path d="M10 26h12v12H10z"></path><path d="M26 26h12v12H26z"></path></svg>',
-  heart:'<svg viewBox="0 0 48 48"><path d="M24 39S10 31 10 19a8 8 0 0 1 14-5 8 8 0 0 1 14 5c0 12-14 20-14 20Z"></path></svg>'
-};
-
-const data={
-  home:{
-    label:'Bydlení',
-    meta:'hypotéka a domov',
-    color:'var(--green)',
-    lead:'Financování má odpovídat životu klienta, ne jen sazebníku banky.',
-    tabs:[
-      {
-        name:'Vlastní bydlení',
-        title:'Hypotéka bez hodin nejistoty',
-        text:'Výběr banky, sazby, fixace, dokumenty a proces převedu do jasného postupu. Klient ví, proč daná varianta dává smysl.',
-        proof:[
-          ['bank','Porovnání bank','6-10 hodin','0 hodin'],
-          ['file','Dokumenty','4-8 hodin','1 hodina'],
-          ['clock','Termíny','hlídat sám','hlídám já'],
-          ['target','Rozhodnutí','nejistota','jasné varianty']
-        ]
-      },
-      {
-        name:'Investiční nemovitost',
-        title:'Nemovitost jako součást plánu',
-        text:'Řešíme nájem, rezervu, splátku a dopad na celkové cashflow. Nákup není izolované rozhodnutí.',
-        proof:[
-          ['home','Model nájmu','3-5 hodin','společně projdeme'],
-          ['chart','Cashflow','2-4 hodiny','jasný model'],
-          ['shield','Rezerva','často chybí','součást plánu'],
-          ['sync','Návaznosti','chaos','propojeno']
-        ]
-      },
-      {
-        name:'Refixace',
-        title:'Správný čas rozhoduje',
-        text:'Výročí fixace se řeší včas. Klient nemusí čekat na dopis z banky ani lovit alternativy na poslední chvíli.',
-        proof:[
-          ['clock','Výročí','snadno uteče','včas upozorním'],
-          ['bank','Nabídky','4-8 hodin','srovnám'],
-          ['file','Proces','3-6 hodin','provedu'],
-          ['target','Výsledek','tlak času','klid']
-        ]
-      },
-      {
-        name:'Konsolidace',
-        title:'Volnější rozpočet',
-        text:'Cílem není jen sloučit závazky. Cílem je dostat do rozpočtu prostor pro rezervu, investice a klid.',
-        proof:[
-          ['grid','Závazky','2-4 hodiny','rychlý přehled'],
-          ['bank','Varianty','4-8 hodin','doporučení'],
-          ['chart','Rozpočet','nepřehledný','čitelnější'],
-          ['shield','Rizika','skrytá','pojmenujeme']
-        ]
-      }
+const AREAS={
+  q1:{icon:'🏠',title:'Bydlení',hint:'Hypotéka není jen sazba.',accent:'green',
+    subs:[{ico:'🏠',name:'Vlastní bydlení',desc:'výběr banky, sazby, fixace a procesu'},{ico:'🏗',name:'Investiční nemovitosti',desc:'nájem, rezerva a měsíční rozpočet'},{ico:'↺',name:'Refinancování a refixace',desc:'hlídání výročí, vyjednání podmínek'},{ico:'⇄',name:'Konsolidace závazků',desc:'uvolnění rozpočtu pro rezervu a investice'}],
+    values:[
+      {title:'Proč nestačí vyřídit si hypotéku sám',desc:'Banky nabízejí desítky kombinací. Pomůžu vybrat variantu, která sedí vašemu životu — bez hodin hledání a nejistoty.',savings:[{ico:'🏦',lbl:'Porovnání bank',pill:'−10 h',tip:{t:'Porovnání bank',self:'6–10 hodin',me:'0 hodin'}},{ico:'📄',lbl:'Příprava dokumentů',pill:'−7 h',tip:{t:'Dokumenty',self:'4–8 hodin',me:'1 hodina'}},{ico:'✏',lbl:'Vedení celého procesu',pill:'−5 h',tip:{t:'Procesní vedení',self:'5–8 hodin',me:'hlídám já'}}]},
+      {title:'Investiční nemovitost bez chaosu',desc:'Ukážeme si, jestli dává smysl úvěr, nájem, rezerva i dlouhodobé držení. Nejde jen o koupi, ale o celé nastavení.',savings:[{ico:'📊',lbl:'Porovnání možností',pill:'−8 h',tip:{t:'Analýza variant',self:'5–8 hodin',me:'0 hodin'}},{ico:'💧',lbl:'Nastavení rezervy',pill:'−3 h',tip:{t:'Cashflow',self:'3–5 hodin',me:'1 hodina'}}]},
+      {title:'Refinancování načas, bez čekání',desc:'Hlídám termíny, výročí fixace a prostor pro lepší podmínky. Klient nemusí řešit, kdy začít.',savings:[{ico:'🗓',lbl:'Hlídání výročí',pill:'automaticky',tip:{t:'Termíny',self:'zapomenete',me:'připomenu včas'}},{ico:'🏦',lbl:'Srovnání bank',pill:'−6 h',tip:{t:'Nové podmínky',self:'4–8 hodin',me:'0 hodin'}}]},
+      {title:'Volnější měsíční rozpočet',desc:'Konsolidace může uvolnit peníze na rezervu nebo investice. Vždy řešíme celkový dopad na domácnost.',savings:[{ico:'📋',lbl:'Zmapování závazků',pill:'−4 h',tip:{t:'Přehled dluhů',self:'2–4 hodiny',me:'rychlý přehled'}},{ico:'📊',lbl:'Porovnání variant',pill:'−6 h',tip:{t:'Konsolidace',self:'4–8 hodin',me:'jasné varianty'}}]}
     ]
   },
-  wealth:{
-    label:'Majetek',
-    meta:'růst a renta',
-    color:'var(--blue)',
-    lead:'Peníze mají mít směr: rezervu, růst, ochranu před inflací a budoucí příjem.',
-    tabs:[
-      {
-        name:'Tvorba majetku',
-        title:'Investice začínají cílem',
-        text:'Nejde o produkt, ale o trasu. Společně oddělíme rezervu, dlouhý horizont a peníze pro konkrétní životní cíle.',
-        proof:[
-          ['target','Cíl','mlhavý','konkrétní'],
-          ['chart','Strategie','5-8 hodin','vysvětlím'],
-          ['clock','Disciplína','snadné odložit','držíme směr'],
-          ['grid','Rozložení','náhodné','systémové']
-        ]
-      },
-      {
-        name:'Renta',
-        title:'Budoucí příjem bez magie',
-        text:'Ukážeme si, jaká částka může časem vytvářet příjem a co pro to znamená pravidelnost dnes.',
-        proof:[
-          ['chart','Model renty','4-7 hodin','společně'],
-          ['clock','Horizont','nejasný','viditelný'],
-          ['target','Částka','odhad','plán'],
-          ['sync','Revize','náhodně','pravidelně']
-        ]
-      },
-      {
-        name:'Inflace',
-        title:'Hodnota peněz v čase',
-        text:'Částka na účtu a reálná hodnota nejsou to samé. Plán ukazuje, kde mají být peníze bezpečně a kde mají růst.',
-        proof:[
-          ['shield','Rezerva','jen účet','krátký horizont'],
-          ['chart','Růst','odklad','strategie'],
-          ['grid','Rozložení','jedno místo','více rolí'],
-          ['target','Smysl','slogan','konkrétní dopad']
-        ]
-      },
-      {
-        name:'Diverzifikace',
-        title:'Rozložení bez složitosti',
-        text:'Fondy, ETF, FKI nebo nemovitosti mají v plánu různé role. Klient má rozumět, proč tam která část patří.',
-        proof:[
-          ['grid','Portfolio','chaos','struktura'],
-          ['shield','Riziko','nečtené','vysvětlené'],
-          ['chart','Výnos','slib','očekávání'],
-          ['file','Přehled','složitý','jednoduchý']
-        ]
-      }
+  q2:{icon:'↗',title:'Majetek',hint:'Peníze, které mají plán.',accent:'blue',
+    subs:[{ico:'🎯',name:'Tvorba majetku',desc:'pravidelné i jednorázové investice s cílem'},{ico:'🏔',name:'Renta a pasivní příjem',desc:'konkrétní plán na budoucí příjem'},{ico:'📈',name:'Ochrana před inflací',desc:'reálná hodnota peněz v čase'},{ico:'▦',name:'Diverzifikace portfolia',desc:'fondy, ETF, FKI, nemovitosti'}],
+    values:[
+      {title:'Investice bez cíle jsou ztráta',desc:'Složené úročení funguje — ale jen pokud víte, co chcete dosáhnout. Pomůžu nastavit strategii, která má smysl.',savings:[{ico:'🎯',lbl:'Definice cíle',pill:'jasno',tip:{t:'Investiční cíl',self:'nejasné',me:'konkrétní plán'}},{ico:'📈',lbl:'Výběr nástrojů',pill:'−8 h',tip:{t:'Porovnání fondů',self:'6–10 hodin',me:'odborný výběr'}}]},
+      {title:'Budoucí renta s jasným číslem',desc:'Ukážeme si, jak velké portfolio může časem vytvářet příjem a jakou roli hraje pravidelnost.',savings:[{ico:'🏔',lbl:'Výpočet renty',pill:'vím kam',tip:{t:'Plán renty',self:'odhad',me:'konkrétní číslo'}},{ico:'📆',lbl:'Strategie na míru',pill:'−4 h',tip:{t:'Časový horizont',self:'4–6 hodin',me:'1 schůzka'}}]},
+      {title:'Ochrana hodnoty peněz v čase',desc:'Vysvětlím rozdíl mezi částkou na účtu a její skutečnou hodnotou. Cílem je, aby peníze neztrácely sílu.',savings:[{ico:'📉',lbl:'Inflační riziko',pill:'řešeno',tip:{t:'Inflace',self:'ignorováno',me:'strategicky řešeno'}}]},
+      {title:'Diverzifikace bez složitosti',desc:'Fondy, ETF, FKI a nemovitosti mají různé role. Cílem je rozložit riziko a zachovat přehled.',savings:[{ico:'▦',lbl:'Sestavení portfolia',pill:'−8 h',tip:{t:'Výběr nástrojů',self:'6–10 hodin',me:'hotové doporučení'}}]}
     ]
   },
-  protect:{
-    label:'Ochrana',
-    meta:'příjem a majetek',
-    color:'var(--purple)',
-    lead:'Nejlevnější pojistka nemusí ochránit to, co je pro klienta skutečně důležité.',
-    tabs:[
-      {
-        name:'Příjem',
-        title:'Ochrana příjmu drží rodinu',
-        text:'Invalidita, nemoc, výpadek příjmu a závazky mají být nastavené podle reality domácnosti.',
-        proof:[
-          ['shield','Krytí','4-8 hodin','vyberu'],
-          ['file','Podmínky','6-12 hodin','vysvětlím'],
-          ['heart','Rodina','riziko mezer','jasná ochrana'],
-          ['target','Částky','od oka','podle závazků']
-        ]
-      },
-      {
-        name:'Domov',
-        title:'Majetek bez skrytých mezer',
-        text:'Kontroluji limity, podpojištění, výjimky a reálné scénáře škod. Cena je až druhý krok.',
-        proof:[
-          ['home','Nemovitost','2-4 hodiny','zkontroluji'],
-          ['grid','Limity','snadno uniknou','hlídám'],
-          ['file','Výluky','drobné písmo','lidský překlad'],
-          ['shield','Škoda','nejistota','větší klid']
-        ]
-      },
-      {
-        name:'Auto',
-        title:'Auto není jen povinné ručení',
-        text:'Asistence, skla, náhradní vozidlo nebo spoluúčast rozhodnou až ve chvíli škody.',
-        proof:[
-          ['shield','Rozsah','rychlý výběr','kontrola'],
-          ['file','Podmínky','3-6 hodin','přečtu'],
-          ['clock','Škoda','stres','jasný postup'],
-          ['target','Cena','hlavní filtr','až po krytí']
-        ]
-      },
-      {
-        name:'OSVČ',
-        title:'Podnikatel má jiná rizika',
-        text:'Odpovědnost, příjem, klíčové osoby a rodina spolu souvisí. Ochrana musí odpovídat tomu, jak klient vydělává.',
-        proof:[
-          ['grid','Rizika','nepojmenovaná','zmapovaná'],
-          ['shield','Odpovědnost','často chybí','řešíme'],
-          ['heart','Rodina','závislá na příjmu','chráněná'],
-          ['sync','Návaznost','odděleno','jeden celek']
-        ]
-      }
+  q3:{icon:'🛡',title:'Ochrana',hint:'Desítky stran podmínek. Čtu je za vás.',accent:'purple',
+    subs:[{ico:'💪',name:'Ochrana příjmu',desc:'invalidita, PN, závažná onemocnění'},{ico:'🏠',name:'Nemovitost a domácnost',desc:'kontrola limitů, výluk a hodnoty'},{ico:'🚗',name:'Vozidla',desc:'povinné ručení a havarijní pojištění'},{ico:'💼',name:'Podnikání a OSVČ',desc:'odpovědnost, klíčové osoby, příjem'}],
+    values:[
+      {title:'Správné pojištění chrání skutečně',desc:'Nejde jen o cenu. Důležité je, zda chrání příjem, rodinu a závazky ve chvíli, kdy je to potřeba.',savings:[{ico:'📖',lbl:'Čtení podmínek',pill:'−10 h',tip:{t:'Pojistné podmínky',self:'6–12 hodin',me:'lidské vysvětlení'}},{ico:'📊',lbl:'Porovnání krytí',pill:'−6 h',tip:{t:'Analýza krytí',self:'4–8 hodin',me:'odborný výběr'}}]},
+      {title:'Majetek bez skrytých mezer',desc:'Zkontrolujeme limity, hodnotu nemovitosti a výluky. Nejlevnější pojistka nemusí být nejlepší při škodě.',savings:[{ico:'🔍',lbl:'Kontrola limitů',pill:'bez rizika',tip:{t:'Podpojištění',self:'možné riziko',me:'zkontrolováno'}}]},
+      {title:'Auto není jen povinné ručení',desc:'Řešíme asistenci, skla, náhradní vozidlo, střet se zvěří a reálné situace při škodě.',savings:[{ico:'🔍',lbl:'Analýza smluv',pill:'−5 h',tip:{t:'Porovnání pojistek',self:'4–6 hodin',me:'přehledné varianty'}}]},
+      {title:'OSVČ potřebuje jinou ochranu',desc:'Podnikatel má jiná rizika než zaměstnanec. Řešíme příjem, odpovědnost i návaznost na rodinu.',savings:[{ico:'💼',lbl:'Analýza rizik',pill:'kompletní',tip:{t:'Podnikatelská rizika',self:'neznámá',me:'zmapována a kryta'}}]}
     ]
   },
-  plan:{
-    label:'Plán',
-    meta:'dlouhodobý servis',
-    color:'var(--amber)',
-    lead:'Jedno místo pro důležitá finanční rozhodnutí, termíny a návaznosti.',
-    tabs:[
-      {
-        name:'Celek',
-        title:'Finance spolu mluví',
-        text:'Hypotéka, investice a pojištění nejsou oddělené světy. Jedno rozhodnutí mění zbytek plánu.',
-        proof:[
-          ['sync','Návaznosti','neviditelné','propojené'],
-          ['target','Cíle','roztroušené','v jednom směru'],
-          ['file','Přehled','v mailech','výstup po schůzce'],
-          ['video','Video','žádné','po schůzce']
-        ]
-      },
-      {
-        name:'Výročí',
-        title:'Termíny nemusí nosit klient',
-        text:'Fixace, revize smluv, investiční horizonty a změny v životě hlídám průběžně.',
-        proof:[
-          ['clock','Výročí','snadno uteče','hlídám'],
-          ['sync','Revize','náhodně','pravidelně'],
-          ['file','Smlouvy','v šuplíku','aktuální'],
-          ['target','Reakce','pozdě','v předstihu']
-        ]
-      },
-      {
-        name:'Instituce',
-        title:'Méně běhání mezi institucemi',
-        text:'Banka, pojišťovna i investiční společnost řeší svůj svět. Já hlídám, aby celek dával klientovi smysl.',
-        proof:[
-          ['bank','Banka','samostatně','koordinace'],
-          ['shield','Pojišťovna','samostatně','návaznost'],
-          ['chart','Investice','samostatně','součást plánu'],
-          ['sync','Proces','rozpadlý','vedený']
-        ]
-      },
-      {
-        name:'Výstup',
-        title:'Po schůzce je jasné, co dál',
-        text:'Shrnutí nebo videoprezentace drží domluvu, další kroky a hlavní důvody rozhodnutí pohromadě.',
-        proof:[
-          ['file','Shrnutí','z paměti','písemné'],
-          ['video','Video','není','srozumitelné'],
-          ['target','Kroky','nejasné','konkrétní'],
-          ['clock','Čas','vracení se','rychlejší návaznost']
-        ]
-      }
+  q4:{icon:'∞',title:'Plán',hint:'Jedno místo pro všechna rozhodnutí.',accent:'orange',
+    subs:[{ico:'🗺',name:'Finanční plán jako celek',desc:'hypotéka, investice a pojištění propojené'},{ico:'🗓',name:'Hlídání výročí a změn',desc:'revize, aktualizace, reakce na situace'},{ico:'🔗',name:'Koordinace institucí',desc:'banky, pojišťovny, investiční společnosti'},{ico:'🎬',name:'Shrnutí a videoprezentace',desc:'srozumitelný výstup po každé schůzce'}],
+    values:[
+      {title:'Vše propojené. Vše pod kontrolou.',desc:'Finance nejsou čtyři oddělené světy. Jedno rozhodnutí ovlivňuje vše ostatní.',savings:[{ico:'∞',lbl:'Propojení oblastí',pill:'celek',tip:{t:'Celkový plán',self:'roztříštěné',me:'jeden přehled'}},{ico:'⏱',lbl:'Koordinace institucí',pill:'−10 h',tip:{t:'Komunikace s institucemi',self:'8–12 hodin',me:'hlídám já'}}]},
+      {title:'Termíny hlídám za vás',desc:'Výročí, revize a změny v čase nemusíte nosit v hlavě. Připomenu, kdy je správný čas jednat.',savings:[{ico:'🗓',lbl:'Hlídání výročí',pill:'automaticky',tip:{t:'Výročí smluv',self:'zapomenete',me:'upozorním včas'}}]},
+      {title:'Jeden člověk koordinuje celek',desc:'Banka, pojišťovna i investiční společnost mají své požadavky. Hlídám návaznosti, aby klient nemusel.',savings:[{ico:'🔗',lbl:'Řízení institucí',pill:'−8 h',tip:{t:'Koordinace',self:'6–10 hodin',me:'mám na starosti'}}]},
+      {title:'Po schůzce víte, co dál',desc:'Dostanete srozumitelné shrnutí nebo videoprezentaci. Žádné dojmy — jen jasný další krok.',savings:[{ico:'🎬',lbl:'Videoprezentace',pill:'zdarma',tip:{t:'Výstup ze schůzky',self:'vlastní poznámky',me:'hotové shrnutí'}}]}
     ]
   }
 };
+
+let cur=null;
 const stage=document.getElementById('stage');
-const detail=document.getElementById('detail');
-const aboutPanel=document.getElementById('aboutPanel');
-let currentArea=null;
+const det=document.getElementById('det');
+const fp=document.getElementById('fp');
 
-function renderProof(items,color){
-  return items.map(([icon,title,alone,withMe])=>`
-    <div class="proof" tabindex="0" style="color:${color}">
-      ${icons[icon]}
-      <div><b>${title}</b><small>časová úspora</small></div>
-      <div class="time">
-        <div class="time-row"><span>Klient sám</span><strong>${alone}</strong></div>
-        <div class="time-row"><span>Se mnou</span><strong>${withMe}</strong></div>
-      </div>
-    </div>
-  `).join('');
+function openArea(key){
+  if(cur===key){closeAll();return;}
+  cur=key;
+  const a=AREAS[key];
+  fp.classList.remove('vis');
+  setTimeout(()=>fp.classList.remove('open'),10);
+  document.getElementById('d-ico').textContent=a.icon;
+  document.getElementById('d-title').textContent=a.title;
+  document.getElementById('d-hint').textContent=a.hint;
+  document.getElementById('subs-list').innerHTML=a.subs.map((s,i)=>
+    `<div class="sub${i===0?' on':''}" onmouseenter="pickSub(${i})" onclick="pickSub(${i})">
+       <div class="s-ico">${s.ico}</div>
+       <div class="s-txt"><h4>${s.name}</h4><p>${s.desc}</p></div>
+       <span class="s-arr">›</span>
+     </div>`
+  ).join('');
+  pickSub(0,a);
+  det.classList.add('open');
+  requestAnimationFrame(()=>requestAnimationFrame(()=>det.classList.add('vis')));
+  stage.classList.add('has-panel');
 }
 
-function setTab(areaKey,index){
-  const area=data[areaKey];
-  const tab=area.tabs[index];
-  document.getElementById('valueTitle').textContent=tab.title;
-  document.getElementById('valueText').textContent=tab.text;
-  document.getElementById('proofGrid').innerHTML=renderProof(tab.proof,area.color);
-  document.querySelectorAll('#subnav button').forEach((button,i)=>button.classList.toggle('active',i===index));
+function pickSub(i,aOverride){
+  const a=aOverride||AREAS[cur];
+  if(!a)return;
+  const v=a.values[i];
+  document.querySelectorAll('#subs-list .sub').forEach((el,j)=>el.classList.toggle('on',j===i));
+  const eye=document.getElementById('v-eye');
+  eye.textContent='Přidaná hodnota';
+  eye.className='val-eyebrow c-'+a.accent;
+  document.getElementById('v-title').textContent=v.title;
+  document.getElementById('v-desc').textContent=v.desc;
+  document.getElementById('sav-list').innerHTML=v.savings.map(s=>
+    `<div class="sav">
+       <span class="sav-icon">${s.ico}</span>
+       <span class="sav-lbl">${s.lbl}</span>
+       <span class="sav-pill">${s.pill}</span>
+       <div class="tip">
+         <strong>${s.tip.t}</strong>
+         <div class="t-row"><span class="tl">Klient sám:</span><span class="tv">${s.tip.self}</span></div>
+         <div class="t-row"><span class="tl">Se mnou:</span><span class="tv ok">${s.tip.me}</span></div>
+       </div>
+     </div>`
+  ).join('');
 }
 
-function openArea(areaKey){
-  const area=data[areaKey];
-  currentArea=areaKey;
-  aboutPanel.classList.remove('show');
-  stage.className=`stage state-detail ${areaKey}`;
-  document.querySelectorAll('.area').forEach(button=>button.classList.toggle('active',button.dataset.area===areaKey));
-  document.getElementById('detailIcon').innerHTML=icons[areaKey];
-  document.getElementById('detailIcon').style.color=area.color;
-  document.getElementById('detailMeta').textContent=area.meta;
-  document.getElementById('detailTitle').textContent=area.label;
-  document.getElementById('detailTitle').style.color=area.color;
-  document.getElementById('detailLead').textContent=area.lead;
-  document.getElementById('subnav').innerHTML=area.tabs.map((tab,index)=>`<button type="button" data-tab="${index}">${tab.name}</button>`).join('');
-  document.querySelectorAll('#subnav button').forEach(button=>{
-    button.addEventListener('mouseenter',()=>setTab(areaKey,Number(button.dataset.tab)));
-    button.addEventListener('click',()=>setTab(areaKey,Number(button.dataset.tab)));
-  });
-  setTab(areaKey,0);
-  detail.classList.add('show');
-}
-
-function openAbout(){
-  currentArea=null;
-  detail.classList.remove('show');
-  document.querySelectorAll('.area').forEach(button=>button.classList.remove('active'));
-  stage.className='stage state-about';
-  aboutPanel.classList.add('show');
+function openFilip(){
+  cur=null;
+  det.classList.remove('vis');
+  setTimeout(()=>det.classList.remove('open'),10);
+  fp.classList.add('open');
+  requestAnimationFrame(()=>requestAnimationFrame(()=>fp.classList.add('vis')));
+  stage.classList.add('has-panel');
 }
 
 function closeAll(){
-  currentArea=null;
-  detail.classList.remove('show');
-  aboutPanel.classList.remove('show');
-  document.querySelectorAll('.area').forEach(button=>button.classList.remove('active'));
-  stage.className='stage';
+  cur=null;
+  [det,fp].forEach(el=>{
+    el.classList.remove('vis');
+    setTimeout(()=>el.classList.remove('open'),300);
+  });
+  stage.classList.remove('has-panel');
 }
 
-document.querySelectorAll('[data-area]').forEach(button=>{
-  button.addEventListener('click',()=>{
-    if(currentArea===button.dataset.area){closeAll();return}
-    openArea(button.dataset.area);
-  });
-});
-document.querySelector('[data-action="about"]').addEventListener('click',openAbout);
-document.querySelector('[data-action="close"]').addEventListener('click',closeAll);
-document.addEventListener('keydown',event=>{
-  if(event.key==='Escape') closeAll();
-  if(event.key==='1') openArea('home');
-  if(event.key==='2') openArea('wealth');
-  if(event.key==='3') openArea('protect');
-  if(event.key==='4') openArea('plan');
-  if(event.key==='0') openAbout();
-});
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeAll();});
 </script>
 </body>
 </html>
