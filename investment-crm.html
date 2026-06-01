@@ -172,6 +172,30 @@ body{font-family:'Inter',sans-serif;background:#f1f5f9;color:#1e293b;font-size:1
 .fund-panel h3{font-size:15px;font-weight:700;margin-bottom:14px;display:flex;align-items:center;justify-content:space-between}
 .fund-tools{display:grid;grid-template-columns:2fr 1fr 1fr auto;gap:10px;align-items:end;margin-bottom:14px}
 .fund-table{border:1px solid #e2e8f0;border-radius:10px;overflow:hidden;background:#fff}
+
+/* AUM PANEL */
+.aum-panel{background:#fff;border-bottom:1px solid #e2e8f0;padding:20px 28px;display:none}
+.aum-panel.open{display:block}
+.aum-panel h3{font-size:15px;font-weight:700;margin-bottom:14px;display:flex;align-items:center;justify-content:space-between}
+.aum-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px;margin:12px 0 18px}
+.aum-card{background:#f8fafc;border:1px solid #e2e8f0;border-radius:12px;padding:14px}
+.aum-card-l{font-size:10px;color:#94a3b8;text-transform:uppercase;letter-spacing:.5px;font-weight:700;margin-bottom:5px}
+.aum-card-v{font-size:22px;font-weight:800;color:#1e293b;font-variant-numeric:tabular-nums}
+.aum-layout{display:grid;grid-template-columns:310px 1fr;gap:18px;align-items:start;margin-top:12px}
+.aum-chartbox{background:#f8fafc;border:1px solid #e2e8f0;border-radius:14px;padding:16px;text-align:center}
+.aum-donut{width:230px;height:230px;border-radius:50%;margin:6px auto 12px;position:relative;background:#e2e8f0}
+.aum-donut:after{content:'';position:absolute;inset:58px;background:#fff;border-radius:50%;box-shadow:inset 0 0 0 8px #eef2f7}
+.aum-legend{display:grid;gap:7px;text-align:left}
+.aum-legend-row{display:flex;align-items:center;justify-content:space-between;gap:10px;border:1px solid #e2e8f0;background:#fff;border-radius:10px;padding:8px 10px;font-size:12px}
+.aum-legend-row span:first-child{display:flex;align-items:center;gap:8px;min-width:0}
+.aum-dot{width:12px;height:12px;border-radius:50%;flex:0 0 12px}
+.aum-table{border:1px solid #e2e8f0;border-radius:12px;overflow:hidden;background:#fff}
+.aum-row{display:grid;grid-template-columns:2fr 120px 120px 120px 100px 100px;gap:10px;align-items:center;padding:10px 12px;border-bottom:1px solid #f1f5f9;font-size:12px}
+.aum-row:last-child{border-bottom:none}
+.aum-row.head{background:#f8fafc;color:#64748b;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.4px}
+.aum-row strong{font-size:13px}
+@media(max-width:900px){.aum-layout{grid-template-columns:1fr}.aum-row{grid-template-columns:1fr;gap:4px}}
+
 .fund-row{display:grid;grid-template-columns:2fr 120px 130px 90px 90px 160px;gap:10px;align-items:center;padding:10px 12px;border-bottom:1px solid #f1f5f9;font-size:12px}
 .fund-row:last-child{border-bottom:none}
 .fund-row.head{background:#f8fafc;color:#64748b;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.4px}
@@ -221,6 +245,7 @@ body{font-family:'Inter',sans-serif;background:#f1f5f9;color:#1e293b;font-size:1
     <button class="btn btn-gray" onclick="mergeClientsPrompt()">👥 Sloučit klienty</button>
     <button class="btn btn-gray" onclick="togglePanel('imp')">⬆ Import CSV</button>
     <button class="btn btn-gray" onclick="togglePanel('funds')">📈 Fondy / NAV</button>
+    <button class="btn btn-gray" onclick="togglePanel('aum')">📊 AUM</button>
     <button class="btn btn-gray" onclick="dlBackupJSON()">💾 Záloha JSON</button>
     <button class="btn btn-gray" onclick="document.getElementById('backupFile').click()">↥ Obnovit JSON</button>
     <input type="file" id="backupFile" accept=".json" style="display:none" onchange="restoreBackupJSON(event)">
@@ -276,6 +301,21 @@ body{font-family:'Inter',sans-serif;background:#f1f5f9;color:#1e293b;font-size:1
     <button class="btn btn-blue" onclick="saveFundValue()">Uložit hodnotu</button>
   </div>
   <div id="fundValueTable" class="fund-table"></div>
+</div>
+
+<!-- AUM PANEL -->
+<div class="aum-panel" id="aum">
+  <h3>Celkové AUM klientů <button class="btn btn-gray btn-sm" onclick="togglePanel('aum')">✕ Zavřít</button></h3>
+  <div class="import-info" style="margin-bottom:12px">
+    Přehled aktuální hodnoty aktiv pod správou podle fondů a investičních společností. Počítá se z aktuálních hodnot klientských pozic, realizované odkupy se odečítají, budoucí odkupy dnešní AUM neovlivňují.
+  </div>
+  <div class="fund-tools">
+    <div class="fg"><label>Zobrazení grafu</label><select id="aumMode" onchange="renderAumPanel()"><option value="company">Podle investiční společnosti</option><option value="fund">Podle fondu</option><option value="product">Podle typu produktu</option></select></div>
+    <div class="fg"><label>Filtr</label><input id="aumSearch" placeholder="Hledat fond / společnost / ISIN" oninput="renderAumPanel()"></div>
+    <div class="fg"><label>Min. hodnota fondu</label><input id="aumMin" type="number" placeholder="0" oninput="renderAumPanel()"></div>
+    <button class="btn btn-gray" onclick="exportAumCSV()">⬇ Export AUM CSV</button>
+  </div>
+  <div id="aumContent"></div>
 </div>
 
 <!-- ADD/EDIT PANEL -->
@@ -870,8 +910,10 @@ function togglePanel(id){
   document.getElementById('imp').classList.remove('open');
   document.getElementById('add').classList.remove('open');
   document.getElementById('funds').classList.remove('open');
+  const aumEl=document.getElementById('aum'); if(aumEl) aumEl.classList.remove('open');
   if(!isOpen) el.classList.add('open');
   if(id==='funds' && !isOpen) renderFundPanel();
+  if(id==='aum' && !isOpen) renderAumPanel();
 }
 
 function openAdd(prefill){
@@ -1177,33 +1219,106 @@ function restoreBackupJSON(e){
 
 function exportClientHTML(name){
   const cl=findClientRef(name); if(!cl) return;
+  const displayName = cl.name || clientDisplayNameFromRecords(cl.recs) || String(name).replace(/^cid:/,'');
   const m=cl.metrics;
   const tax=taxTestInfo(cl.recs);
+  const today=dt(new Date().toISOString());
+
   const fm={};
-  cl.recs.forEach(r=>{ const k=fundKey(r); if(!fm[k]) fm[k]={name:cleanFundName(r['Fond']||'?', companyOf(r)), items:[]}; fm[k].items.push(r); });
-  const rows=Object.values(fm).map(g=>{
+  cl.recs.forEach(r=>{
+    const k=fundKey(r);
+    if(!fm[k]) fm[k]={name:cleanFundName(r['Fond']||'?', companyOf(r)), company:companyOf(r), items:[]};
+    fm[k].items.push(r);
+  });
+
+  const funds=Object.values(fm).map(g=>{
     const deposits=g.items.reduce((s,r)=>s+depositVal(r),0);
     const withdrawn=g.items.reduce((s,r)=>s+(isWithdrawal(r)&&!isFutureWithdrawal(r)?withdrawalVal(r):0),0);
+    const scheduled=g.items.reduce((s,r)=>s+(isWithdrawal(r)&&isFutureWithdrawal(r)?withdrawalVal(r):0),0);
     const cur=g.items.reduce((s,r)=>s+curVal(r),0);
     const profit=cur+withdrawn-deposits;
-    const p=deposits>0?profit/deposits*100:0;
-    const comp=companyOf(g.items[0]||{});
-    return `<tr><td>${esc(g.name)}</td><td>${esc(comp)}</td><td>${czk(deposits)}</td><td>${czk(withdrawn)}</td><td>${czk(cur)}</td><td class="${profit>=0?'up':'dn'}">${czk(profit)}</td><td class="${p>=0?'up':'dn'}">${pct(p)}</td></tr>`;
-  }).join('');
-  const html=`<!DOCTYPE html><html lang="cs"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Investiční report – ${esc(name)}</title><style>
-    body{font-family:Inter,Arial,sans-serif;background:#f1f5f9;color:#1e293b;margin:0;padding:32px} .wrap{max-width:1100px;margin:auto} h1{margin:0 0 6px;font-size:28px}.sub{color:#64748b;margin-bottom:22px}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px;margin:20px 0}.card{background:#fff;border:1px solid #e2e8f0;border-radius:14px;padding:18px}.label{font-size:11px;color:#94a3b8;text-transform:uppercase;font-weight:700;letter-spacing:.5px}.val{font-size:24px;font-weight:800;margin-top:7px}.up{color:#16a34a}.dn{color:#dc2626}table{width:100%;border-collapse:collapse;background:#fff;border-radius:14px;overflow:hidden;border:1px solid #e2e8f0}th,td{text-align:left;padding:12px;border-bottom:1px solid #e2e8f0;font-size:13px}th{background:#f8fafc;color:#64748b;text-transform:uppercase;font-size:11px;letter-spacing:.4px} .foot{margin-top:18px;color:#94a3b8;font-size:12px}
-  </style></head><body><div class="wrap"><h1>Investiční report – ${esc(name)}</h1><div class="sub">Vygenerováno ${dt(new Date().toISOString())}</div><div class="grid">
-    <div class="card"><div class="label">Aktuálně vloženo netto</div><div class="val">${czk(m.netInvested)}</div></div>
-    <div class="card"><div class="label">Aktuální hodnota</div><div class="val ${m.currentValue>=m.netInvested?'up':'dn'}">${czk(m.currentValue)}</div></div>
-    <div class="card"><div class="label">Celkem investováno</div><div class="val">${czk(m.totalInvested)}</div></div>
-    <div class="card"><div class="label">Celkem vybráno</div><div class="val">${czk(m.withdrawn)}</div></div>
-    <div class="card"><div class="label">Vyděláno za spolupráci</div><div class="val ${m.totalProfit>=0?'up':'dn'}">${czk(m.totalProfit)}</div></div>
-    <div class="card"><div class="label">Průměrný výnos p.a.</div><div class="val ${m.annualizedReturnPct>=0?'up':'dn'}">${pct(m.annualizedReturnPct)}</div></div>
-    <div class="card"><div class="label">Nejbližší časový test</div><div class="val">${tax.label}</div><div class="sub" style="margin:6px 0 0">${tax.date?'Od '+dt(tax.date):'Daňový test 36 měsíců'}</div></div>
-  </div><table><thead><tr><th>Fond</th><th>Společnost</th><th>Vloženo</th><th>Vybráno</th><th>Aktuální hodnota</th><th>Výnos celkem</th><th>%</th></tr></thead><tbody>${rows}</tbody></table><div class="foot">Report je informativní. Odkupy jsou započteny jako vybrané prostředky, ne jako ztráta.</div></div></body></html>`;
+    const pctVal=deposits>0?profit/deposits*100:0;
+    const txCount=g.items.length;
+    const sample=g.items[0]||{};
+    const isin=sample['rp.ISIN']||sample['ISIN']||'';
+    const nav=currentNav(sample);
+    const navDate=(fundValues[fundKey(sample)]?.date)||sample['Poslední schválená hodnota do']||'';
+    const activeTx=g.items.filter(r=>!isWithdrawal(r));
+    const firstDate=activeTx.map(r=>pD(r['Datum emise'])||pD(r['Datum připsání platby'])).filter(Boolean).sort((a,b)=>a-b)[0];
+    const heldMonths=firstDate?Math.max(0,Math.round((todayDate()-firstDate)/86400000/30.5)):null;
+    const ann=annualizedReturn(deposits, withdrawn, cur, firstDate);
+    const taxInfo=taxTestInfo(g.items);
+    return {name:g.name, company:g.company, deposits, withdrawn, scheduled, cur, profit, pctVal, txCount, isin, nav, navDate, heldMonths, ann, taxInfo, items:g.items};
+  }).sort((a,b)=>a.company.localeCompare(b.company,'cs') || b.cur-a.cur);
+
+  const companyMap={};
+  funds.forEach(f=>{ if(!companyMap[f.company]) companyMap[f.company]=[]; companyMap[f.company].push(f); });
+  const companies=Object.entries(companyMap).map(([company,items])=>{
+    const deposits=items.reduce((s,f)=>s+f.deposits,0);
+    const cur=items.reduce((s,f)=>s+f.cur,0);
+    const withdrawn=items.reduce((s,f)=>s+f.withdrawn,0);
+    const profit=cur+withdrawn-deposits;
+    return {company,items,deposits,cur,withdrawn,profit,pctVal:deposits>0?profit/deposits*100:0};
+  }).sort((a,b)=>b.cur-a.cur);
+
+  const allocationTotal = Math.max(1, funds.reduce((s,f)=>s+Math.max(0,f.cur),0));
+  const palette=['#0b3558','#2aa7b8','#63779e','#93b9ad','#f4cfaa','#9fb9d8','#d4b3e8','#b9d78f','#e8b3b3','#b3dfe8'];
+  let offset=0;
+  const stops=funds.filter(f=>f.cur>0).map((f,i)=>{ const val=f.cur/allocationTotal*100; const a=offset; offset+=val; return `${palette[i%palette.length]} ${a}% ${offset}%`; }).join(', ');
+  const legend=funds.filter(f=>f.cur>0).slice(0,10).map((f,i)=>`<div class="legend-row"><span><i style="background:${palette[i%palette.length]}"></i>${esc(f.name)}</span><b>${pct(f.cur/allocationTotal*100)}</b></div>`).join('');
+
+  const nearestTaxText = tax.date ? `${tax.label} / od ${dt(tax.date)}` : 'není k dispozici';
+  const eligibleFunds=funds.filter(f=>f.taxInfo && f.taxInfo.eligible);
+  const eligibleValue=eligibleFunds.reduce((s,f)=>s+Math.max(0,f.cur),0);
+  const waitingFunds=funds.filter(f=>f.taxInfo && !f.taxInfo.eligible && f.taxInfo.date).sort((a,b)=>a.taxInfo.days-b.taxInfo.days).slice(0,5);
+
+  const companySections=companies.map(c=>`
+    <section class="section">
+      <div class="section-head"><div><span>Investiční společnost</span><h2>${esc(c.company)}</h2></div><div class="section-sum"><b>${czk(c.cur)}</b><small>${pct(c.pctVal)}</small></div></div>
+      <table><thead><tr><th>Fond</th><th>Vloženo</th><th>Aktuální hodnota</th><th>Výnos</th><th>%</th></tr></thead><tbody>
+        ${c.items.map(f=>`<tr><td><b>${esc(f.name)}</b><br><small>${esc(f.isin||'ISIN neuveden')}</small></td><td>${czk(f.deposits)}</td><td>${czk(f.cur)}</td><td class="${f.profit>=0?'up':'dn'}">${czk(f.profit)}</td><td class="${f.pctVal>=0?'up':'dn'}">${pct(f.pctVal)}</td></tr>`).join('')}
+      </tbody></table>
+    </section>`).join('');
+
+  const fundCards=funds.map((f,idx)=>`
+    <section class="fund-card ${f.profit<0?'loss':''}">
+      <div class="fund-top"><div class="fund-icon">${esc(f.name.split(/\s+/).map(x=>x[0]).join('').substring(0,2).toUpperCase())}</div><div><h3>${esc(f.name)}</h3><div class="badges"><span>${esc(f.company)}</span>${f.isin?`<span>${esc(f.isin)}</span>`:''}${f.nav?`<span>Hodnota CP ${Number(f.nav).toLocaleString('cs-CZ',{maximumFractionDigits:4})}</span>`:''}${f.navDate?`<span>Ocenění ${dt(f.navDate)}</span>`:''}</div></div></div>
+      <div class="fund-metrics">
+        <div><small>Investováno</small><b>${czk(f.deposits)}</b></div>
+        <div><small>Aktuální hodnota</small><b>${czk(f.cur)}</b></div>
+        <div><small>Čistý výnos</small><b class="${f.profit>=0?'up':'dn'}">${czk(f.profit)}</b></div>
+        <div><small>Průměrný roční výnos</small><b class="${f.ann>=0?'up':'dn'}">${isNaN(f.ann)?'—':pct(f.ann)+' p.a.'}</b></div>
+        <div><small>Časový test</small><b>${f.taxInfo?.eligible?'splněno':(f.taxInfo?.label||'—')}</b></div>
+      </div>
+      <table class="mini"><thead><tr><th>Transakce</th><th>Datum</th><th>Investice</th><th>Počet CP</th><th>Hodnota CP</th><th>Aktuální hodnota</th></tr></thead><tbody>
+        ${f.items.slice().sort((a,b)=>(pD(a['Datum emise'])||pD(a['Datum připsání platby'])||0)-(pD(b['Datum emise'])||pD(b['Datum připsání platby'])||0)).map((r,i)=>`<tr><td>${esc(r['Typ transakce']||'Platba')} ${isWithdrawal(r)?'':'#'+(i+1)}</td><td>${dt(r['Datum emise']||r['Datum připsání platby'])}</td><td>${czk(depositVal(r))}</td><td>${effectiveQty(r)?Number(effectiveQty(r)).toLocaleString('cs-CZ',{maximumFractionDigits:4}):'—'}</td><td>${currentNav(r)?Number(currentNav(r)).toLocaleString('cs-CZ',{maximumFractionDigits:4}):'—'}</td><td>${czk(curVal(r))}</td></tr>`).join('')}
+      </tbody></table>
+    </section>`).join('');
+
+  const html=`<!DOCTYPE html><html lang="cs"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Investiční report – ${esc(displayName)}</title><style>
+    :root{--ink:#0b3558;--muted:#64748b;--line:#dbe3ed;--soft:#f1f5f9;--card:#fff;--green:#16a34a;--red:#dc2626;--blue:#2563eb}*{box-sizing:border-box}body{font-family:Inter,Arial,sans-serif;background:#f1f5f9;color:#1e293b;margin:0;padding:32px}.wrap{max-width:1160px;margin:auto}.hero{background:linear-gradient(135deg,#ffffff,#eef7fb);border:1px solid var(--line);border-radius:24px;padding:30px 34px;margin-bottom:20px}.kicker{font-size:12px;text-transform:uppercase;color:var(--muted);font-weight:800;letter-spacing:.8px}.hero h1{margin:6px 0 8px;font-size:34px;color:var(--ink);letter-spacing:-.8px}.sub{color:var(--muted);font-size:14px}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(185px,1fr));gap:12px;margin:20px 0}.card{background:#fff;border:1px solid var(--line);border-radius:16px;padding:18px}.label{font-size:11px;color:#94a3b8;text-transform:uppercase;font-weight:800;letter-spacing:.5px}.val{font-size:25px;font-weight:850;margin-top:7px;color:#1e293b}.up{color:var(--green)}.dn{color:var(--red)}.section{background:#fff;border:1px solid var(--line);border-radius:20px;padding:22px;margin:18px 0}.section-head{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;margin-bottom:14px}.section-head span{font-size:11px;color:#94a3b8;text-transform:uppercase;font-weight:800;letter-spacing:.6px}.section-head h2{margin:4px 0 0;color:var(--ink);font-size:25px}.section-sum{text-align:right}.section-sum b{display:block;font-size:22px}.section-sum small{font-weight:800;color:var(--green)}table{width:100%;border-collapse:collapse;background:#fff;border-radius:14px;overflow:hidden}th,td{text-align:left;padding:12px;border-bottom:1px solid #e8eef5;font-size:13px;vertical-align:top}th{background:#f8fafc;color:#64748b;text-transform:uppercase;font-size:11px;letter-spacing:.4px}td small{color:#8a9ab0}.alloc{display:grid;grid-template-columns:320px 1fr;gap:28px;align-items:center}.donut{width:250px;height:250px;border-radius:50%;background:conic-gradient(${stops||'#e2e8f0 0 100%'});position:relative;margin:auto}.donut:after{content:'';position:absolute;inset:58px;background:#fff;border-radius:50%;box-shadow:inset 0 0 0 8px #e8eef5}.legend-row{display:flex;justify-content:space-between;gap:14px;border:1px solid #e8eef5;border-radius:12px;padding:10px 13px;margin-bottom:8px}.legend-row span{display:flex;align-items:center;gap:9px}.legend-row i{width:13px;height:13px;border-radius:50%;display:inline-block}.tax-list{display:grid;gap:8px}.tax-line{display:flex;justify-content:space-between;border-bottom:1px solid #e8eef5;padding:8px 0}.fund-card{background:#fff;border:1px solid var(--line);border-radius:22px;padding:22px;margin:18px 0}.fund-card.loss{opacity:.72;background:#fbfdff}.fund-top{display:flex;gap:16px;align-items:center;margin-bottom:18px}.fund-icon{width:66px;height:66px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:#dbeafe;color:var(--ink);font-size:24px;font-weight:900}.fund-top h3{margin:0;color:var(--ink);font-size:23px}.badges{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}.badges span{background:#eaf6fb;color:#0b3558;border-radius:999px;padding:5px 10px;font-size:12px;font-weight:700}.fund-metrics{display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:12px;margin-bottom:16px}.fund-metrics div{background:#eef9fc;border:1px solid #bfecf5;border-radius:14px;padding:13px}.fund-metrics small{display:block;color:#64748b;text-transform:uppercase;font-size:10px;font-weight:800;letter-spacing:.5px}.fund-metrics b{display:block;margin-top:6px;font-size:20px}.mini th,.mini td{font-size:12px}.notice{border:1px solid #fecaca;background:#fff7f7;border-radius:18px;padding:20px;line-height:1.65}.contact{background:#0b3558;color:#fff;border-radius:20px;padding:22px;margin:20px 0}.contact h2{margin:0 0 8px}.contact p{margin:4px 0;color:#d8e6f0}.print{position:fixed;right:18px;bottom:18px;background:#2563eb;color:#fff;border:none;border-radius:12px;padding:12px 16px;font-weight:800;cursor:pointer}@media print{body{background:#fff;padding:0}.print{display:none}.section,.hero,.fund-card{break-inside:avoid}.wrap{max-width:none}.alloc{grid-template-columns:1fr 1fr}}@media(max-width:760px){body{padding:14px}.hero{padding:22px}.alloc{grid-template-columns:1fr}.section-head{display:block}.section-sum{text-align:left;margin-top:10px}table{display:block;overflow-x:auto}.hero h1{font-size:28px}}
+  </style></head><body><button class="print" onclick="window.print()">Tisk / PDF</button><div class="wrap" data-client-id="${esc(cl.key||'')}">
+    <div class="hero"><div class="kicker">Investiční report klienta</div><h1>${esc(displayName)}</h1><div class="sub">Vygenerováno ${today} · Finanční trenér Filip Solár · Fair-Life</div></div>
+    <div class="grid">
+      <div class="card"><div class="label">Aktuálně vloženo netto</div><div class="val">${czk(m.netInvested)}</div></div>
+      <div class="card"><div class="label">Aktuální hodnota</div><div class="val ${m.currentValue>=m.netInvested?'up':'dn'}">${czk(m.currentValue)}</div></div>
+      <div class="card"><div class="label">Celkem investováno</div><div class="val">${czk(m.totalInvested)}</div></div>
+      <div class="card"><div class="label">Celkem vybráno</div><div class="val">${czk(m.withdrawn)}</div></div>
+      <div class="card"><div class="label">Vyděláno za spolupráci</div><div class="val ${m.totalProfit>=0?'up':'dn'}">${czk(m.totalProfit)}</div></div>
+      <div class="card"><div class="label">Průměrný výnos p.a.</div><div class="val ${m.annualizedReturnPct>=0?'up':'dn'}">${pct(m.annualizedReturnPct)}</div></div>
+      <div class="card"><div class="label">Nejbližší časový / daňový test</div><div class="val" style="font-size:21px">${esc(nearestTaxText)}</div></div>
+      <div class="card"><div class="label">Počet fondů</div><div class="val">${funds.length}</div></div>
+    </div>
+    <section class="section"><div class="section-head"><div><span>Alokace</span><h2>Rozložení portfolia</h2></div><div class="sub">Dle aktuální hodnoty fondů k datu exportu.</div></div><div class="alloc"><div class="donut"></div><div>${legend}</div></div></section>
+    <section class="section"><div class="section-head"><div><span>Daňový test</span><h2>Časový test po 36 měsících</h2></div><div class="section-sum"><b>${czk(eligibleValue)}</b><small>dnes po testu</small></div></div><div class="tax-list">${eligibleFunds.length?`<div class="tax-line"><span>Fondy se splněným testem</span><b>${eligibleFunds.length}</b></div>`:''}${waitingFunds.map(f=>`<div class="tax-line"><span>${esc(f.name)}</span><b>${f.taxInfo.label} · ${dt(f.taxInfo.date)}</b></div>`).join('')||'<div class="sub">U dostupných dat nebyl nalezen nejbližší budoucí časový test.</div>'}</div></section>
+    ${companySections}
+    <section class="section"><div class="section-head"><div><span>Detail</span><h2>Detail jednotlivých fondů</h2></div></div>${fundCards}</section>
+    <section class="section"><div class="section-head"><div><span>Důležité upozornění</span><h2>Informativní charakter reportu</h2></div></div><div class="notice"><p>Tento report byl vytvořen pro informativní účely na základě údajů dostupných ke dni jeho vygenerování. Nejedná se o investiční doporučení, investiční poradenství ani nabídku k nákupu či prodeji investičních nástrojů.</p><p>Historická výkonnost není zárukou budoucích výnosů. Hodnota investice může kolísat a investor může získat zpět méně, než původně investoval.</p><p>Výpočty vycházejí z údajů evidovaných v interním systému a mohou se lišit od oficiálních údajů jednotlivých investičních společností. Rozhodující jsou vždy oficiální výpisy, statuty, sdělení klíčových informací a další dokumentace příslušného fondu nebo investiční společnosti.</p><p>Údaje uvedené v reportu jsou určeny výhradně pro klienta, kterému byl report vystaven. Osobní údaje jsou zpracovávány v souladu s platnými právními předpisy, zejména s Nařízením Evropského parlamentu a Rady (EU) 2016/679 (GDPR), a slouží pouze pro účely evidence, kontroly a servisu klientského portfolia.</p></div></section>
+    <div class="contact"><h2>Filip Solár</h2><p>Finanční trenér · Fair-Life</p><p>www.filipsolar.cz</p></div>
+  </div></body></html>`;
   const a=document.createElement('a');
   a.href=URL.createObjectURL(new Blob([html],{type:'text/html;charset=utf-8'}));
-  a.download=`report-${name.replace(/\s+/g,'_')}.html`;
+  a.download=`report-${displayName.replace(/[^a-zA-Z0-9á-žÁ-Ž]+/g,'_')}.html`;
   a.click();
   toast('HTML report klienta stažen ✓','ok');
 }
@@ -1309,6 +1424,86 @@ function uniqueFunds(){
   });
   return Object.values(m).sort((a,b)=>(a.company||'').localeCompare(b.company||'','cs') || a.fond.localeCompare(b.fond,'cs'));
 }
+function aumData(){
+  const funds={};
+  recs.forEach(r=>{
+    const key=fundKey(r) || normKey(r['Fond']) || '?';
+    if(!funds[key]){
+      funds[key]={key,fond:cleanFundName(r['Fond']||'Nezařazeno',companyOf(r)),company:companyOf(r)||'Nezařazeno',product:productGroupOf(r)||'FKI',isin:r['rp.ISIN']||r['ISIN']||'',typ:r['Typ CP']||'',clients:new Set(),tx:0,invested:0,current:0,profit:0};
+    }
+    const f=funds[key];
+    f.clients.add(clientDisplayName(r));
+    f.tx++;
+    f.invested+=depositVal(r);
+    f.current+=curVal(r);
+  });
+  let list=Object.values(funds).map(f=>{
+    f.current=Math.max(0,f.current);
+    f.profit=f.current - Math.max(0, f.invested - recs.filter(r=>(fundKey(r)||normKey(r['Fond'])||'?')===f.key && isWithdrawal(r) && !isFutureWithdrawal(r)).reduce((s,r)=>s+withdrawalVal(r),0));
+    f.pct=f.invested>0 ? (f.current/f.invested*100) : 0;
+    return f;
+  }).filter(f=>f.current>0.01);
+  const total=list.reduce((s,f)=>s+f.current,0);
+  return {list,total};
+}
+function groupAum(list, mode){
+  const m={};
+  list.forEach(f=>{
+    const key=mode==='fund'?f.fond:(mode==='product'?f.product:f.company);
+    if(!m[key]) m[key]={name:key||'Nezařazeno',value:0,count:0,clients:new Set()};
+    m[key].value+=f.current; m[key].count++; f.clients.forEach(c=>m[key].clients.add(c));
+  });
+  return Object.values(m).sort((a,b)=>b.value-a.value);
+}
+const AUM_COLORS=['#0b3558','#2faabd','#64789b','#9bc1b7','#f7d1a8','#6366f1','#16a34a','#d97706','#dc2626','#7c3aed','#0891b2','#475569'];
+function donutGradient(groups,total){
+  if(!groups.length||!total) return '#e2e8f0 0 100%';
+  let start=0;
+  return groups.slice(0,12).map((g,i)=>{ const end=start+(g.value/total*100); const seg=`${AUM_COLORS[i%AUM_COLORS.length]} ${start.toFixed(2)}% ${end.toFixed(2)}%`; start=end; return seg; }).join(',');
+}
+function renderAumPanel(){
+  const box=document.getElementById('aumContent'); if(!box) return;
+  const {list,total}=aumData();
+  const q=normKey(document.getElementById('aumSearch')?.value||'');
+  const min=n(document.getElementById('aumMin')?.value||0);
+  const filtered=list.filter(f=>(!q || normKey([f.fond,f.company,f.product,f.isin,f.typ].join(' ')).includes(q)) && f.current>=min).sort((a,b)=>b.current-a.current);
+  const mode=document.getElementById('aumMode')?.value||'company';
+  const groups=groupAum(filtered,mode);
+  const filteredTotal=filtered.reduce((s,f)=>s+f.current,0);
+  const totalInvested=filtered.reduce((s,f)=>s+f.invested,0);
+  const totalClients=new Set(); filtered.forEach(f=>f.clients.forEach(c=>totalClients.add(c)));
+  const totalProfit=filteredTotal-totalInvested;
+  const legend=groups.slice(0,8).map((g,i)=>`<div class="aum-legend-row"><span><i class="aum-dot" style="background:${AUM_COLORS[i%AUM_COLORS.length]}"></i><span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(g.name)}</span></span><strong>${filteredTotal?pct(g.value/filteredTotal*100):'—'}</strong></div>`).join('');
+  const byCompany={}; filtered.forEach(f=>{ const c=f.company||'Nezařazeno'; if(!byCompany[c]) byCompany[c]=[]; byCompany[c].push(f); });
+  const rows=Object.entries(byCompany).sort((a,b)=>b[1].reduce((s,f)=>s+f.current,0)-a[1].reduce((s,f)=>s+f.current,0)).map(([comp,items])=>{
+    const sum=items.reduce((s,f)=>s+f.current,0);
+    return `<div class="company-section"><span>🏢 ${esc(comp)}</span><small>${czk(sum)} · ${items.length} fond${items.length===1?'':items.length<5?'y':'ů'}</small></div>`+
+    `<div class="aum-row head"><div>Fond</div><div>AUM</div><div>Podíl</div><div>Investováno</div><div>Klientů</div><div>Transakcí</div></div>`+
+    items.sort((a,b)=>b.current-a.current).map(f=>`<div class="aum-row ${f.profit<0?'loss':''}"><div><strong>${esc(f.fond)}</strong><div style="color:#94a3b8;font-size:11px">${esc(f.product)} · ${f.isin?esc(f.isin):'<span style="color:#dc2626;font-weight:800">⚠ ISIN chybí</span>'} · ${esc(f.typ||'typ CP neuveden')}</div></div><div><strong>${czk(f.current)}</strong></div><div>${filteredTotal?pct(f.current/filteredTotal*100):'—'}</div><div>${czk(f.invested)}</div><div>${f.clients.size}</div><div>${f.tx}</div></div>`).join('');
+  }).join('');
+  box.innerHTML=`<div class="aum-grid">
+    <div class="aum-card"><div class="aum-card-l">Celkové AUM</div><div class="aum-card-v">${czk(total)}</div></div>
+    <div class="aum-card"><div class="aum-card-l">Zobrazené AUM</div><div class="aum-card-v">${czk(filteredTotal)}</div></div>
+    <div class="aum-card"><div class="aum-card-l">Fondů</div><div class="aum-card-v">${filtered.length}</div></div>
+    <div class="aum-card"><div class="aum-card-l">Klientů</div><div class="aum-card-v">${totalClients.size}</div></div>
+    <div class="aum-card"><div class="aum-card-l">Celkem investováno</div><div class="aum-card-v">${czk(totalInvested)}</div></div>
+    <div class="aum-card"><div class="aum-card-l">Rozdíl AUM vs. vklady</div><div class="aum-card-v ${totalProfit>=0?'up':'dn'}">${czk(totalProfit)}</div></div>
+  </div>
+  <div class="aum-layout">
+    <div class="aum-chartbox"><div class="aum-donut" style="background:conic-gradient(${donutGradient(groups,filteredTotal)})"></div><div class="aum-legend">${legend||'<div class="empty">Bez dat</div>'}</div></div>
+    <div class="aum-table">${rows||'<div class="empty">Žádné AUM k zobrazení</div>'}</div>
+  </div>`;
+}
+function exportAumCSV(){
+  const {list}=aumData();
+  const h=['Investiční společnost','Typ produktu','Fond','ISIN','Typ CP','AUM aktuální','Investováno historicky','Rozdíl','Klientů','Transakcí'];
+  const lines=[h.join(';')].concat(list.sort((a,b)=>b.current-a.current).map(f=>[f.company,f.product,f.fond,f.isin,f.typ,Math.round(f.current*100)/100,Math.round(f.invested*100)/100,Math.round((f.current-f.invested)*100)/100,f.clients.size,f.tx].map(x=>String(x??'').replace(/;/g,',')).join(';')));
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(new Blob(['\uFEFF'+lines.join('\n')],{type:'text/csv;charset=utf-8'}));
+  a.download='crm-aum-fondy.csv'; a.click();
+  toast('AUM CSV staženo ✓','ok');
+}
+
 function renderFundPanel(){
   const list=uniqueFunds();
   const sel=document.getElementById('fv_fond');
