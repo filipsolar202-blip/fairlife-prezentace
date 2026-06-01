@@ -218,6 +218,7 @@ body{font-family:'Inter',sans-serif;background:#f1f5f9;color:#1e293b;font-size:1
   </div>
   <div class="hdr-btns">
     <button class="btn btn-gray" id="privacyBtn" onclick="togglePrivacy()">🙈 Skrýt klienty</button>
+    <button class="btn btn-gray" onclick="mergeClientsPrompt()">👥 Sloučit klienty</button>
     <button class="btn btn-gray" onclick="togglePanel('imp')">⬆ Import CSV</button>
     <button class="btn btn-gray" onclick="togglePanel('funds')">📈 Fondy / NAV</button>
     <button class="btn btn-gray" onclick="dlBackupJSON()">💾 Záloha JSON</button>
@@ -282,6 +283,8 @@ body{font-family:'Inter',sans-serif;background:#f1f5f9;color:#1e293b;font-size:1
   <h3 id="addTitle">Nový záznam <button class="btn btn-gray btn-sm" onclick="closeAdd()">✕ Zavřít</button></h3>
   <div class="form-grid">
     <div class="fg"><label>Investor *</label><input id="fi_inv" placeholder="Příjmení Jméno"></div>
+    <div class="fg"><label>Datum narození</label><input id="fi_dob" type="date"></div>
+    <div class="fg"><label>Rodné číslo / ID klienta</label><input id="fi_rc" placeholder="volitelné, nezobrazí se klientovi"></div>
     <div class="fg"><label>Fond *</label><input id="fi_fond" placeholder="Název fondu"></div>
     <div class="fg"><label>Investiční společnost</label><input id="fi_company" placeholder="Avant / Codya / Efekta / J&T / Wood OPF…"></div>
     <div class="fg"><label>Typ produktu</label><select id="fi_product"><option>FKI</option><option>Retail / OPF</option><option>ETF / fondy</option><option>DIP</option><option>DPS</option><option>Jiné</option></select></div>
@@ -366,6 +369,52 @@ function normKey(v){
 }
 
 
+
+
+function normalizeRC(v){ return String(v||'').replace(/[^0-9A-Za-z]/g,'').toUpperCase().trim(); }
+function parseDobValue(v){
+  if(!v) return '';
+  const s=String(v).trim();
+  if(/^\d{4}-\d{2}-\d{2}/.test(s)) return s.substring(0,10);
+  const m=s.match(/^(\d{1,2})\.(\d{1,2})\.(\d{4})/);
+  if(m) return `${m[3]}-${m[2].padStart(2,'0')}-${m[1].padStart(2,'0')}`;
+  const d=new Date(s); return isNaN(d)?'':d.toISOString().split('T')[0];
+}
+function nameSignature(name){
+  return normKey(name).replace(/\b(ing|mgr|bc|mudr|phdr|ml|st)\b/g,'').split(' ').filter(Boolean).sort().join(' ');
+}
+function getClientId(r){ return String(r?.['ClientID']||r?.['ID klienta']||'').trim(); }
+function getClientDob(r){ return parseDobValue(r?.['Datum narození']||r?.['Datum narozeni']||r?.['DOB']); }
+function getClientRC(r){ return normalizeRC(r?.['RČ']||r?.['RC']||r?.['Rodné číslo']||r?.['Rodne cislo']); }
+function clientIdentityKey(r){
+  const cid=getClientId(r); if(cid) return 'cid:'+normKey(cid);
+  const rc=getClientRC(r); if(rc) return 'rc:'+rc;
+  const dob=getClientDob(r); if(dob) return 'dob:'+dob+'|name:'+nameSignature(r?.['Investor']||'');
+  return 'name:'+nameSignature(r?.['Investor']||'?');
+}
+function nextClientId(){
+  let max=0;
+  recs.forEach(r=>{ const m=String(r['ClientID']||'').match(/^CL(\d+)$/i); if(m) max=Math.max(max, parseInt(m[1])); });
+  return 'CL'+String(max+1).padStart(6,'0');
+}
+function ensureClientIds(){
+  const byKey={};
+  recs.forEach(r=>{
+    const k=clientIdentityKey(r);
+    if(!byKey[k]) byKey[k]=r['ClientID']||nextClientId();
+    r['ClientID']=r['ClientID']||byKey[k];
+  });
+}
+function sameClient(a,b){ return clientIdentityKey(a) === clientIdentityKey(b); }
+function findClientRef(ref){
+  const cl=getClients();
+  return cl.find(c=>c.key===ref || c.name===ref || normKey(c.name)===normKey(ref));
+}
+function clientDisplayNameFromRecords(items){
+  const names=[...new Set(items.map(r=>String(r['Investor']||'').trim()).filter(Boolean))];
+  if(!names.length) return '?';
+  return names.sort((a,b)=>a.length-b.length)[0];
+}
 
 function inferCompany(fond){
   const f=normKey(fond);
@@ -526,6 +575,8 @@ function redeemDt(e){ const d=pD(e); if(!d) return null; const r=new Date(d); r.
   try { fundValues = JSON.parse(localStorage.getItem(FSK)) || {}; } catch{ fundValues = {}; }
   normalizeFundValuesKeys();
   if(!recs.length) recs = [...SEED];
+  ensureClientIds();
+  save();
   renderStats();
   renderList();
   updatePrivacyBtn();
@@ -535,11 +586,12 @@ function redeemDt(e){ const d=pD(e); if(!d) return null; const r=new Date(d); r.
 function getClients(){
   const map={};
   recs.forEach((r,i)=>{
-    const nm=r['Investor']||'?';
-    if(!map[nm]) map[nm]={name:nm,recs:[],idx:[]};
-    map[nm].recs.push(r); map[nm].idx.push(i);
+    const key=clientIdentityKey(r);
+    if(!map[key]) map[key]={key,name:'',recs:[],idx:[]};
+    map[key].recs.push(r); map[key].idx.push(i);
   });
   return Object.values(map).map(c=>{
+    c.name = clientDisplayNameFromRecords(c.recs);
     const m = clientMetrics(c.recs);
     const inv = m.netInvested;
     const cur = m.currentValue;
@@ -594,13 +646,13 @@ function togglePrivacy(){
   if(activeClient) showClient(activeClient);
 }
 function maskClientName(name, idx){
-  if(!privacyMode || name===activeClient) return name;
+  if(!privacyMode || name===activeClient || findClientRef(activeClient)?.name===name) return name;
   return 'Klient ' + String(idx+1).padStart(2,'0');
 }
 
 function renderList(){
   const q=(document.getElementById('sq').value||'').toLowerCase();
-  let cl=getClients().filter(c=>c.name.toLowerCase().includes(q));
+  let cl=getClients().filter(c=>c.name.toLowerCase().includes(q) || c.recs.some(r=>String(r['Investor']||'').toLowerCase().includes(q)));
   if(activeFilter==='elig') cl=cl.filter(c=>c.hasElig);
   if(activeFilter==='soon') cl=cl.filter(c=>c.hasSoon);
   const el=document.getElementById('sbList');
@@ -609,8 +661,8 @@ function renderList(){
     const p=c.inv>0?((c.cur-c.inv)/c.inv*100):0;
     const funds=[...new Set(c.recs.map(r=>r['Fond']).filter(Boolean))].length;
     const shownName = maskClientName(c.name, ci);
-    const isOther = privacyMode && c.name!==activeClient;
-    return `<div class="crow ${c.hasElig&&!isOther?'elig':''} ${c.name===activeClient?'sel':''}" onclick='showClient(this.dataset.name)' data-name="${esc(c.name)}">
+    const isOther = privacyMode && c.key!==activeClient && c.name!==activeClient;
+    return `<div class="crow ${c.hasElig&&!isOther?'elig':''} ${(c.key===activeClient||c.name===activeClient)?'sel':''}" onclick='showClient(this.dataset.key)' data-key="${esc(c.key)}">
       <div class="crow-name">${esc(shownName)}
         ${(!isOther && c.hasElig)?'<span class="tag tag-g">odkup</span>':''}
         ${(!isOther && c.hasSoon)?'<span class="tag tag-o">brzy</span>':''}
@@ -647,7 +699,7 @@ function showClient(name){
   document.getElementById('funds').classList.remove('open');
   document.getElementById('funds').classList.remove('open');
   renderList();
-  const cl=getClients().find(c=>c.name===name);
+  const cl=findClientRef(name);
   if(!cl) return;
   document.getElementById('welcome').style.display='none';
   const det=document.getElementById('detail');
@@ -777,14 +829,16 @@ function showClient(name){
   det.innerHTML=`
     <div class="det-hdr">
       <div>
-        <div class="det-name">${esc(name)} ${hasElig?'<span class="tag tag-g" style="font-size:12px;padding:4px 10px">✅ Odkup možný</span>':''}</div>
-        <div class="det-sub">${cr.length} transakcí · ${Object.keys(fm).length} fondů</div>
+        <div class="det-name">${esc(cl.name)} ${hasElig?'<span class="tag tag-g" style="font-size:12px;padding:4px 10px">✅ Odkup možný</span>':''}</div>
+        <div class="det-sub">${cr.length} transakcí · ${Object.keys(fm).length} fondů · ID: ${esc(cl.recs[0]?.['ClientID']||'—')}${getClientDob(cl.recs[0])?' · narození: '+dt(getClientDob(cl.recs[0])):''}</div>
       </div>
       <div class="det-actions">
         <button class="btn btn-gray btn-sm" onclick="exportClientHTML('${esc(name)}')">🌐 HTML pro klienta</button>
         <button class="btn btn-gray btn-sm" onclick="exportJSON('${esc(name)}')">⬇ JSON</button>
+        <button class="btn btn-gray btn-sm" onclick="editClientPrompt('${esc(name)}')">👤 Upravit klienta</button>
+        <button class="btn btn-gray btn-sm" onclick="mergeClientsPrompt('${esc(name)}')">👥 Sloučit</button>
         <button class="btn btn-red btn-sm" onclick="delClient('${esc(name)}')">🗑 Smazat klienta</button>
-        <button class="btn btn-blue btn-sm" onclick="openAdd('${esc(name)}')">+ Přidat fond</button>
+        <button class="btn btn-blue btn-sm" onclick="openAdd('${esc(cl.name)}')">+ Přidat fond</button>
       </div>
     </div>
     <div class="stats">
@@ -822,7 +876,7 @@ function togglePanel(id){
 
 function openAdd(prefill){
   document.getElementById('addTitle').innerHTML=prefill?`Přidat fond — ${esc(prefill)} <button class="btn btn-gray btn-sm" onclick="closeAdd()">✕ Zavřít</button>`:`Nový záznam <button class="btn btn-gray btn-sm" onclick="closeAdd()">✕ Zavřít</button>`;
-  ['fi_inv','fi_fond','fi_company','fi_inv_c','fi_cur','fi_qty','fi_upis','fi_regular_amount','fi_regular_day','fi_dp','fi_de','fi_nav','fi_navdo','fi_isin','fi_typ','fi_idx'].forEach(id=>{ const el=document.getElementById(id); if(el) el.value=''; });
+  ['fi_inv','fi_dob','fi_rc','fi_fond','fi_company','fi_inv_c','fi_cur','fi_qty','fi_upis','fi_regular_amount','fi_regular_day','fi_dp','fi_de','fi_nav','fi_navdo','fi_isin','fi_typ','fi_idx'].forEach(id=>{ const el=document.getElementById(id); if(el) el.value=''; });
   document.getElementById('fi_tx').value='Platba';
   document.getElementById('fi_product').value='FKI';
   document.getElementById('fi_freq').value='Jednorázově';
@@ -838,6 +892,8 @@ function editRec(gi){
   const r=recs[gi]; if(!r) return;
   document.getElementById('addTitle').innerHTML=`Upravit záznam <button class="btn btn-gray btn-sm" onclick="closeAdd()">✕ Zavřít</button>`;
   document.getElementById('fi_inv').value=r['Investor']||'';
+  document.getElementById('fi_dob').value=getClientDob(r)||'';
+  document.getElementById('fi_rc').value=getClientRC(r)||'';
   document.getElementById('fi_fond').value=r['Fond']||'';
   document.getElementById('fi_company').value=companyOf(r)||'';
   document.getElementById('fi_tx').value=r['Typ transakce']||'Platba';
@@ -871,7 +927,7 @@ function saveRec(){
   if(investice>0 && normKey(typTrans)!=='odkup' && !isinVal){ toast('Doplň ISIN. Investovaný fond bez ISINu neuložím, aby se fondy nespárovaly špatně.','err'); return; }
   const company=(document.getElementById('fi_company').value||'').trim() || inferCompany(fond);
   const rec={
-    'Investor':inv,'Fond':fond,'Investiční společnost':company,
+    'Investor':inv,'Datum narození':document.getElementById('fi_dob').value||null,'RČ':normalizeRC(document.getElementById('fi_rc').value)||null,'ClientID':document.getElementById('fi_rc').value?('RC_'+normalizeRC(document.getElementById('fi_rc').value)):null,'Fond':fond,'Investiční společnost':company,
     'Typ produktu':document.getElementById('fi_product').value||'FKI',
     'Frekvence investice':document.getElementById('fi_freq').value||'Jednorázově',
     'Pravidelná částka':parseFloat(document.getElementById('fi_regular_amount').value)||0,
@@ -891,25 +947,76 @@ function saveRec(){
   };
   if(!rec['Počet vydaných CP'] && rec['Čistá investice'] && rec['Upisovací hodnota']) rec['Počet vydaných CP'] = rec['Čistá investice'] / rec['Upisovací hodnota'];
   if(rec['Počet vydaných CP'] && rec['Poslední schválená hodnota CP']) rec['Aktuální hodnota investice'] = rec['Počet vydaných CP'] * rec['Poslední schválená hodnota CP'];
+  const existingClient=findClientRef(clientIdentityKey(rec)) || findClientRef(rec['Investor']);
+  if(existingClient) rec['ClientID']=existingClient.recs[0]?.['ClientID']||rec['ClientID']||nextClientId();
+  else rec['ClientID']=rec['ClientID']||nextClientId();
   const fk=fundKey(rec);
   if(rec['Poslední schválená hodnota CP']) fundValues[fk]={nav:rec['Poslední schválená hodnota CP'],date:rec['Poslední schválená hodnota do']||new Date().toISOString().split('T')[0],fond:rec['Fond'],company:company,isin:rec['rp.ISIN'],typ:rec['Typ CP'],product:rec['Typ produktu']};
   const gi=document.getElementById('fi_idx').value;
   if(gi!=='') recs[parseInt(gi)]={...recs[parseInt(gi)],...rec};
-  else recs.push(rec);
+  else {
+    const dupIdx=recs.findIndex(r=>sameClient(r,rec) && fundKey(r)===fundKey(rec) && (r['Datum emise']||'')===(rec['Datum emise']||'') && normKey(r['Typ transakce']||'Platba')===normKey(rec['Typ transakce']||'Platba'));
+    if(dupIdx>=0) recs[dupIdx]={...recs[dupIdx],...rec}; else recs.push(rec);
+  }
   save(); renderStats(); renderList();
   closeAdd();
   toast(gi!==''?'Záznam aktualizován ✓':'Záznam přidán ✓','ok');
-  if(activeClient===inv) showClient(inv);
-  else if(!activeClient) showClient(inv);
+  if(activeClient) showClient(activeClient); else showClient(rec['ClientID'] ? clientIdentityKey(rec) : inv);
 }
 
 
+
+function editClientPrompt(ref){
+  const cl=findClientRef(ref); if(!cl) return;
+  const first=cl.recs[0]||{};
+  const newName=prompt('Jméno klienta v CRM:', cl.name); if(!newName) return;
+  const dob=prompt('Datum narození klienta (YYYY-MM-DD), může zůstat prázdné:', getClientDob(first)||'') || '';
+  const rc=prompt('Rodné číslo / interní ID klienta, může zůstat prázdné:', getClientRC(first)||'') || '';
+  const cid=first['ClientID']||nextClientId();
+  cl.idx.forEach(i=>{
+    recs[i]['Investor']=newName.trim();
+    recs[i]['Datum narození']=parseDobValue(dob)||null;
+    recs[i]['RČ']=normalizeRC(rc)||null;
+    recs[i]['ClientID']=cid;
+  });
+  save(); renderStats(); renderList(); showClient(clientIdentityKey(recs[cl.idx[0]])); renderFundPanel();
+  toast('Klient upraven a sjednocen ✓','ok');
+}
+function mergeClientsPrompt(sourceRef){
+  const clients=getClients();
+  const source= sourceRef ? findClientRef(sourceRef) : findClientRef(prompt('Koho chceš sloučit? Zadej přesné jméno klienta:',''));
+  if(!source) { toast('Zdrojový klient nenalezen','err'); return; }
+  const targetName=prompt(`Do kterého klienta sloučit klienta ${source.name}?\nZadej přesné jméno cílového klienta:`, '');
+  const target=findClientRef(targetName);
+  if(!target){ toast('Cílový klient nenalezen','err'); return; }
+  if(source.key===target.key){ toast('Je to stejný klient','err'); return; }
+  if(!confirm(`Sloučit klienta ${source.name} do klienta ${target.name}?\nPřesunu ${source.idx.length} záznamů.`)) return;
+  const targetFirst=target.recs[0]||{};
+  const cid=targetFirst['ClientID']||nextClientId();
+  source.idx.forEach(i=>{
+    recs[i]['Investor']=target.name;
+    recs[i]['ClientID']=cid;
+    if(targetFirst['Datum narození']) recs[i]['Datum narození']=targetFirst['Datum narození'];
+    if(targetFirst['RČ']) recs[i]['RČ']=targetFirst['RČ'];
+  });
+  // po sloučení odstraníme přesné duplicitní řádky: stejný klient + stejný ISIN/fond + stejné datum emise + stejná transakce
+  const seen=new Set();
+  recs=recs.filter(r=>{
+    const key=[clientIdentityKey(r), fundKey(r), r['Datum emise']||'', normKey(r['Typ transakce']||'Platba'), r['Datum připsání platby']||''].join('|');
+    if(seen.has(key)) return false;
+    seen.add(key); return true;
+  });
+  save(); renderStats(); renderList(); renderFundPanel(); showClient(target.name);
+  toast('Klienti sloučeni ✓','ok');
+}
+
 function delClient(name){
-  const cnt = recs.filter(r => r['Investor'] === name).length;
-  if(!cnt) return;
-  if(!confirm(`Smazat celého klienta ${name}?
+  const cl=findClientRef(name); if(!cl) return;
+  const cnt = cl.idx.length;
+  if(!confirm(`Smazat celého klienta ${cl.name}?
 Smaže se ${cnt} záznamů.`)) return;
-  recs = recs.filter(r => r['Investor'] !== name);
+  const ids=new Set(cl.idx);
+  recs = recs.filter((r,i) => !ids.has(i));
   activeClient = null;
   save(); renderStats(); renderList();
   document.getElementById('detail').classList.remove('open');
@@ -918,7 +1025,7 @@ Smaže se ${cnt} záznamů.`)) return;
 }
 
 function addBuyToFund(name, key){
-  const cl=getClients().find(c=>c.name===name);
+  const cl=findClientRef(name);
   if(!cl) return;
   const base=cl.recs.find(r=>fundKey(r)===key && !isWithdrawal(r)) || cl.recs.find(r=>fundKey(r)===key);
   openAdd(name);
@@ -940,7 +1047,7 @@ function addBuyToFund(name, key){
 
 
 function genMonthlyBuy(name, key){
-  const cl=getClients().find(c=>c.name===name); if(!cl) return;
+  const cl=findClientRef(name); if(!cl) return;
   const items=cl.idx.map((gi,i)=>({r:cl.recs[i],gi})).filter(x=>fundKey(x.r)===key);
   const base=items.find(({r})=>!isWithdrawal(r))?.r || items[0]?.r; if(!base) return;
   const info=regularInfo(items);
@@ -1020,7 +1127,7 @@ function quickSell(gi, name){
 
 // ── EXPORT JSON ────────────────────────────────
 function exportJSON(name){
-  const cl=getClients().find(c=>c.name===name); if(!cl) return;
+  const cl=findClientRef(name); if(!cl) return;
   const fm={};
   cl.recs.forEach(r=>{ const f=r['Fond']||'?'; if(!fm[f]) fm[f]=[]; fm[f].push(r); });
   const out={investor:name,exportDate:new Date().toISOString().split('T')[0],
@@ -1069,7 +1176,7 @@ function restoreBackupJSON(e){
 }
 
 function exportClientHTML(name){
-  const cl=getClients().find(c=>c.name===name); if(!cl) return;
+  const cl=findClientRef(name); if(!cl) return;
   const m=cl.metrics;
   const tax=taxTestInfo(cl.recs);
   const fm={};
@@ -1156,7 +1263,7 @@ function parseCSV(txt){
     const emise=fDate(row['Datum emise']||row['datum_emise']);
     const company=String(row['Investiční společnost']||row['Investicni spolecnost']||row['Společnost']||row['Spolecnost']||row['Producent']||'').trim() || inferCompany(rawFond);
     const fond=cleanFundName(rawFond, company);
-    const rec={'Investor':inv,'Fond':fond,'Investiční společnost':company,'Typ CP':row['Typ CP']||null,'Typ produktu':row['Typ produktu']||row['Produktový typ']||'', 'Frekvence investice':row['Frekvence investice']||'Jednorázově', 'Pravidelná částka':parseFloat(String(row['Pravidelná částka']||0).replace(/\s/g,'').replace(',','.'))||0, 'Den pravidelné investice':parseInt(row['Den pravidelné investice']||0)||null,
+    const rec={'Investor':inv,'Datum narození':document.getElementById('fi_dob').value||null,'RČ':normalizeRC(document.getElementById('fi_rc').value)||null,'ClientID':document.getElementById('fi_rc').value?('RC_'+normalizeRC(document.getElementById('fi_rc').value)):null,'Fond':fond,'Investiční společnost':company,'Typ CP':row['Typ CP']||null,'Typ produktu':row['Typ produktu']||row['Produktový typ']||'', 'Frekvence investice':row['Frekvence investice']||'Jednorázově', 'Pravidelná částka':parseFloat(String(row['Pravidelná částka']||0).replace(/\s/g,'').replace(',','.'))||0, 'Den pravidelné investice':parseInt(row['Den pravidelné investice']||0)||null,
       'Čistá investice':parseFloat(String(row['Čistá investice']||0).replace(/\s/g,'').replace(',','.'))||0,
       'Aktuální hodnota investice':parseFloat(String(row['Aktuální hodnota investice']||0).replace(/\s/g,'').replace(',','.'))||0,
       'Datum připsání platby':fDate(row['Datum připsání platby']),
@@ -1169,7 +1276,9 @@ function parseCSV(txt){
       'Počet vydaných CP':parseInt(row['Počet vydaných CP']||0)||0,
       'Upisovací hodnota':parseFloat(String(row['Upisovací hodnota']||0).replace(',','.'))||0,
     };
-    const idx=recs.findIndex(r=>r['Investor']===inv && fundKey(r)===fundKey(rec) && r['Datum emise']===emise);
+    const existingClient=findClientRef(clientIdentityKey(rec)) || findClientRef(inv);
+    if(existingClient) rec['ClientID']=existingClient.recs[0]?.['ClientID']||nextClientId(); else rec['ClientID']=nextClientId();
+    const idx=recs.findIndex(r=>sameClient(r,rec) && fundKey(r)===fundKey(rec) && (r['Datum emise']||'')===(emise||'') && normKey(r['Typ transakce']||'Platba')===normKey(rec['Typ transakce']||'Platba'));
     if(idx>=0){recs[idx]={...recs[idx],...rec};updated++;}else{recs.push(rec);added++;}
   }
   save();renderStats();renderList();
