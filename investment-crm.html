@@ -465,6 +465,13 @@ function clientDisplayNameFromRecords(items){
   return names.sort((a,b)=>a.length-b.length)[0];
 }
 
+function clientDisplayName(r){
+  if(!r) return '?';
+  if(r['Investor']) return String(r['Investor']).trim() || '?';
+  const cid = getClientId(r);
+  return cid ? ('Klient ' + cid) : '?';
+}
+
 function inferCompany(fond){
   const f=normKey(fond);
   if(!f) return 'Nezařazeno';
