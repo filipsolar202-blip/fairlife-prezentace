@@ -562,6 +562,18 @@ function fundKey(r){ return fundKeyFromParts(r?.['Fond'], r?.['rp.ISIN']||r?.['I
 function currentNav(r){ const fv=fundValues[fundKey(r)]; return n(fv?.nav) || n(r?.['Poslední schválená hodnota CP']); }
 function isWithdrawal(r){ return normKey(r?.['Typ transakce']) === 'odkup'; }
 function todayDate(){ const d=new Date(); d.setHours(0,0,0,0); return d; }
+
+function annualizedReturn(deposits, withdrawn, currentValue, firstDate){
+  const inv = n(deposits);
+  if(!inv || inv <= 0) return 0;
+  let start = firstDate instanceof Date ? firstDate : pD(firstDate);
+  if(!start) return 0;
+  const days = Math.max(1, (todayDate() - start) / 86400000);
+  const years = Math.max(days / 365.25, 1/365.25);
+  const endValue = n(currentValue) + n(withdrawn);
+  if(endValue <= 0) return 0;
+  return (Math.pow(endValue / inv, 1 / years) - 1) * 100;
+}
 function pD(v){ if(!v) return null; const d=new Date(v); if(isNaN(d)) return null; d.setHours(0,0,0,0); return d; }
 function isFutureWithdrawal(r){ const d=pD(r?.['Datum připsání platby']); return isWithdrawal(r) && d && d > todayDate(); }
 function withdrawalVal(r){ return isWithdrawal(r) ? Math.abs(n(r?.['Aktuální hodnota investice']) || n(r?.['Čistá investice'])) : 0; }
