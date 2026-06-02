@@ -1363,7 +1363,6 @@ function exportClientHTML(name){
       <div class="card"><div class="label">Průměrný výnos p.a.</div><div class="val ${m.annualizedReturnPct>=0?'up':'dn'}">${pct(m.annualizedReturnPct)}</div></div>
       <div class="card"><div class="label">Modelová měsíční renta dnes</div><div class="val ${currentMonthlyRent>0?'up':''}">${czk(currentMonthlyRent)}</div><div class="sub" style="font-size:12px;margin-top:4px">${esc(rentRateSource)}</div></div>
       <div class="card"><div class="label">Modelová měsíční renta po testu</div><div class="val ${monthlyRent>0?'up':''}">${czk(monthlyRent)}</div><div class="sub" style="font-size:12px;margin-top:4px">Při stejné sazbě po nejbližším testu</div></div>
-      <div class="card"><div class="label">Modelová roční renta po testu</div><div class="val ${annualRent>0?'up':''}">${czk(annualRent)}</div><div class="sub" style="font-size:12px;margin-top:4px">Roční výnos rozdělený do 12 plateb</div></div>
       <div class="card"><div class="label">Nejbližší časový / daňový test</div><div class="val" style="font-size:21px">${esc(nearestTaxText)}</div><div class="sub" style="font-size:12px;margin-top:4px">${esc(rentNote)}</div></div>
       <div class="card"><div class="label">Počet fondů</div><div class="val">${funds.length}</div></div>
     </div>
