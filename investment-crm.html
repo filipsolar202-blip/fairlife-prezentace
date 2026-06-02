@@ -1296,6 +1296,21 @@ function exportClientHTML(name){
   const legend=funds.filter(f=>f.cur>0).slice(0,10).map((f,i)=>`<div class="legend-row"><span><i style="background:${palette[i%palette.length]}"></i>${esc(f.name)}</span><b>${pct(f.cur/allocationTotal*100)}</b></div>`).join('');
 
   const nearestTaxText = tax.date ? `${tax.label} / od ${dt(tax.date)}` : 'není k dispozici';
+
+  // Modelová renta po splnění časového/daňového testu.
+  // Bere aktuální hodnotu portfolia, kladný průměrný roční výnos p.a.
+  // a pokud test ještě není splněn, promítne hodnotu do nejbližšího data testu.
+  // Roční výnos se následně rozdělí na 12 měsíčních plateb.
+  const rentRate = Math.max(0, n(m.annualizedReturnPct));
+  const rentMonthsToTax = tax.date ? Math.max(0, Math.ceil((tax.date - todayDate()) / 86400000 / 30.5)) : 0;
+  const rentYearsToTax = rentMonthsToTax / 12;
+  const projectedRentBase = n(m.currentValue) * Math.pow(1 + rentRate / 100, rentYearsToTax);
+  const annualRent = projectedRentBase * rentRate / 100;
+  const monthlyRent = annualRent / 12;
+  const rentNote = rentRate > 0
+    ? (rentMonthsToTax > 0 ? `Modelováno po ${rentMonthsToTax} měsících do nejbližšího časového testu.` : 'Modelováno z aktuální hodnoty portfolia.')
+    : 'Průměrný výnos p.a. není kladný, renta proto není modelována.';
+
   const eligibleFunds=funds.filter(f=>f.taxInfo && f.taxInfo.eligible);
   const eligibleValue=eligibleFunds.reduce((s,f)=>s+Math.max(0,f.cur),0);
   const waitingFunds=funds.filter(f=>f.taxInfo && !f.taxInfo.eligible && f.taxInfo.date).sort((a,b)=>a.taxInfo.days-b.taxInfo.days).slice(0,5);
@@ -1334,14 +1349,16 @@ function exportClientHTML(name){
       <div class="card"><div class="label">Celkem vybráno</div><div class="val">${czk(m.withdrawn)}</div></div>
       <div class="card"><div class="label">Vyděláno za spolupráci</div><div class="val ${m.totalProfit>=0?'up':'dn'}">${czk(m.totalProfit)}</div></div>
       <div class="card"><div class="label">Průměrný výnos p.a.</div><div class="val ${m.annualizedReturnPct>=0?'up':'dn'}">${pct(m.annualizedReturnPct)}</div></div>
-      <div class="card"><div class="label">Nejbližší časový / daňový test</div><div class="val" style="font-size:21px">${esc(nearestTaxText)}</div></div>
+      <div class="card"><div class="label">Modelová roční renta po testu</div><div class="val ${annualRent>0?'up':''}">${czk(annualRent)}</div><div class="sub" style="font-size:12px;margin-top:4px">Výběr ročního výnosu</div></div>
+      <div class="card"><div class="label">Modelová měsíční renta</div><div class="val ${monthlyRent>0?'up':''}">${czk(monthlyRent)}</div><div class="sub" style="font-size:12px;margin-top:4px">Roční výnos / 12 měsíců</div></div>
+      <div class="card"><div class="label">Nejbližší časový / daňový test</div><div class="val" style="font-size:21px">${esc(nearestTaxText)}</div><div class="sub" style="font-size:12px;margin-top:4px">${esc(rentNote)}</div></div>
       <div class="card"><div class="label">Počet fondů</div><div class="val">${funds.length}</div></div>
     </div>
     <section class="section"><div class="section-head"><div><span>Alokace</span><h2>Rozložení portfolia</h2></div><div class="sub">Dle aktuální hodnoty fondů k datu exportu.</div></div><div class="alloc"><div class="donut"></div><div>${legend}</div></div></section>
     <section class="section"><div class="section-head"><div><span>Daňový test</span><h2>Časový test po 36 měsících</h2></div><div class="section-sum"><b>${czk(eligibleValue)}</b><small>dnes po testu</small></div></div><div class="tax-list">${eligibleFunds.length?`<div class="tax-line"><span>Fondy se splněným testem</span><b>${eligibleFunds.length}</b></div>`:''}${waitingFunds.map(f=>`<div class="tax-line"><span>${esc(f.name)}</span><b>${f.taxInfo.label} · ${dt(f.taxInfo.date)}</b></div>`).join('')||'<div class="sub">U dostupných dat nebyl nalezen nejbližší budoucí časový test.</div>'}</div></section>
     ${companySections}
     <section class="section"><div class="section-head"><div><span>Detail</span><h2>Detail jednotlivých fondů</h2></div></div>${fundCards}</section>
-    <section class="section"><div class="section-head"><div><span>Důležité upozornění</span><h2>Informativní charakter reportu</h2></div></div><div class="notice"><p>Tento report byl vytvořen pro informativní účely na základě údajů dostupných ke dni jeho vygenerování. Nejedná se o investiční doporučení, investiční poradenství ani nabídku k nákupu či prodeji investičních nástrojů.</p><p>Historická výkonnost není zárukou budoucích výnosů. Hodnota investice může kolísat a investor může získat zpět méně, než původně investoval.</p><p>Výpočty vycházejí z údajů evidovaných v interním systému a mohou se lišit od oficiálních údajů jednotlivých investičních společností. Rozhodující jsou vždy oficiální výpisy, statuty, sdělení klíčových informací a další dokumentace příslušného fondu nebo investiční společnosti.</p><p>Údaje uvedené v reportu jsou určeny výhradně pro klienta, kterému byl report vystaven. Osobní údaje jsou zpracovávány v souladu s platnými právními předpisy, zejména s Nařízením Evropského parlamentu a Rady (EU) 2016/679 (GDPR), a slouží pouze pro účely evidence, kontroly a servisu klientského portfolia.</p></div></section>
+    <section class="section"><div class="section-head"><div><span>Důležité upozornění</span><h2>Informativní charakter reportu</h2></div></div><div class="notice"><p>Tento report byl vytvořen pro informativní účely na základě údajů dostupných ke dni jeho vygenerování. Nejedná se o investiční doporučení, investiční poradenství ani nabídku k nákupu či prodeji investičních nástrojů.</p><p>Historická výkonnost není zárukou budoucích výnosů. Hodnota investice může kolísat a investor může získat zpět méně, než původně investoval.</p><p>Výpočty vycházejí z údajů evidovaných v interním systému a mohou se lišit od oficiálních údajů jednotlivých investičních společností. Rozhodující jsou vždy oficiální výpisy, statuty, sdělení klíčových informací a další dokumentace příslušného fondu nebo investiční společnosti.</p><p>Modelová renta je pouze orientační výpočet. Vychází z aktuální hodnoty portfolia, dosavadního průměrného výnosu p.a. a předpokladu, že klient bude čerpat pouze roční výnos, nikoli jistinu. Skutečná výše budoucí renty se může výrazně lišit podle vývoje fondů, poplatků, daní, odkupních podmínek a hodnoty podílových listů nebo investičních akcií v době výběru.</p><p>Údaje uvedené v reportu jsou určeny výhradně pro klienta, kterému byl report vystaven. Osobní údaje jsou zpracovávány v souladu s platnými právními předpisy, zejména s Nařízením Evropského parlamentu a Rady (EU) 2016/679 (GDPR), a slouží pouze pro účely evidence, kontroly a servisu klientského portfolia.</p></div></section>
     <div class="contact"><h2>Filip Solár</h2><p>Finanční trenér · Fair-Life</p><p>www.filipsolar.cz</p></div>
   </div></body></html>`;
   const a=document.createElement('a');
