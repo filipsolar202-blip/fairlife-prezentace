@@ -1318,8 +1318,8 @@ function exportClientHTML(name){
         <div><small>Průměrný roční výnos</small><b class="${f.ann>=0?'up':'dn'}">${isNaN(f.ann)?'—':pct(f.ann)+' p.a.'}</b></div>
         <div><small>Časový test</small><b>${f.taxInfo?.eligible?'splněno':(f.taxInfo?.label||'—')}</b></div>
       </div>
-      <table class="mini"><thead><tr><th>Transakce</th><th>Datum</th><th>Investice</th><th>Počet CP</th><th>Hodnota CP</th><th>Aktuální hodnota</th></tr></thead><tbody>
-        ${f.items.slice().sort((a,b)=>(pD(a['Datum emise'])||pD(a['Datum připsání platby'])||0)-(pD(b['Datum emise'])||pD(b['Datum připsání platby'])||0)).map((r,i)=>`<tr><td>${esc(r['Typ transakce']||'Platba')} ${isWithdrawal(r)?'':'#'+(i+1)}</td><td>${dt(r['Datum emise']||r['Datum připsání platby'])}</td><td>${czk(depositVal(r))}</td><td>${effectiveQty(r)?Number(effectiveQty(r)).toLocaleString('cs-CZ',{maximumFractionDigits:4}):'—'}</td><td>${currentNav(r)?Number(currentNav(r)).toLocaleString('cs-CZ',{maximumFractionDigits:4}):'—'}</td><td>${czk(curVal(r))}</td></tr>`).join('')}
+      <table class="mini"><thead><tr><th>Transakce</th><th>Datum</th><th>Investice</th><th>Počet CP</th><th>Hodnota CP</th><th>Aktuální hodnota</th><th>Zhodnocení</th></tr></thead><tbody>
+        ${f.items.slice().sort((a,b)=>(pD(a['Datum emise'])||pD(a['Datum připsání platby'])||0)-(pD(b['Datum emise'])||pD(b['Datum připsání platby'])||0)).map((r,i)=>{ const dep=depositVal(r); const cv=curVal(r); const txPct=dep>0?((cv-dep)/dep*100):null; return `<tr><td>${esc(r['Typ transakce']||'Platba')} ${isWithdrawal(r)?'':'#'+(i+1)}</td><td>${dt(r['Datum emise']||r['Datum připsání platby'])}</td><td>${czk(dep)}</td><td>${effectiveQty(r)?Number(effectiveQty(r)).toLocaleString('cs-CZ',{maximumFractionDigits:4}):'—'}</td><td>${currentNav(r)?Number(currentNav(r)).toLocaleString('cs-CZ',{maximumFractionDigits:4}):'—'}</td><td>${czk(cv)}</td><td class="${txPct==null?'':(txPct>=0?'up':'dn')}">${txPct==null?'—':pct(txPct)}</td></tr>` }).join('')}
       </tbody></table>
     </section>`).join('');
 
