@@ -1001,7 +1001,7 @@ function openAdd(prefill){
   document.getElementById('add').scrollIntoView({behavior:'smooth',block:'nearest'});
 }
 
-function closeAdd(){ document.getElementById('add').classList.remove('open'); document.getElementById('fi_idx').value=''; }
+function closeAdd(){ document.getElementById('add').classList.remove('open'); (document.getElementById('fi_idx')?.value)||''=''; }
 
 function editRec(gi){
   const r=recs[gi]; if(!r) return;
@@ -1021,14 +1021,14 @@ function editRec(gi){
   document.getElementById('fi_qty').value=r['Počet vydaných CP']||'';
   document.getElementById('fi_upis').value=r['Upisovací hodnota']||'';
   document.getElementById('fi_regular_amount').value=r['Pravidelná částka']||'';
-  document.getElementById('fi_regular_day').value=r['Den pravidelné investice']||'';
+  (document.getElementById('fi_regular_day')?.value)=r['Den pravidelné investice']||'';
   document.getElementById('fi_dp').value=r['Datum připsání platby']||'';
   document.getElementById('fi_de').value=r['Datum emise']||'';
   document.getElementById('fi_nav').value=r['Poslední schválená hodnota CP']||'';
   document.getElementById('fi_navdo').value=r['Poslední schválená hodnota do']||'';
   document.getElementById('fi_isin').value=r['rp.ISIN']||'';
   document.getElementById('fi_typ').value=r['Typ CP']||'';
-  document.getElementById('fi_idx').value=gi;
+  (document.getElementById('fi_idx')?.value)||''=gi;
   document.getElementById('imp').classList.remove('open');
   document.getElementById('add').classList.add('open');
   document.getElementById('add').scrollIntoView({behavior:'smooth',block:'nearest'});
@@ -1046,8 +1046,8 @@ function saveRec(){
 
     const today=new Date().toISOString().split('T')[0];
     const company=(document.getElementById('fi_company').value||'').trim() || inferCompany(fond);
-    const dobVal=parseDobValue(document.getElementById('fi_dob').value||'') || null;
-    const rcVal=normalizeRC(document.getElementById('fi_rc').value||'') || null;
+    const dobVal=parseDobValue((document.getElementById('fi_dob')?.value)||'') || null;
+    const rcVal=normalizeRC((document.getElementById('fi_rc')?.value)||'') || null;
     const paymentDate=parseDobValue(document.getElementById('fi_dp').value||'') || today;
     const issueDate=parseDobValue(document.getElementById('fi_de').value||'') || paymentDate;
     const navDate=parseDobValue(document.getElementById('fi_navdo').value||'') || null;
@@ -1059,10 +1059,10 @@ function saveRec(){
       'ClientID':rcVal ? ('RC_'+rcVal) : null,
       'Fond':fond,
       'Investiční společnost':company,
-      'Typ produktu':document.getElementById('fi_product').value||'FKI',
-      'Frekvence investice':document.getElementById('fi_freq').value||'Jednorázově',
-      'Pravidelná částka':parseFloat(String(document.getElementById('fi_regular_amount').value||'').replace(/\s/g,'').replace(',','.'))||0,
-      'Den pravidelné investice':parseInt(document.getElementById('fi_regular_day').value)||null,
+      'Typ produktu':(document.getElementById('fi_product')?.value)||'FKI',
+      'Frekvence investice':(document.getElementById('fi_freq')?.value)||'Jednorázově',
+      'Pravidelná částka':parseFloat(String((document.getElementById('fi_regular_amount')?.value)||'').replace(/\s/g,'').replace(',','.'))||0,
+      'Den pravidelné investice':parseInt((document.getElementById('fi_regular_day')?.value))||null,
       'Typ transakce':typTrans,
       'Čistá investice':investice,
       'Aktuální hodnota investice':parseFloat(String(document.getElementById('fi_cur').value||'').replace(/\s/g,'').replace(',','.'))||investice,
@@ -1073,7 +1073,7 @@ function saveRec(){
       'Poslední schválená hodnota CP':parseFloat(String(document.getElementById('fi_nav').value||'').replace(/\s/g,'').replace(',','.'))||null,
       'Poslední schválená hodnota do':navDate,
       'rp.ISIN':isinVal||null,
-      'Typ CP':document.getElementById('fi_typ').value||null,
+      'Typ CP':(document.getElementById('fi_typ')?.value)||null,
       'Poradce':'Solár Filip','Měna':'CZK','Vstupní poplatek':0,
       '_txid':'TX_'+Date.now()+'_'+Math.random().toString(36).slice(2,8)
     };
@@ -1093,7 +1093,7 @@ function saveRec(){
       fundValues[fk]={nav:rec['Poslední schválená hodnota CP'],date:rec['Poslední schválená hodnota do']||today,fond:rec['Fond'],company:company,isin:rec['rp.ISIN'],typ:rec['Typ CP'],product:rec['Typ produktu']};
     }
 
-    const gi=document.getElementById('fi_idx').value;
+    const gi=(document.getElementById('fi_idx')?.value)||'';
     let action='added';
     if(gi!=='') {
       const old=recs[parseInt(gi)]||{};
@@ -1200,12 +1200,12 @@ function addBuyToFund(name, key){
   document.getElementById('fi_product').value=productTypeOf(base)||'FKI';
   document.getElementById('fi_freq').value=base['Frekvence investice']||'Jednorázově';
   document.getElementById('fi_regular_amount').value=base['Pravidelná částka']||'';
-  document.getElementById('fi_regular_day').value=base['Den pravidelné investice']||'';
+  (document.getElementById('fi_regular_day')?.value)=base['Den pravidelné investice']||'';
   document.getElementById('fi_nav').value=currentNav(base)||base['Poslední schválená hodnota CP']||'';
   document.getElementById('fi_navdo').value=navDate(base)||'';
   document.getElementById('fi_isin').value=base['rp.ISIN']||base['ISIN']||'';
   document.getElementById('fi_typ').value=base['Typ CP']||'';
-  document.getElementById('fi_idx').value='';
+  (document.getElementById('fi_idx')?.value)||''='';
 }
 
 
