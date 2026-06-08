@@ -333,7 +333,7 @@ body{font-family:'Inter',sans-serif;background:#f1f5f9;color:#1e293b;font-size:1
   <div class="form-grid">
     <div class="fg"><label>Investor *</label><input id="fi_inv" placeholder="Příjmení Jméno"></div>
     <div class="fg"><label>Datum narození</label><input id="fi_dob" type="date"></div>
-    <div class="fg"><label>Vybrat fond z databáze</label><select id="fi_fund_select" onchange="applySelectedFundTemplate()"><option value="">— ručně / nový fond —</option></select></div>
+    <div class="fg"><label>Vybrat fond z databáze</label><select id="fi_fund_select" onfocus="updateFundPickerOptions()" onclick="updateFundPickerOptions()" onchange="applySelectedFundTemplate()"><option value="">— ručně / nový fond —</option></select></div>
     <div class="fg"><label>Fond *</label><input id="fi_fond" placeholder="Název fondu"></div>
     <div class="fg"><label>Investiční společnost</label><input id="fi_company" placeholder="Avant / Codya / Efekta / J&T / Wood OPF…"></div>
     <div class="fg"><label>Typ produktu</label><select id="fi_product"><option>FKI</option><option>Retail / OPF</option><option>ETF / fondy</option><option>DIP</option><option>DPS</option><option>Jiné</option></select></div>
@@ -649,6 +649,7 @@ function redeemDt(e){ const d=pD(e); if(!d) return null; const r=new Date(d); r.
   renderList();
   updatePrivacyBtn();
   updateFundPickerOptions();
+  setTimeout(updateFundPickerOptions,0);
 })();
 
 // ── AGGREGATE ──────────────────────────────────
@@ -935,7 +936,25 @@ function toggleF(hdr){ hdr.closest('.fcard').classList.toggle('exp'); }
 
 // ── FUND PICKER FOR ADD FORM ───────────────────
 function getFundPickerItems(){
-  return uniqueFunds()
+  // Robustní seznam fondů pro výběr při novém nákupu.
+  // Bere fondy jak z klientských transakcí, tak ručně založené fondy z Fondy / NAV.
+  const out={};
+  try{
+    uniqueFunds().forEach(f=>{
+      if(!f || !(f.fond || f.isin)) return;
+      const key=f.key || fundKeyFromParts(f.fond,f.isin,f.typ);
+      if(!key) return;
+      out[key]={...f,key};
+    });
+  }catch(e){ console.warn('uniqueFunds picker fallback',e); }
+  try{
+    (recs||[]).forEach(r=>{
+      const key=fundKey(r);
+      if(!key || out[key]) return;
+      out[key]={key,fond:cleanFundName(r['Fond']||'',companyOf(r)),company:companyOf(r),product:productTypeOf(r),isin:r['rp.ISIN']||r['ISIN']||'',typ:r['Typ CP']||'',nav:currentNav(r)||'',date:navDate(r)||''};
+    });
+  }catch(e){ console.warn('records picker fallback',e); }
+  return Object.values(out)
     .filter(f => f && (f.isin || f.fond))
     .sort((a,b)=>(a.company||'').localeCompare(b.company||'','cs') || (a.fond||'').localeCompare(b.fond||'','cs'));
 }
@@ -948,13 +967,14 @@ function updateFundPickerOptions(){
     const label=[f.company||'Nezařazeno', f.fond||'Fond', f.isin||'', f.typ||''].filter(Boolean).join(' · ');
     return `<option value="${esc(f.key)}">${esc(label)}</option>`;
   }).join('');
-  if(prev) sel.value=prev;
+  if(prev && items.some(f=>f.key===prev)) sel.value=prev;
 }
 function applySelectedFundTemplate(){
   const sel=document.getElementById('fi_fund_select');
   if(!sel || !sel.value) return;
-  const f=getFundPickerItems().find(x=>x.key===sel.value);
-  if(!f) return;
+  const selectedKey=sel.value;
+  const f=getFundPickerItems().find(x=>x.key===selectedKey);
+  if(!f){ toast('Fond se nepodařilo načíst z databáze. Zkus znovu otevřít formulář.','err'); return; }
   const today=new Date().toISOString().split('T')[0];
   // Vyplňujeme pouze statické údaje fondu a aktuální NAV.
   // Hodnoty ke dni nákupu necháváme na ruční doplnění: investice, počet CP, upisovací hodnota.
@@ -967,9 +987,8 @@ function applySelectedFundTemplate(){
   document.getElementById('fi_navdo').value=fDate(f.date)||'';
   if(!document.getElementById('fi_dp').value) document.getElementById('fi_dp').value=today;
   if(!document.getElementById('fi_de').value) document.getElementById('fi_de').value=today;
-  updateFundPickerOptions();
-  const fs=document.getElementById('fi_fund_select'); if(fs) fs.value='';
   document.getElementById('fi_tx').value='Platba';
+  sel.value=selectedKey;
   toast('Fond předvyplněn z databáze. Doplň investici a hodnotu ke dni nákupu.','ok');
 }
 
@@ -996,6 +1015,7 @@ function openAdd(prefill){
   if(prefill) document.getElementById('fi_inv').value=prefill;
   document.getElementById('imp').classList.remove('open');
   document.getElementById('add').classList.add('open');
+  updateFundPickerOptions();
   document.getElementById('add').scrollIntoView({behavior:'smooth',block:'nearest'});
 }
 
