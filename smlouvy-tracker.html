@@ -416,7 +416,7 @@ function relevantMinDays(contracts){
 
 // ===== DATA MODEL =====
 let clients=[], templates=[], aktSazba=null, customTodos=[];
-let currentClientId=null, currentContractId=null;
+let currentClientId=null, currentContractId=null, currentContractIndex=null;
 let editLog=[], editStav='', editStavy=[];
 
 const SK={main:'crm_v10_main',sazba:'crm_sazba',todo:'crm_todo'};
@@ -532,6 +532,7 @@ function clientCard(client,contracts){
 }
 
 function contractCard(client,s){
+  const contractIndex=client.contracts.indexOf(s);
   const d=contractDays(s);
   let cls=contractCls(s);
   if(isBadMortgageRate(s))cls+=' rate-bad';
@@ -553,9 +554,9 @@ function contractCard(client,s){
       ${logHtml}
     </div>
     <div class="contract-actions">
-      <button class="btn" onclick="openEmailFor('${client.id}','${s.id}')"><i class="ti ti-mail"></i>Email</button>
-      <button class="btn" onclick="openVypovedFor('${client.id}','${s.id}')"><i class="ti ti-file-text"></i>Výpověď</button>
-      <button class="btn" onclick="openContractModal('${client.id}','${s.id}','${s.source||''}')"><i class="ti ti-edit"></i>Správa</button>
+      <button class="btn" onclick="openEmailFor('${client.id}','${s.id}',${contractIndex})"><i class="ti ti-mail"></i>Email</button>
+      <button class="btn" onclick="openVypovedFor('${client.id}','${s.id}',${contractIndex})"><i class="ti ti-file-text"></i>Výpověď</button>
+      <button class="btn" onclick="openContractModal('${client.id}','${s.id}','${s.source||''}',${contractIndex})"><i class="ti ti-edit"></i>Správa</button>
     </div>
   </div>`;
 }
@@ -755,8 +756,8 @@ const STAV_VSECHNY=[
   {id:'email',label:'Email',cls:'sel-email'},
 ];
 
-function openContractModal(clientId, contractId, section){
-  currentClientId=clientId;currentContractId=contractId||null;
+function openContractModal(clientId, contractId, section, contractIndex){
+  currentClientId=clientId;currentContractId=contractId||null;currentContractIndex=(Number.isInteger(contractIndex)?contractIndex:null);
   let c=clientId?clients.find(x=>x.id===clientId):null;
   if(!c){
     const name=prompt('Jméno klienta:');
@@ -765,7 +766,7 @@ function openContractModal(clientId, contractId, section){
   }
   const defType=section==='zivot'?'život':section==='uvery'?'hypotéka':section==='auta'?'auto':'ostatní';
   const defSource=section==='adamek'?'Adámek':section==='linhart'?'Linhart':section==='zivot'?'životní':section==='uvery'?'úvěry':'';
-  const s=contractId?c.contracts.find(x=>x.id===contractId):{type:defType,product:'',company:'',number:'',anniv:'',amount:'',rate:'',status:'',note:'',source:defSource,eucs:'Ne'};
+  const s=contractId?(currentContractIndex!==null?c.contracts[currentContractIndex]:c.contracts.find(x=>x.id===contractId)):{type:defType,product:'',company:'',number:'',anniv:'',amount:'',rate:'',status:'',note:'',source:defSource,eucs:'Ne'};
   editLog=[...(s.log||[])];
   editStavy=getStatuses(s); editStav=editStavy[0]||'';
   document.getElementById('contract-title').textContent=(contractId?'Upravit smlouvu — ':'Přidat smlouvu — ')+c.name;
@@ -816,8 +817,8 @@ document.addEventListener('keydown',e=>{if(e.key==='Enter'&&document.activeEleme
 
 function saveContract(){
   const c=clients.find(x=>x.id===currentClientId);if(!c)return;
-  let s=currentContractId?c.contracts.find(x=>x.id===currentContractId):null;
-  if(!s){s={id:uid(),source:'',log:[]};c.contracts.push(s);}
+  let s=currentContractId?(currentContractIndex!==null?c.contracts[currentContractIndex]:c.contracts.find(x=>x.id===currentContractId)):null;
+  if(!s){s={id:uid(),source:'',log:[]};c.contracts.push(s);currentContractIndex=c.contracts.length-1;}
   ['type','product','company','number','anniv','amount','rate','note'].forEach(k=>{const el=document.getElementById('s-'+k);if(el)s[k]=el.value;});
   const eucs=document.getElementById('s-eucs');if(eucs)s.eucs=eucs.value;
   if(editStavy.includes('vyrizeno')){s.status='vyrizeno';s.statuses=[];s.hotovoDne=today();s.statusDates={...(s.statusDates||{}),vyrizeno:today()};}
@@ -829,7 +830,7 @@ function saveContract(){
 function deleteContract(){
   const c=clients.find(x=>x.id===currentClientId);if(!c)return;
   if(!confirm('Smazat smlouvu?'))return;
-  c.contracts=c.contracts.filter(x=>x.id!==currentContractId);
+  if(currentContractIndex!==null && c.contracts[currentContractIndex]){c.contracts.splice(currentContractIndex,1);}else{const i=c.contracts.findIndex(x=>x.id===currentContractId);if(i>=0)c.contracts.splice(i,1);}
   save();closeModal('modal-contract');renderAll();
 }
 
@@ -842,9 +843,10 @@ const EMAIL_TMPL={
   kontakt:{predmet:'Finanční poradenství',text:'Vážený/á {klient},\n\nkontaktuji Vás v rámci možnosti optimalizace Vašeho finančního portfolia.\n\nRád bych Vám představil dostupné možnosti.\n\nProsím, kontaktujte mě nebo mi dejte vědět, kdy by Vám hovor vyhovoval.\n\nS pozdravem,\nFilip Solár'},
 };
 
-function openEmailFor(clientId, contractId){
+function openEmailFor(clientId, contractId, contractIndex){
   const c=clients.find(x=>x.id===clientId);if(!c)return;
-  const s=c.contracts.find(x=>x.id===contractId)||{};
+  currentContractIndex=(Number.isInteger(contractIndex)?contractIndex:null);
+  const s=(currentContractIndex!==null?c.contracts[currentContractIndex]:c.contracts.find(x=>x.id===contractId))||{};
   let tmpl=EMAIL_TMPL.vyroci;
   if(s.type==='hypotéka'||s.type==='úvěr')tmpl=EMAIL_TMPL.fixace;
   else if(s.type==='život')tmpl=EMAIL_TMPL.zivotni5;
@@ -857,9 +859,10 @@ function openEmailFor(clientId, contractId){
   currentClientId=clientId;currentContractId=contractId;
   openModal('modal-email');
 }
-function openEmailVypoved(clientId, contractId){
+function openEmailVypoved(clientId, contractId, contractIndex){
   const c=clients.find(x=>x.id===clientId);if(!c)return;
-  const s=c.contracts.find(x=>x.id===contractId)||{};
+  currentContractIndex=(Number.isInteger(contractIndex)?contractIndex:null);
+  const s=(currentContractIndex!==null?c.contracts[currentContractIndex]:c.contracts.find(x=>x.id===contractId))||{};
   const tmpl=EMAIL_TMPL.vypoved;
   const fill=t=>t.replace(/{klient}/g,c.name).replace(/{cislo}/g,s.number||'---').replace(/{pojistovna}/g,s.company||'---');
   document.getElementById('em-to').value=c.email||'';
@@ -877,7 +880,7 @@ function logAndSend(){
   // Log to contract
   if(currentClientId&&currentContractId){
     const c=clients.find(x=>x.id===currentClientId);
-    const s=c?.contracts.find(x=>x.id===currentContractId);
+    const s=(currentContractIndex!==null?c?.contracts[currentContractIndex]:c?.contracts.find(x=>x.id===currentContractId));
     if(s){if(!s.log)s.log=[];s.log.push({d:today(),t:'Odeslán email: '+label+(to?' → '+to:'')});save();}
   }
   window.open('mailto:'+to+'?subject='+sub+'&body='+body,'_blank');
@@ -924,9 +927,10 @@ const VP_TYPY=[
 ];
 let vpTyp='konci';
 
-function openVypovedFor(clientId, contractId){
+function openVypovedFor(clientId, contractId, contractIndex){
   const c=clients.find(x=>x.id===clientId);if(!c)return;
-  const s=c.contracts.find(x=>x.id===contractId)||{};
+  currentContractIndex=(Number.isInteger(contractIndex)?contractIndex:null);
+  const s=(currentContractIndex!==null?c.contracts[currentContractIndex]:c.contracts.find(x=>x.id===contractId))||{};
   currentClientId=clientId;currentContractId=contractId;
   // Map company to VP key
   const comp=(s.company||'').toLowerCase();
@@ -1006,7 +1010,7 @@ document.addEventListener('input',e=>{
 function tiskVypoved(){
   // Log it
   if(currentClientId&&currentContractId){
-    const c=clients.find(x=>x.id===currentClientId);const s=c?.contracts.find(x=>x.id===currentContractId);
+    const c=clients.find(x=>x.id===currentClientId);const s=(currentContractIndex!==null?c?.contracts[currentContractIndex]:c?.contracts.find(x=>x.id===currentContractId));
     if(s){if(!s.log)s.log=[];s.log.push({d:today(),t:'Vygenerována výpověď PDF'});save();}
   }
   const preview=document.getElementById('vp-preview').textContent;
