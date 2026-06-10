@@ -304,11 +304,15 @@ function badRateBadge(s){const r=parseUrok(s.rate);if(!isBadMortgageRate(s))retu
 
 // ===== DATE CALC =====
 function cDaysAnnual(ds){
-  // For insurance: next anniversary
+  // For insurance: recurring yearly anniversary.
+  // If the stored date is already in a future year, treat it as that exact future anniversary.
   if(!ds)return 99999;
   const t=new Date();t.setHours(0,0,0,0);
-  const d=new Date(ds);if(isNaN(d))return 99999;
-  d.setFullYear(t.getFullYear());if(d<t)d.setFullYear(t.getFullYear()+1);
+  const raw=new Date(ds);if(isNaN(raw))return 99999;
+  const d=new Date(raw);d.setHours(0,0,0,0);
+  if(d.getFullYear()>t.getFullYear())return Math.round((d-t)/86400000);
+  d.setFullYear(t.getFullYear());
+  if(d<t)d.setFullYear(t.getFullYear()+1);
   return Math.round((d-t)/86400000);
 }
 function cDaysAbs(ds){
@@ -351,6 +355,23 @@ function contractDays(s){
   return cDaysAnnual(s.anniv);
 }
 
+function nextAnnualDateString(ds){
+  // Used after a contract is marked as done for this year's servicing.
+  // Moves auto/property anniversary to the next calendar occurrence, usually next year.
+  if(!ds)return '';
+  const t=new Date();t.setHours(0,0,0,0);
+  const d=new Date(ds);if(isNaN(d))return ds;
+  d.setHours(0,0,0,0);
+  if(d<=t){
+    d.setFullYear(t.getFullYear());
+    if(d<=t)d.setFullYear(t.getFullYear()+1);
+  }else{
+    // If it is still upcoming but has just been resolved, push to following year.
+    d.setFullYear(d.getFullYear()+1);
+  }
+  return d.toISOString().split('T')[0];
+}
+
 // ===== STATUS =====
 const STATUS_LABELS={
   '':'Bez stavu','kontakt':'Ke kontaktu','reseni':'V řešení','prepojistit':'K přepojištění',
@@ -389,7 +410,8 @@ function contractCls(s){
   if(d<30)return'urgent';if(d<70)return'soon';if(d<=90)return'kontakt';return'ok';
 }
 function clientCls(contracts){
-  const statuses=contracts.flatMap(x=>getStatuses(x));
+  const activeContracts=contracts.filter(x=>!hasStatus(x,'vyrizeno')&&!hasStatus(x,'nechce'));
+  const statuses=activeContracts.flatMap(x=>getStatuses(x));
   if(statuses.includes('prepojistit'))return'hot';
   if(statuses.includes('vypoved'))return'purple-b';
   if(statuses.includes('nabidka'))return'soon';
@@ -410,7 +432,9 @@ function relevantMinDays(contracts){
   const src=contracts[0]?.source||'';
   const isPot=norm(src).includes('adamek')||norm(src).includes('linhart')||src==='Adámek'||src==='Linhart';
   if(isPot)return null; // don't show days for potencial
-  const days=contracts.map(x=>contractDays(x)).filter(d=>d>=0&&d<99999);
+  // The client bubble must ignore contracts that are already solved for this year.
+  const activeForDeadline=contracts.filter(x=>!hasStatus(x,'vyrizeno')&&!hasStatus(x,'nechce'));
+  const days=activeForDeadline.map(x=>contractDays(x)).filter(d=>d>=0&&d<99999);
   return days.length?Math.min(...days):null;
 }
 
@@ -821,7 +845,17 @@ function saveContract(){
   if(!s){s={id:uid(),source:'',log:[]};c.contracts.push(s);currentContractIndex=c.contracts.length-1;}
   ['type','product','company','number','anniv','amount','rate','note'].forEach(k=>{const el=document.getElementById('s-'+k);if(el)s[k]=el.value;});
   const eucs=document.getElementById('s-eucs');if(eucs)s.eucs=eucs.value;
-  if(editStavy.includes('vyrizeno')){s.status='vyrizeno';s.statuses=[];s.hotovoDne=today();s.statusDates={...(s.statusDates||{}),vyrizeno:today()};}
+  if(editStavy.includes('vyrizeno')){
+    s.status='vyrizeno';s.statuses=[];s.hotovoDne=today();s.statusDates={...(s.statusDates||{}),vyrizeno:today()};
+    if((s.type==='auto'||s.type==='majetek')&&s.anniv){
+      const oldAnniv=s.anniv;
+      const nextAnniv=nextAnnualDateString(s.anniv);
+      if(nextAnniv&&nextAnniv!==oldAnniv){
+        s.anniv=nextAnniv;
+        addAutoLog('Další výročí nastaveno na '+fd(nextAnniv));
+      }
+    }
+  }
   else {s.status=editStavy[0]||'';s.statuses=editStavy.slice(1);s.hotovoDne='';s.statusDates={...(s.statusDates||{})};editStavy.forEach(st=>{if(!s.statusDates[st])s.statusDates[st]=today();});}
   s.log=editLog;
   if(!s.source)s.source=document.getElementById('s-type')?.value==='život'?'životní':document.getElementById('s-type')?.value==='hypotéka'||document.getElementById('s-type')?.value==='úvěr'?'úvěry':'';
