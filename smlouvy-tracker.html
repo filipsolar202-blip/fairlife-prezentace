@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>CRM Smlouvy</title>
+<title>CRM Smlouvy Filip</title>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.47.0/tabler-icons.min.css">
 <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.min.js"></script>
@@ -483,7 +483,7 @@ function sectionContracts(section){
       const src=s.source||'';
       const type=s.type||'';
       let match=false;
-      if(section==='auta')match=(type==='auto'||type==='majetek')&&!src.includes('Adámek')&&!src.includes('Linhart');
+      if(section==='auta')match=(type==='auto'||type==='majetek');
       else if(section==='zivot')match=type==='život';
       else if(section==='uvery')match=(type==='hypotéka'||type==='úvěr');
       else if(section==='adamek')match=norm(src).includes('adamek')||src==='Adámek';
@@ -603,10 +603,7 @@ function sortGroups(groups){
 }
 
 function renderSection(section,title,icon,color){
-  let raw=sectionContracts(section);
-  if(section==='auta'){
-    raw=raw.filter(r=>isActiveContract(r.contract)||(r.days>=0&&r.days<=90));
-  }
+  const raw=sectionContracts(section);
   const rows=filterRows(raw,section);
   const total=raw.length;
   const clientsCount=groupedRows(raw).length;
