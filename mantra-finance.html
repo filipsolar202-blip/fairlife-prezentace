@@ -247,7 +247,7 @@ body{font-family:'Inter',sans-serif;background:#f1f5f9;color:#1e293b;font-size:1
     <div class="hdr-icon">M</div>
     <div>
       <div class="hdr-title">Mantra Finance CRM</div>
-      <div class="hdr-sub"><span id="advisorHeaderSub">Mantra Finance</span> · v38-GS</div>
+      <div class="hdr-sub"><span id="advisorHeaderSub">Mantra Finance</span> · v41-GS</div>
     </div>
   </div>
   <div class="hdr-btns">
@@ -462,6 +462,7 @@ function saveLocalOnly(){
 
 function save(){
   saveLocalOnly();
+  cloudDirty = true;
   scheduleCloudSave();
 }
 
@@ -470,6 +471,7 @@ const AUTO_CLOUD_PULL_MS = 30000;
 let cloudSaveTimer=null;
 let cloudPullTimer=null;
 let cloudSyncBusy=false;
+let cloudDirty=false;
 let lastCloudSaveAt=0;
 let lastCloudLoadAt=0;
 function getSheetsUrl(){ return (localStorage.getItem(GSK)||DEFAULT_GOOGLE_SHEETS_URL||'').trim(); }
@@ -477,13 +479,20 @@ function setSheetsStatus(msg,type='ok'){ const el=document.getElementById('gs_st
 function cloudPayload(){ return {version:APP_VERSION,type:'full-backup',updatedAt:new Date().toISOString(),records:recs,fundValues:fundValues,advisor:getAdvisor()}; }
 function scheduleCloudSave(){
   const url=getSheetsUrl();
-  if(!url || cloudSyncBusy) return;
+  if(!url) return;
   clearTimeout(cloudSaveTimer);
-  cloudSaveTimer=setTimeout(()=>syncToSheets(false),900);
+  cloudSaveTimer=setTimeout(()=>{
+    if(cloudSyncBusy){ scheduleCloudSave(); return; }
+    syncToSheets(false);
+  },900);
 }
 async function syncToSheets(showToast=false){
   const url=getSheetsUrl();
   if(!url){ if(showToast) toast('Nejdřív nastav Google Sheets URL','err'); return false; }
+  if(cloudDirty || cloudSaveTimer){
+    await syncToSheets(false);
+    return true;
+  }
   try{
     cloudSyncBusy=true;
     const res=await fetch(url,{method:'POST',body:JSON.stringify({action:'save',data:cloudPayload()})});
@@ -491,6 +500,7 @@ async function syncToSheets(showToast=false){
     let out={}; try{out=JSON.parse(txt)}catch{out={ok:false,error:txt}}
     if(!out.ok) throw new Error(out.error||'Uložení se nepovedlo');
     lastCloudSaveAt=Date.now();
+    cloudDirty=false;
     setSheetsStatus('Automaticky uloženo: '+new Date().toLocaleTimeString('cs-CZ'));
     if(showToast) toast('Uloženo do Google Sheets ✓','ok');
     return true;
@@ -650,6 +660,15 @@ function companyOf(r){
   }
   return inferCompany(r?.['Fond']);
 }
+
+function ensureCompanies(){
+  recs.forEach(r=>{
+    if(!r['Investiční společnost'] && !r['Investicni spolecnost'] && !r['Společnost'] && !r['Spolecnost'] && !r['Producent']){
+      r['Investiční společnost'] = inferCompany(r['Fond']);
+    }
+  });
+}
+
 function cleanFundName(fond, company){
   let f=String(fond||'').trim();
   const c=normKey(company||'');
