@@ -437,7 +437,7 @@ body{font-family:'Inter',sans-serif;background:#f1f5f9;color:#1e293b;font-size:1
 <div class="toast" id="toast"></div>
 
 <script>
-const APP_VERSION='v38-GS';
+const APP_VERSION='v39-GS-AUTO';
 const DEFAULT_GOOGLE_SHEETS_URL='https://script.google.com/macros/s/AKfycbzNhNPHF7AkAi4VPLmRBGOW8t-eGHel4EUJ1JZ0rlZCGjPfp4dcTp3KwH70-8GrJGL-/exec';
 const FUND_SEED = {"isin|cz0008053014":{"nav":1.1601,"date":"2026-03-31","fond":"EBM Residential podfond","company":"Avant","isin":"CZ0008053014","typ":"Prioritní investiční akcie","product":"FKI"},"isin|cz0008045135":{"nav":1.4472,"date":"2025-12-31","fond":"GARTAL Investment fund SICAV a.s.","company":"Avant","isin":"CZ0008045135","typ":"Růstové investiční akcie","product":"FKI"},"isin|cz0008047263":{"nav":1.4398,"date":"2026-02-28","fond":"Podfond ČSEF AQUA","company":"Avant","isin":"CZ0008047263","typ":"Prioritní investiční akcie","product":"FKI"},"isin|cz0008051877":{"nav":1.2047,"date":"2026-02-28","fond":"Podfond ČSEF AQUA","company":"Avant","isin":"CZ0008051877","typ":"Prémiové investiční akcie","product":"FKI"},"isin|cz0008044880":{"nav":1.7312,"date":"2026-04-30","fond":"REALIA Podfond Retail Parks","company":"Avant","isin":"CZ0008044880","typ":"Prioritní investiční akcie I","product":"FKI"},"isin|cz0008050580":{"nav":1.2646,"date":"2026-04-30","fond":"Real Luxembourg investiční fond SICAV, a.s.","company":"Avant","isin":"CZ0008050580","typ":"Prioritní investiční akcie","product":"FKI"},"isin|cz0008042645":{"nav":2.0528,"date":"2025-12-31","fond":"SPILBERK investiční fond SICAV, a.s.","company":"Avant","isin":"CZ0008042645","typ":"Prioritní investiční akcie","product":"FKI"},"isin|cz0008043569":{"nav":1.7237,"date":"2026-03-31","fond":"Vihorev.Capital SICAV, a.s.","company":"Avant","isin":"CZ0008043569","typ":"Prioritní investiční akcie","product":"FKI"},"isin|cz0008043445":{"nav":1.74,"date":"2026-02-28","fond":"r2p invest SICAV, a.s.","company":"Avant","isin":"CZ0008043445","typ":"Prioritní investiční akcie","product":"FKI"},"isin|cz0008043700":{"nav":0.574,"date":"2025-11-30","fond":"ČSNF SICAV, a.s.","company":"Avant","isin":"CZ0008043700","typ":"Prioritní investiční akcie","product":"FKI"},"isin|cz0008044195":{"nav":1.49,"date":"2026-02-28","fond":"Českomoravský fond SICAV, a.s. Podfond AGUILA","company":"Avant","isin":"CZ0008044195","typ":"Investiční akcie A","product":"FKI"},"isin|cz0008049137":{"nav":1.2046,"date":"2026-02-28","fond":"Českomoravský fond SICAV, a.s. Podfond DOMUS","company":"Avant","isin":"CZ0008049137","typ":"Investiční akcie A","product":"FKI"},"isin|cz0008045374":{"nav":1.3148,"date":"2026-04-30","fond":"1FRH SICAV tř.PRIA_CZK","company":"Codya","isin":"CZ0008045374","typ":"PRIA","product":"FKI"},"isin|cz0008046372":{"nav":1.5001,"date":"2025-12-31","fond":"ADAX I.PODFOND tř.A_CZK","company":"Codya","isin":"CZ0008046372","typ":"třída A","product":"FKI"},"isin|cz0008049293":{"nav":1.3639,"date":"2026-02-28","fond":"CARE PODFOND tř.PIA_CZK","company":"Codya","isin":"CZ0008049293","typ":"třída PIA","product":"FKI"},"isin|cz1005201499":{"nav":1.0806,"date":"2026-03-31","fond":"DIRECT PRO podfond - reinvestiční třída R","company":"Codya","isin":"CZ1005201499","typ":"Reinvestiční třída R","product":"FKI"},"isin|cz0008043429":{"nav":1.6439,"date":"2026-04-30","fond":"DIRECT VIGO SICAV tř.R_CZK","company":"Codya","isin":"CZ0008043429","typ":"reinvestiční třída R","product":"FKI"},"isin|cz0008052529":{"nav":1.3429,"date":"2026-01-31","fond":"JULIUS MEINL SUB-FUND 2024 tř.A_CZK","company":"Codya","isin":"CZ0008052529","typ":"třída A","product":"FKI"},"isin|cz0008049020":{"nav":1.1635,"date":"2025-12-31","fond":"KOOR ESG podfond - třída D","company":"Codya","isin":"CZ0008049020","typ":"Třída D","product":"FKI"},"isin|cz0008053642":{"nav":1.13,"date":"2026-03-31","fond":"PENTA EQUITY PODFOND tř.D_CZK","company":"Codya","isin":"CZ0008053642","typ":"třída D","product":"FKI"},"isin|cz0008053691":{"nav":1.1907,"date":"2026-03-31","fond":"PENTA RE tř.D_CZK","company":"Codya","isin":"CZ0008053691","typ":"třída D","product":"FKI"},"isin|cz0008046448":{"nav":1.4372,"date":"2026-03-31","fond":"PFFL I.PODFOND tř.PIA_CZK","company":"Codya","isin":"CZ0008046448","typ":"třída PIA","product":"FKI"},"isin|cz0008048154":{"nav":1.4186,"date":"2026-02-28","fond":"SILVERLINE PODFOND RE tř.A_CZK","company":"Codya","isin":"CZ0008048154","typ":"Třída A","product":"FKI"},"isin|cz0008048162":{"nav":1.4219,"date":"2026-02-28","fond":"SILVERLINE PODFOND RE tř.B_CZK","company":"Codya","isin":"CZ0008048162","typ":"třída B","product":"FKI"},"isin|cz0008051265":{"nav":1.1925,"date":"2026-04-30","fond":"VIGO PUBLIC I.PODFOND tř.A_CZK","company":"Codya","isin":"CZ0008051265","typ":"třída A","product":"Retail / OPF"},"isin|cz0008044385":{"nav":1.234,"date":"2026-03-31","fond":"FČKD Sicav, a.s.","company":"Efekta","isin":"CZ0008044385","typ":"Třída R – reinvestiční CZK","product":"FKI"},"isin|cz0008044179":{"nav":17.9684,"date":"2026-02-28","fond":"Českomoravský fond SICAV, a.s. Podfond DOMUS","company":"Nezařazeno","isin":"CZ0008044179","typ":"Prémiové investiční akcie","product":"FKI"},"isin|cz0008477551":{"nav":1.2497,"date":"2026-04-30","fond":"Wood OPF","company":"WOOD & Company","isin":"CZ0008477551","typ":"CZK Retail Třída","product":"Retail / OPF"}};
 const DEFAULT_ADVISOR = {name:'', role:'Finanční poradce', brand:'Mantra Finance', email:'', phone:'', web:'', disclaimer:''};
@@ -455,14 +455,23 @@ let activeClient = null;
 let activeFilter = 'all';
 let privacyMode = localStorage.getItem('crm_privacy') === '1';
 
-function save(){
+function saveLocalOnly(){
   localStorage.setItem(SK, JSON.stringify(recs));
   localStorage.setItem(FSK, JSON.stringify(fundValues));
+}
+
+function save(){
+  saveLocalOnly();
   scheduleCloudSave();
 }
 
+const AUTO_CLOUD_SYNC = true;
+const AUTO_CLOUD_PULL_MS = 30000;
 let cloudSaveTimer=null;
+let cloudPullTimer=null;
 let cloudSyncBusy=false;
+let lastCloudSaveAt=0;
+let lastCloudLoadAt=0;
 function getSheetsUrl(){ return (localStorage.getItem(GSK)||DEFAULT_GOOGLE_SHEETS_URL||'').trim(); }
 function setSheetsStatus(msg,type='ok'){ const el=document.getElementById('gs_status'); if(el) el.textContent=msg; if(msg) console.log('[Google Sheets]', msg); if(type==='err') console.warn('[Google Sheets]', msg); }
 function cloudPayload(){ return {version:APP_VERSION,type:'full-backup',updatedAt:new Date().toISOString(),records:recs,fundValues:fundValues,advisor:getAdvisor()}; }
@@ -481,9 +490,11 @@ async function syncToSheets(showToast=false){
     const txt=await res.text();
     let out={}; try{out=JSON.parse(txt)}catch{out={ok:false,error:txt}}
     if(!out.ok) throw new Error(out.error||'Uložení se nepovedlo');
+    lastCloudSaveAt=Date.now();
+    setSheetsStatus('Automaticky uloženo: '+new Date().toLocaleTimeString('cs-CZ'));
     if(showToast) toast('Uloženo do Google Sheets ✓','ok');
     return true;
-  }catch(err){ console.error(err); if(showToast) toast('Google Sheets uložení selhalo','err'); return false; }
+  }catch(err){ console.error(err); setSheetsStatus('Uložení do cloudu selhalo','err'); if(showToast) toast('Google Sheets uložení selhalo','err'); return false; }
   finally{ cloudSyncBusy=false; }
 }
 async function syncFromSheets(showToast=true){
@@ -507,13 +518,14 @@ async function syncFromSheets(showToast=true){
     fundValues=funds && typeof funds==='object'?funds:{};
     if(advisor) localStorage.setItem(ASK,JSON.stringify({...DEFAULT_ADVISOR,...advisor}));
     normalizeFundValuesKeys(); ensureCompanies(); ensureClientIds();
-    localStorage.setItem(SK, JSON.stringify(recs));
-    localStorage.setItem(FSK, JSON.stringify(fundValues));
+    saveLocalOnly();
+    lastCloudLoadAt=Date.now();
+    setSheetsStatus('Automaticky načteno: '+new Date().toLocaleTimeString('cs-CZ'));
     renderStats(); renderList(); renderFundPanel(); updateFundPickerOptions(); updateAdvisorHeader();
     if(activeClient) showClient(activeClient);
     if(showToast) toast('Načteno z Google Sheets ✓','ok');
     return true;
-  }catch(err){ console.error(err); if(showToast) toast('Google Sheets načtení selhalo','err'); return false; }
+  }catch(err){ console.error(err); setSheetsStatus('Načtení z cloudu selhalo','err'); if(showToast) toast('Google Sheets načtení selhalo','err'); return false; }
   finally{ cloudSyncBusy=false; }
 }
 function saveSheetsUrl(){
@@ -524,6 +536,22 @@ function saveSheetsUrl(){
 }
 function clearSheetsUrl(){ localStorage.removeItem(GSK); const el=document.getElementById('gs_url'); if(el) el.value=DEFAULT_GOOGLE_SHEETS_URL||''; toast('Vlastní Google Sheets URL odstraněna, používám výchozí napojení','ok'); }
 function renderSheetsPanel(){ const el=document.getElementById('gs_url'); if(el) el.value=getSheetsUrl(); }
+
+function startAutoCloudSync(){
+  const url=getSheetsUrl();
+  if(!AUTO_CLOUD_SYNC || !url) return;
+  clearInterval(cloudPullTimer);
+  // Po startu nejdřív stáhni cloud. Když je prázdný, syncFromSheets automaticky nahraje lokální data.
+  setTimeout(()=>syncFromSheets(false), 600);
+  cloudPullTimer=setInterval(()=>{
+    if(cloudSyncBusy || cloudSaveTimer) return;
+    syncFromSheets(false);
+  }, AUTO_CLOUD_PULL_MS);
+}
+
+window.addEventListener('beforeunload',()=>{
+  if(getSheetsUrl()) syncToSheets(false);
+});
 
 // ── HELPERS ────────────────────────────────────
 const czk = v => (v==null||isNaN(v)) ? '—' : new Intl.NumberFormat('cs-CZ',{style:'currency',currency:'CZK',maximumFractionDigits:0}).format(v);
@@ -769,14 +797,14 @@ function redeemDt(e){ const d=pD(e); if(!d) return null; const r=new Date(d); r.
   normalizeFundValuesKeys();
   if(!recs.length) recs = [...SEED];
   ensureClientIds();
-  save();
+  saveLocalOnly();
   renderStats();
   renderList();
   updatePrivacyBtn();
   updateFundPickerOptions();
   updateAdvisorHeader();
   setTimeout(updateFundPickerOptions,0);
-  if(getSheetsUrl()) setTimeout(()=>syncFromSheets(false),700);
+  startAutoCloudSync();
 })();
 
 // ── AGGREGATE ──────────────────────────────────
