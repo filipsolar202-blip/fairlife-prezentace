@@ -115,14 +115,13 @@ input:focus,select:focus,textarea:focus{border-color:var(--blue);box-shadow:0 0 
 </head>
 <body>
 <div class="top"><div class="topin">
-  <div class="brand"><i class="ti ti-bolt" style="color:#0b5cad"></i>CRM Smlouvy</div>
+  <div class="brand"><i class="ti ti-bolt" style="color:#0b5cad"></i>CRM Smlouvy Filip</div>
   <div class="tabs">
     <button class="tab active" id="tab-auta" onclick="show('auta')"><i class="ti ti-shield-check"></i>Auta + majetek<span class="pill" id="pill-auta" style="display:none"></span></button>
     <button class="tab" id="tab-zivot" onclick="show('zivot')"><i class="ti ti-heart"></i>Životní<span class="pill" id="pill-zivot" style="display:none"></span></button>
     <button class="tab" id="tab-uvery" onclick="show('uvery')"><i class="ti ti-building-bank"></i>Úvěry + hypotéky<span class="pill" id="pill-uvery" style="display:none"></span></button>
     <button class="tab" id="tab-adamek" onclick="show('adamek')"><i class="ti ti-user-plus"></i>Potenciál Adámek</button>
     <button class="tab" id="tab-linhart" onclick="show('linhart')"><i class="ti ti-user-plus"></i>Potenciál Linhart</button>
-    <button class="tab" id="tab-todo" onclick="show('todo')"><i class="ti ti-checkbox"></i>TO-DO<span class="pill" id="pill-todo" style="display:none"></span></button>
   </div>
 </div></div>
 
@@ -132,25 +131,6 @@ input:focus,select:focus,textarea:focus{border-color:var(--blue);box-shadow:0 0 
   <div class="view" id="view-uvery"></div>
   <div class="view" id="view-adamek"></div>
   <div class="view" id="view-linhart"></div>
-  <div class="view" id="view-todo">
-    <div class="head"><h2><i class="ti ti-checkbox" style="color:#2f6b13"></i>TO-DO tento týden</h2>
-      <div class="actions">
-        <span style="font-size:12px;color:var(--muted)" id="todo-week"></span>
-        <a href="https://calendar.google.com" target="_blank" class="btn"><i class="ti ti-brand-google"></i>Google Kalendář</a>
-        <button class="btn" onclick="renderTodo()"><i class="ti ti-refresh"></i>Obnovit</button>
-      </div>
-    </div>
-    <div style="font-size:12px;color:var(--muted);background:var(--bg2);padding:10px 14px;border-radius:11px;margin-bottom:18px">Automaticky sbírá úkoly ze všech sekcí: výročí do 90 dní, 5 let životní, fixace hypoték, úvěry 3 roky, domluvené schůzky.</div>
-    <div class="metrics" id="todo-metrics"></div>
-    <div id="todo-list"></div>
-    <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin:24px 0 12px">Vlastní úkoly</div>
-    <div style="display:flex;gap:8px;margin-bottom:16px">
-      <input type="text" id="todo-inp" placeholder="Přidat vlastní úkol…" style="flex:1">
-      <input type="date" id="todo-dt" style="flex:0 0 160px">
-      <button class="btn primary" onclick="addCustomTodo()"><i class="ti ti-plus"></i></button>
-    </div>
-    <div id="todo-custom"></div>
-  </div>
 </div>
 
 <!-- KLIENT MODAL -->
@@ -161,10 +141,11 @@ input:focus,select:focus,textarea:focus{border-color:var(--blue);box-shadow:0 0 
       <div class="field full"><label>Jméno *</label><input id="c-name" placeholder="Jan Novák"></div>
       <div class="field"><label>Telefon</label><input id="c-phone"></div>
       <div class="field"><label>Email</label><input type="email" id="c-email"></div>
-      <div class="field full"><label>Adresa</label><input id="c-address" placeholder="ulice, město, PSČ"></div>
+      <div class="field"><label>Rodné číslo / IČO</label><input id="c-birthId" placeholder="pro odlišení shodných jmen"></div>
+      <div class="field"><label>Adresa</label><input id="c-address" placeholder="ulice, město, PSČ"></div>
       <div class="field full"><label>Poznámka</label><textarea id="c-note" style="min-height:70px"></textarea></div>
     </div>
-    <div class="row"><button class="btn" onclick="closeModal('modal-client')">Zavřít</button><button class="btn primary" onclick="saveClient()">Uložit klienta</button></div>
+    <div class="row" style="justify-content:space-between"><button class="btn red" id="delete-client" onclick="deleteClient()"><i class="ti ti-trash"></i>Smazat klienta</button><div style="display:flex;gap:8px"><button class="btn" onclick="closeModal('modal-client')">Zavřít</button><button class="btn primary" onclick="saveClient()">Uložit klienta</button></div></div>
   </div>
 </div>
 
@@ -445,9 +426,32 @@ let editLog=[], editStav='', editStavy=[];
 
 const SK={main:'crm_v10_main',sazba:'crm_sazba',todo:'crm_todo'};
 
-function addClientObj(name){
-  let c=clients.find(x=>norm(x.name)===norm(name));
-  if(!c){c={id:uid(),name:name,phone:'',email:'',address:'',note:'',contracts:[]};clients.push(c);}
+function clientKey(c){
+  const id=(c.birthId||c.rc||c.rodneCislo||'').trim();
+  if(id)return 'id:'+norm(id);
+  return 'name:'+norm(c.name||'')+'|phone:'+norm(c.phone||'')+'|email:'+norm(c.email||'')+'|address:'+norm(c.address||'');
+}
+function findMatchingClient(data){
+  const birthId=(data.birthId||data.rc||data.rodneCislo||'').trim();
+  if(birthId){
+    const byId=clients.find(x=>norm(x.birthId||x.rc||x.rodneCislo||'')===norm(birthId));
+    if(byId)return byId;
+  }
+  const name=norm(data.name||'');
+  if(!name)return null;
+  const candidates=clients.filter(x=>norm(x.name)===name);
+  if(!candidates.length)return null;
+  const phone=norm(data.phone||''), email=norm(data.email||''), address=norm(data.address||'');
+  if(phone){const m=candidates.find(x=>norm(x.phone||'')===phone); if(m)return m;}
+  if(email){const m=candidates.find(x=>norm(x.email||'')===email); if(m)return m;}
+  if(address){const m=candidates.find(x=>norm(x.address||'')===address); if(m)return m;}
+  // Merge by name only only when there is a single completely empty candidate.
+  if(candidates.length===1 && !(candidates[0].phone||candidates[0].email||candidates[0].address||candidates[0].birthId))return candidates[0];
+  return null;
+}
+function addClientObj(name, extra={}){
+  let c=findMatchingClient({name, ...extra});
+  if(!c){c={id:uid(),name:name,phone:extra.phone||'',email:extra.email||'',address:extra.address||'',birthId:extra.birthId||'',note:'',contracts:[]};clients.push(c);}
   return c;
 }
 function addContract(clientName, contract){
@@ -538,7 +542,7 @@ function clientCard(client,contracts){
       <div class="bubble ${cls}" style="font-size:${isPot?'20px':'inherit'}">${bubbleContent}</div>
       <div class="client-info">
         <div class="name">${esc(client.name)}${contracts.length>1?`<span class="badge">${contracts.length} smlouvy</span>`:''}</div>
-        <div class="meta">${esc(client.phone||'—')} · ${esc(typesArr.join(', '))}</div>
+        <div class="meta">${esc(client.phone||'—')}${client.birthId?' · RČ/IČO: '+esc(client.birthId):''} · ${esc(typesArr.join(', '))}</div>
         <div class="badges">
           ${statusesArr.map(s=>statusBadge(s)).join('')}
           ${minD!==null&&minD<99999?daysBadge(minD):''}
@@ -723,7 +727,6 @@ function renderAll(forceReinit){
   renderSection('uvery','Úvěry + hypotéky','ti-building-bank','#8a4d08');
   renderSection('adamek','Potenciál Adámek','ti-user-plus','#4a3ca0');
   renderSection('linhart','Potenciál Linhart','ti-user-plus','#4a3ca0');
-  renderTodo();
   updatePills();
 }
 
@@ -743,25 +746,31 @@ function show(id){
   document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
   document.getElementById('view-'+id)?.classList.add('active');
   document.getElementById('tab-'+id)?.classList.add('active');
-  if(id==='todo')renderTodo();
 }
 
 // ===== CLIENT MODAL =====
 function openClientModal(id){
   currentClientId=id||null;
-  const c=id?clients.find(x=>x.id===id):{name:'',phone:'',email:'',address:'',note:''};
+  const c=id?clients.find(x=>x.id===id):{name:'',phone:'',email:'',birthId:'',address:'',note:''};
   document.getElementById('client-title').textContent=id?'Upravit klienta':'Přidat klienta';
-  ['name','phone','email','address','note'].forEach(k=>{const el=document.getElementById('c-'+k);if(el)el.value=c?c[k]||'':''});
+  ['name','phone','email','birthId','address','note'].forEach(k=>{const el=document.getElementById('c-'+k);if(el)el.value=c?c[k]||'':''});
+  const del=document.getElementById('delete-client');if(del)del.style.display=id?'inline-flex':'none';
   openModal('modal-client');
 }
 function saveClient(){
   const name=document.getElementById('c-name').value.trim();
   if(!name)return alert('Vyplň jméno klienta.');
   let c=currentClientId?clients.find(x=>x.id===currentClientId):null;
-  if(!c){c=clients.find(x=>norm(x.name)===norm(name))||null;}
   if(!c){c={id:uid(),contracts:[]};clients.push(c);}
-  ['name','phone','email','address','note'].forEach(k=>{const el=document.getElementById('c-'+k);if(el)c[k]=el.value;});
+  ['name','phone','email','birthId','address','note'].forEach(k=>{const el=document.getElementById('c-'+k);if(el)c[k]=el.value;});
   save();closeModal('modal-client');renderAll();
+}
+function deleteClient(){
+  const c=clients.find(x=>x.id===currentClientId);if(!c)return;
+  const count=(c.contracts||[]).length;
+  if(!confirm('Smazat klienta '+(c.name||'')+(count?' včetně '+count+' smluv?':'?')))return;
+  clients=clients.filter(x=>x.id!==currentClientId);
+  currentClientId=null;save();closeModal('modal-client');renderAll();
 }
 
 // ===== CONTRACT MODAL =====
@@ -915,7 +924,15 @@ function logAndSend(){
   if(currentClientId&&currentContractId){
     const c=clients.find(x=>x.id===currentClientId);
     const s=(currentContractIndex!==null?c?.contracts[currentContractIndex]:c?.contracts.find(x=>x.id===currentContractId));
-    if(s){if(!s.log)s.log=[];s.log.push({d:today(),t:'Odeslán email: '+label+(to?' → '+to:'')});save();}
+    if(s){
+      if(!s.log)s.log=[];
+      s.log.push({d:today(),t:'Odeslán email: '+label+(to?' → '+to:'')});
+      const st=getStatuses(s).filter(x=>x!=='vyrizeno'&&x!=='nechce');
+      if(!st.includes('email'))st.push('email');
+      s.status=st[0]||'email';s.statuses=st.slice(1);
+      s.statusDates={...(s.statusDates||{}),email:today()};
+      save();
+    }
   }
   window.open('mailto:'+to+'?subject='+sub+'&body='+body,'_blank');
   renderAll();
@@ -1145,6 +1162,7 @@ function normalizeImportedRow(o,sourceHint){
     klient,
     tel:pick(o,['tel','telefon','phone','mobil']),
     email:pick(o,['email','mail']),
+    birthId:pick(o,['rodnecislo','rodné číslo','rc','rč','ico','ičo','ic','iČo']),
     adresa:pick(o,['adresa','address']),
     contract:{
       id:uid(),
@@ -1175,9 +1193,9 @@ function mergeImportedRows(rows,sourceHint){
   let imported=0, skipped=0;
   rows.forEach(o=>{
     const r=normalizeImportedRow(o,sourceHint);if(!r){skipped++;return;}
-    let c=clients.find(x=>norm(x.name)===norm(r.klient));
-    if(!c){c={id:uid(),name:r.klient,phone:r.tel||'',email:r.email||'',address:r.adresa||'',note:'',contracts:[]};clients.push(c);}
-    else{if(r.tel&&!c.phone)c.phone=r.tel;if(r.email&&!c.email)c.email=r.email;if(r.adresa&&!c.address)c.address=r.adresa;}
+    let c=findMatchingClient({name:r.klient,phone:r.tel||'',email:r.email||'',address:r.adresa||'',birthId:r.birthId||''});
+    if(!c){c={id:uid(),name:r.klient,phone:r.tel||'',email:r.email||'',birthId:r.birthId||'',address:r.adresa||'',note:'',contracts:[]};clients.push(c);}
+    else{if(r.tel&&!c.phone)c.phone=r.tel;if(r.email&&!c.email)c.email=r.email;if(r.birthId&&!c.birthId)c.birthId=r.birthId;if(r.adresa&&!c.address)c.address=r.adresa;}
     const s=r.contract;
     if(!s.source)s.source=s.type==='život'?'životní':(s.type==='hypotéka'||s.type==='úvěr')?'úvěry':s.type;
     const exists=c.contracts.some(x=>x.number&&s.number&&x.number===s.number&&x.type===s.type);
