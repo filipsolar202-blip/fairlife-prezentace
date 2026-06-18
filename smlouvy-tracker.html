@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<!-- CRM Smlouvy Filip v14 - oprava otevření klienta / náhledu smluv -->
 <html lang="cs">
 <head>
 <meta charset="UTF-8">
@@ -570,11 +571,14 @@ function clientCard(client,contracts,section){
         </div>
       </div>
       <div class="client-actions">
-        <button class="btn" onclick="event.stopPropagation();openClientModal('${client.id}','${section||''}')"><i class="ti ti-user-edit"></i>Klient</button>
+        <button class="btn" onclick="event.stopPropagation();toggleClient('${client.id}')"><i class="ti ti-list-details"></i>Klient</button>
         <button class="btn" onclick="event.stopPropagation();openContractModal('${client.id}',null,'${section||''}')"><i class="ti ti-plus"></i>Smlouva</button>
       </div>
     </div>
     <div class="client-body">
+      <div class="row" style="justify-content:flex-end;margin-bottom:4px">
+        <button class="btn" onclick="openClientModal('${client.id}','${section||''}')"><i class="ti ti-user-edit"></i>Upravit klienta</button>
+      </div>
       ${hasContracts?contracts.map(s=>contractCard(client,s)).join(''):`<div class="empty" style="padding:18px"><i class="ti ti-file-plus"></i>Klient je založený bez smlouvy. Klikněte na + Smlouva a přidejte produkt.</div>`}
     </div>
   </div>`;
