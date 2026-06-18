@@ -559,8 +559,8 @@ function clientCard(client,contracts,section){
   const bubbleContent=!hasContracts
     ?`<i class="ti ti-user" style="font-size:20px"></i>`
     :(isPot?`<i class="ti ti-user" style="font-size:20px"></i>`:`<b>${bv}</b><span>dní</span>`);
-  return`<div class="client ${cls}" id="client-${id}" data-section="${esc(section||'')}">
-    <div class="client-head" onclick="toggleClient('${id}')">
+  return`<div class="client ${cls}" id="client-${id}" data-client-id="${esc(id)}" data-section="${esc(section||'')}">
+    <div class="client-head" onclick="toggleClientCard(this)">
       <div class="bubble ${cls}" style="font-size:${(!hasContracts||isPot)?'20px':'inherit'}">${bubbleContent}</div>
       <div class="client-info">
         <div class="name">${esc(client.name||'Nový klient')}${hasContracts&&contracts.length>1?`<span class="badge">${contracts.length} smlouvy</span>`:''}${!hasContracts?`<span class="badge blue">bez smlouvy</span>`:''}</div>
@@ -571,7 +571,7 @@ function clientCard(client,contracts,section){
         </div>
       </div>
       <div class="client-actions">
-        <button class="btn" onclick="event.stopPropagation();toggleClient('${client.id}')"><i class="ti ti-list-details"></i>Klient</button>
+        <button class="btn" onclick="event.stopPropagation();toggleClientCard(this)"><i class="ti ti-list-details"></i>Klient</button>
         <button class="btn" onclick="event.stopPropagation();openContractModal('${client.id}',null,'${section||''}')"><i class="ti ti-plus"></i>Smlouva</button>
       </div>
     </div>
@@ -614,8 +614,18 @@ function contractCard(client,s){
   </div>`;
 }
 
+function toggleClientCard(trigger){
+  // V15: rozbalujeme vždy konkrétní kartu, na kterou uživatel klikl.
+  // Nespoléháme se pouze na ID klienta, protože u importovaných dat mohou být duplicity
+  // nebo stejný klient může být vykreslen ve více sekcích. Díky closest('.client') se otevře
+  // vždy správný viditelný řádek, i když je klient bez smlouvy.
+  const el=trigger?.closest?.('.client');
+  if(!el)return;
+  el.classList.toggle('open');
+}
 function toggleClient(id){
-  const el=document.getElementById('client-'+id);
+  // Fallback pro starší onclicky: otevře první aktuálně vykreslenou kartu daného klienta.
+  const el=document.querySelector(`.client[data-client-id="${CSS.escape(String(id))}"]`) || document.getElementById('client-'+id);
   if(!el)return;
   el.classList.toggle('open');
 }
