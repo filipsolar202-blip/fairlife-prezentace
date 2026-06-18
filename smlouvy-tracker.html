@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>CRM Smlouvy Filip v11</title>
+<title>CRM Smlouvy Filip v13</title>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.47.0/tabler-icons.min.css">
 <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.min.js"></script>
@@ -116,7 +116,7 @@ input:focus,select:focus,textarea:focus{border-color:var(--blue);box-shadow:0 0 
 </head>
 <body>
 <div class="top"><div class="topin">
-  <div class="brand"><i class="ti ti-bolt" style="color:#0b5cad"></i>CRM Smlouvy Filip <span class="version-badge">v11 klient/RČ</span></div>
+  <div class="brand"><i class="ti ti-bolt" style="color:#0b5cad"></i>CRM Smlouvy Filip <span class="version-badge">v13</span></div>
   <div class="tabs">
     <button class="tab active" id="tab-auta" onclick="show('auta')"><i class="ti ti-shield-check"></i>Auta + majetek<span class="pill" id="pill-auta" style="display:none"></span></button>
     <button class="tab" id="tab-zivot" onclick="show('zivot')"><i class="ti ti-heart"></i>Životní<span class="pill" id="pill-zivot" style="display:none"></span></button>
@@ -423,10 +423,11 @@ function relevantMinDays(contracts){
 // ===== DATA MODEL =====
 let clients=[], templates=[], aktSazba=null, customTodos=[];
 let currentClientId=null, currentContractId=null, currentContractIndex=null;
+let currentClientSectionHint='';
 let editLog=[], editStav='', editStavy=[];
 
 const SK={main:'crm_v10_main',sazba:'crm_sazba',todo:'crm_todo'};
-const APP_VERSION='v11 klient/RČ';
+const APP_VERSION='v12 přidání smluv';
 
 function clientKey(c){
   const id=(c.birthId||c.rc||c.rodneCislo||'').trim();
@@ -526,37 +527,55 @@ function sectionContracts(section){
 
 function metric(label,val,cls,onClick){return`<div class="metric ${onClick?'clickable':''}" ${onClick?`onclick="${onClick}"`:''}><div class="l">${label}</div><div class="v ${cls||''}">${val}</div></div>`}
 
-function clientCard(client,contracts){
-  const minD=relevantMinDays(contracts);
-  let cls=clientCls(contracts);
-  if(contracts.some(isBadMortgageRate))cls+=' rate-bad';
+function normalizeSectionKey(section){
+  const n=norm(section||'');
+  if(n.includes('uver')||n.includes('uvěr')||n.includes('hypotek')||n.includes('hypote'))return 'uvery';
+  if(n.includes('zivot'))return 'zivot';
+  if(n.includes('adamek'))return 'adamek';
+  if(n.includes('linhart'))return 'linhart';
+  if(n.includes('auto')||n.includes('majetek'))return 'auta';
+  return section||'';
+}
+
+function sourceForType(type, fallback){
+  if(type==='život')return 'životní';
+  if(type==='hypotéka'||type==='úvěr')return 'úvěry';
+  if(type==='auto')return 'auto';
+  if(type==='majetek')return 'majetek';
+  return fallback||'';
+}
+
+function clientCard(client,contracts,section){
+  const hasContracts=contracts&&contracts.length;
+  const minD=hasContracts?relevantMinDays(contracts):null;
+  let cls=hasContracts?clientCls(contracts):'ok';
+  if(hasContracts&&contracts.some(isBadMortgageRate))cls+=' rate-bad';
   const id=client.id;
-  const typesArr=[...new Set(contracts.map(x=>x.type))];
-  const statusesArr=[...new Set(contracts.flatMap(x=>getStatuses(x)).filter(Boolean))];
-  const isOpen=document.getElementById('client-'+id)?.classList.contains('open');
+  const typesArr=hasContracts?[...new Set(contracts.map(x=>x.type))]:[];
+  const statusesArr=hasContracts?[...new Set(contracts.flatMap(x=>getStatuses(x)).filter(Boolean))]:[];
   const bv=minD!==null&&minD<99999?minD:'—';
-  const isPot=contracts[0]&&(norm(contracts[0].source||'').includes('adamek')||norm(contracts[0].source||'').includes('linhart')||contracts[0].source==='Adámek'||contracts[0].source==='Linhart');
-  const bubbleContent=isPot
+  const isPot=hasContracts&&(contracts[0]&&(norm(contracts[0].source||'').includes('adamek')||norm(contracts[0].source||'').includes('linhart')||contracts[0].source==='Adámek'||contracts[0].source==='Linhart'));
+  const bubbleContent=!hasContracts
     ?`<i class="ti ti-user" style="font-size:20px"></i>`
-    :`<b>${bv}</b><span>dní</span>`;
-  return`<div class="client ${cls}" id="client-${id}">
+    :(isPot?`<i class="ti ti-user" style="font-size:20px"></i>`:`<b>${bv}</b><span>dní</span>`);
+  return`<div class="client ${cls}" id="client-${id}" data-section="${esc(section||'')}">
     <div class="client-head" onclick="toggleClient('${id}')">
-      <div class="bubble ${cls}" style="font-size:${isPot?'20px':'inherit'}">${bubbleContent}</div>
+      <div class="bubble ${cls}" style="font-size:${(!hasContracts||isPot)?'20px':'inherit'}">${bubbleContent}</div>
       <div class="client-info">
-        <div class="name">${esc(client.name)}${contracts.length>1?`<span class="badge">${contracts.length} smlouvy</span>`:''}</div>
-        <div class="meta">${esc(client.phone||'—')}${client.birthId?' · RČ/IČO: '+esc(client.birthId):''} · ${esc(typesArr.join(', '))}</div>
+        <div class="name">${esc(client.name||'Nový klient')}${hasContracts&&contracts.length>1?`<span class="badge">${contracts.length} smlouvy</span>`:''}${!hasContracts?`<span class="badge blue">bez smlouvy</span>`:''}</div>
+        <div class="meta">${esc(client.phone||'—')}${client.birthId?' · RČ/IČO: '+esc(client.birthId):''}${typesArr.length?' · '+esc(typesArr.join(', ')):''}</div>
         <div class="badges">
           ${statusesArr.map(s=>statusBadge(s)).join('')}
           ${minD!==null&&minD<99999?daysBadge(minD):''}
         </div>
       </div>
       <div class="client-actions">
-        <button class="btn" onclick="event.stopPropagation();openClientModal('${client.id}')"><i class="ti ti-user-edit"></i>Klient</button>
-        <button class="btn" onclick="event.stopPropagation();openContractModal('${client.id}',null,'${contracts[0].source}')"><i class="ti ti-plus"></i>Smlouva</button>
+        <button class="btn" onclick="event.stopPropagation();openClientModal('${client.id}','${section||''}')"><i class="ti ti-user-edit"></i>Klient</button>
+        <button class="btn" onclick="event.stopPropagation();openContractModal('${client.id}',null,'${section||''}')"><i class="ti ti-plus"></i>Smlouva</button>
       </div>
     </div>
     <div class="client-body">
-      ${contracts.map(s=>contractCard(client,s)).join('')}
+      ${hasContracts?contracts.map(s=>contractCard(client,s)).join(''):`<div class="empty" style="padding:18px"><i class="ti ti-file-plus"></i>Klient je založený bez smlouvy. Klikněte na + Smlouva a přidejte produkt.</div>`}
     </div>
   </div>`;
 }
@@ -593,7 +612,8 @@ function contractCard(client,s){
 
 function toggleClient(id){
   const el=document.getElementById('client-'+id);
-  if(el)el.classList.toggle('open');
+  if(!el)return;
+  el.classList.toggle('open');
 }
 
 function groupedRows(rows){
@@ -623,8 +643,8 @@ const STATUS_PRIO={prepojistit:7,vypoved:6,nabidka:5,reseni:4,domluveno:3,kontak
 function contractPrio(x){const ss=getStatuses(x);return ss.length?Math.max(...ss.map(st=>STATUS_PRIO[st]||0)):1}
 function sortGroups(groups){
   return groups.sort((a,b)=>{
-    const pa=Math.max(...a.contracts.map(x=>contractPrio(x)));
-    const pb=Math.max(...b.contracts.map(x=>contractPrio(x)));
+    const pa=a.contracts.length?Math.max(...a.contracts.map(x=>contractPrio(x))):0;
+    const pb=b.contracts.length?Math.max(...b.contracts.map(x=>contractPrio(x))):0;
     if(pa!==pb)return pb-pa;
     const ra=a.contracts.some(isBadMortgageRate)?1:0;
     const rb=b.contracts.some(isBadMortgageRate)?1:0;
@@ -637,30 +657,32 @@ function sortGroups(groups){
 
 function renderSection(section,title,icon,color){
   const raw=sectionContracts(section);
+  const emptyClients=clients.filter(c=>(!c.contracts||!c.contracts.length)&&c.sectionHint===section);
   const rows=filterRows(raw,section);
+  const q=norm(document.getElementById('q-'+section)?.value||'');
+  const st=document.getElementById('st-'+section)?.value||'';
+  const prod=document.getElementById('prod-'+section)?.value||'';
+  const visibleEmptyClients=(!st&&!prod)
+    ? emptyClients.filter(c=>!q||norm((c.name||'')+' '+(c.phone||'')+' '+(c.email||'')+' '+(c.address||'')+' '+(c.birthId||'')).includes(q))
+    : [];
   const total=raw.length;
-  const clientsCount=groupedRows(raw).length;
+  const clientsCount=groupedRows(raw).length+emptyClients.length;
   const under30=raw.filter(r=>r.days<30).length;
   const under90=raw.filter(r=>r.days>=0&&r.days<=90).length;
   const activeStatuses=raw.filter(r=>isActiveContract(r.contract)).length;
   const badRates=raw.filter(r=>isBadMortgageRate(r.contract)).length;
   const view=document.getElementById('view-'+section);
 
-  // Preserve existing filter values to avoid losing focus on re-render
-  const existingQ=document.getElementById('q-'+section)?.value||'';
-  const existingSt=document.getElementById('st-'+section)?.value||'';
-  const existingProd=document.getElementById('prod-'+section)?.value||'';
   const needsInit=!document.getElementById('q-'+section);
 
   if(needsInit){
-    // First render - build full HTML structure
     const sazBanner=section==='uvery'?`<div id="saz-banner-uvery" style="background:#e5f0fb;border:1px solid #85b7eb;border-radius:11px;padding:10px 14px;font-size:12px;color:var(--blue);margin-bottom:18px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px"><span><strong>Aktuální tržní sazba hypoték:</strong> <span id="saz-val">${aktSazba?aktSazba.toFixed(2)+'%':'není nastavena'}</span></span><button class="btn" onclick="openSazba()"><i class="ti ti-edit"></i> Aktualizovat</button></div>`:'';
     const typeFilter=['auta','uvery'].includes(section)?`<select id="prod-${section}" onchange="renderSection('${section}','${title}','${icon}','${color}')"><option value="">Všechny typy</option>${section==='auta'?'<option>auto</option><option>majetek</option>':'<option>hypotéka</option><option>úvěr</option>'}</select>`:'';
     view.innerHTML=`
       <div class="head">
         <h2><i class="ti ${icon}" style="color:${color}"></i>${title}</h2>
         <div class="actions">
-          <button class="btn" onclick="openContractModal(null,null,'${section}')"><i class="ti ti-plus"></i>Přidat</button>
+          <button class="btn" onclick="openClientModal(null,'${section}')"><i class="ti ti-plus"></i>Přidat klienta</button>
           <button class="btn" onclick="exportAll()"><i class="ti ti-download"></i>Export</button>
           <button class="btn" onclick="openImport()"><i class="ti ti-upload"></i>Import</button>
           <a class="btn" target="_blank" href="https://drive.google.com/drive/folders/130YjntsN3-13QchctOZBqcFXvrDJbh_e"><i class="ti ti-brand-google-drive"></i>Drive</a>
@@ -682,32 +704,26 @@ function renderSection(section,title,icon,color){
         </select>
       </div>
       <div id="list-${section}"></div>`;
-    // Attach listeners ONCE - these survive re-renders because we only update list-X
     document.getElementById('q-'+section).addEventListener('input',()=>renderSection(section,title,icon,color));
     document.getElementById('st-'+section).addEventListener('change',()=>renderSection(section,title,icon,color));
     const prodEl=document.getElementById('prod-'+section);
     if(prodEl)prodEl.addEventListener('change',()=>renderSection(section,title,icon,color));
-  } else {
-    // Subsequent renders - only update metrics and list, preserve filter inputs
-    if(section==='uvery'){
-      const sv=document.getElementById('saz-val');
-      if(sv)sv.textContent=aktSazba?aktSazba.toFixed(2)+'%':'není nastavena';
-    }
+  } else if(section==='uvery'){
+    const sv=document.getElementById('saz-val');
+    if(sv)sv.textContent=aktSazba?aktSazba.toFixed(2)+'%':'není nastavena';
   }
 
-  // Always update metrics
   const mEl=document.getElementById('metrics-'+section);
   if(mEl){
     if(section==='auta')mEl.innerHTML=metric('Klientů',clientsCount)+metric('Smluv',total)+metric('Výročí do 90 dní',under90,'orange')+metric('V řešení / urgentní',activeStatuses,'purple','setActiveFilter(\'auta\')');
     else mEl.innerHTML=metric('Klientů',clientsCount)+metric('Smluv',total)+metric('Do 30 dní',under30,'red')+metric('Do 90 dní',under90,'orange')+(section==='uvery'?metric('Horší sazba',badRates,'red'):metric('V řešení / urgentní',activeStatuses,'purple'));
   }
 
-  // Always update list only
   const list=document.getElementById('list-'+section);
   if(!list)return;
-  const groups=sortGroups(groupedRows(rows));
+  const groups=sortGroups(groupedRows(rows).concat(visibleEmptyClients.map(c=>({client:c,contracts:[]}))));
   list.innerHTML=groups.length
-    ?`<div class="section-title"><span>Klienti (${groups.length}/${clientsCount})</span><span>${total} smluv</span></div>`+groups.map(g=>clientCard(g.client,g.contracts)).join('')
+    ?`<div class="section-title"><span>Klienti (${groups.length}/${clientsCount})</span><span>${total} smluv</span></div>`+groups.map(g=>clientCard(g.client,g.contracts,section)).join('')
     :`<div class="empty"><i class="ti ti-circle-check"></i>Žádné záznamy</div>`;
 }
 
@@ -753,9 +769,10 @@ function show(id){
 }
 
 // ===== CLIENT MODAL =====
-function openClientModal(id){
+function openClientModal(id, sectionHint){
   currentClientId=id||null;
-  const c=id?clients.find(x=>x.id===id):{name:'',phone:'',email:'',birthId:'',address:'',note:''};
+  currentClientSectionHint=normalizeSectionKey(sectionHint||'')||'';
+  const c=id?clients.find(x=>x.id===id):{name:'',phone:'',email:'',birthId:'',address:'',note:'',sectionHint:currentClientSectionHint};
   document.getElementById('client-title').textContent=id?'Upravit klienta':'Přidat klienta';
   ['name','phone','email','birthId','address','note'].forEach(k=>{const el=document.getElementById('c-'+k);if(el)el.value=c?c[k]||'':''});
   const del=document.getElementById('delete-client');if(del)del.style.display=id?'inline-flex':'none';
@@ -765,7 +782,8 @@ function saveClient(){
   const name=document.getElementById('c-name').value.trim();
   if(!name)return alert('Vyplň jméno klienta.');
   let c=currentClientId?clients.find(x=>x.id===currentClientId):null;
-  if(!c){c={id:uid(),contracts:[]};clients.push(c);}
+  if(!c){c={id:uid(),contracts:[],sectionHint:currentClientSectionHint};clients.push(c);}
+  if(currentClientSectionHint&&!c.sectionHint)c.sectionHint=currentClientSectionHint;
   ['name','phone','email','birthId','address','note'].forEach(k=>{const el=document.getElementById('c-'+k);if(el)c[k]=el.value;});
   save();closeModal('modal-client');renderAll();
 }
@@ -794,6 +812,7 @@ const STAV_VSECHNY=[
 ];
 
 function openContractModal(clientId, contractId, section, contractIndex){
+  section=normalizeSectionKey(section);
   currentClientId=clientId;currentContractId=contractId||null;currentContractIndex=(Number.isInteger(contractIndex)?contractIndex:null);
   let c=clientId?clients.find(x=>x.id===clientId):null;
   if(!c){
@@ -802,7 +821,7 @@ function openContractModal(clientId, contractId, section, contractIndex){
     c=addClientObj(name);currentClientId=c.id;
   }
   const defType=section==='zivot'?'život':section==='uvery'?'hypotéka':section==='auta'?'auto':'ostatní';
-  const defSource=section==='adamek'?'Adámek':section==='linhart'?'Linhart':section==='zivot'?'životní':section==='uvery'?'úvěry':'';
+  const defSource=section==='adamek'?'Adámek':section==='linhart'?'Linhart':section==='zivot'?'životní':section==='uvery'?'úvěry':section==='auta'?'auto':'';
   const s=contractId?(currentContractIndex!==null?c.contracts[currentContractIndex]:c.contracts.find(x=>x.id===contractId)):{type:defType,product:'',company:'',number:'',anniv:'',amount:'',rate:'',status:'',note:'',source:defSource,eucs:'Ne'};
   editLog=[...(s.log||[])];
   editStavy=getStatuses(s); editStav=editStavy[0]||'';
@@ -871,7 +890,8 @@ function saveContract(){
   }
   else {s.status=editStavy[0]||'';s.statuses=editStavy.slice(1);s.hotovoDne='';s.statusDates={...(s.statusDates||{})};editStavy.forEach(st=>{if(!s.statusDates[st])s.statusDates[st]=today();});}
   s.log=editLog;
-  if(!s.source)s.source=document.getElementById('s-type')?.value==='život'?'životní':document.getElementById('s-type')?.value==='hypotéka'||document.getElementById('s-type')?.value==='úvěr'?'úvěry':'';
+  s.source=sourceForType(s.type,s.source);
+  if(c.sectionHint&&c.contracts.length)c.sectionHint='';
   save();closeModal('modal-contract');renderAll();
 }
 function deleteContract(){
