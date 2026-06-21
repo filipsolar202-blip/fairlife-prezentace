@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>Filip Solár · Finance, které dávají smysl</title>
+<title>Filip-prezentace · Finance, které dávají smysl</title>
 <style>
 /* ═══════════════════════════════════════
    TOKENS
@@ -1887,7 +1887,7 @@ body::after{
     <div class="calc-layer" id="calcLayer" aria-hidden="true">
       <div class="calc-shell">
         <div class="calc-bar">
-          <div class="calc-title"><span>Pracovní nástroj</span>Investiční kalkulačka klienta</div>
+          <div class="calc-title"><span>Pracovní nástroj</span>Klientská kalkulačka</div>
           <div class="calc-actions">
             <button type="button" onclick="openInvestmentCalculatorWindow()">Otevřít v novém okně</button>
             <button type="button" onclick="closeInvestmentCalculator()">Zavřít</button>
@@ -2769,33 +2769,70 @@ function relationBlock(area, idx){
 function renderToolZone(area){
   const z = document.getElementById('tool-zone');
   if(!z) return;
-  if(area === 'q2'){
-    z.className = 'tool-zone show';
-    z.innerHTML = `
-      <button type="button" class="tool-card" onclick="openInvestmentCalculator()">
+
+  const mortgageForm = 'https://form.jotform.com/261162014371344';
+  const lifeForm = 'https://form.jotform.com/261163373250349';
+
+  const cards = {
+    q1: `
+      <button type="button" class="tool-card" onclick="openClientCalculator('mortgage')">
+        <span class="tool-kicker">Hypoteční propočet</span>
+        <b>Otevřít kalkulačku</b>
+        <small>Splátka, možnosti financování a dopad na rozpočet klienta.</small>
+      </button>
+      <button type="button" class="tool-card" onclick="openExternal('${mortgageForm}')">
+        <span class="tool-kicker">Podklady k hypotéce</span>
+        <b>Vyplnit hypoteční dotazník</b>
+        <small>Základní údaje pro přípravu nabídky a analýzy.</small>
+      </button>`,
+    q2: `
+      <button type="button" class="tool-card" onclick="openClientCalculator('invest')">
         <span class="tool-kicker">Interaktivní propočet</span>
         <b>Spočítat investiční scénář</b>
         <small>Renta, cílový kapitál, měsíční investice a porovnání variant.</small>
+      </button>`,
+    q3: `
+      <button type="button" class="tool-card" onclick="openClientCalculator('risk')">
+        <span class="tool-kicker">Zajištění příjmu</span>
+        <b>Otevřít kalkulačku</b>
+        <small>Dopad výpadku příjmu a návaznost na investiční plán.</small>
       </button>
-      <button type="button" class="tool-card" onclick="openInvestmentCalculatorWindow()">
-        <span class="tool-kicker">Na větší práci</span>
-        <b>Otevřít kalkulačku samostatně</b>
-        <small>Vhodné při delší schůzce nebo práci na druhé obrazovce.</small>
-      </button>`;
+      <button type="button" class="tool-card" onclick="openExternal('${lifeForm}')">
+        <span class="tool-kicker">Podklady k pojištění</span>
+        <b>Vyplnit dotazník životního pojištění</b>
+        <small>Údaje pro kontrolu rizik, částek a nastavení ochrany.</small>
+      </button>`,
+    q4: `
+      <button type="button" class="tool-card" onclick="openClientCalculator('invest')">
+        <span class="tool-kicker">Klientský propočet</span>
+        <b>Otevřít kalkulačku</b>
+        <small>Rychlý pracovní nástroj pro návaznost hypotéky, investic a zajištění.</small>
+      </button>`
+  };
+
+  if(cards[area]){
+    z.className = 'tool-zone show';
+    z.innerHTML = cards[area];
   } else {
     z.className = 'tool-zone';
     z.innerHTML = '';
   }
 }
 
-function calculatorHtml(){
-  const tpl = document.getElementById('investmentAppTemplate');
-  return tpl ? tpl.innerHTML.trim() : '';
+function openExternal(url){
+  window.open(url, '_blank', 'noopener,noreferrer');
 }
-function openInvestmentCalculator(){
+
+function calculatorHtml(startTab='invest'){
+  const tpl = document.getElementById('investmentAppTemplate');
+  if(!tpl) return '';
+  const safeTab = ['invest','risk','mortgage','report'].includes(startTab) ? startTab : 'invest';
+  return tpl.innerHTML.trim().replace('</body>', `<script>window.addEventListener('load',function(){setTimeout(function(){ if(window.switchTab) switchTab('${safeTab}'); },80);});<\/script></body>`);
+}
+function openClientCalculator(tab='invest'){
   const layer = document.getElementById('calcLayer');
   const frame = document.getElementById('calcFrame');
-  if(frame && !frame.srcdoc) frame.srcdoc = calculatorHtml();
+  if(frame) frame.srcdoc = calculatorHtml(tab);
   layer?.classList.add('open');
   if(layer) layer.setAttribute('aria-hidden','false');
 }
@@ -2804,8 +2841,9 @@ function closeInvestmentCalculator(){
   layer?.classList.remove('open');
   if(layer) layer.setAttribute('aria-hidden','true');
 }
-function openInvestmentCalculatorWindow(){
-  const html = calculatorHtml();
+function openInvestmentCalculator(){ openClientCalculator('invest'); }
+function openInvestmentCalculatorWindow(tab='invest'){
+  const html = calculatorHtml(tab);
   const blob = new Blob([html], {type:'text/html'});
   const url = URL.createObjectURL(blob);
   window.open(url, '_blank');
