@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<!-- CRM Smlouvy Filip v14 - oprava otevření klienta / náhledu smluv -->
+<!-- CRM Smlouvy Filip v16 - kontrola nových klientů a smluv -->
 <html lang="cs">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>CRM Smlouvy Filip v13</title>
+<title>CRM Smlouvy Filip v16</title>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.47.0/tabler-icons.min.css">
 <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.min.js"></script>
@@ -42,7 +42,8 @@ input:focus,select:focus,textarea:focus{border-color:var(--blue);box-shadow:0 0 
 /* CLIENT CARD */
 .client{border:1px solid var(--line);border-radius:var(--r2);overflow:hidden;margin-bottom:10px;transition:box-shadow .15s}
 .client:hover{box-shadow:var(--shadow)}
-.client.urgent{border-left:4px solid var(--red)}.client.soon{border-left:4px solid var(--orange)}.client.kontakt{border-left:4px solid var(--blue)}.client.ok{border-left:4px solid var(--green)}.client.done{border-left:4px solid var(--line);opacity:.7}.client.hot{border-left:4px solid var(--red);background:#fdf3f3}.client.purple-b{border-left:4px solid var(--purple);background:#f5f3ff}
+.client.urgent{border-left:4px solid var(--red)}.client.soon{border-left:4px solid var(--orange)}.client.kontakt{border-left:4px solid var(--blue)}.client.ok{border-left:4px solid var(--green)}.client.done{border-left:4px solid var(--line);opacity:.7}.client.review-b{box-shadow:inset 4px 0 0 var(--orange);background:#fff8ef}
+.client.hot{border-left:4px solid var(--red);background:#fdf3f3}.client.purple-b{border-left:4px solid var(--purple);background:#f5f3ff}
 .client-head{display:flex;align-items:flex-start;gap:14px;padding:14px 16px;cursor:pointer;user-select:none}
 .bubble{width:52px;height:52px;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;flex-shrink:0;font-weight:800}
 .bubble.urgent{background:#fde8e8;color:var(--red)}.bubble.soon{background:#fdf0e0;color:var(--orange)}.bubble.kontakt{background:#e5f0fb;color:var(--blue)}.bubble.ok{background:#e8f4e0;color:var(--green)}.bubble.done{background:var(--bg2);color:var(--muted)}.bubble.hot{background:#fde8e8;color:var(--red)}.bubble.purple-b{background:#eeebff;color:var(--purple)}
@@ -117,7 +118,7 @@ input:focus,select:focus,textarea:focus{border-color:var(--blue);box-shadow:0 0 
 </head>
 <body>
 <div class="top"><div class="topin">
-  <div class="brand"><i class="ti ti-bolt" style="color:#0b5cad"></i>CRM Smlouvy Filip <span class="version-badge">v13</span></div>
+  <div class="brand"><i class="ti ti-bolt" style="color:#0b5cad"></i>CRM Smlouvy Filip <span class="version-badge">v16</span></div>
   <div class="tabs">
     <button class="tab active" id="tab-auta" onclick="show('auta')"><i class="ti ti-shield-check"></i>Auta + majetek<span class="pill" id="pill-auta" style="display:none"></span></button>
     <button class="tab" id="tab-zivot" onclick="show('zivot')"><i class="ti ti-heart"></i>Životní<span class="pill" id="pill-zivot" style="display:none"></span></button>
@@ -377,6 +378,10 @@ function statusBadge(s){
   return`<span class="badge ${cls}">${esc(statusLabel(s))}</span>`;
 }
 function statusBadgesFor(s){return getStatuses(s).map(x=>statusBadge(x)).join('')}
+function needsClientReview(client, contracts){
+  return !!(client?.needsReview || (contracts||client?.contracts||[]).some(x=>x&&x.needsReview));
+}
+function reviewBadge(){return '<span class="badge orange">Ke kontrole</span>';}
 function daysBadge(d){
   if(d>=99999)return'<span class="badge">bez data</span>';
   if(d<0)return'<span class="badge">prošlé</span>';
@@ -428,7 +433,7 @@ let currentClientSectionHint='';
 let editLog=[], editStav='', editStavy=[];
 
 const SK={main:'crm_v10_main',sazba:'crm_sazba',todo:'crm_todo'};
-const APP_VERSION='v12 přidání smluv';
+const APP_VERSION='v16 kontrola nových';
 
 function clientKey(c){
   const id=(c.birthId||c.rc||c.rodneCislo||'').trim();
@@ -455,13 +460,13 @@ function findMatchingClient(data){
 }
 function addClientObj(name, extra={}){
   let c=findMatchingClient({name, ...extra});
-  if(!c){c={id:uid(),name:name,phone:extra.phone||'',email:extra.email||'',address:extra.address||'',birthId:extra.birthId||'',note:'',contracts:[]};clients.push(c);}
+  if(!c){c={id:uid(),name:name,phone:extra.phone||'',email:extra.email||'',address:extra.address||'',birthId:extra.birthId||'',note:'',contracts:[],needsReview:true,createdAt:today()};clients.push(c);}
   return c;
 }
 function addContract(clientName, contract){
   const c=addClientObj(clientName);
   const existing=c.contracts.find(x=>x.number&&contract.number&&x.number===contract.number&&x.type===contract.type);
-  if(!existing)c.contracts.push({...contract,id:uid(),log:[],status:contract.status||''});
+  if(!existing){c.contracts.push({...contract,id:uid(),log:[],status:contract.status||'',needsReview:true,createdAt:today()});c.needsReview=true;}
   return c;
 }
 
@@ -550,6 +555,8 @@ function clientCard(client,contracts,section){
   const hasContracts=contracts&&contracts.length;
   const minD=hasContracts?relevantMinDays(contracts):null;
   let cls=hasContracts?clientCls(contracts):'ok';
+  const needsReview=needsClientReview(client,contracts);
+  if(needsReview)cls+=' review-b';
   if(hasContracts&&contracts.some(isBadMortgageRate))cls+=' rate-bad';
   const id=client.id;
   const typesArr=hasContracts?[...new Set(contracts.map(x=>x.type))]:[];
@@ -563,9 +570,10 @@ function clientCard(client,contracts,section){
     <div class="client-head" onclick="toggleClientCard(this)">
       <div class="bubble ${cls}" style="font-size:${(!hasContracts||isPot)?'20px':'inherit'}">${bubbleContent}</div>
       <div class="client-info">
-        <div class="name">${esc(client.name||'Nový klient')}${hasContracts&&contracts.length>1?`<span class="badge">${contracts.length} smlouvy</span>`:''}${!hasContracts?`<span class="badge blue">bez smlouvy</span>`:''}</div>
+        <div class="name">${esc(client.name||'Nový klient')}${hasContracts&&contracts.length>1?`<span class="badge">${contracts.length} smlouvy</span>`:''}${!hasContracts?`<span class="badge blue">bez smlouvy</span>`:''}${needsReview?reviewBadge():''}</div>
         <div class="meta">${esc(client.phone||'—')}${client.birthId?' · RČ/IČO: '+esc(client.birthId):''}${typesArr.length?' · '+esc(typesArr.join(', ')):''}</div>
         <div class="badges">
+          ${needsReview?reviewBadge():''}
           ${statusesArr.map(s=>statusBadge(s)).join('')}
           ${minD!==null&&minD<99999?daysBadge(minD):''}
         </div>
@@ -577,6 +585,7 @@ function clientCard(client,contracts,section){
     </div>
     <div class="client-body">
       <div class="row" style="justify-content:flex-end;margin-bottom:4px">
+        ${needsReview?`<button class="btn primary" onclick="confirmClientReview('${client.id}')"><i class="ti ti-check"></i>Potvrdit správnost</button>`:''}
         <button class="btn" onclick="openClientModal('${client.id}','${section||''}')"><i class="ti ti-user-edit"></i>Upravit klienta</button>
       </div>
       ${hasContracts?contracts.map(s=>contractCard(client,s)).join(''):`<div class="empty" style="padding:18px"><i class="ti ti-file-plus"></i>Klient je založený bez smlouvy. Klikněte na + Smlouva a přidejte produkt.</div>`}
@@ -598,6 +607,7 @@ function contractCard(client,s){
       <div class="contract-sub">${esc(s.company||'—')} · č. ${esc(s.number||'—')}${s.amount?' · '+esc(s.amount):''}${s.rate?' · '+esc(s.rate):''}</div>
       ${noteHtml}
       <div class="badges" style="margin-top:4px">
+        ${s.needsReview?reviewBadge():''}
         ${daysBadge(d)}
         ${statusBadgesFor(s)}
         ${badRateBadge(s)}
@@ -629,6 +639,13 @@ function toggleClient(id){
   if(!el)return;
   el.classList.toggle('open');
 }
+function confirmClientReview(clientId){
+  const c=clients.find(x=>x.id===clientId);if(!c)return;
+  c.needsReview=false;
+  (c.contracts||[]).forEach(s=>s.needsReview=false);
+  c.reviewedAt=today();
+  save();renderAll();
+}
 
 function groupedRows(rows){
   const m={};
@@ -657,6 +674,9 @@ const STATUS_PRIO={prepojistit:7,vypoved:6,nabidka:5,reseni:4,domluveno:3,kontak
 function contractPrio(x){const ss=getStatuses(x);return ss.length?Math.max(...ss.map(st=>STATUS_PRIO[st]||0)):1}
 function sortGroups(groups){
   return groups.sort((a,b)=>{
+    const revA=needsClientReview(a.client,a.contracts)?1:0;
+    const revB=needsClientReview(b.client,b.contracts)?1:0;
+    if(revA!==revB)return revB-revA;
     const pa=a.contracts.length?Math.max(...a.contracts.map(x=>contractPrio(x))):0;
     const pb=b.contracts.length?Math.max(...b.contracts.map(x=>contractPrio(x))):0;
     if(pa!==pb)return pb-pa;
@@ -796,7 +816,7 @@ function saveClient(){
   const name=document.getElementById('c-name').value.trim();
   if(!name)return alert('Vyplň jméno klienta.');
   let c=currentClientId?clients.find(x=>x.id===currentClientId):null;
-  if(!c){c={id:uid(),contracts:[],sectionHint:currentClientSectionHint};clients.push(c);}
+  if(!c){c={id:uid(),contracts:[],sectionHint:currentClientSectionHint,needsReview:true,createdAt:today()};clients.push(c);}
   if(currentClientSectionHint&&!c.sectionHint)c.sectionHint=currentClientSectionHint;
   ['name','phone','email','birthId','address','note'].forEach(k=>{const el=document.getElementById('c-'+k);if(el)c[k]=el.value;});
   save();closeModal('modal-client');renderAll();
@@ -888,7 +908,7 @@ document.addEventListener('keydown',e=>{if(e.key==='Enter'&&document.activeEleme
 function saveContract(){
   const c=clients.find(x=>x.id===currentClientId);if(!c)return;
   let s=currentContractId?(currentContractIndex!==null?c.contracts[currentContractIndex]:c.contracts.find(x=>x.id===currentContractId)):null;
-  if(!s){s={id:uid(),source:'',log:[]};c.contracts.push(s);currentContractIndex=c.contracts.length-1;}
+  if(!s){s={id:uid(),source:'',log:[],needsReview:true,createdAt:today()};c.contracts.push(s);c.needsReview=true;currentContractIndex=c.contracts.length-1;}
   ['type','product','company','number','anniv','amount','rate','note'].forEach(k=>{const el=document.getElementById('s-'+k);if(el)s[k]=el.value;});
   const eucs=document.getElementById('s-eucs');if(eucs)s.eucs=eucs.value;
   if(editStavy.includes('vyrizeno')){
@@ -1216,7 +1236,9 @@ function normalizeImportedRow(o,sourceHint){
       note:pick(o,['poznamka','poznámka','note','notes']),
       source:sourceHint||pick(o,['source','zdroj'])||'',
       log:[],
-      datumUzavreni:toISODate(pick(o,['datumuzavreni','datum uzavření','sjednano','sjednáno']))
+      datumUzavreni:toISODate(pick(o,['datumuzavreni','datum uzavření','sjednano','sjednáno'])),
+      needsReview:true,
+      createdAt:today()
     }
   };
 }
@@ -1232,12 +1254,12 @@ function mergeImportedRows(rows,sourceHint){
   rows.forEach(o=>{
     const r=normalizeImportedRow(o,sourceHint);if(!r){skipped++;return;}
     let c=findMatchingClient({name:r.klient,phone:r.tel||'',email:r.email||'',address:r.adresa||'',birthId:r.birthId||''});
-    if(!c){c={id:uid(),name:r.klient,phone:r.tel||'',email:r.email||'',birthId:r.birthId||'',address:r.adresa||'',note:'',contracts:[]};clients.push(c);}
+    if(!c){c={id:uid(),name:r.klient,phone:r.tel||'',email:r.email||'',birthId:r.birthId||'',address:r.adresa||'',note:'',contracts:[],needsReview:true,createdAt:today()};clients.push(c);}
     else{if(r.tel&&!c.phone)c.phone=r.tel;if(r.email&&!c.email)c.email=r.email;if(r.birthId&&!c.birthId)c.birthId=r.birthId;if(r.adresa&&!c.address)c.address=r.adresa;}
     const s=r.contract;
     if(!s.source)s.source=s.type==='život'?'životní':(s.type==='hypotéka'||s.type==='úvěr')?'úvěry':s.type;
     const exists=c.contracts.some(x=>x.number&&s.number&&x.number===s.number&&x.type===s.type);
-    if(!exists){c.contracts.push(s);imported++;}else skipped++;
+    if(!exists){s.needsReview=true;s.createdAt=s.createdAt||today();c.needsReview=true;c.contracts.push(s);imported++;}else skipped++;
   });
   return {imported,skipped};
 }
@@ -1277,9 +1299,9 @@ function importJsonData(data){
   if(data.clients||(Array.isArray(data)&&data[0]&&data[0].contracts)){
     const incoming=data.clients||data;
     incoming.forEach(ic=>{
-      let c=clients.find(x=>norm(x.name)===norm(ic.name));
-      if(!c){c={id:uid(),name:ic.name||'',phone:ic.phone||'',email:ic.email||'',address:ic.address||ic.adresa||'',note:ic.note||'',contracts:[]};clients.push(c);} else {['phone','email','address','note'].forEach(k=>c[k]=c[k]||ic[k]||'');}
-      (ic.contracts||[]).forEach(s=>{if(!c.contracts.some(x=>x.number&&s.number&&x.number===s.number&&x.type===s.type)){c.contracts.push({...s,id:s.id||uid(),log:s.log||[],status:s.status||''});imported++;}else skipped++;});
+      let c=findMatchingClient({name:ic.name||'',phone:ic.phone||'',email:ic.email||'',address:ic.address||ic.adresa||'',birthId:ic.birthId||ic.rc||ic.rodneCislo||''});
+      if(!c){c={id:uid(),name:ic.name||'',phone:ic.phone||'',email:ic.email||'',birthId:ic.birthId||ic.rc||ic.rodneCislo||'',address:ic.address||ic.adresa||'',note:ic.note||'',contracts:[],needsReview:true,createdAt:today()};clients.push(c);} else {['phone','email','address','birthId','note'].forEach(k=>c[k]=c[k]||ic[k]||'');}
+      (ic.contracts||[]).forEach(s=>{if(!c.contracts.some(x=>x.number&&s.number&&x.number===s.number&&x.type===s.type)){c.contracts.push({...s,id:s.id||uid(),log:s.log||[],status:s.status||'',needsReview:true,createdAt:today()});c.needsReview=true;imported++;}else skipped++;});
     });
     if(data.templates)templates=data.templates;
   } else if(Array.isArray(data)&&data[0]&&(data[0].klient||data[0].vyroci||data[0].cislo)){
