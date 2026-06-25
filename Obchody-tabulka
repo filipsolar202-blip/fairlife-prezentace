@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Obchody-tabulka</title>
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    :root{
+      --bg:#f4f6f8;--card:#ffffff;--text:#111827;--muted:#6b7280;--line:#d8dee6;
+      --green:#8bd24b;--green2:#68b832;--red:#ffb4b4;--yellow:#fff0b3;--blue:#dcecff;
+      --dark:#0f172a;--shadow:0 14px 35px rgba(15,23,42,.08);--radius:18px;
+    }
+    *{box-sizing:border-box}
+    body{margin:0;font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:linear-gradient(180deg,#fff 0,#f4f6f8 220px);color:var(--text)}
+    header{position:sticky;top:0;z-index:10;background:rgba(255,255,255,.88);backdrop-filter:blur(18px);border-bottom:1px solid var(--line)}
+    .top{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:16px 22px}
+    .brand h1{margin:0;font-size:22px;letter-spacing:-.02em}.brand span{font-size:12px;color:var(--muted);font-weight:700}.version{color:#e00000;font-weight:900;margin-left:8px}
+    .tabs{display:flex;gap:8px;padding:0 22px 14px;overflow:auto}.tab{border:1px solid var(--line);background:#fff;border-radius:999px;padding:9px 14px;font-weight:800;cursor:pointer;white-space:nowrap}.tab.active{background:var(--dark);color:#fff;border-color:var(--dark)}
+    main{padding:22px;max-width:1600px;margin:0 auto}.grid{display:grid;grid-template-columns:repeat(12,1fr);gap:16px}.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:16px}.span-3{grid-column:span 3}.span-4{grid-column:span 4}.span-5{grid-column:span 5}.span-6{grid-column:span 6}.span-7{grid-column:span 7}.span-12{grid-column:span 12}
+    h2{margin:0 0 12px;font-size:18px}.kpi{display:flex;flex-direction:column;gap:6px}.kpi .label{color:var(--muted);font-size:12px;font-weight:800;text-transform:uppercase}.kpi .value{font-size:26px;font-weight:950;letter-spacing:-.03em}.kpi .sub{font-size:12px;color:var(--muted)}
+    .toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:end}.field{display:flex;flex-direction:column;gap:5px;min-width:145px}.field label{font-size:12px;color:var(--muted);font-weight:800}.field input,.field select,.field textarea{border:1px solid var(--line);border-radius:12px;padding:10px;background:#fff;font:inherit}.field textarea{min-height:42px}.field.small{min-width:90px}.btn{border:0;border-radius:12px;padding:11px 14px;font-weight:900;cursor:pointer;background:var(--dark);color:#fff}.btn.secondary{background:#fff;color:var(--dark);border:1px solid var(--line)}.btn.green{background:var(--green2)}.btn.red{background:#dc2626}.btn:disabled{opacity:.45;cursor:not-allowed}
+    .table-wrap{overflow:auto;border:1px solid var(--line);border-radius:14px;background:#fff}table{border-collapse:collapse;width:100%;min-width:1180px}th,td{border-bottom:1px solid var(--line);border-right:1px solid #edf1f5;padding:8px 9px;font-size:13px;vertical-align:middle}th{position:sticky;top:0;background:#f8fafc;z-index:1;text-align:left;font-size:12px;text-transform:uppercase}tr:hover td{background:#fcfcfd}.money,.num{text-align:right;white-space:nowrap}.green-row td{background:#dbf7c4}.warn td{background:#fff8d7}.bad td{background:#ffe1e1}.status{font-weight:900;border-radius:999px;padding:4px 8px;display:inline-block}.status.ok{background:#dcfce7;color:#166534}.status.wait{background:#fef9c3;color:#854d0e}.status.bad{background:#fee2e2;color:#991b1b}.status.part{background:#dbeafe;color:#1d4ed8}
+    .hidden{display:none!important}.progress{height:12px;background:#e5e7eb;border-radius:99px;overflow:hidden}.progress span{display:block;height:100%;background:var(--green2);width:0}.alerts{display:flex;flex-direction:column;gap:10px}.alert{padding:12px;border-radius:14px;border:1px solid var(--line);background:#fff}.alert.new{background:#ecfdf5}.alert.old{background:#fff7ed}.alert.unmatched{background:#eff6ff}.modal{position:fixed;inset:0;background:rgba(15,23,42,.45);display:none;align-items:center;justify-content:center;z-index:100;padding:20px}.modal.show{display:flex}.modal-box{background:#fff;border-radius:22px;max-width:980px;width:100%;max-height:82vh;overflow:auto;padding:18px;box-shadow:0 30px 80px rgba(0,0,0,.25)}.modal-head{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:12px}.close{border:0;background:#f1f5f9;border-radius:10px;padding:8px 11px;font-weight:900;cursor:pointer}.note{color:var(--muted);font-size:13px;line-height:1.45}.pill{display:inline-flex;border-radius:999px;padding:4px 8px;background:#eef2ff;font-size:12px;font-weight:800;margin:2px}.danger-text{color:#b91c1c;font-weight:900}.ok-text{color:#166534;font-weight:900}
+    @media(max-width:1000px){.span-3,.span-4,.span-5,.span-6,.span-7{grid-column:span 12}.top{align-items:flex-start;flex-direction:column}main{padding:14px}.card{padding:12px}}
+  </style>
+</head>
+<body>
+<header>
+  <div class="top">
+    <div class="brand"><h1>Obchody-tabulka <span class="version">v1.0.0</span></h1><span>Evidence obchodů · provize · plán · dashboard</span></div>
+    <div class="toolbar">
+      <button class="btn secondary" onclick="exportJSON()">Export JSON</button>
+      <label class="btn secondary" for="importJson">Import JSON</label><input id="importJson" type="file" accept=".json" class="hidden" onchange="importJSON(event)">
+      <button class="btn red" onclick="resetData()">Smazat data</button>
+    </div>
+  </div>
+  <nav class="tabs">
+    <button class="tab active" data-view="dashboard">Dashboard</button>
+    <button class="tab" data-view="deals">Evidence obchodů</button>
+    <button class="tab" data-view="commissions">Import provizí</button>
+    <button class="tab" data-view="plan">Roční plán</button>
+    <button class="tab" data-view="settings">Nastavení</button>
+  </nav>
+</header>
+<main>
+  <section id="dashboard" class="view">
+    <div class="grid">
+      <div class="card span-3 kpi"><div class="label">Čistý zisk letos</div><div class="value" id="kpiProfit">0 Kč</div><div class="sub" id="kpiProfitSub">Z provizí připsaných v daném roce</div></div>
+      <div class="card span-3 kpi"><div class="label">BJ letos</div><div class="value" id="kpiBj">0</div><div class="sub" id="kpiBjSub">Sjednané obchody</div></div>
+      <div class="card span-3 kpi"><div class="label">Obchody bez provize 3+ měsíce</div><div class="value danger-text" id="kpiOld">0</div><div class="sub">Nutno zkontrolovat</div></div>
+      <div class="card span-3 kpi"><div class="label">Nové / změněné provize</div><div class="value ok-text" id="kpiChanges">0</div><div class="sub">Od posledního importu</div></div>
+      <div class="card span-7"><h2>Výdělek podle měsíců</h2><div class="toolbar" style="margin-bottom:10px"><div class="field small"><label>Rok</label><select id="chartYear" onchange="renderAll()"></select></div><div class="field"><label>Produkt</label><select id="chartProduct" onchange="renderAll()"><option value="">Vše</option></select></div></div><canvas id="monthlyChart" height="120"></canvas></div>
+      <div class="card span-5"><h2>Plnění plánu</h2><div id="planProgress"></div></div>
+      <div class="card span-12"><div class="modal-head"><h2>Upozornění</h2><button class="btn secondary" onclick="showAlertsModal()">Otevřít kontrolní tabulku</button></div><div id="alerts" class="alerts"></div></div>
+    </div>
+  </section>
+
+  <section id="deals" class="view hidden">
+    <div class="card span-12">
+      <h2>Nový obchod</h2>
+      <div class="toolbar" id="dealForm">
+        <div class="field"><label>Příjmení</label><input id="surname"></div><div class="field"><label>Jméno</label><input id="name"></div>
+        <div class="field"><label>Společnost</label><input id="company" placeholder="např. NN Orange"></div><div class="field"><label>Produkt</label><select id="product"><option>život</option><option>hypotéka</option><option>úvěr</option><option>auto</option><option>majetek</option><option>skupinovka</option><option>investice</option><option>penze</option><option>jiné</option></select></div>
+        <div class="field"><label>Datum sjednání</label><input id="date" type="date"></div><div class="field"><label>Platba / objem</label><input id="amount" type="number"></div>
+        <div class="field small"><label>BJ</label><input id="bj" type="number"></div><div class="field"><label>Oček. čistý zisk</label><input id="expected" type="number"></div>
+        <div class="field"><label>Číslo smlouvy</label><input id="contract"></div><div class="field"><label>Předal</label><input id="owner"></div>
+        <div class="field"><label>Poznámka</label><input id="note"></div><button class="btn green" onclick="saveDeal()">Přidat obchod</button>
+      </div>
+    </div>
+    <div class="card span-12" style="margin-top:16px">
+      <div class="toolbar" style="justify-content:space-between;margin-bottom:12px"><h2>Evidence obchodů</h2><div class="toolbar"><input id="search" placeholder="Hledat klienta / smlouvu" oninput="renderDeals()" style="border:1px solid var(--line);border-radius:12px;padding:10px"><button class="btn secondary" onclick="exportDealsCSV()">Export CSV</button></div></div>
+      <div class="table-wrap"><table id="dealsTable"></table></div>
+    </div>
+  </section>
+
+  <section id="commissions" class="view hidden">
+    <div class="grid">
+      <div class="card span-6"><h2>Import provizního výpisu XLSX</h2><p class="note">Nahrajte týdenní provizní výpis. Aplikace projde listy, najde řádky s provizemi a pokusí se je spárovat podle čísla smlouvy, klienta, společnosti a produktu.</p><label class="btn green" for="xlsxInput">Nahrát XLSX</label><input id="xlsxInput" type="file" accept=".xlsx,.xls" class="hidden" onchange="importXLSX(event)"><div id="importSummary" class="note" style="margin-top:12px"></div></div>
+      <div class="card span-6"><h2>Pravidla párování</h2><p class="note">Nejspolehlivější je číslo smlouvy. Když není, páruje se podle klienta a produktu. Nespárované položky zůstanou v kontrolní tabulce a můžete je řešit ručně.</p><div><span class="pill">číslo smlouvy</span><span class="pill">jméno klienta</span><span class="pill">produkt</span><span class="pill">společnost</span><span class="pill">provize</span></div></div>
+      <div class="card span-12"><h2>Historie importovaných provizí</h2><div class="table-wrap"><table id="commTable"></table></div></div>
+    </div>
+  </section>
+
+  <section id="plan" class="view hidden">
+    <div class="card"><h2>Roční plán</h2><div class="toolbar"><div class="field small"><label>Rok</label><input id="planYear" type="number"></div><div class="field"><label>Klienti</label><input id="planClients" type="number"></div><div class="field"><label>BJ celkem</label><input id="planBj" type="number"></div><div class="field"><label>Investice objem Kč</label><input id="planInvestment" type="number"></div><div class="field"><label>Čistý zisk Kč</label><input id="planProfit" type="number"></div><button class="btn green" onclick="savePlan()">Uložit plán</button></div></div>
+    <div class="card" style="margin-top:16px"><h2>Plán BJ podle produktů</h2><div class="toolbar" id="productPlanFields"></div><button class="btn green" style="margin-top:12px" onclick="savePlan()">Uložit produktový plán</button></div>
+  </section>
+
+  <section id="settings" class="view hidden"><div class="card"><h2>Nastavení</h2><p class="note"><b>Název:</b> Obchody-tabulka<br><b>Verze:</b> v1.0.0<br><b>Ukládání:</b> lokálně v prohlížeči. Pro zálohu používejte Export JSON.</p><button class="btn secondary" onclick="seedDemo()">Vložit ukázková data ze screenshotu</button></div></section>
+</main>
+
+<div id="alertsModal" class="modal"><div class="modal-box"><div class="modal-head"><h2>Kontrolní tabulka upozornění</h2><button class="close" onclick="closeAlertsModal()">Zavřít</button></div><div class="table-wrap"><table id="alertsTable"></table></div></div></div>
+
+<script>
+const VERSION='v1.0.0';
+const PRODUCTS=['život','hypotéka','úvěr','auto','majetek','skupinovka','investice','penze','jiné'];
+let state=loadState(); let chart;
+function defaultState(){return{deals:[],commissions:[],lastChanges:[],plans:{},nextId:1}}
+function loadState(){try{return JSON.parse(localStorage.getItem('obchodyTabulkaState'))||defaultState()}catch(e){return defaultState()}}
+function persist(){localStorage.setItem('obchodyTabulkaState',JSON.stringify(state))}
+function money(n){return (Number(n)||0).toLocaleString('cs-CZ')+' Kč'} function num(n){return (Number(n)||0).toLocaleString('cs-CZ')} function iso(d){return d?new Date(d).toISOString().slice(0,10):''}
+function normalize(s){return String(s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]/g,'')}
+function clientName(d){return [d.surname,d.name].filter(Boolean).join(' ')} function yearOf(d){return d?new Date(d).getFullYear():new Date().getFullYear()}
+function show(view){document.querySelectorAll('.view').forEach(v=>v.classList.add('hidden'));document.getElementById(view).classList.remove('hidden');document.querySelectorAll('.tab').forEach(t=>t.classList.toggle('active',t.dataset.view===view));renderAll()}
+document.querySelectorAll('.tab').forEach(t=>t.onclick=()=>show(t.dataset.view));
+function saveDeal(){const d={id:state.nextId++,surname:val('surname'),name:val('name'),company:val('company'),product:val('product'),date:val('date')||iso(new Date()),amount:+val('amount'),bj:+val('bj'),expected:+val('expected'),contract:val('contract'),owner:val('owner'),note:val('note'),actual:0,lastCommissionDate:'',createdAt:new Date().toISOString()};state.deals.unshift(d);clearForm('dealForm');persist();renderAll();}
+function val(id){return document.getElementById(id).value.trim()} function clearForm(id){document.querySelectorAll('#'+id+' input').forEach(i=>i.value='')}
+function dealStatus(d){if((d.actual||0)<=0){return oldDeal(d)?['bad','Bez provize 3+ měs.']:['wait','Čeká']} if((d.actual||0)<(d.expected||0)*0.9)return['part','Částečně']; return['ok','Zaplaceno']}
+function oldDeal(d){let age=(Date.now()-new Date(d.date).getTime())/(1000*3600*24);return age>92 && !(d.actual>0)}
+function renderDeals(){const q=normalize(document.getElementById('search')?.value||'');let rows=state.deals.filter(d=>!q||normalize(clientName(d)+d.contract+d.company+d.product).includes(q));let html='<tr><th>Klient</th><th>Společnost</th><th>Produkt</th><th>Datum</th><th class="money">Platba/objem</th><th class="num">BJ</th><th class="money">Oček. zisk</th><th class="money">Skutečná provize</th><th class="money">Rozdíl</th><th>Stav</th><th>Smlouva</th><th>Předal</th><th>Poznámka</th><th></th></tr>'; rows.forEach(d=>{const st=dealStatus(d);html+=`<tr class="${oldDeal(d)?'bad':''}"><td><b>${clientName(d)}</b></td><td>${d.company||''}</td><td>${d.product||''}</td><td>${iso(d.date)}</td><td class="money">${money(d.amount)}</td><td class="num">${num(d.bj)}</td><td class="money">${money(d.expected)}</td><td class="money"><b>${money(d.actual)}</b></td><td class="money">${money((d.actual||0)-(d.expected||0))}</td><td><span class="status ${st[0]}">${st[1]}</span></td><td>${d.contract||''}</td><td>${d.owner||''}</td><td>${d.note||''}</td><td><button class="btn secondary" onclick="deleteDeal(${d.id})">Smazat</button></td></tr>`});document.getElementById('dealsTable').innerHTML=html}
+function deleteDeal(id){if(confirm('Opravdu smazat obchod?')){state.deals=state.deals.filter(d=>d.id!==id);persist();renderAll()}}
+function guessField(row,names){const keys=Object.keys(row);for(const n of names){let found=keys.find(k=>normalize(k).includes(normalize(n))); if(found)return row[found]}return''}
+function importXLSX(e){const file=e.target.files[0]; if(!file)return; const reader=new FileReader(); reader.onload=function(evt){const data=new Uint8Array(evt.target.result); const wb=XLSX.read(data,{type:'array'}); let imported=[]; wb.SheetNames.forEach(sn=>{const sh=wb.Sheets[sn]; const rows=XLSX.utils.sheet_to_json(sh,{defval:''}); rows.forEach(r=>{let prov=guessField(r,['provize bez dph','provize','castka','částka','cisty zisk','čistý zisk']); let client=guessField(r,['klient','prijmeni','příjmení','jmeno','jméno']); let contract=guessField(r,['smlouva','cislo smlouvy','číslo smlouvy']); let product=guessField(r,['produkt']); let company=guessField(r,['spolecnost','společnost','producent']); let bj=guessField(r,['bj']); let date=guessField(r,['datum','obdobi','období']); let val=parseMoney(prov); if(val!==0 || client || contract){imported.push({id:'c'+Date.now()+Math.random(),importDate:iso(new Date()),source:file.name,sheet:sn,client:String(client||''),contract:String(contract||''),product:String(product||''),company:String(company||''),bj:+parseMoney(bj),commission:val,date:String(date||''),matchedDealId:null,matched:false})}})}); matchCommissions(imported); state.commissions.unshift(...imported); persist(); document.getElementById('importSummary').innerHTML=`Načteno položek: <b>${imported.length}</b>. Spárováno: <b>${imported.filter(x=>x.matched).length}</b>. Nespárováno: <b>${imported.filter(x=>!x.matched).length}</b>.`; if(state.lastChanges.length)showAlertsModal(); renderAll();}; reader.readAsArrayBuffer(file)}
+function parseMoney(v){if(typeof v==='number')return v; return Number(String(v||'').replace(/\s/g,'').replace('Kč','').replace(',','.').replace(/[^0-9.-]/g,''))||0}
+function matchCommissions(imported){state.lastChanges=[]; imported.forEach(c=>{let deal=null;if(c.contract)deal=state.deals.find(d=>normalize(d.contract)===normalize(c.contract)); if(!deal && c.client)deal=state.deals.find(d=>normalize(clientName(d)).includes(normalize(c.client))||normalize(c.client).includes(normalize(clientName(d)))); if(!deal && c.product && c.company)deal=state.deals.find(d=>normalize(d.product)===normalize(c.product)&&normalize(d.company)===normalize(c.company)); if(deal){let before=deal.actual||0; deal.actual=before+(c.commission||0); deal.lastCommissionDate=iso(new Date()); c.matched=true;c.matchedDealId=deal.id;if((c.commission||0)!==0){state.lastChanges.push({type:'new',client:clientName(deal),product:deal.product,amount:c.commission,before,after:deal.actual,source:c.source})}}else{state.lastChanges.push({type:'unmatched',client:c.client||'Neznámý klient',product:c.product,amount:c.commission,source:c.source})}})}
+function renderCommissions(){let html='<tr><th>Import</th><th>Zdroj</th><th>Klient</th><th>Smlouva</th><th>Produkt</th><th>Společnost</th><th class="money">Provize</th><th>Stav</th></tr>';state.commissions.forEach(c=>html+=`<tr class="${c.matched?'green-row':'warn'}"><td>${c.importDate}</td><td>${c.source}</td><td>${c.client}</td><td>${c.contract}</td><td>${c.product}</td><td>${c.company}</td><td class="money">${money(c.commission)}</td><td>${c.matched?'Spárováno':'Nespárováno'}</td></tr>`);document.getElementById('commTable').innerHTML=html}
+function alerts(){let arr=[]; state.lastChanges.forEach(x=>arr.push(x)); state.deals.filter(oldDeal).forEach(d=>arr.push({type:'old',client:clientName(d),product:d.product,amount:0,source:'Evidence',date:d.date})); return arr}
+function renderAlerts(){const a=alerts();document.getElementById('kpiChanges').textContent=state.lastChanges.length;document.getElementById('kpiOld').textContent=state.deals.filter(oldDeal).length;let html=a.slice(0,5).map(x=>`<div class="alert ${x.type}"><b>${x.type==='old'?'Starý obchod bez provize':x.type==='unmatched'?'Nespárovaná provize':'Nová provize'}</b><br>${x.client} · ${x.product||''} · ${money(x.amount||0)}<br><span class="note">${x.source||''}</span></div>`).join('')||'<p class="note">Aktuálně bez upozornění.</p>';document.getElementById('alerts').innerHTML=html;let table='<tr><th>Typ</th><th>Klient</th><th>Produkt</th><th class="money">Částka</th><th>Zdroj / datum</th></tr>';a.forEach(x=>table+=`<tr><td>${x.type}</td><td>${x.client}</td><td>${x.product||''}</td><td class="money">${money(x.amount||0)}</td><td>${x.source||x.date||''}</td></tr>`);document.getElementById('alertsTable').innerHTML=table}
+function showAlertsModal(){renderAlerts();document.getElementById('alertsModal').classList.add('show')} function closeAlertsModal(){document.getElementById('alertsModal').classList.remove('show')}
+function savePlan(){let y=+val('planYear')||new Date().getFullYear();let p=state.plans[y]||{products:{}};p.clients=+val('planClients');p.bj=+val('planBj');p.investment=+val('planInvestment');p.profit=+val('planProfit');PRODUCTS.forEach(pr=>{let el=document.getElementById('plan_'+normalize(pr)); if(el)p.products[pr]=+el.value});state.plans[y]=p;persist();renderAll()}
+function renderPlanForm(){let y=+document.getElementById('planYear').value||new Date().getFullYear();let p=state.plans[y]||{products:{}};document.getElementById('planYear').value=y;document.getElementById('planClients').value=p.clients||'';document.getElementById('planBj').value=p.bj||'';document.getElementById('planInvestment').value=p.investment||'';document.getElementById('planProfit').value=p.profit||'';document.getElementById('productPlanFields').innerHTML=PRODUCTS.map(pr=>`<div class="field"><label>${pr} BJ</label><input id="plan_${normalize(pr)}" type="number" value="${p.products?.[pr]||''}"></div>`).join('')}
+function renderPlanProgress(){let y=+document.getElementById('chartYear').value||new Date().getFullYear();let p=state.plans[y]||{};let deals=state.deals.filter(d=>yearOf(d.date)===y);let clients=new Set(deals.map(clientName)).size;let bj=deals.reduce((s,d)=>s+(+d.bj||0),0);let inv=deals.filter(d=>d.product==='investice').reduce((s,d)=>s+(+d.amount||0),0);let prof=state.deals.reduce((s,d)=>s+(yearOf(d.lastCommissionDate||d.date)===y?(+d.actual||0):0),0);let items=[['Klienti',clients,p.clients],['BJ celkem',bj,p.bj],['Investice',inv,p.investment],['Čistý zisk',prof,p.profit]];let html=items.map(([n,a,t])=>{let pct=t?Math.min(100,Math.round(a/t*100)):0;return`<div style="margin-bottom:13px"><b>${n}</b><div class="note">Splněno ${num(a)} / cíl ${num(t||0)} · zbývá ${num(Math.max((t||0)-a,0))}</div><div class="progress"><span style="width:${pct}%"></span></div></div>`}).join('');document.getElementById('planProgress').innerHTML=html||'<p class="note">Zadejte roční plán.</p>'}
+function renderDashboard(){let y=+document.getElementById('chartYear').value||new Date().getFullYear();let prod=document.getElementById('chartProduct').value;let deals=state.deals.filter(d=>yearOf(d.date)===y && (!prod||d.product===prod));document.getElementById('kpiBj').textContent=num(deals.reduce((s,d)=>s+(+d.bj||0),0));let profit=state.deals.reduce((s,d)=>s+(yearOf(d.lastCommissionDate||d.date)===y && (!prod||d.product===prod)?(+d.actual||0):0),0);document.getElementById('kpiProfit').textContent=money(profit);renderChart(y,prod)}
+function fillSelects(){let years=[...new Set([...state.deals.map(d=>yearOf(d.date)),new Date().getFullYear()])].sort((a,b)=>b-a);let cy=document.getElementById('chartYear');let cur=cy.value;cy.innerHTML=years.map(y=>`<option ${String(y)===cur?'selected':''}>${y}</option>`).join('');let cp=document.getElementById('chartProduct');let curp=cp.value;cp.innerHTML='<option value="">Vše</option>'+PRODUCTS.map(p=>`<option ${p===curp?'selected':''}>${p}</option>`).join('')}
+function renderChart(y,prod){let months=Array(12).fill(0);state.deals.forEach(d=>{let dt=new Date(d.lastCommissionDate||d.date); if(dt.getFullYear()===y && (!prod||d.product===prod))months[dt.getMonth()]+=+d.actual||0});let ctx=document.getElementById('monthlyChart'); if(chart)chart.destroy(); chart=new Chart(ctx,{type:'bar',data:{labels:['Led','Úno','Bře','Dub','Kvě','Čer','Čvc','Srp','Zář','Říj','Lis','Pro'],datasets:[{label:'Čistý zisk',data:months}]},options:{plugins:{legend:{display:false}},scales:{y:{ticks:{callback:v=>v.toLocaleString('cs-CZ')+' Kč'}}}}})}
+function renderAll(){fillSelects();renderDashboard();renderDeals();renderCommissions();renderAlerts();renderPlanForm();renderPlanProgress()}
+function exportJSON(){download('obchody-tabulka-data.json',JSON.stringify(state,null,2),'application/json')}
+function importJSON(e){const f=e.target.files[0]; if(!f)return; const r=new FileReader();r.onload=()=>{state=JSON.parse(r.result);persist();renderAll()};r.readAsText(f)}
+function exportDealsCSV(){const rows=[['Klient','Společnost','Produkt','Datum','Platba/objem','BJ','Očekávaný zisk','Skutečná provize','Smlouva','Předal','Poznámka'],...state.deals.map(d=>[clientName(d),d.company,d.product,d.date,d.amount,d.bj,d.expected,d.actual,d.contract,d.owner,d.note])];download('obchody-export.csv',rows.map(r=>r.map(v=>'"'+String(v??'').replaceAll('"','""')+'"').join(';')).join('\n'),'text/csv')}
+function download(name,content,type){let a=document.createElement('a');a.href=URL.createObjectURL(new Blob([content],{type}));a.download=name;a.click()}
+function resetData(){if(confirm('Smazat všechna lokální data?')){state=defaultState();persist();renderAll()}}
+function seedDemo(){state.deals=[{id:1,surname:'Szabó',name:'Štefan',company:'ČPP',product:'auto',date:'2026-04-05',amount:5074,bj:4,expected:0,actual:0,contract:'',owner:'Adámek Tomáš',note:''},{id:2,surname:'Němec',name:'Lukáš',company:'NN Orange',product:'život',date:'2026-04-05',amount:6154,bj:591,expected:70880,actual:70880,contract:'',owner:'',note:''},{id:3,surname:'Kohoutek',name:'Vladimír',company:'KB',product:'hypotéka',date:'2026-04-05',amount:1214000,bj:82,expected:12340,actual:12340,contract:'',owner:'',note:''},{id:4,surname:'Řepa',name:'Jan',company:'ČS',product:'úvěr',date:'2026-04-05',amount:400000,bj:40,expected:5999,actual:5999,contract:'',owner:'Řepa Jan',note:''}];state.nextId=5;persist();renderAll()}
+renderAll();
+</script>
+</body>
+</html>
+
+# Obchody-tabulka
+
+Statická aplikace pro evidenci obchodů, import provizních výpisů, kontrolu skutečných provizí a sledování ročního plánu.
+
+## Aktuální verze
+
+**v1.0.0**
+
+Při každé další úpravě změňte číslo verze v souboru `index.html` na dvou místech:
+
+1. v hlavičce stránky u textu `v1.0.0`
+2. v JavaScriptu u řádku `const VERSION='v1.0.0';`
+
+## Funkce ve verzi v1.0.0
+
+- evidence obchodů
+- ruční přidání obchodu
+- import/export JSON zálohy
+- export obchodů do CSV
+- import provizního výpisu XLSX
+- automatické párování provizí podle čísla smlouvy / klienta / produktu / společnosti
+- upozornění na nové nebo nespárované provize
+- upozornění na obchody starší než 3 měsíce bez provize
+- dashboard s měsíčním grafem výdělku
+- roční plán: klienti, BJ, investice, čistý zisk
+- plnění plánu v procentech
+
+## Důležité
+
+Data se ukládají lokálně v prohlížeči. Pro jistotu pravidelně používejte **Export JSON**.
+
