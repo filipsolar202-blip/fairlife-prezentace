@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- CRM Smlouvy Filip v16 - kontrola nových klientů a smluv -->
+<!-- CRM Smlouvy Filip v17 - sloučení klientů podle RČ/IČO -->
 <html lang="cs">
 <head>
 <meta charset="UTF-8">
@@ -118,7 +118,7 @@ input:focus,select:focus,textarea:focus{border-color:var(--blue);box-shadow:0 0 
 </head>
 <body>
 <div class="top"><div class="topin">
-  <div class="brand"><i class="ti ti-bolt" style="color:#0b5cad"></i>CRM Smlouvy Filip <span class="version-badge">v16</span></div>
+  <div class="brand"><i class="ti ti-bolt" style="color:#0b5cad"></i>CRM Smlouvy Filip <span class="version-badge">v17</span></div>
   <div class="tabs">
     <button class="tab active" id="tab-auta" onclick="show('auta')"><i class="ti ti-shield-check"></i>Auta + majetek<span class="pill" id="pill-auta" style="display:none"></span></button>
     <button class="tab" id="tab-zivot" onclick="show('zivot')"><i class="ti ti-heart"></i>Životní<span class="pill" id="pill-zivot" style="display:none"></span></button>
@@ -433,7 +433,45 @@ let currentClientSectionHint='';
 let editLog=[], editStav='', editStavy=[];
 
 const SK={main:'crm_v10_main',sazba:'crm_sazba',todo:'crm_todo'};
-const APP_VERSION='v16 kontrola nových';
+const APP_VERSION='v17 sloučení podle RČ/IČO';
+
+
+function normId(s){
+  return (s||'').toString().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]/g,'');
+}
+function mergeClientsByBirthId(keepClient){
+  if(!keepClient)return null;
+  const key=normId(keepClient.birthId||keepClient.rc||keepClient.rodneCislo||'');
+  if(!key)return keepClient;
+  const duplicates=clients.filter(x=>x.id!==keepClient.id && normId(x.birthId||x.rc||x.rodneCislo||'')===key);
+  if(!duplicates.length)return keepClient;
+  duplicates.forEach(d=>{
+    // doplnit prázdná pole z druhého záznamu
+    ['name','phone','email','address','note','sectionHint'].forEach(k=>{
+      if(!(keepClient[k]||'') && (d[k]||''))keepClient[k]=d[k];
+    });
+    // sloučit smlouvy bez mazání duplicit se stejným autem/smlouvou násilně
+    (d.contracts||[]).forEach(ct=>{
+      const existing=(keepClient.contracts||[]).find(x=>x.id&&ct.id&&x.id===ct.id);
+      if(!existing){
+        keepClient.contracts=keepClient.contracts||[];
+        keepClient.contracts.push(ct);
+      }
+    });
+    keepClient.needsReview=!!(keepClient.needsReview||d.needsReview);
+  });
+  clients=clients.filter(x=>x.id===keepClient.id || normId(x.birthId||x.rc||x.rodneCislo||'')!==key);
+  return keepClient;
+}
+function mergeAllClientsByBirthId(){
+  const seen={};
+  [...clients].forEach(c=>{
+    const key=normId(c.birthId||c.rc||c.rodneCislo||'');
+    if(!key)return;
+    if(!seen[key])seen[key]=c;
+    else mergeClientsByBirthId(seen[key]);
+  });
+}
 
 function clientKey(c){
   const id=(c.birthId||c.rc||c.rodneCislo||'').trim();
@@ -509,6 +547,9 @@ function load(){
   }catch(e){buildFromDefaults();}
   try{aktSazba=parseFloat(localStorage.getItem(SK.sazba))||null;}catch(e){}
   try{customTodos=JSON.parse(localStorage.getItem(SK.todo)||'[]');}catch(e){}
+  const before=clients.length;
+  mergeAllClientsByBirthId();
+  if(clients.length!==before)save();
   renderAll();
 }
 
@@ -819,7 +860,11 @@ function saveClient(){
   if(!c){c={id:uid(),contracts:[],sectionHint:currentClientSectionHint,needsReview:true,createdAt:today()};clients.push(c);}
   if(currentClientSectionHint&&!c.sectionHint)c.sectionHint=currentClientSectionHint;
   ['name','phone','email','birthId','address','note'].forEach(k=>{const el=document.getElementById('c-'+k);if(el)c[k]=el.value;});
+  const beforeCount=clients.length;
+  c=mergeClientsByBirthId(c);
+  const merged=beforeCount-clients.length;
   save();closeModal('modal-client');renderAll();
+  if(merged>0)setTimeout(()=>alert('Klient byl sloučen podle stejného RČ/IČO. Sloučeno záznamů: '+merged),50);
 }
 function deleteClient(){
   const c=clients.find(x=>x.id===currentClientId);if(!c)return;
