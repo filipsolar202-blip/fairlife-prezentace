@@ -19,6 +19,83 @@
 
 /* Vizuální verze 2027 – výraznější klientská karta a samostatné strategie */
 .setup{grid-template-columns:1.45fr 1fr 1fr;align-items:stretch}.clientPanel,.strategyCard{min-height:100%}.strategyCard{padding:24px 24px 22px;position:relative;overflow:hidden}.strategyCard:before{content:"";position:absolute;right:20px;top:30px;width:120px;height:120px;border-radius:36px;opacity:.09;transform:rotate(-8deg)}.strategyCard.dps{border-color:#ffd4a3;background:linear-gradient(135deg,#fff 0%,#fff7ed 100%)}.strategyCard.dip{border-color:#d8c5ff;background:linear-gradient(135deg,#fff 0%,#fbf7ff 100%)}.strategyCard.dps:before{background:#f97316}.strategyCard.dip:before{background:#7c3aed}.strategyLabel{font-size:15px;text-transform:uppercase;letter-spacing:.06em;font-weight:1000;margin-bottom:4px}.strategyCard.dps .strategyLabel{color:#ea580c}.strategyCard.dip .strategyLabel{color:#7c3aed}.strategySelect{width:100%;border:0;background:transparent;outline:0;font-size:34px;letter-spacing:-.055em;font-weight:1000;padding:0 28px 8px 0;appearance:auto}.strategyCard.dps .strategySelect{color:#ea580c}.strategyCard.dip .strategySelect{color:#7c3aed}.strategyStats{border-top:1px solid rgba(100,116,139,.22);margin-top:12px;padding-top:14px;display:grid;gap:14px}.strategyStat label{display:block;font-size:12px;color:#465163;font-weight:950;margin-bottom:4px}.strategyStat input{border:0;background:transparent;outline:0;width:100%;font-size:36px;line-height:1;font-weight:1000;letter-spacing:-.055em;padding:0}.strategyCard.dps .strategyStat input{color:#ea580c}.strategyCard.dip .strategyStat input{color:#7c3aed}.strategyStat small{display:block;color:#465163;font-weight:850;margin-top:4px}.fixedFee{font-size:29px;font-weight:1000;letter-spacing:-.045em}.strategyCard.dps .fixedFee{color:#ea580c}.chartControls{display:flex;gap:10px;flex-wrap:wrap;align-items:center;justify-content:flex-end}.chartSwitch.reinvest{border-color:#cfe0ff;background:#f7faff}.chartSwitch.reinvest input{width:18px;height:18px}.clientPanel .panelTitle h2{color:#0052cc;text-transform:uppercase;font-size:17px;letter-spacing:.03em}.clientPanel .icon{background:#eaf2ff;color:#0052cc}.clientTop{grid-template-columns:1.2fr .8fr .8fr .8fr}.horizonCell input{pointer-events:none}.topbar h1{font-size:36px}.lead{max-width:700px}@media(max-width:1200px){.setup{grid-template-columns:1fr 1fr}.clientPanel{grid-column:1/-1}}@media(max-width:760px){.setup{grid-template-columns:1fr}.strategySelect{font-size:28px}.strategyStat input{font-size:30px}.clientTop{grid-template-columns:1fr}.chartControls{justify-content:flex-start}}
+
+/* Finální tiskový report - A4 na šířku, 1 stránka */
+@media print{
+  @page{size:A4 landscape;margin:4mm}
+  html,body{width:297mm;height:210mm;margin:0!important;background:#fff!important;-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important;overflow:hidden!important}
+  body{font-size:8px!important}
+  .wrapper{width:289mm!important;max-width:none!important;height:202mm!important;margin:0 auto!important;padding:0!important;display:grid!important;grid-template-columns:1fr!important;grid-template-rows:auto auto auto auto auto!important;gap:2.2mm!important;overflow:hidden!important}
+  .card{box-shadow:none!important;background:#fff!important;border-radius:9px!important;border:0.35pt solid #dfe5ee!important;backdrop-filter:none!important}
+  .actions{display:none!important}
+  .productDiff{display:none!important}
+  .topbar{display:flex!important;align-items:flex-start!important;justify-content:space-between!important;margin:0!important;gap:4mm!important;break-inside:avoid!important;page-break-inside:avoid!important}
+  .kicker{display:none!important}
+  .topbar h1{font-size:17px!important;line-height:1.02!important;margin:0 0 1mm!important;letter-spacing:-.04em!important}
+  .lead{font-size:7.5px!important;line-height:1.25!important;max-width:170mm!important;margin:0!important}
+  .setup{display:grid!important;grid-template-columns:1.25fr 0.9fr 0.9fr!important;gap:2.2mm!important;margin:0!important;align-items:stretch!important;break-inside:avoid!important;page-break-inside:avoid!important}
+  .panel,.strategyCard{padding:2.6mm!important;min-height:0!important}
+  .panelTitle{gap:1.6mm!important;margin:0 0 1.8mm!important}
+  .panelTitle h2{font-size:9.2px!important;line-height:1!important;margin:0!important;letter-spacing:.02em!important}
+  .icon{width:17px!important;height:17px!important;font-size:10px!important}
+  .clientGrid{border-radius:7px!important}
+  .clientTop{grid-template-columns:1.25fr .75fr .75fr .75fr!important}
+  .clientBottom{grid-template-columns:1fr 1fr!important}
+  .cell{padding:2mm!important}
+  .cell label,.field label,.strategyStat label{font-size:6.6px!important;line-height:1.05!important;margin-bottom:.7mm!important}
+  .field input,.field select,.cell input{font-size:9.3px!important;line-height:1.05!important}
+  .cell .bigBlue{font-size:11px!important;line-height:1.05!important}
+  .cell small,.field small,.strategyStat small{font-size:6.3px!important;line-height:1.1!important;margin-top:.5mm!important}
+  .pill{margin-top:1.8mm!important;padding:1.5mm 2mm!important;border-radius:6px!important;font-size:7px!important;line-height:1.15!important}
+  .miniFields{display:none!important}
+  #manualAllocationBox{display:none!important}
+  .strategyCard{border-radius:9px!important}
+  .strategyCard:before{width:34px!important;height:34px!important;right:5mm!important;top:5mm!important;border-radius:10px!important;opacity:.08!important}
+  .strategyLabel{font-size:10px!important;line-height:1.05!important;margin-bottom:.6mm!important;letter-spacing:.04em!important}
+  .strategySelect{font-size:16px!important;line-height:1!important;padding:0 5mm 1.5mm 0!important}
+  .strategyStats{margin-top:1.5mm!important;padding-top:1.5mm!important;gap:1.8mm!important}
+  .strategyStat input{font-size:16px!important;line-height:1!important}
+  .fixedFee{font-size:14px!important;line-height:1!important}
+  #taxInfo{font-size:6.8px!important;line-height:1.15!important;padding:1.5mm 2mm!important;margin-top:1.8mm!important}
+  .mainGrid{display:grid!important;grid-template-columns:minmax(0,1fr) 78mm!important;gap:2.2mm!important;margin:0!important;break-inside:avoid!important;page-break-inside:avoid!important}
+  .chartCard{padding:2.8mm!important;min-height:0!important}
+  .sectionHead{margin-bottom:1mm!important;align-items:center!important}
+  .sectionHead h2{font-size:9.8px!important;line-height:1.05!important;margin:0!important;text-transform:uppercase!important}
+  .chartControls{gap:1.5mm!important}
+  .chartSwitch{padding:1.2mm 2mm!important;font-size:6.8px!important;border-radius:20px!important}
+  .chartSwitch input{width:9px!important;height:9px!important}
+  canvas{height:61mm!important;max-height:61mm!important;width:100%!important}
+  .legend{font-size:6.6px!important;margin:1mm 0 0!important;gap:5mm!important}
+  .dot{width:7px!important;height:7px!important;margin-right:1mm!important}
+  .info{font-size:6.3px!important;margin:1.2mm 0 0!important;line-height:1.15!important}
+  .metricStack{gap:1.5mm!important;display:grid!important}
+  .metric{padding:2.2mm 10mm 2.2mm 3mm!important;min-height:0!important;border-radius:8px!important}
+  .metric:after{width:18px!important;height:18px!important;right:3mm!important}
+  .metric small{font-size:6.8px!important;line-height:1.05!important}
+  .metric b{font-size:12.8px!important;line-height:1.05!important;margin-top:.6mm!important}
+  .mark{font-size:6px!important;padding:.6mm 1.4mm!important;margin-top:.8mm!important}
+  .tablesGrid{display:grid!important;grid-template-columns:1fr 1fr!important;gap:2.2mm!important;margin:0!important;break-inside:avoid!important;page-break-inside:avoid!important}
+  .tableCard{padding:2.8mm!important;border-radius:9px!important;overflow:hidden!important;break-inside:avoid!important;page-break-inside:avoid!important}
+  .tableCard h2{font-size:9.8px!important;line-height:1.05!important;margin:0 0 2mm!important;text-transform:uppercase!important}
+  .miniControls{display:grid!important;grid-template-columns:1fr 1fr!important;gap:2mm!important;margin-bottom:1.5mm!important}
+  .miniControls .field{padding:1.6mm!important;margin:0!important;border-radius:7px!important}
+  table{border-radius:6px!important;break-inside:avoid!important;page-break-inside:avoid!important}
+  th,td{font-size:5.7px!important;line-height:1.05!important;padding:1.05mm 1mm!important;border-width:.3pt!important}
+  .warn{font-size:6.1px!important;line-height:1.1!important;padding:1.3mm 1.8mm!important;margin-top:1.4mm!important;border-radius:6px!important}
+  .comparison{display:grid!important;grid-template-columns:1fr 1fr!important;gap:2.2mm!important;margin:0!important;break-inside:avoid!important;page-break-inside:avoid!important}
+  .product{padding:2.8mm!important;border-radius:9px!important;break-inside:avoid!important;page-break-inside:avoid!important}
+  .product.combo{display:none!important}
+  .product h3{font-size:11px!important;line-height:1.05!important;margin:1mm 0!important}
+  .product .big{font-size:14px!important;line-height:1!important;margin:1mm 0 1.7mm!important}
+  .badge{font-size:6.3px!important;padding:.8mm 1.6mm!important}
+  .barrow{grid-template-columns:26mm 1fr 20mm!important;gap:1.3mm!important;font-size:5.7px!important;line-height:1.05!important}
+  .bar{height:3.5px!important}
+  .breakdown{gap:1.2mm!important}
+  .recommend{padding:2.5mm 3mm!important;margin:0!important;border-radius:9px!important;break-inside:avoid!important;page-break-inside:avoid!important}
+  .recommend h2{font-size:9.8px!important;margin:0 0 1mm!important}
+  .recommend p{font-size:7.2px!important;line-height:1.22!important;margin:0!important}
+}
+
 </style>
 </head>
 <body>
