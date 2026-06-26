@@ -1839,5 +1839,336 @@ updateReport();
 })();
 </script>
 
+
+<!-- V27 – klientský report -->
+<style>
+/* V27 report: klientský výstup, méně grafů, více srozumitelnosti */
+.v27Doc{background:#fff;border-radius:28px;padding:28px;border:1px solid var(--line);box-shadow:var(--shadow)}
+.v27Hero{display:grid;grid-template-columns:1.35fr .65fr;gap:18px;margin-bottom:18px}
+.v27Title{padding:26px;border-radius:26px;background:linear-gradient(135deg,#eef5ff,#ffffff);border:1px solid #d9e8ff}
+.v27Title h1{margin:0 0 8px;font-size:36px;letter-spacing:-.055em}
+.v27Title p{margin:0;color:#61708a;font-size:16px;line-height:1.45}
+.v27Badge{padding:26px;border-radius:26px;background:#101828;color:#fff}
+.v27Badge small{display:block;color:#cbd5e1;font-size:13px;font-weight:800;margin-bottom:8px}
+.v27Badge strong{display:block;font-size:26px;letter-spacing:-.04em;margin-bottom:14px}
+.v27Section{margin-top:18px;padding:24px;border-radius:26px;border:1px solid var(--line);background:#fbfdff;break-inside:avoid}
+.v27Section h2{font-size:26px;margin:0 0 10px;letter-spacing:-.045em}
+.v27Section h3{font-size:18px;margin:0 0 10px;letter-spacing:-.025em}
+.v27Intro{font-size:16px;color:#44546b;line-height:1.5;margin:0 0 16px}
+.v27Kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:12px}
+.v27Kpis.two{grid-template-columns:1fr 1fr}
+.v27Kpis.three{grid-template-columns:repeat(3,1fr)}
+.v27Kpi{border:1px solid var(--line);background:#fff;border-radius:20px;padding:16px;min-height:96px}
+.v27Kpi small{display:block;color:#667085;font-weight:850;font-size:12px;margin-bottom:8px;line-height:1.25}
+.v27Kpi strong{display:block;font-size:24px;letter-spacing:-.045em;line-height:1.08}
+.v27Kpi.green strong{color:#16a34a}.v27Kpi.red strong{color:#ef4444}.v27Kpi.blue strong{color:#2563eb}.v27Kpi.purple strong{color:#7c3aed}.v27Kpi.orange strong{color:#f59e0b}
+.v27Summary{margin-top:16px;padding:18px 20px;border-radius:20px;background:#eef5ff;border:1px solid #cfe2ff;color:#1d3d6d;font-size:16px;line-height:1.5}
+.v27GraphGrid{display:grid;grid-template-columns:minmax(420px,1fr) .85fr;gap:18px;align-items:stretch;margin-top:14px}
+.v27ChartBox{background:#fff;border:1px solid var(--line);border-radius:22px;padding:14px;min-height:300px}
+.v27Chart{width:100%;height:270px;display:block}
+.v27Explain{background:#fff;border:1px solid var(--line);border-radius:22px;padding:18px;color:#344054;font-size:15px;line-height:1.5}
+.v27Explain .line{display:flex;gap:10px;align-items:flex-start;margin:9px 0}.v27Swatch{width:24px;height:4px;border-radius:999px;margin-top:9px;flex:0 0 auto}.v27Swatch.green{background:#16a34a}.v27Swatch.blue{background:#2563eb}.v27Swatch.red{background:#ef4444}.v27Swatch.orange{background:#f59e0b}
+.v27Protection{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:12px}
+.v27Panel{background:#fff;border:1px solid var(--line);border-radius:22px;padding:20px}
+.v27Rows{display:grid;gap:10px;margin-top:12px}.v27Row{display:flex;justify-content:space-between;gap:14px;border-bottom:1px solid #eef2f7;padding-bottom:9px;color:#44546b}.v27Row:last-child{border-bottom:none}.v27Row strong{color:#101828;text-align:right}.v27Row.total{font-size:17px;font-weight:900;color:#101828}.v27Row.total strong{font-size:22px}.v27Row.blue strong{color:#2563eb}.v27Row.red strong{color:#ef4444}.v27Row.green strong{color:#16a34a}
+.v27Steps{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-top:12px}
+.v27Footer{margin-top:18px;color:#667085;font-size:12px;line-height:1.45}
+@media(max-width:1250px){.v27Hero,.v27GraphGrid,.v27Protection{grid-template-columns:1fr}.v27Kpis,.v27Kpis.three,.v27Kpis.two,.v27Steps{grid-template-columns:1fr 1fr}.v27ChartBox{min-height:260px}}
+@media print{.v27Doc{box-shadow:none;border:none;border-radius:0;padding:0}.v27Section{page-break-inside:avoid;break-inside:avoid}.v27GraphGrid{grid-template-columns:1fr .78fr}.v27Kpis{grid-template-columns:repeat(4,1fr)}.v27Steps{grid-template-columns:repeat(5,1fr)}.v27Protection{grid-template-columns:1fr 1fr}.v27Title h1{font-size:32px}.v27Kpi strong{font-size:22px}}
+</style>
+<script>
+(function(){
+  function byId(id){return document.getElementById(id)}
+  function rawMoney(id){return parseMoney(byId(id)?.value||0)}
+  function rawNum(id){return Number(String(byId(id)?.value||0).replace(',','.'))||0}
+  function f(n){return Math.round(Math.max(0,Number(n)||0)).toLocaleString('cs-CZ')+' Kč'}
+  function fm(n){return (Math.round((Number(n)||0)/100000)/10).toLocaleString('cs-CZ')+' mil.'}
+  function pct(v){return (Number(v)||0).toLocaleString('cs-CZ')+' %'}
+  function labelYear(month){return month ? Math.ceil(month/12)+'. rok' : 'nedosáhne'}
+  function maxRent(){return Math.max(rawMoney('rent1'),rawMoney('rent2'))}
+  function rentAt(age){return age < rawNum('rent1Until') ? rawMoney('rent1') : rawMoney('rent2')}
+  function currentAge(){return rawNum('age')||0}
+  function rentAge(){return rawNum('rentAge')||0}
+  function endAge(){return Math.max(currentAge()+1,rawNum('endAge')||90)}
+  function yearsToRent(){return Math.max(0,rentAge()-currentAge())}
+  function futureAsset(){return rawMoney('current')*Math.pow(1+(rawNum('currentYield')/100),yearsToRent())}
+  function futureLump(){
+    let cap=rawMoney('lump'); const r=(rawNum('pre')/100)/12; const months=Math.round(yearsToRent()*12);
+    for(let i=0;i<months;i++) cap*=1+r; return cap;
+  }
+  function requiredCapitalDepleteLocal(){try{return requiredCapitalDeplete()}catch(e){return 0}}
+  function requiredCapitalInterestLocal(){try{return requiredCapitalInterest()}catch(e){return 0}}
+  function capitalForSchedule(startAge,endAge, monthlyFn, annualYield){
+    const r=(annualYield||0)/12; const months=Math.max(1,Math.round((endAge-startAge)*12)); let pv=0;
+    for(let m=1;m<=months;m++){const age=startAge+m/12; pv += Math.max(0,monthlyFn(age))/Math.pow(1+r,m)}
+    return pv;
+  }
+  function mortgageModel(){
+    if(typeof buildMortgageSeries==='function'){try{return buildMortgageSeries()}catch(e){}}
+    return {amount:rawMoney('mortgageAmount'),payment:0,series:[],years:rawNum('mortgageYears')||30,cross:null,safePayoff:null,baseEndInvestment:0,payoffEndInvestment:null};
+  }
+  function riskNumbers(){
+    const ca=currentAge(), ea=endAge(), post=rawNum('post')/100;
+    const usable=rawMoney('current')+rawMoney('lump');
+    const invP=rawMoney('riskInvalidPension');
+    const widow=rawMoney('riskWidowPension');
+    const orphan=rawMoney('riskOrphanPension');
+    const children=Math.max(0,rawNum('riskChildren'));
+    const familyP=widow+orphan*children;
+    const expenses=rawMoney('riskExpenses');
+    const other=rawMoney('riskOtherLoans');
+    const mort=mortgageModel();
+    const invalidGap=Math.max(0,maxRent()-rawMoney('rentalIncome')-invP);
+    const invalidCapital=capitalForSchedule(ca,ea,(age)=>Math.max(0,rentAt(age)-rawMoney('rentalIncome')-invP),post);
+    const deathGap=Math.max(0,expenses+other-familyP);
+    const deathIncomeCapital=capitalForSchedule(ca,ea,()=>deathGap,post);
+    const deathCapital=(mort.amount||0)+deathIncomeCapital;
+    return {usable,invP,familyP,expenses,other,mort,invalidGap,invalidCapital,deathGap,deathIncomeCapital,deathCapital,invalidCover:Math.max(0,invalidCapital-usable-rawMoney('riskCurrentInvalidCover')),deathCover:Math.max(0,deathCapital-usable-rawMoney('riskCurrentDeathCover'))};
+  }
+  function drawAxes(ctx,W,H,pad,max,yLabelCount=4){
+    ctx.clearRect(0,0,W,H); ctx.fillStyle='#fff'; ctx.fillRect(0,0,W,H);
+    ctx.strokeStyle='#e4eaf3'; ctx.lineWidth=1; ctx.font='13px -apple-system'; ctx.fillStyle='#687891';
+    for(let i=0;i<=yLabelCount;i++){const y=pad+(H-pad*2)*i/yLabelCount;ctx.beginPath();ctx.moveTo(pad,y);ctx.lineTo(W-pad,y);ctx.stroke();ctx.fillText(fm(max-(max*i/yLabelCount)),8,y+5)}
+  }
+  function drawRentChart(canvas){
+    if(!canvas) return; const ctx=canvas.getContext('2d'),W=canvas.width,H=canvas.height,pad=48;
+    const capNeed=requiredCapitalDepleteLocal(); const created=futureAsset()+futureLump(); const start=rawMoney('current')+rawMoney('lump');
+    const max=Math.max(capNeed,created,start,1)*1.15; drawAxes(ctx,W,H,pad,max);
+    const age=currentAge(), ra=rentAge(), ea=endAge(); const span=Math.max(1,ea-age);
+    function x(a){return pad+(W-pad*2)*(a-age)/span} function y(v){return pad+(H-pad*2)*(1-v/max)}
+    // x grid + labels
+    const labels=[age,ra,Math.round((ra+ea)/2),ea].filter((v,i,a)=>i===0||v!==a[i-1]);
+    labels.forEach(a=>{const xx=x(a);ctx.strokeStyle='#eef2f7';ctx.beginPath();ctx.moveTo(xx,pad);ctx.lineTo(xx,H-pad);ctx.stroke();ctx.fillStyle='#687891';ctx.font='13px -apple-system';ctx.textAlign='center';ctx.fillText(String(Math.round(a)),xx,H-14)});ctx.textAlign='left';
+    // green created capital path
+    ctx.strokeStyle='#16a34a';ctx.lineWidth=4;ctx.beginPath();ctx.moveTo(x(age),y(start));ctx.lineTo(x(ra),y(created));ctx.stroke();
+    // blue target capital horizontal
+    ctx.strokeStyle='#2563eb';ctx.lineWidth=4;ctx.beginPath();ctx.moveTo(x(age),y(capNeed));ctx.lineTo(x(ea),y(capNeed));ctx.stroke();
+    // start rent vertical
+    ctx.strokeStyle='#94a3b8';ctx.setLineDash([6,6]);ctx.beginPath();ctx.moveTo(x(ra),pad);ctx.lineTo(x(ra),H-pad);ctx.stroke();ctx.setLineDash([]);ctx.fillStyle='#334155';ctx.font='13px -apple-system';ctx.fillText('start renty',x(ra)+8,pad+18);
+  }
+  function drawMortgageChartV27(canvas){
+    if(!canvas) return; const md=mortgageModel(); const ctx=canvas.getContext('2d'),W=canvas.width,H=canvas.height,pad=48;
+    const vals=[]; (md.series||[]).forEach(d=>['debt','investment','payoffInvestment'].forEach(k=>{if(d[k]!=null&&isFinite(d[k])) vals.push(d[k])}));
+    const max=Math.max(...vals,1)*1.15; drawAxes(ctx,W,H,pad,max); const years=md.years||rawNum('mortgageYears')||30;
+    function x(year){return pad+(W-pad*2)*(year/Math.max(1,years))} function y(v){return pad+(H-pad*2)*(1-v/max)}
+    for(let i=0;i<=6;i++){const yr=Math.round(years*i/6);const xx=x(yr);ctx.strokeStyle='#eef2f7';ctx.beginPath();ctx.moveTo(xx,pad);ctx.lineTo(xx,H-pad);ctx.stroke();ctx.fillStyle='#687891';ctx.font='13px -apple-system';ctx.textAlign='center';ctx.fillText(String(yr),xx,H-14)}ctx.textAlign='left';
+    function line(key,color){const pts=(md.series||[]).filter(d=>d[key]!=null&&isFinite(d[key])); if(!pts.length) return; ctx.strokeStyle=color;ctx.lineWidth=4;ctx.beginPath();pts.forEach((d,i)=>{const xx=x(d.year);const yy=y(d[key]);if(i===0)ctx.moveTo(xx,yy);else ctx.lineTo(xx,yy)});ctx.stroke()}
+    line('debt','#ef4444'); line('investment','#16a34a'); line('payoffInvestment','#2563eb');
+    if(md.cross){const xx=x(md.cross.year||md.cross.month/12);ctx.strokeStyle='#475569';ctx.setLineDash([6,6]);ctx.beginPath();ctx.moveTo(xx,pad);ctx.lineTo(xx,H-pad);ctx.stroke();ctx.setLineDash([]);ctx.fillStyle='#334155';ctx.font='13px -apple-system';ctx.fillText('bod zvratu',xx+8,pad+18)}
+  }
+  function htmlKpi(cls,label,value){return `<div class="v27Kpi ${cls||''}"><small>${label}</small><strong>${value}</strong></div>`}
+  function renderReport(){
+    const doc=byId('clientReport'); if(!doc) return;
+    const showInvest=byId('reportInvest')?.checked;
+    const showMortgage=byId('reportMortgage')?.checked;
+    const showRisk=byId('reportRisk')?.checked;
+    const capI=requiredCapitalInterestLocal(); const capD=requiredCapitalDepleteLocal(); const exit=futureAsset(); const created=exit+futureLump(); const gap=Math.max(0,capD-created);
+    const mort=mortgageModel(); const diff=mort.payoffEndInvestment==null?null:mort.payoffEndInvestment-mort.baseEndInvestment; const rn=riskNumbers();
+    const client=(byId('clientName')?.value||'Klient');
+    doc.className='v27Doc';
+    doc.innerHTML=`
+      <div class="v27Hero">
+        <div class="v27Title"><h1>Finanční plán klienta</h1><p>Srozumitelný výstup hlavních čísel: renta, majetek, hypotéka, investice a ochrana příjmu.</p></div>
+        <div class="v27Badge"><small>Klient</small><strong>${client}</strong><small>Model</small><strong>${currentAge()} let → renta od ${rentAge()} let</strong></div>
+      </div>
+      <section class="v27Section"><h2>Kde jste dnes a kam míříte</h2><p class="v27Intro">Přehled ukazuje současný stav a hlavní finanční cíl, se kterým model pracuje.</p>
+        <div class="v27Kpis">
+          ${htmlKpi('green','Aktuální investice',f(rawMoney('lump')))}
+          ${htmlKpi('blue','Majetek k budoucímu prodeji',f(rawMoney('current')))}
+          ${htmlKpi('red','Hypotéka',f(rawMoney('mortgageAmount')))}
+          ${htmlKpi('purple','Cílová renta',f(maxRent())+' / měsíc')}
+        </div>
+        <div class="v27Summary">Aktuálně máte vytvořeno přibližně <strong>${f(rawMoney('current')+rawMoney('lump'))}</strong>. Pro zvolený rentový plán je potřeba vytvořit přibližně <strong>${f(capD)}</strong>, chybějící kapitál vychází přibližně na <strong>${f(gap)}</strong>.</div>
+      </section>
+      ${showInvest?`<section class="v27Section"><h2>Cesta k rentě</h2><div class="v27GraphGrid"><div class="v27ChartBox"><canvas id="v27RentChart" class="v27Chart" width="760" height="330"></canvas></div><div class="v27Explain"><h3>Co graf ukazuje</h3><div class="line"><span class="v27Swatch green"></span><span>Vytvářený kapitál: současné investice, majetek k budoucímu prodeji a jejich zhodnocení do startu renty.</span></div><div class="line"><span class="v27Swatch blue"></span><span>Potřebný kapitál: orientační částka, která má financovat zvolenou rentu.</span></div><p>Smyslem je rychle vidět, jak velká část rentového cíle je už dnes pokrytá a kolik kapitálu je potřeba ještě vytvořit.</p></div></div><div class="v27Kpis three">${htmlKpi('blue','Potřebný kapitál',f(capD))}${htmlKpi('green','Vytvořený kapitál při startu renty',f(created))}${htmlKpi('red','Chybějící kapitál',f(gap))}</div></section>`:''}
+      ${showMortgage?`<section class="v27Section"><h2>Hypotéka a investice</h2><div class="v27GraphGrid"><div class="v27ChartBox"><canvas id="v27MortgageChart" class="v27Chart" width="760" height="330"></canvas></div><div class="v27Explain"><h3>Co graf ukazuje</h3><div class="line"><span class="v27Swatch red"></span><span>Zůstatek hypotéky v čase.</span></div><div class="line"><span class="v27Swatch green"></span><span>Investice, pokud klient hypotéku nedoplácí a pokračuje v investování.</span></div><div class="line"><span class="v27Swatch blue"></span><span>Varianta po doplacení hypotéky v bodě zvratu a následném investování uvolněné splátky.</span></div></div></div><div class="v27Kpis">${htmlKpi('red','Měsíční splátka',f(mort.payment||0))}${htmlKpi('green','Bod zvratu',mort.cross?labelYear(mort.cross.month):'neprotne se')}${htmlKpi('blue','Bezpečné doplacení',mort.safePayoff?labelYear(mort.safePayoff.month):'nedosáhne')}${htmlKpi('purple','Hodnota investic na konci',f(mort.baseEndInvestment||0))}</div></section>`:''}
+      ${showRisk?`<section class="v27Section"><h2>Ochrana příjmu a rodiny</h2><p class="v27Intro">Tato část neřeší cenu pojištění. Ukazuje, jaký finanční rozdíl by bylo potřeba ochránit při invaliditě nebo úmrtí.</p><div class="v27Protection"><div class="v27Panel"><h3>Invalidita</h3><div class="v27Rows"><div class="v27Row"><span>Požadovaná renta</span><strong>${f(maxRent())}</strong></div><div class="v27Row green"><span>Invalidní důchod</span><strong>− ${f(rn.invP)}</strong></div><div class="v27Row total blue"><span>Měsíčně chybí</span><strong>${f(rn.invalidGap)}</strong></div><div class="v27Row"><span>Potřebný kapitál</span><strong>${f(rn.invalidCapital)}</strong></div><div class="v27Row green"><span>Aktuální majetek + investice</span><strong>− ${f(rn.usable)}</strong></div><div class="v27Row"><span>Aktuální krytí invalidity</span><strong>− ${f(rawMoney('riskCurrentInvalidCover'))}</strong></div><div class="v27Row total red"><span>Doporučené dokrytí</span><strong>${f(rn.invalidCover)}</strong></div></div></div><div class="v27Panel"><h3>Smrt</h3><div class="v27Rows"><div class="v27Row"><span>Výdaje domácnosti + ostatní úvěry</span><strong>${f(rn.expenses+rn.other)}</strong></div><div class="v27Row green"><span>Státní dávky rodině</span><strong>− ${f(rn.familyP)}</strong></div><div class="v27Row total red"><span>Rodině měsíčně chybí</span><strong>${f(rn.deathGap)}</strong></div><div class="v27Row"><span>Hypotéka k doplacení</span><strong>${f(rn.mort.amount||0)}</strong></div><div class="v27Row"><span>Kapitál na měsíční výpadek</span><strong>${f(rn.deathIncomeCapital)}</strong></div><div class="v27Row"><span>Aktuální krytí smrti</span><strong>− ${f(rawMoney('riskCurrentDeathCover'))}</strong></div><div class="v27Row total red"><span>Doporučené krytí</span><strong>${f(rn.deathCover)}</strong></div></div></div></div></section>`:''}
+      <section class="v27Section"><h2>Shrnutí dalšího postupu</h2><div class="v27Steps">${htmlKpi('green','Investice','Budovat kapitál')}${htmlKpi('blue','Hypotéka','Sledovat bod zvratu')}${htmlKpi('red','Invalidita','Doplnit krytí')}${htmlKpi('orange','Rodina','Ochránit závazky')}${htmlKpi('purple','Revize','1× ročně')}</div><p class="v27Footer">Tento report je orientační model vycházející ze zadaných údajů. Skutečný vývoj investic, výnosů, státních dávek, sazeb a legislativy se může v budoucnu lišit.</p></section>`;
+    if(showInvest) setTimeout(()=>drawRentChart(byId('v27RentChart')),20);
+    if(showMortgage) setTimeout(()=>drawMortgageChartV27(byId('v27MortgageChart')),20);
+  }
+  window.updateReport=renderReport;
+  const oldSwitch=window.switchTab;
+  window.switchTab=function(tab){ if(typeof oldSwitch==='function') oldSwitch(tab); if(tab==='report') setTimeout(renderReport,80); };
+  ['reportInvest','reportMortgage','reportRisk'].forEach(id=>byId(id)?.addEventListener('change',renderReport));
+  document.querySelectorAll('input,select').forEach(el=>el.addEventListener('input',()=>setTimeout(renderReport,80)));
+  setTimeout(renderReport,250);
+})();
+</script>
+
+
+
+<style>
+/* V28 – portfolio style grafů */
+.chartCard canvas,
+.v27Chart,
+.reportChart{
+  background:#fff;
+  border:1px solid #e4eaf3;
+  border-radius:24px;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.85);
+}
+.v28Legend{
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  gap:22px;
+  color:#475569;
+  font-size:13px;
+  margin-top:10px;
+}
+.v28Legend span{display:flex;align-items:center;gap:8px}
+.v28Legend i{width:11px;height:11px;border-radius:50%;display:inline-block}
+.v28Legend .green{background:#16a34a}.v28Legend .blue{background:#2563eb}.v28Legend .red{background:#ef4444}.v28Legend .orange{background:#f59e0b}
+.v28ChartCaption{margin-top:10px;text-align:center;color:#667085;font-size:13px;line-height:1.4}
+</style>
+<script>
+/* V28 – jednotný moderní styl grafů inspirovaný portfoliovým grafem */
+(function(){
+  function money(id){return Number(String(document.getElementById(id)?.value||'').replace(/\s/g,'').replace(/[^0-9]/g,''))||0}
+  function rawNum(id){return Number(String(document.getElementById(id)?.value||0).replace(',','.'))||0}
+  function fmil(n){return (Math.round((Number(n)||0)/100000)/10).toLocaleString('cs-CZ')+' mil.'}
+  function niceTicks(max){
+    max=Math.max(1,Number(max)||1);
+    const rough=max/5;
+    const pow=Math.pow(10,Math.floor(Math.log10(rough)));
+    const mult=[1,2,2.5,5,10].find(m=>rough<=m*pow)||10;
+    const step=mult*pow;
+    const top=Math.ceil(max/step)*step;
+    const ticks=[]; for(let v=0;v<=top+step*.1;v+=step) ticks.push(v);
+    return {top,ticks};
+  }
+  function roundRect(ctx,x,y,w,h,r){ if(ctx.roundRect){ctx.roundRect(x,y,w,h,r); return;} ctx.rect(x,y,w,h); }
+  function drawModernLine(canvas, cfg){
+    if(!canvas) return;
+    const ctx=canvas.getContext('2d');
+    const W=canvas.width, H=canvas.height;
+    const padL=72, padR=34, padT=38, padB=56;
+    ctx.clearRect(0,0,W,H);
+    ctx.fillStyle='#fff'; roundRect(ctx,0,0,W,H,24); ctx.fill();
+    const xs=[]; const vals=[];
+    (cfg.series||[]).forEach(s=>{(s.points||[]).forEach(p=>{xs.push(p.x); vals.push(Math.max(0,p.y||0));});});
+    const minX=cfg.minX ?? Math.min(...xs,0);
+    const maxX=cfg.maxX ?? Math.max(...xs,1);
+    const tickInfo=niceTicks(Math.max(...vals,1)*1.08);
+    const maxY=cfg.maxY || tickInfo.top;
+    const x=v=>padL+(W-padL-padR)*((v-minX)/Math.max(1e-9,maxX-minX));
+    const y=v=>padT+(H-padT-padB)*(1-(v/maxY));
+
+    ctx.strokeStyle='#e8eef7'; ctx.lineWidth=1;
+    ctx.fillStyle='#64748b'; ctx.font='13px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif';
+    ctx.textAlign='right'; ctx.textBaseline='middle';
+    tickInfo.ticks.forEach(t=>{
+      if(t>maxY+1) return;
+      const yy=y(t); ctx.beginPath(); ctx.moveTo(padL,yy); ctx.lineTo(W-padR,yy); ctx.stroke();
+      ctx.fillText(t===0?'0':fmil(t),padL-12,yy);
+    });
+    const xTicks=cfg.xTicks || [];
+    ctx.textAlign='center'; ctx.textBaseline='top';
+    xTicks.forEach(t=>{
+      const xx=x(t.value); ctx.strokeStyle='#eef2f7'; ctx.beginPath(); ctx.moveTo(xx,padT); ctx.lineTo(xx,H-padB); ctx.stroke();
+      ctx.fillStyle='#64748b'; ctx.font='13px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif'; ctx.fillText(t.label,xx,H-padB+18);
+    });
+    if(cfg.yLabel){
+      ctx.save(); ctx.translate(18,H/2); ctx.rotate(-Math.PI/2); ctx.fillStyle='#64748b'; ctx.textAlign='center'; ctx.font='13px -apple-system'; ctx.fillText(cfg.yLabel,0,0); ctx.restore();
+    }
+    if(cfg.xLabel){ctx.fillStyle='#64748b';ctx.textAlign='center';ctx.font='13px -apple-system';ctx.fillText(cfg.xLabel,(padL+W-padR)/2,H-20)}
+
+    const primary=(cfg.series||[]).find(s=>s.fill) || (cfg.series||[])[0];
+    if(primary && primary.fill && primary.points?.length){
+      const pts=primary.points;
+      const grad=ctx.createLinearGradient(0,padT,0,H-padB);
+      grad.addColorStop(0,primary.fillStrong||'rgba(22,163,74,.22)');
+      grad.addColorStop(1,primary.fillSoft||'rgba(22,163,74,.05)');
+      ctx.fillStyle=grad; ctx.beginPath();
+      pts.forEach((p,i)=>{const xx=x(p.x),yy=y(p.y); if(i===0)ctx.moveTo(xx,yy); else ctx.lineTo(xx,yy);});
+      ctx.lineTo(x(pts[pts.length-1].x),H-padB); ctx.lineTo(x(pts[0].x),H-padB); ctx.closePath(); ctx.fill();
+    }
+    (cfg.series||[]).forEach(s=>{
+      const pts=s.points||[]; if(!pts.length) return;
+      ctx.strokeStyle=s.color; ctx.lineWidth=s.width||4; ctx.lineCap='round'; ctx.lineJoin='round'; ctx.beginPath();
+      pts.forEach((p,i)=>{const xx=x(p.x),yy=y(p.y); if(i===0)ctx.moveTo(xx,yy); else ctx.lineTo(xx,yy);}); ctx.stroke();
+      pts.forEach((p,i)=>{ if(i!==0 && i!==pts.length-1 && !(cfg.showAllDots)) return; ctx.fillStyle='#fff'; ctx.beginPath(); ctx.arc(x(p.x),y(p.y),5,0,Math.PI*2); ctx.fill(); ctx.strokeStyle=s.color; ctx.lineWidth=3; ctx.stroke(); });
+    });
+    if(cfg.marker){
+      const xx=x(cfg.marker.x); ctx.strokeStyle=cfg.marker.color||'#475569'; ctx.setLineDash([6,6]); ctx.lineWidth=2; ctx.beginPath(); ctx.moveTo(xx,padT); ctx.lineTo(xx,H-padB); ctx.stroke(); ctx.setLineDash([]);
+      ctx.fillStyle='#101828'; ctx.font='13px -apple-system'; ctx.textAlign='left'; ctx.textBaseline='top'; ctx.fillText(cfg.marker.label||'',xx+8,padT+10);
+    }
+    if(cfg.tooltip){
+      const boxW=210, boxH=28+18*(cfg.tooltip.lines?.length||0); let bx=x(cfg.tooltip.x)+14, by=y(cfg.tooltip.y)-boxH-12;
+      if(bx+boxW>W-padR) bx=x(cfg.tooltip.x)-boxW-14; if(by<padT) by=padT+8;
+      ctx.fillStyle='rgba(255,255,255,.88)'; ctx.strokeStyle='#e2e8f0'; ctx.lineWidth=1; ctx.beginPath(); roundRect(ctx,bx,by,boxW,boxH,12); ctx.fill(); ctx.stroke();
+      ctx.fillStyle='#101828'; ctx.font='700 13px -apple-system'; ctx.textAlign='left'; ctx.textBaseline='top'; ctx.fillText(cfg.tooltip.title||'',bx+12,by+10);
+      (cfg.tooltip.lines||[]).forEach((l,i)=>{ctx.fillStyle=l.color||'#475569';ctx.font='700 12px -apple-system';ctx.fillText(l.text,bx+12,by+30+i*18);});
+    }
+  }
+  function ensureLegend(canvas, items){
+    const parent=canvas?.parentElement; if(!parent) return;
+    let old=parent.querySelector('.v28Legend'); if(old) old.remove();
+    const div=document.createElement('div'); div.className='v28Legend';
+    div.innerHTML=items.map(i=>`<span><i class="${i.cls}"></i>${i.label}</span>`).join('');
+    parent.appendChild(div);
+  }
+  function seriesFrom(data,key){return (data||[]).filter(d=>d[key]!=null&&isFinite(d[key])).map(d=>({x:d.age??d.year,y:d[key]}));}
+  function xTicksAge(age,end){
+    const ticks=[]; for(let a=age; a<=end; a+=Math.max(5,Math.round((end-age)/6/5)*5||5)) ticks.push({value:a,label:String(Math.round(a))});
+    if(!ticks.find(t=>t.value===end)) ticks.push({value:end,label:String(Math.round(end))}); return ticks;
+  }
+  function xTicksYears(years){const ticks=[]; const step=years<=20?5:Math.max(5,Math.round(years/6/5)*5); for(let y=0;y<=years;y+=step)ticks.push({value:y,label:String(y)}); if(!ticks.find(t=>t.value===years))ticks.push({value:years,label:String(years)}); return ticks;}
+
+  window.drawChart=function(capInterest,capDeplete){
+    const canvas=document.getElementById('chart'); if(!canvas) return;
+    const age=typeof num==='function'?num('age'):rawNum('age'), rentAge=typeof num==='function'?num('rentAge'):rawNum('rentAge'), endAge=typeof num==='function'?num('endAge'):rawNum('endAge');
+    let green=[], blue=[]; try{green=buildInterestSeries(capInterest); blue=buildDepleteSeries(capDeplete);}catch(e){}
+    const finalG=green[green.length-1]?.cap||capInterest, finalB=blue[blue.length-1]?.cap||capDeplete;
+    drawModernLine(canvas,{minX:age,maxX:endAge,xTicks:xTicksAge(age,endAge),xLabel:'Věk',yLabel:'Hodnota kapitálu (Kč)',showAllDots:true,
+      series:[{name:'Pouze výnosy',color:'#16a34a',fill:true,points:green.map(d=>({x:d.age,y:d.cap}))},{name:'Rozpouštění kapitálu',color:'#2563eb',points:blue.map(d=>({x:d.age,y:d.cap}))}],
+      marker:{x:rentAge,label:'Start renty'},
+      tooltip:{x:endAge,y:Math.max(finalG,finalB),title:'Věk '+endAge,lines:[{color:'#16a34a',text:'Pouze výnosy: '+(typeof fmt==='function'?fmt(finalG):finalG)},{color:'#2563eb',text:'Rozpouštění: '+(typeof fmt==='function'?fmt(finalB):finalB)}]}
+    });
+  };
+
+  window.drawMortgageChart=function(data){
+    const canvas=document.getElementById('mortgageChart'); if(!canvas) return;
+    const years=data?.years||rawNum('mortgageYears')||30;
+    const baseEnd=data?.baseEndInvestment||0; const payoffEnd=data?.payoffEndInvestment||0;
+    drawModernLine(canvas,{minX:0,maxX:years,xTicks:xTicksYears(years),xLabel:'Roky',yLabel:'Hodnota / dluh (Kč)',showAllDots:false,
+      series:[{name:'Hypotéka',color:'#ef4444',points:(data.series||[]).filter(d=>d.debt!=null).map(d=>({x:d.year,y:d.debt}))},{name:'Nedoplácet',color:'#16a34a',fill:true,points:(data.series||[]).filter(d=>d.investment!=null).map(d=>({x:d.year,y:d.investment}))},{name:'Doplatit',color:'#2563eb',points:(data.series||[]).filter(d=>d.payoffInvestment!=null).map(d=>({x:d.year,y:d.payoffInvestment}))}],
+      marker:data?.cross?{x:data.cross.year||data.cross.month/12,label:'Bod zvratu'}:null,
+      tooltip:{x:years,y:Math.max(baseEnd,payoffEnd),title:'Konec hypotéky',lines:[{color:'#16a34a',text:'Nedoplácet: '+(typeof fmt==='function'?fmt(baseEnd):baseEnd)},{color:'#2563eb',text:'Doplatit: '+(typeof fmt==='function'?fmt(payoffEnd):payoffEnd)}]}
+    });
+  };
+
+  // V27 report – přepíše staré grafy stejným stylem
+  const oldUpdate=window.updateReport;
+  window.updateReport=function(){
+    if(typeof oldUpdate==='function') oldUpdate();
+    setTimeout(()=>{
+      try{
+        const rentCanvas=document.getElementById('v27RentChart');
+        if(rentCanvas){
+          const age=rawNum('age'), ra=rawNum('rentAge'), ea=rawNum('endAge');
+          const capD=(typeof requiredCapitalDepleteLocal==='function'?requiredCapitalDepleteLocal():0);
+          const start=money('current')+money('lump');
+          const created=(typeof futureAsset==='function'?futureAsset():money('current'))+(typeof futureLump==='function'?futureLump():money('lump'));
+          drawModernLine(rentCanvas,{minX:age,maxX:ea,xTicks:xTicksAge(age,ea),xLabel:'Věk',yLabel:'Kapitál (Kč)',showAllDots:true,
+            series:[{color:'#16a34a',fill:true,points:[{x:age,y:start},{x:ra,y:created}]},{color:'#2563eb',points:[{x:age,y:capD},{x:ea,y:capD}]}],
+            marker:{x:ra,label:'Start renty'},
+            tooltip:{x:ra,y:Math.max(created,capD),title:'Věk '+ra,lines:[{color:'#16a34a',text:'Vytvořeno: '+(typeof fmt==='function'?fmt(created):created)},{color:'#2563eb',text:'Cíl: '+(typeof fmt==='function'?fmt(capD):capD)}]}
+          });
+          ensureLegend(rentCanvas,[{cls:'green',label:'Vytvářený kapitál'},{cls:'blue',label:'Potřebný kapitál'}]);
+        }
+        const mortCanvas=document.getElementById('v27MortgageChart');
+        if(mortCanvas){ const md=(typeof mortgageModel==='function'?mortgageModel():buildMortgageSeries()); drawModernLine(mortCanvas,{minX:0,maxX:md.years||rawNum('mortgageYears')||30,xTicks:xTicksYears(md.years||30),xLabel:'Roky',yLabel:'Hodnota / dluh (Kč)',series:[{color:'#ef4444',points:(md.series||[]).filter(d=>d.debt!=null).map(d=>({x:d.year,y:d.debt}))},{color:'#16a34a',fill:true,points:(md.series||[]).filter(d=>d.investment!=null).map(d=>({x:d.year,y:d.investment}))},{color:'#2563eb',points:(md.series||[]).filter(d=>d.payoffInvestment!=null).map(d=>({x:d.year,y:d.payoffInvestment}))}],marker:md.cross?{x:md.cross.year||md.cross.month/12,label:'Bod zvratu'}:null,tooltip:{x:md.years||30,y:Math.max(md.baseEndInvestment||0,md.payoffEndInvestment||0),title:'Konec horizontu',lines:[{color:'#16a34a',text:'Nedoplácet: '+(typeof fmt==='function'?fmt(md.baseEndInvestment||0):md.baseEndInvestment||0)},{color:'#2563eb',text:'Doplatit: '+(typeof fmt==='function'?fmt(md.payoffEndInvestment||0):md.payoffEndInvestment||0)}]}}); ensureLegend(mortCanvas,[{cls:'red',label:'Hypotéka'},{cls:'green',label:'Investice'},{cls:'blue',label:'Doplatit'}]); }
+      }catch(e){console.warn('V28 report chart refresh',e)}
+    },60);
+  };
+
+  const oldSwitch=window.switchTab;
+  window.switchTab=function(tab){ if(typeof oldSwitch==='function') oldSwitch(tab); setTimeout(()=>{try{ if(typeof calculate==='function') calculate(); if(typeof calculateMortgage==='function') calculateMortgage(); if(tab==='report'&&typeof window.updateReport==='function') window.updateReport(); }catch(e){}},80); };
+  setTimeout(()=>{try{ if(typeof calculate==='function') calculate(); if(typeof calculateMortgage==='function') calculateMortgage(); if(typeof window.updateReport==='function') window.updateReport(); }catch(e){}},300);
+})();
+</script>
+
 </body>
 </html>
