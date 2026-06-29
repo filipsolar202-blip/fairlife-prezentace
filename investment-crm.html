@@ -256,17 +256,17 @@ body{font-family:'Inter',sans-serif;background:#f1f5f9;color:#1e293b;font-size:1
 
 /* FKI PURCHASE MODAL */
 
-.fki-module{height:100%;overflow:auto;background:linear-gradient(180deg,#f8fbff 0%,#eef4fb 100%);padding:22px}
-.fki-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:16px}
-.fki-card{background:rgba(255,255,255,.92);border:1px solid #dbe3ed;border-radius:20px;padding:18px;box-shadow:0 18px 45px rgba(15,23,42,.08);backdrop-filter:blur(10px)}
-.fki-card h3{font-size:16px;margin:0 0 14px;color:#0b3558;font-weight:900;letter-spacing:-.2px}
-.fki-tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
-.fki-tab{border:1px solid #dbe3ed;background:#fff;border-radius:10px;padding:9px 12px;font-weight:800;color:#475569;cursor:pointer}
-.fki-tab.active{background:#dcfce7;border-color:#86efac;color:#15803d}
-.fki-form{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:12px}
-.fki-field{display:flex;flex-direction:column;gap:4px}.fki-field label{font-size:10px;font-weight:900;color:#64748b;text-transform:uppercase;letter-spacing:.4px}.fki-field input,.fki-field select{border:1px solid #dbe3ed;border-radius:9px;padding:9px 10px;font-family:inherit;font-size:13px}.fki-field input:focus,.fki-field select:focus{outline:none;border-color:#2563eb;box-shadow:0 0 0 3px rgba(37,99,235,.12)}
-.fki-kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:12px}.fki-kpi{background:linear-gradient(180deg,#fff,#f8fafc);border:1px solid #e2e8f0;border-radius:16px;padding:13px;box-shadow:inset 0 1px 0 rgba(255,255,255,.9)}.fki-kpi small{display:block;font-size:10px;font-weight:900;color:#94a3b8;text-transform:uppercase;letter-spacing:.4px}.fki-kpi b{display:block;margin-top:5px;font-size:18px;color:#0f172a}.fki-kpi .green{color:#16a34a}.fki-kpi .blue{color:#2563eb}
-.fki-table{width:100%;border-collapse:collapse}.fki-table th{background:#f8fafc;color:#64748b;font-size:10px;text-transform:uppercase;letter-spacing:.4px;text-align:left;padding:9px;border-bottom:1px solid #e2e8f0}.fki-table td{padding:9px;border-bottom:1px solid #edf2f7;font-size:12px;vertical-align:middle}.fki-table input,.fki-table select{width:100%;border:1px solid #dbe3ed;border-radius:8px;padding:7px 8px;font-family:inherit;font-size:12px}.fki-pill{display:inline-flex;align-items:center;border-radius:999px;padding:4px 8px;background:#eff6ff;color:#1d4ed8;font-size:11px;font-weight:800}.fki-muted{color:#64748b;font-size:12px;line-height:1.5}.fki-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:12px;flex-wrap:wrap}.fki-scenario{background:linear-gradient(135deg,#eff6ff,#ecfeff);border:1px solid #bfdbfe;border-radius:16px;padding:16px}.fki-scenario-title{font-weight:900;color:#0b3558;margin-bottom:8px}.fki-note{background:#fff7ed;border:1px solid #fed7aa;color:#9a3412;border-radius:12px;padding:10px;font-size:12px;line-height:1.5;margin-top:10px}.fki-client-portfolio{max-height:260px;overflow:auto}.fki-empty{padding:18px;text-align:center;color:#94a3b8;background:#f8fafc;border:1px dashed #cbd5e1;border-radius:12px}
+.fki-module{height:100%;overflow:auto;background:radial-gradient(circle at 18% 0%,rgba(77,177,200,.22),transparent 28%),radial-gradient(circle at 88% 8%,rgba(37,99,235,.14),transparent 30%),linear-gradient(180deg,#f7fbff 0%,#edf4fb 100%);padding:22px}
+.fki-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:18px;align-items:start}
+.fki-card{position:relative;overflow:hidden;background:linear-gradient(145deg,rgba(255,255,255,.78),rgba(255,255,255,.48));border:1px solid rgba(219,227,237,.86);border-radius:24px;padding:20px;box-shadow:0 24px 70px rgba(15,23,42,.10),inset 0 1px 0 rgba(255,255,255,.82);backdrop-filter:blur(22px) saturate(150%)}
+.fki-card:before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,255,255,.78),transparent 38%);pointer-events:none}.fki-card>*{position:relative;z-index:1}
+.fki-card h3{font-size:17px;margin:0 0 14px;color:#0b3558;font-weight:950;letter-spacing:-.35px}
+.fki-tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}.fki-tab{border:1px solid rgba(219,227,237,.9);background:rgba(255,255,255,.72);border-radius:14px;padding:10px 14px;font-weight:900;color:#475569;cursor:pointer;box-shadow:0 8px 22px rgba(15,23,42,.05);backdrop-filter:blur(14px)}.fki-tab.active{background:linear-gradient(135deg,rgba(220,252,231,.88),rgba(236,253,245,.68));border-color:#86efac;color:#15803d;box-shadow:0 10px 30px rgba(22,163,74,.13)}
+.fki-form{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:12px}.fki-field{display:flex;flex-direction:column;gap:5px}.fki-field label{font-size:10px;font-weight:950;color:#64748b;text-transform:uppercase;letter-spacing:.45px}.fki-field input,.fki-field select{border:1px solid rgba(203,213,225,.94);border-radius:13px;padding:10px 12px;font-family:inherit;font-size:13px;background:rgba(255,255,255,.82);box-shadow:inset 0 1px 0 rgba(255,255,255,.9)}.fki-field input:focus,.fki-field select:focus,.fki-buy-input:focus,.fki-buy-select:focus{outline:none;border-color:#4DB1C8;box-shadow:0 0 0 4px rgba(77,177,200,.18),inset 0 1px 0 rgba(255,255,255,.9)}
+.fki-kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:12px}.fki-kpi{background:linear-gradient(180deg,rgba(255,255,255,.88),rgba(248,250,252,.62));border:1px solid rgba(226,232,240,.94);border-radius:18px;padding:14px;box-shadow:inset 0 1px 0 rgba(255,255,255,.95),0 12px 28px rgba(15,23,42,.04)}.fki-kpi small{display:block;font-size:10px;font-weight:950;color:#94a3b8;text-transform:uppercase;letter-spacing:.4px}.fki-kpi b{display:block;margin-top:5px;font-size:19px;color:#0f172a}.fki-kpi .green,.fki-kpi.green b{color:#16a34a}.fki-kpi .blue,.fki-kpi.blue b{color:#2563eb}
+.fki-table{width:100%;border-collapse:collapse}.fki-table th{background:rgba(248,250,252,.92);color:#64748b;font-size:10px;text-transform:uppercase;letter-spacing:.4px;text-align:left;padding:9px;border-bottom:1px solid #e2e8f0}.fki-table td{padding:9px;border-bottom:1px solid #edf2f7;font-size:12px;vertical-align:middle}.fki-table input,.fki-table select{width:100%;border:1px solid #dbe3ed;border-radius:10px;padding:8px 9px;font-family:inherit;font-size:12px;background:#fff}.fki-pill{display:inline-flex;align-items:center;border-radius:999px;padding:4px 8px;background:#eff6ff;color:#1d4ed8;font-size:11px;font-weight:850}.fki-muted{color:#64748b;font-size:12px;line-height:1.5}.fki-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:12px;flex-wrap:wrap}.fki-scenario{background:linear-gradient(135deg,rgba(239,246,255,.92),rgba(236,254,255,.76));border:1px solid #bfdbfe;border-radius:22px;padding:18px}.fki-scenario-title{font-weight:950;color:#0b3558;margin-bottom:8px}.fki-note{background:rgba(255,247,237,.82);border:1px solid #fed7aa;color:#9a3412;border-radius:16px;padding:11px;font-size:12px;line-height:1.5;margin-top:10px}.fki-client-portfolio{max-height:270px;overflow:auto}.fki-empty{padding:18px;text-align:center;color:#94a3b8;background:rgba(248,250,252,.72);border:1px dashed #cbd5e1;border-radius:16px}
+.fki-buy-list{display:grid;gap:12px}.fki-buy-card{display:grid;grid-template-columns:minmax(260px,1fr) 120px 95px 34px;gap:12px;align-items:center;padding:13px;border:1px solid rgba(219,227,237,.9);border-radius:18px;background:linear-gradient(145deg,rgba(255,255,255,.82),rgba(248,250,252,.62));box-shadow:0 14px 34px rgba(15,23,42,.055),inset 0 1px 0 rgba(255,255,255,.9)}.fki-buy-main{display:grid;gap:6px}.fki-buy-select,.fki-buy-input{width:100%;border:1px solid rgba(203,213,225,.94);border-radius:12px;padding:10px 11px;font-family:inherit;font-size:13px;background:rgba(255,255,255,.9)}.fki-buy-input{text-align:right;font-variant-numeric:tabular-nums}.fki-buy-meta{display:flex;gap:7px;flex-wrap:wrap;align-items:center;color:#64748b;font-size:12px}.fki-buy-label{font-size:10px;font-weight:950;color:#94a3b8;text-transform:uppercase;letter-spacing:.4px;margin-bottom:4px}.fki-remove{width:30px;height:30px;border-radius:10px;border:1px solid rgba(239,68,68,.25);background:rgba(254,226,226,.55);color:#dc2626;font-weight:900;cursor:pointer}.fki-remove:hover{background:#fee2e2}.fki-glass-title{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px}.fki-mini-chart{margin-top:14px;padding:14px;border-radius:18px;background:linear-gradient(135deg,rgba(255,255,255,.72),rgba(239,246,255,.55));border:1px solid rgba(219,227,237,.85)}.fki-mini-chart h4{margin:0 0 10px;color:#0b3558;font-size:13px}.fki-bar{display:grid;grid-template-columns:minmax(120px,1fr) 2fr 64px;gap:10px;align-items:center;margin:8px 0;font-size:12px}.fki-bar-name{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:800;color:#1e293b}.fki-bar-track{height:9px;border-radius:999px;background:#e8eef5;overflow:hidden}.fki-bar-fill{height:100%;border-radius:999px;background:linear-gradient(90deg,#0b3558,#4DB1C8)}.fki-bar-val{text-align:right;font-weight:900}.fki-pending-banner{display:flex;gap:10px;align-items:flex-start;margin-top:12px;padding:12px;border-radius:16px;border:1px solid #fed7aa;background:#fff7ed;color:#9a3412;font-size:12px;line-height:1.45}.fki-pending-dot{width:10px;height:10px;border-radius:50%;background:#f59e0b;margin-top:4px;box-shadow:0 0 0 5px rgba(245,158,11,.16)}
+.pending-badge{display:inline-flex;align-items:center;margin-left:6px;border-radius:999px;padding:2px 7px;background:#fff7ed;color:#c2410c;border:1px solid #fed7aa;font-size:9px;font-weight:900;text-transform:uppercase;letter-spacing:.25px}.pending-row td{background:#fff7ed!important}.tag-pending{background:#fff7ed;color:#c2410c;border:1px solid #fed7aa}
 @media(max-width:980px){.fki-grid{grid-template-columns:1fr}.fki-form,.fki-kpis{grid-template-columns:1fr 1fr}}
 
 .fki-modal{position:fixed;inset:0;background:rgba(15,23,42,.58);z-index:9998;display:none;padding:18px}
@@ -456,19 +456,20 @@ body{font-family:'Inter',sans-serif;background:#f1f5f9;color:#1e293b;font-size:1
 <div class="toast" id="toast"></div>
 
 <script>
-const APP_VERSION='v42';
+const APP_VERSION='v43';
 let fkiMode='new';
 let fkiContextClient='';
 let fkiRows=[];
 let fkiHorizon=10;
 let fkiMonthlyRent=30000;
 let fkiNewClientName='';
-function fkiParseMoney(v){ return n(String(v||'').replace(/Kč/g,'')); }
-function fkiFmtMoneyInput(v){ return String(Math.round(n(v)||0)); }
+function fkiParseMoney(v){ return n(String(v||'').replace(/Kč/g,'').replace(/CZK/gi,'')); }
+function fkiFmtMoneyInput(v){ const x=Math.round(n(v)||0); return x?new Intl.NumberFormat('cs-CZ',{maximumFractionDigits:0}).format(x):'0'; }
+function fkiInputBlur(el,i){ if(el){ el.value=fkiFmtMoneyInput(fkiRows[i]?.amount||0); } fkiSoftUpdate(); }
 function fkiFundStats(){
   const byFund={};
   const byClientFund={};
-  (recs||[]).filter(r=>!isWithdrawal(r)).forEach(r=>{
+  (recs||[]).filter(r=>!isWithdrawal(r) && r['Stav scénáře']!=='čeká').forEach(r=>{
     const fk=fundKey(r), ck=getClientId(r)||clientDisplayName(r);
     const key=ck+'||'+fk;
     if(!byClientFund[key]) byClientFund[key]={fundKey:fk,name:cleanFundName(r['Fond'],companyOf(r)),company:companyOf(r),isin:r['rp.ISIN']||r['ISIN']||'',typ:r['Typ CP']||'',inv:0,cur:0,first:null};
@@ -489,11 +490,11 @@ function fkiDefaultRows(clientName=''){
     const cl=findClientRef(clientName);
     if(cl){
       const keys=[...new Set(cl.recs.filter(r=>!isWithdrawal(r)).map(r=>fundKey(r)))];
-      const picked=keys.map(k=>stats.find(f=>f.fundKey===k)).filter(Boolean).slice(0,8);
-      if(picked.length) return picked.map(f=>({fundKey:f.fundKey,name:f.name,company:f.company,amount:0,rate:Math.max(0,Number(f.pa||7)).toFixed(1),source:'CRM průměr'}));
+      const picked=keys.map(k=>stats.find(f=>f.fundKey===k)).filter(Boolean).slice(0,7);
+      if(picked.length) return picked.map(f=>({fundKey:f.fundKey,name:f.name,company:f.company,isin:f.isin,typ:f.typ,amount:0,rate:Math.max(0,Number(f.pa||7)).toFixed(1),source:'CRM průměr'}));
     }
   }
-  return stats.slice(0,8).map(f=>({fundKey:f.fundKey,name:f.name,company:f.company,amount:0,rate:Math.max(0,Number(f.pa||7)).toFixed(1),source:'CRM průměr'}));
+  return stats.slice(0,7).map(f=>({fundKey:f.fundKey,name:f.name,company:f.company,isin:f.isin,typ:f.typ,amount:0,rate:Math.max(0,Number(f.pa||7)).toFixed(1),source:'CRM průměr'}));
 }
 function openFkiPurchaseCalc(clientName=''){
   fkiContextClient=clientName||'';
@@ -508,24 +509,27 @@ function openFkiPurchaseCalc(clientName=''){
 function closeFkiPurchaseCalc(){ const modal=document.getElementById('fkiModal'); if(modal){ modal.classList.remove('open'); modal.setAttribute('aria-hidden','true'); } }
 function openFkiInNewTab(){ openFkiPurchaseCalc(fkiContextClient); }
 function fkiClientPortfolio(clientName){
-  const cl=clientName?findClientRef(clientName):null; if(!cl) return {items:[],invested:0,current:0,profit:0,pa:0};
+  const cl=clientName?findClientRef(clientName):null; if(!cl) return {items:[],invested:0,current:0,profit:0,pa:0,pending:[]};
   const map={};
-  cl.recs.filter(r=>!isWithdrawal(r)).forEach(r=>{const k=fundKey(r); if(!map[k]) map[k]={name:cleanFundName(r['Fond'],companyOf(r)),company:companyOf(r),inv:0,cur:0,first:null}; const o=map[k]; o.inv+=depositVal(r); o.cur+=curVal(r); const d=pD(r['Datum připsání platby'])||pD(r['Datum emise']); if(d&&(!o.first||d<o.first)) o.first=d;});
+  cl.recs.filter(r=>!isWithdrawal(r)).forEach(r=>{const k=fundKey(r); if(!map[k]) map[k]={name:cleanFundName(r['Fond'],companyOf(r)),company:companyOf(r),inv:0,cur:0,first:null,pending:false}; const o=map[k]; const isPending=r['Stav scénáře']==='čeká'; if(isPending)o.pending=true; o.inv+=depositVal(r); o.cur+=curVal(r); const d=pD(r['Datum připsání platby'])||pD(r['Datum emise']); if(d&&(!o.first||d<o.first)) o.first=d;});
   const items=Object.values(map).map(o=>({...o,profit:o.cur-o.inv,pa:annualizedReturn(o.inv,0,o.cur,o.first)})).sort((a,b)=>b.cur-a.cur);
   const invested=items.reduce((s,x)=>s+x.inv,0), current=items.reduce((s,x)=>s+x.cur,0), first=cl.recs.map(r=>pD(r['Datum připsání platby'])||pD(r['Datum emise'])).filter(Boolean).sort((a,b)=>a-b)[0];
-  return {items,invested,current,profit:current-invested,pa:annualizedReturn(invested,0,current,first)};
+  const pending=cl.recs.filter(r=>r['Stav scénáře']==='čeká');
+  return {items,invested,current,profit:current-invested,pa:annualizedReturn(invested,0,current,first),pending};
 }
 function fkiCalc(){
-  const current=fkiMode==='existing'?fkiClientPortfolio(fkiContextClient):{invested:0,current:0,profit:0,pa:0,items:[]};
+  const current=fkiMode==='existing'?fkiClientPortfolio(fkiContextClient):{invested:0,current:0,profit:0,pa:0,items:[],pending:[]};
   const rows=fkiRows.map(r=>({ ...r, amount:n(r.amount), rate:n(r.rate)})).filter(r=>r.amount>0);
   const newInv=rows.reduce((s,r)=>s+r.amount,0);
   const projectedNew=rows.reduce((s,r)=>s+r.amount*Math.pow(1+(r.rate/100),fkiHorizon),0);
-  const weightedRate=newInv>0?rows.reduce((s,r)=>s+r.amount*r.rate,newInv*0)/newInv:0;
+  const newWeightedRate=newInv>0?rows.reduce((s,r)=>s+r.amount*r.rate,0)/newInv:0;
+  const portfolioBase=current.current+newInv;
+  const weightedRate=portfolioBase>0?((current.current*Math.max(current.pa,0))+(newInv*newWeightedRate))/portfolioBase:0;
   const baseFuture=current.current>0? current.current*Math.pow(1+(Math.max(current.pa,0)/100),fkiHorizon) : 0;
   const totalFuture=baseFuture+projectedNew;
-  const rentNow=((current.current+newInv)*(weightedRate/100))/12;
+  const rentNow=(portfolioBase*(weightedRate/100))/12;
   const rentFuture=(totalFuture*(weightedRate/100))/12;
-  return {current,rows,newInv,projectedNew,weightedRate,baseFuture,totalFuture,rentNow,rentFuture};
+  return {current,rows,newInv,projectedNew,newWeightedRate,weightedRate,baseFuture,totalFuture,rentNow,rentFuture};
 }
 function fkiSetMode(m){ fkiMode=m; if(m==='new'){ fkiContextClient=''; } renderFkiModule(); }
 function fkiSetClient(v){ fkiContextClient=v; fkiNewClientName=v; fkiRows=fkiDefaultRows(v); renderFkiModule(); }
@@ -540,31 +544,76 @@ function fkiSoftUpdate(){
   set('fkiScenarioTotal',czk(c.totalFuture));
   set('fkiScenarioRentNow',czk(c.rentNow));
   set('fkiScenarioRentFuture',czk(c.rentFuture));
+  set('fkiNewWeighted',pct(c.newWeightedRate));
   const text=document.getElementById('fkiScenarioText'); if(text) text.textContent=fkiScenarioText();
 }
 function fkiUpdateRow(i,patch,soft=false){ fkiRows[i]={...fkiRows[i],...patch}; if(soft) fkiSoftUpdate(); else renderFkiModule(); }
-function fkiAddRow(){ const st=fkiFundStats()[0]; fkiRows.push({fundKey:st?.fundKey||'',name:st?.name||'Nový fond',company:st?.company||'',amount:0,rate:Math.max(0,Number(st?.pa||7)).toFixed(1),source:'CRM průměr'}); renderFkiModule(); }
+function fkiAddRow(){ const st=fkiFundStats()[0]; fkiRows.push({fundKey:st?.fundKey||'',name:st?.name||'Nový fond',company:st?.company||'',isin:st?.isin||'',typ:st?.typ||'',amount:0,rate:Math.max(0,Number(st?.pa||7)).toFixed(1),source:'CRM průměr'}); renderFkiModule(); }
 function fkiRemoveRow(i){ fkiRows.splice(i,1); renderFkiModule(); }
-function fkiUseFund(i,k){ const st=fkiFundStats().find(x=>x.fundKey===k); if(!st) return; fkiRows[i]={...fkiRows[i],fundKey:k,name:st.name,company:st.company,rate:Math.max(0,Number(st.pa||7)).toFixed(1),source:'CRM průměr'}; renderFkiModule(); }
-function fkiScenarioText(){ const c=fkiCalc(); const name=fkiMode==='existing'?(fkiContextClient||'stávající klient'):(fkiNewClientName||'nový klient'); return `Scénář pro ${name}: nový vklad ${czk(c.newInv)}, vážený předpoklad ${pct(c.weightedRate)}, horizont ${fkiHorizon} let. Modelová hodnota nové investice ${czk(c.projectedNew)}, celkem po započtení současného portfolia ${czk(c.totalFuture)}. Orientační renta z cílového portfolia při stejném výnosu ${czk(c.rentFuture)} měsíčně.`; }
+function fkiUseFund(i,k){ const st=fkiFundStats().find(x=>x.fundKey===k); if(!st) return; fkiRows[i]={...fkiRows[i],fundKey:k,name:st.name,company:st.company,isin:st.isin,typ:st.typ,rate:Math.max(0,Number(st.pa||7)).toFixed(1),source:'CRM průměr'}; renderFkiModule(); }
+function fkiScenarioText(){ const c=fkiCalc(); const name=fkiMode==='existing'?(fkiContextClient||'stávající klient'):(fkiNewClientName||'nový klient'); return `Scénář pro ${name}: nový vklad ${czk(c.newInv)}, vážený předpoklad celého portfolia ${pct(c.weightedRate)} (samotný nový nákup ${pct(c.newWeightedRate)}), horizont ${fkiHorizon} let. Modelová hodnota nové investice ${czk(c.projectedNew)}, celkem po započtení současného portfolia ${czk(c.totalFuture)}. Orientační renta z cílového portfolia při stejném výnosu ${czk(c.rentFuture)} měsíčně.`; }
 function fkiCopyScenario(){ navigator.clipboard?.writeText(fkiScenarioText()); toast('Scénář zkopírován ✓','ok'); }
 function fkiLoadClientListOptions(){ return getClients().sort((a,b)=>a.name.localeCompare(b.name,'cs')).map(c=>`<option value="${esc(c.name)}" ${c.name===fkiContextClient?'selected':''}>${esc(c.name)}</option>`).join(''); }
+function fkiPerformanceChartHTML(items){
+  if(!items||!items.length) return '';
+  const vals=items.map(x=>Number(x.pa)||0); const min=Math.min(...vals,0), max=Math.max(...vals,1); const span=Math.max(1,max-min);
+  return `<div class="fki-mini-chart"><h4>📈 Zhodnocení současných fondů klienta</h4>${items.slice(0,8).map(x=>{const val=Number(x.pa)||0; const w=Math.max(4,((val-min)/span)*100); return `<div class="fki-bar"><div class="fki-bar-name">${esc(x.name)}</div><div class="fki-bar-track"><div class="fki-bar-fill" style="width:${w}%"></div></div><div class="fki-bar-val ${val>=0?'pos':'neg'}">${pct(val)}</div></div>`}).join('')}</div>`;
+}
+function fkiSaveScenario(){
+  const c=fkiCalc();
+  const rows=c.rows.filter(r=>r.amount>0);
+  if(!rows.length){ toast('Nejdřív zadej částku nákupu','err'); return; }
+  const clientName=(fkiMode==='existing'?fkiContextClient:fkiNewClientName).trim();
+  if(!clientName){ toast('Doplň jméno klienta','err'); return; }
+  const existing=findClientRef(clientName);
+  const clientId=existing?.recs?.[0]?.ClientID || nextClientId();
+  const today=new Date().toISOString().slice(0,10);
+  rows.forEach((r,idx)=>{
+    recs.push({
+      'Investor': clientName,
+      'ClientID': clientId,
+      'Poradce':'Solár Filip',
+      'Fond': r.name,
+      'Investiční společnost': r.company||'',
+      'Typ produktu':'FKI',
+      'Typ CP': r.typ||'Investiční akcie',
+      'rp.ISIN': r.isin||'',
+      'Typ transakce':'Plánovaný nákup',
+      'Čistá investice': r.amount,
+      'Aktuální hodnota investice': r.amount,
+      'Měna':'CZK',
+      'Datum připsání platby': today,
+      'Datum emise': today,
+      'Počet vydaných CP': 0,
+      'Upisovací hodnota': 1,
+      'Poslední schválená hodnota CP': 1,
+      'Poslední schválená hodnota do': today,
+      'Stav scénáře':'čeká',
+      'Poznámka': 'Návrh z FKI nákupní kalkulačky – čeká na potvrzení realizace'
+    });
+  });
+  ensureClientIds(); save(); renderStats(); renderList(); updateFundPickerOptions();
+  toast('Scénář uložen jako čekající nákup ✓','ok');
+  if(fkiMode==='existing' && clientName){ showClient(clientName); }
+}
+function hasPendingClient(c){ return (c?.recs||[]).some(r=>r['Stav scénáře']==='čeká'); }
 function renderFkiModule(){
   const el=document.getElementById('fkiModule'); if(!el) return;
   const stats=fkiFundStats(); const calc=fkiCalc();
   const clientOptions=fkiLoadClientListOptions();
   const fundOptions=(sel)=>stats.map(f=>`<option value="${esc(f.fundKey)}" ${f.fundKey===sel?'selected':''}>${esc(f.name)} · ${esc(f.company)} · ${pct(f.pa)}</option>`).join('');
-  const portfolioHtml=calc.current.items.length?`<div class="fki-client-portfolio"><table class="fki-table"><thead><tr><th>Fond</th><th>Aktuálně</th><th>Výnos</th><th>p.a.</th></tr></thead><tbody>${calc.current.items.map(x=>`<tr><td><b>${esc(x.name)}</b><br><span class="fki-muted">${esc(x.company)}</span></td><td>${czk(x.cur)}</td><td class="${x.profit>=0?'pos':'neg'}">${czk(x.profit)}</td><td>${pct(x.pa)}</td></tr>`).join('')}</tbody></table></div>`:`<div class="fki-empty">U nového klienta zatím není načtené portfolio. Zadáš pouze návrh nové investice.</div>`;
+  const portfolioHtml=calc.current.items.length?`<div class="fki-client-portfolio"><table class="fki-table"><thead><tr><th>Fond</th><th>Aktuálně</th><th>Výnos</th><th>p.a.</th></tr></thead><tbody>${calc.current.items.map(x=>`<tr class="${x.pending?'pending-row':''}"><td><b>${esc(x.name)}</b>${x.pending?' <span class="pending-badge">čeká</span>':''}<br><span class="fki-muted">${esc(x.company)}</span></td><td>${czk(x.cur)}</td><td class="${x.profit>=0?'pos':'neg'}">${czk(x.profit)}</td><td>${pct(x.pa)}</td></tr>`).join('')}</tbody></table></div>${fkiPerformanceChartHTML(calc.current.items)}`:`<div class="fki-empty">U nového klienta zatím není načtené portfolio. Zadáš pouze návrh nové investice.</div>`;
+  const pendingHtml=calc.current.pending&&calc.current.pending.length?`<div class="fki-pending-banner"><span class="fki-pending-dot"></span><div><b>Klient má čekající nákupy.</b><br>Jsou barevně oddělené a započtené jako plán. Po reálném provedení je bude potřeba potvrdit/importovat skutečný výpis.</div></div>`:'';
   el.innerHTML=`
   <div class="fki-tabs"><button class="fki-tab ${fkiMode==='new'?'active':''}" onclick="fkiSetMode('new')">Nový klient</button><button class="fki-tab ${fkiMode==='existing'?'active':''}" onclick="fkiSetMode('existing')">Stávající klient</button></div>
   <div class="fki-grid">
     <div class="fki-card"><h3>1) Klient a vstupy scénáře</h3><div class="fki-form">
       <div class="fki-field"><label>${fkiMode==='existing'?'Vybrat klienta':'Jméno klienta'}</label>${fkiMode==='existing'?`<select onchange="fkiSetClient(this.value)"><option value="">Vyber klienta…</option>${clientOptions}</select>`:`<input value="${esc(fkiNewClientName)}" oninput="fkiNewClientName=this.value" placeholder="Nový klient">`}</div>
       <div class="fki-field"><label>Horizont</label><input type="number" value="${fkiHorizon}" min="1" max="40" oninput="fkiHorizon=Math.max(1,n(this.value));fkiSoftUpdate()" onblur="renderFkiModule()"></div>
-      <div class="fki-field"><label>Požadovaná renta</label><input value="${fkiMonthlyRent}" oninput="fkiMonthlyRent=fkiParseMoney(this.value);fkiSoftUpdate()" onblur="renderFkiModule()"></div>
-    </div><div class="fki-kpis"><div class="fki-kpi"><small>Současné portfolio</small><b id="fkiKpiCurrent">${czk(calc.current.current)}</b></div><div class="fki-kpi"><small>Nový vklad</small><b id="fkiKpiNewInv" class="blue">${czk(calc.newInv)}</b></div><div class="fki-kpi"><small>Vážený výnos</small><b id="fkiKpiWeighted" class="green">${pct(calc.weightedRate)}</b></div><div class="fki-kpi"><small>Hodnota za ${fkiHorizon} let</small><b id="fkiKpiTotalFuture">${czk(calc.totalFuture)}</b></div></div>${portfolioHtml}</div>
-    <div class="fki-card"><h3>2) Návrh nákupu FKI</h3><table class="fki-table"><thead><tr><th>Fond</th><th>Vklad</th><th>p.a.</th><th></th></tr></thead><tbody>${fkiRows.map((r,i)=>`<tr><td><select onchange="fkiUseFund(${i},this.value)">${fundOptions(r.fundKey)}</select><div class="fki-muted">${esc(r.company||'')} · <span class="fki-pill">${esc(r.source||'ručně')}</span></div></td><td><input value="${esc(fkiFmtMoneyInput(r.amount))}" oninput="fkiUpdateRow(${i},{amount:fkiParseMoney(this.value)},true)"></td><td><input value="${esc(r.rate)}" oninput="fkiUpdateRow(${i},{rate:this.value,source:'ručně'},true)"></td><td><button class="icon-btn" onclick="fkiRemoveRow(${i})">×</button></td></tr>`).join('')}</tbody></table><div class="fki-actions"><button class="btn btn-gray btn-sm" onclick="fkiAddRow()">+ Přidat fond</button></div><div class="fki-note">Výnosy se předvyplňují z reálných dat CRM jako vážený průměr podle klientských vkladů u daného fondu. Hodnotu můžeš ručně přepsat.</div></div>
-    <div class="fki-card fki-scenario" style="grid-column:1/-1"><div class="fki-scenario-title">3) Klientský scénář</div><div class="fki-kpis"><div class="fki-kpi"><small>Nová investice za ${fkiHorizon} let</small><b id="fkiScenarioNew">${czk(calc.projectedNew)}</b></div><div class="fki-kpi"><small>Celkem portfolio</small><b id="fkiScenarioTotal">${czk(calc.totalFuture)}</b></div><div class="fki-kpi"><small>Modelová renta dnes</small><b id="fkiScenarioRentNow">${czk(calc.rentNow)}</b></div><div class="fki-kpi"><small>Modelová renta za ${fkiHorizon} let</small><b id="fkiScenarioRentFuture" class="green">${czk(calc.rentFuture)}</b></div></div><p id="fkiScenarioText" class="fki-muted" style="font-size:14px">${esc(fkiScenarioText())}</p><div class="fki-actions"><button class="btn btn-gray btn-sm" onclick="fkiCopyScenario()">Kopírovat shrnutí</button><button class="btn btn-blue btn-sm" onclick="toast('Uložení scénáře do CRM připravíme v další verzi','ok')">Uložit scénář</button></div></div>
+      <div class="fki-field"><label>Požadovaná renta</label><input value="${fkiFmtMoneyInput(fkiMonthlyRent)}" oninput="fkiMonthlyRent=fkiParseMoney(this.value);fkiSoftUpdate()" onblur="this.value=fkiFmtMoneyInput(fkiMonthlyRent);fkiSoftUpdate()"></div>
+    </div><div class="fki-kpis"><div class="fki-kpi"><small>Současné portfolio</small><b id="fkiKpiCurrent">${czk(calc.current.current)}</b></div><div class="fki-kpi"><small>Nový vklad</small><b id="fkiKpiNewInv" class="blue">${czk(calc.newInv)}</b></div><div class="fki-kpi"><small>Vážený výnos portfolia</small><b id="fkiKpiWeighted" class="green">${pct(calc.weightedRate)}</b><small>Nový nákup: <span id="fkiNewWeighted">${pct(calc.newWeightedRate)}</span></small></div><div class="fki-kpi"><small>Hodnota za ${fkiHorizon} let</small><b id="fkiKpiTotalFuture">${czk(calc.totalFuture)}</b></div></div>${portfolioHtml}${pendingHtml}</div>
+    <div class="fki-card"><div class="fki-glass-title"><h3>2) Návrh nákupu FKI</h3><button class="btn btn-gray btn-sm" onclick="fkiAddRow()">+ Přidat fond</button></div><div class="fki-buy-list">${fkiRows.map((r,i)=>`<div class="fki-buy-card"><div class="fki-buy-main"><label class="fki-buy-label">Fond</label><select class="fki-buy-select" onchange="fkiUseFund(${i},this.value)">${fundOptions(r.fundKey)}</select><div class="fki-buy-meta"><span>${esc(r.company||'')}</span><span class="fki-pill">${esc(r.source||'ručně')}</span></div></div><div><label class="fki-buy-label">Vklad</label><input class="fki-buy-input" value="${esc(fkiFmtMoneyInput(r.amount))}" inputmode="numeric" oninput="fkiUpdateRow(${i},{amount:fkiParseMoney(this.value)},true)" onblur="fkiInputBlur(this,${i})"></div><div><label class="fki-buy-label">p.a.</label><input class="fki-buy-input" value="${esc(r.rate)}" inputmode="decimal" oninput="fkiUpdateRow(${i},{rate:this.value,source:'ručně'},true)"></div><button class="fki-remove" onclick="fkiRemoveRow(${i})">×</button></div>`).join('')}</div><div class="fki-note">Výnosy se předvyplňují z reálných dat CRM jako vážený průměr podle klientských vkladů u daného fondu. Vážený výnos nahoře už počítá celé portfolio, nejen nově dokupovaný fond.</div></div>
+    <div class="fki-card fki-scenario" style="grid-column:1/-1"><div class="fki-scenario-title">3) Klientský scénář</div><div class="fki-kpis"><div class="fki-kpi"><small>Nová investice za ${fkiHorizon} let</small><b id="fkiScenarioNew">${czk(calc.projectedNew)}</b></div><div class="fki-kpi"><small>Celkem portfolio</small><b id="fkiScenarioTotal">${czk(calc.totalFuture)}</b></div><div class="fki-kpi"><small>Modelová renta dnes</small><b id="fkiScenarioRentNow">${czk(calc.rentNow)}</b></div><div class="fki-kpi"><small>Modelová renta za ${fkiHorizon} let</small><b id="fkiScenarioRentFuture" class="green">${czk(calc.rentFuture)}</b></div></div><p id="fkiScenarioText" class="fki-muted" style="font-size:14px">${esc(fkiScenarioText())}</p><div class="fki-actions"><button class="btn btn-gray btn-sm" onclick="fkiCopyScenario()">Kopírovat shrnutí</button><button class="btn btn-blue btn-sm" onclick="fkiSaveScenario()">Uložit scénář do CRM</button></div><div class="fki-pending-banner"><span class="fki-pending-dot"></span><div><b>Uložení scénáře nevytváří potvrzený obchod.</b><br>U klienta vznikne čekající/plánovaný nákup. Po reálné realizaci ho potvrdíš výpisem nebo následnou kontrolou.</div></div></div>
   </div>`;
 }
 
@@ -925,6 +974,7 @@ function renderList(){
       <div class="crow-name">${esc(shownName)}
         ${(!isOther && c.hasElig)?'<span class="tag tag-g">odkup</span>':''}
         ${(!isOther && c.hasSoon)?'<span class="tag tag-o">brzy</span>':''}
+        ${(!isOther && hasPendingClient(c))?'<span class="pending-badge">čeká</span>':''}
       </div>
       ${isOther?'<div class="crow-inv">Portfolio skryto</div>':`<div class="crow-vals">
         <div><div class="crow-cur">${czk(c.cur)}</div><div class="crow-inv">Vloženo: ${czk(c.inv)}</div></div>
@@ -959,6 +1009,7 @@ function clientAllocationData(items, clientKey){
     const fond=cleanFundName(r['Fond']||'Nezařazeno', comp);
     if(!m[key]) m[key]={key,fond,company:comp,product:productGroupOf(r),current:0,invested:0,withdrawn:0,tx:0,locked:false};
     if(clientKey && isLockedFund(clientKey,key)) m[key].locked=true;
+    if(r['Stav scénáře']==='čeká') m[key].pending=true;
     const f=m[key]; f.tx++;
     if(isWithdrawal(r)){ f.withdrawn += withdrawalVal(r); return; }
     f.current += curVal(r); f.invested += depositVal(r);
@@ -971,7 +1022,7 @@ function clientAllocationData(items, clientKey){
 function clientAllocationHTML(items, clientKey){
   const {list,total}=clientAllocationData(items, clientKey);
   if(!list.length) return '';
-  const legend=list.map((f,i)=>`<div class="client-allocation-row ${f.locked?'locked':''}"><span><i class="aum-dot" style="background:${AUM_COLORS[i%AUM_COLORS.length]}"></i><span class="nm"><strong>${esc(f.fond)}</strong>${f.locked?' <span class="tag tag-o">zamčeno</span>':''}<br><small style="color:#94a3b8">${esc(f.company)} · ${esc(f.product||'FKI')}</small></span></span><span style="text-align:right"><strong>${czk(f.current)}</strong><br><small style="color:#94a3b8">${pct(f.share)}</small></span></div>`).join('');
+  const legend=list.map((f,i)=>`<div class="client-allocation-row ${f.locked?'locked':''}"><span><i class="aum-dot" style="background:${AUM_COLORS[i%AUM_COLORS.length]}"></i><span class="nm"><strong>${esc(f.fond)}</strong>${f.locked?' <span class="tag tag-o">zamčeno</span>':''}${f.pending?' <span class="pending-badge">čeká</span>':''}<br><small style="color:#94a3b8">${esc(f.company)} · ${esc(f.product||'FKI')}</small></span></span><span style="text-align:right"><strong>${czk(f.current)}</strong><br><small style="color:#94a3b8">${pct(f.share)}</small></span></div>`).join('');
   return `<div class="client-allocation">
     <h3>📊 Rozložení portfolia klienta podle fondů</h3>
     <div class="client-allocation-layout">
