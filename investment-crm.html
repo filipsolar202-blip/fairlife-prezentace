@@ -297,7 +297,7 @@ body{font-family:'Inter',sans-serif;background:#f1f5f9;color:#1e293b;font-size:1
     <div class="hdr-icon">FS</div>
     <div>
       <div class="hdr-title">Investment CRM</div>
-      <div class="hdr-sub">Solár Filip · FairLife · v40</div>
+      <div class="hdr-sub">Solár Filip · FairLife · v47</div>
     </div>
   </div>
   <div class="hdr-btns">
@@ -555,6 +555,66 @@ function fkiRowInvestedAt(row,year){
   if(topUpAmount>0 && topUpYear>0 && year>=topUpYear) v+=topUpAmount;
   return v;
 }
+
+function fkiTimelineDetailed(calc){
+  calc = calc || fkiCalc();
+  const steps = Math.max(1, Math.round((Number(fkiHorizon)||1) * 4)); // čtvrtletní body kvůli viditelnému propadu
+  const pts = [];
+  const rows = (calc.rows || []).map(r=>({
+    ...r,
+    amount: Math.max(0,n(r.amount)),
+    rate: n(r.rate)/100,
+    topUpYear: Math.max(0,Math.round(n(r.topUpYear))),
+    topUpAmount: Math.max(0,n(r.topUpAmount)),
+    crashYear: Math.max(0,Math.round(n(r.crashYear))),
+    crashPct: Math.max(0,Math.min(100,n(r.crashPct)))/100
+  }));
+  const baseCurrent = Math.max(0, n(calc.current?.current));
+  const baseRate = Math.max(0, n(calc.current?.pa)) / 100;
+  const rowVal = (r, y) => {
+    const grow = (val, yrs) => val * Math.pow(1 + r.rate, Math.max(0, yrs));
+    let v = grow(r.amount, y);
+    if(r.topUpAmount > 0 && r.topUpYear > 0 && y >= r.topUpYear){
+      v += grow(r.topUpAmount, y - r.topUpYear);
+    }
+    if(r.crashYear > 0 && r.crashPct > 0 && y >= r.crashYear){
+      let frozen = grow(r.amount, r.crashYear);
+      if(r.topUpAmount > 0 && r.topUpYear > 0){
+        if(r.topUpYear <= r.crashYear) frozen += grow(r.topUpAmount, r.crashYear - r.topUpYear);
+        else if(y >= r.topUpYear) frozen += r.topUpAmount;
+      }
+      v = frozen * (1 - r.crashPct);
+    }
+    return Math.max(0, v);
+  };
+  const investedAt = (r,y) => {
+    let v = r.amount;
+    if(r.topUpAmount > 0 && r.topUpYear > 0 && y >= r.topUpYear) v += r.topUpAmount;
+    return v;
+  };
+  const addPoint = (year) => {
+    year = Math.max(0, Math.min(Number(fkiHorizon)||1, Number(year)||0));
+    const base = baseCurrent > 0 ? baseCurrent * Math.pow(1 + baseRate, year) : 0;
+    const newValue = rows.reduce((sum,r)=>sum+rowVal(r, year),0);
+    const invested = rows.reduce((sum,r)=>sum+investedAt(r, year),0);
+    pts.push({ year, base, newValue, invested, total: base + newValue });
+  };
+  for(let i=0;i<=steps;i++) addPoint((i/steps)*(Number(fkiHorizon)||1));
+  // přidej body těsně před a po propadu/dokupu, aby byl skok v grafu skutečně vidět
+  rows.forEach(r=>{
+    if(r.topUpYear>0 && r.topUpYear<=fkiHorizon && r.topUpAmount>0){ addPoint(r.topUpYear-0.01); addPoint(r.topUpYear); addPoint(r.topUpYear+0.01); }
+    if(r.crashYear>0 && r.crashYear<=fkiHorizon && r.crashPct>0){ addPoint(r.crashYear-0.01); addPoint(r.crashYear); addPoint(r.crashYear+0.01); }
+  });
+  pts.sort((a,b)=>a.year-b.year);
+  // odstranění praktických duplicit, nechá poslední bod ve stejném okamžiku
+  const out=[];
+  pts.forEach(p=>{
+    const last=out[out.length-1];
+    if(last && Math.abs(last.year-p.year)<0.0001){ out[out.length-1]=p; } else out.push(p);
+  });
+  return out;
+}
+
 function fkiTimeline(calc){
   return fkiTimelineDetailed(calc).filter(p=>Math.abs(p.year-Math.round(p.year))<0.001);
 }
