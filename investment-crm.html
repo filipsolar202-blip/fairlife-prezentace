@@ -308,7 +308,7 @@ body{font-family:'Inter',sans-serif;background:#f1f5f9;color:#1e293b;font-size:1
     <div class="hdr-icon">FS</div>
     <div>
       <div class="hdr-title">Investment CRM</div>
-      <div class="hdr-sub">Solár Filip · FairLife · v49</div>
+      <div class="hdr-sub">Solár Filip · FairLife · v50</div>
     </div>
   </div>
   <div class="hdr-btns">
@@ -835,9 +835,12 @@ function getClientId(r){ return String(r?.['ClientID']||r?.['ID klienta']||'').t
 function getClientDob(r){ return parseDobValue(r?.['Datum narození']||r?.['Datum narozeni']||r?.['DOB']); }
 function getClientRC(r){ return normalizeRC(r?.['RČ']||r?.['RC']||r?.['Rodné číslo']||r?.['Rodne cislo']); }
 function clientIdentityKey(r){
-  const cid=getClientId(r); if(cid) return 'cid:'+normKey(cid);
+  // Primární identita klienta musí být rodné číslo / interní ID.
+  // Starší verze dávaly přednost ClientID, takže se klient se stejným RČ mohl zobrazit dvakrát,
+  // pokud měl v různých záznamech jiné ClientID. Od v50 se stejným RČ vždy sloučí do jedné karty.
   const rc=getClientRC(r); if(rc) return 'rc:'+rc;
   const dob=getClientDob(r); if(dob) return 'dob:'+dob+'|name:'+nameSignature(r?.['Investor']||'');
+  const cid=getClientId(r); if(cid) return 'cid:'+normKey(cid);
   return 'name:'+nameSignature(r?.['Investor']||'?');
 }
 function nextClientId(){
@@ -850,9 +853,42 @@ function ensureClientIds(){
   recs.forEach(r=>{
     const k=clientIdentityKey(r);
     if(!byKey[k]) byKey[k]=r['ClientID']||nextClientId();
-    r['ClientID']=r['ClientID']||byKey[k];
+  });
+  recs.forEach(r=>{
+    const k=clientIdentityKey(r);
+    if(byKey[k]) r['ClientID']=byKey[k];
   });
   repairWithdrawalClientIds();
+  unifyClientsByStrongIdentity();
+}
+
+function unifyClientsByStrongIdentity(){
+  // Sjednocení podle silné identity: RČ / interní ID, případně datum narození + jméno.
+  const groups={};
+  recs.forEach((r,i)=>{
+    const rc=getClientRC(r);
+    const dob=getClientDob(r);
+    let k='';
+    if(rc) k='rc:'+rc;
+    else if(dob) k='dob:'+dob+'|name:'+nameSignature(r['Investor']||'');
+    if(!k) return;
+    if(!groups[k]) groups[k]=[];
+    groups[k].push(i);
+  });
+  Object.values(groups).forEach(idxs=>{
+    if(idxs.length<2) return;
+    const base = idxs.map(i=>recs[i]).find(r=>getClientId(r)) || recs[idxs[0]];
+    const cid = getClientId(base) || nextClientId();
+    const rc = idxs.map(i=>getClientRC(recs[i])).find(Boolean) || '';
+    const dob = idxs.map(i=>getClientDob(recs[i])).find(Boolean) || '';
+    const name = clientDisplayNameFromRecords(idxs.map(i=>recs[i]));
+    idxs.forEach(i=>{
+      recs[i]['ClientID']=cid;
+      if(rc) recs[i]['RČ']=rc;
+      if(dob) recs[i]['Datum narození']=dob;
+      if(name && name!=='?') recs[i]['Investor']=name;
+    });
+  });
 }
 
 function repairWithdrawalClientIds(){
@@ -1607,17 +1643,30 @@ function saveRec(){
 function editClientPrompt(ref){
   const cl=findClientRef(ref); if(!cl) return;
   const first=cl.recs[0]||{};
+  const originalNameSig=nameSignature(cl.name);
   const newName=prompt('Jméno klienta v CRM:', cl.name); if(!newName) return;
   const dob=prompt('Datum narození klienta (YYYY-MM-DD), může zůstat prázdné:', getClientDob(first)||'') || '';
   const rc=prompt('Rodné číslo / interní ID klienta, může zůstat prázdné:', getClientRC(first)||'') || '';
+  const rcNorm=normalizeRC(rc)||'';
+  const dobNorm=parseDobValue(dob)||'';
   const cid=first['ClientID']||nextClientId();
-  cl.idx.forEach(i=>{
+  const idxSet=new Set(cl.idx);
+  // Když doplníš RČ klientovi, sjednoť i případné duplicitní karty se stejným jménem,
+  // protože starší importy nemusely mít ClientID ani RČ.
+  recs.forEach((r,i)=>{
+    const sameOriginalName=nameSignature(r['Investor']||'')===originalNameSig;
+    const sameRC=rcNorm && getClientRC(r)===rcNorm;
+    const sameDobName=dobNorm && getClientDob(r)===dobNorm && sameOriginalName;
+    if(sameOriginalName || sameRC || sameDobName) idxSet.add(i);
+  });
+  idxSet.forEach(i=>{
     recs[i]['Investor']=newName.trim();
-    recs[i]['Datum narození']=parseDobValue(dob)||null;
-    recs[i]['RČ']=normalizeRC(rc)||null;
+    recs[i]['Datum narození']=dobNorm||null;
+    recs[i]['RČ']=rcNorm||null;
     recs[i]['ClientID']=cid;
   });
-  save(); renderStats(); renderList(); showClient(clientIdentityKey(recs[cl.idx[0]])); renderFundPanel();
+  unifyClientsByStrongIdentity();
+  save(); renderStats(); renderList(); showClient(rcNorm?'rc:'+rcNorm:clientIdentityKey(recs[[...idxSet][0]])); renderFundPanel();
   toast('Klient upraven a sjednocen ✓','ok');
 }
 function mergeClientsPrompt(sourceRef){
