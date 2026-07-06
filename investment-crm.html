@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Investment CRM v39 — Solár Filip</title>
+<title>Investment CRM v54 — Solár Filip</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
@@ -313,7 +313,7 @@ body{font-family:'Inter',sans-serif;background:#f1f5f9;color:#1e293b;font-size:1
     <div class="hdr-icon">FS</div>
     <div>
       <div class="hdr-title">Investment CRM</div>
-      <div class="hdr-sub">Solár Filip · FairLife · v53</div>
+      <div class="hdr-sub">Solár Filip · FairLife · v54</div>
     </div>
   </div>
   <div class="hdr-btns">
@@ -489,9 +489,9 @@ body{font-family:'Inter',sans-serif;background:#f1f5f9;color:#1e293b;font-size:1
 <div class="toast" id="toast"></div>
 
 <script>
-const APP_VERSION='v53';
+const APP_VERSION='v54';
 const APP_BUILD='2026-07-06';
-const APP_SCHEMA_VERSION=53;
+const APP_SCHEMA_VERSION=54;
 let fkiMode='new';
 let fkiContextClient='';
 let fkiRows=[];
@@ -2026,19 +2026,57 @@ function restoreBackupJSON(e){
   const reader=new FileReader();
   reader.onload=ev=>{
     try{
-      const data=JSON.parse(ev.target.result);
-      const records=Array.isArray(data) ? data : (data.records || data.recs || data.transactions || data.rawData || []);
-      const funds=Array.isArray(data) ? {} : (data.fundValues || data.funds || {});
-      const oldVersion=Array.isArray(data) ? 'starší export bez verze' : (data.version || data.schemaVersion || 'neznámá verze');
-      if(!Array.isArray(records)) throw new Error('Chybí records');
+      const text=ev.target.result || '';
+      if(!String(text).trim()) throw new Error('Soubor je prázdný');
+      const data=JSON.parse(text);
+
+      // Podpora více typů JSON souborů:
+      // 1) plná záloha CRM: {records, fundValues, lockedFunds}
+      // 2) starší záloha: {recs}
+      // 3) export jednoho klienta: {rawData}
+      // 4) čisté pole transakcí: [...]
+      const records = Array.isArray(data)
+        ? data
+        : (Array.isArray(data.records) ? data.records
+          : Array.isArray(data.recs) ? data.recs
+          : Array.isArray(data.transactions) ? data.transactions
+          : Array.isArray(data.rawData) ? data.rawData
+          : Array.isArray(data.fondy) ? data.fondy.flatMap(f=>Array.isArray(f.transakce)?f.transakce:[])
+          : []);
+
+      let funds = {};
+      if(data && !Array.isArray(data)){
+        if(data.fundValues && typeof data.fundValues==='object' && !Array.isArray(data.fundValues)) funds=data.fundValues;
+        else if(data.funds && typeof data.funds==='object' && !Array.isArray(data.funds)) funds=data.funds;
+      }
+
+      const oldVersion=Array.isArray(data) ? 'starší export bez verze' : (data.version || data.schemaVersion || data.build || 'neznámá verze');
+      if(!Array.isArray(records) || !records.length) throw new Error('V JSON nejsou nalezené transakce / records');
+
       if(!confirm(`Obnovit zálohu? Přepíše se aktuální tabulka (${records.length} záznamů).\n\nZáloha: ${oldVersion} → CRM ${APP_VERSION}`)) return;
-      recs=records; fundValues=funds; lockedFunds=(data.lockedFunds&&typeof data.lockedFunds==='object')?data.lockedFunds:{};
-      ensureCompanies();
+
+      recs=records;
+      fundValues=funds;
+      lockedFunds=(data && data.lockedFunds && typeof data.lockedFunds==='object' && !Array.isArray(data.lockedFunds)) ? data.lockedFunds : {};
+
+      // Starší v53 volala ensureCompanies(), která v některých buildech neexistovala.
+      // To způsobilo hlášku „JSON zálohu se nepodařilo načíst“.
+      if(typeof ensureCompanies==='function') ensureCompanies();
+
       const res=migrateDatabaseInPlace({silent:true});
-      save(); renderStats(); renderList(); renderFundPanel(); updateFundPickerOptions(); activeClient=null;
-      document.getElementById('detail').classList.remove('open'); document.getElementById('welcome').style.display='flex';
+      save();
+      renderStats();
+      renderList();
+      renderFundPanel();
+      updateFundPickerOptions();
+      activeClient=null;
+      const detail=document.getElementById('detail'); if(detail) detail.classList.remove('open');
+      const welcome=document.getElementById('welcome'); if(welcome) welcome.style.display='flex';
       toast(`Záloha obnovena a migrována ✓ (${res.after} záznamů)`, 'ok');
-    }catch(err){ toast('JSON zálohu se nepodařilo načíst','err'); console.error(err); }
+    }catch(err){
+      toast('JSON zálohu se nepodařilo načíst: '+(err && err.message ? err.message : 'neznámá chyba'),'err');
+      console.error('Restore JSON error:', err);
+    }
     e.target.value='';
   };
   reader.readAsText(file,'UTF-8');
