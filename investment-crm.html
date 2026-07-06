@@ -214,6 +214,11 @@ body{font-family:'Inter',sans-serif;background:#f1f5f9;color:#1e293b;font-size:1
 .fcard.locked{border-left:3px solid #f97316;background:#fff7ed}
 .fcard.locked .fcard-hdr{background:#fff7ed}
 .lock-note{margin:10px 15px;padding:9px 12px;background:#fff7ed;border:1px solid #fed7aa;border-radius:7px;font-size:12px;color:#9a3412}
+/* QUICK FUND SUMMARY */
+.quick-fund-wrap{background:linear-gradient(145deg,rgba(255,255,255,.86),rgba(245,250,255,.62));border:1px solid rgba(219,227,237,.9);border-radius:16px;box-shadow:0 14px 34px rgba(15,23,42,.05),inset 0 1px 0 rgba(255,255,255,.95);overflow:hidden;margin:14px 0 18px}
+.quick-fund-head{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:13px 16px;border-bottom:1px solid rgba(226,232,240,.86)}
+.quick-fund-title{font-size:13px;font-weight:900;color:#0b3558;letter-spacing:.2px;text-transform:uppercase}.quick-fund-sub{font-size:11px;color:#64748b;margin-top:2px}.quick-fund-scroll{overflow-x:auto}.quick-fund-table{width:100%;min-width:880px;border-collapse:collapse}.quick-fund-table th{background:rgba(248,250,252,.78);font-size:10px;color:#94a3b8;text-transform:uppercase;letter-spacing:.45px;text-align:left;padding:10px 12px;border-bottom:1px solid rgba(226,232,240,.8)}.quick-fund-table td{padding:11px 12px;border-bottom:1px solid rgba(226,232,240,.65);font-size:12px;vertical-align:middle;background:rgba(255,255,255,.58)}.quick-fund-table tr:hover td{background:rgba(239,246,255,.7)}.quick-fund-table tr.locked td{background:rgba(255,247,237,.68)}.quick-fund-table tr:last-child td{border-bottom:none}.qf-name{font-weight:900;color:#1e293b;max-width:360px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.qf-meta{font-size:10px;color:#94a3b8;margin-top:2px}.qf-num{text-align:right;font-variant-numeric:tabular-nums;font-weight:850;color:#1e293b}.qf-gain.pos{color:#16a34a}.qf-gain.neg{color:#dc2626}.qf-actions{display:flex;justify-content:flex-end;gap:7px;align-items:center}.lock-ico{width:38px;height:34px;border-radius:12px;border:1px solid #dbe3ed;background:linear-gradient(180deg,#fff,#f8fafc);display:inline-flex;align-items:center;justify-content:center;cursor:pointer;font-size:18px;line-height:1;box-shadow:0 8px 18px rgba(15,23,42,.05)}.lock-ico:hover{transform:translateY(-1px);box-shadow:0 12px 22px rgba(15,23,42,.08)}.lock-ico.locked{background:#fff7ed;border-color:#fdba74;color:#c2410c}.lock-ico.unlocked{background:#ecfdf5;border-color:#86efac;color:#16a34a}.lock-ico .open-lock{display:inline-block;transform:rotate(-22deg) translateY(-1px);font-size:19px}.qf-jump{height:34px;border-radius:12px;border:1px solid #dbe3ed;background:#f8fafc;color:#334155;font-size:12px;font-weight:800;padding:0 10px;cursor:pointer}.qf-jump:hover{border-color:#bfdbfe;background:#eff6ff;color:#1d4ed8}
+
 @media(max-width:900px){.client-allocation-layout{grid-template-columns:1fr}.client-donut{width:210px;height:210px}}
 
 
@@ -308,7 +313,7 @@ body{font-family:'Inter',sans-serif;background:#f1f5f9;color:#1e293b;font-size:1
     <div class="hdr-icon">FS</div>
     <div>
       <div class="hdr-title">Investment CRM</div>
-      <div class="hdr-sub">Solár Filip · FairLife · v50</div>
+      <div class="hdr-sub">Solár Filip · FairLife · v51</div>
     </div>
   </div>
   <div class="hdr-btns">
@@ -837,7 +842,7 @@ function getClientRC(r){ return normalizeRC(r?.['RČ']||r?.['RC']||r?.['Rodné �
 function clientIdentityKey(r){
   // Primární identita klienta musí být rodné číslo / interní ID.
   // Starší verze dávaly přednost ClientID, takže se klient se stejným RČ mohl zobrazit dvakrát,
-  // pokud měl v různých záznamech jiné ClientID. Od v50 se stejným RČ vždy sloučí do jedné karty.
+  // pokud měl v různých záznamech jiné ClientID. Od v51 se stejným RČ vždy sloučí do jedné karty.
   const rc=getClientRC(r); if(rc) return 'rc:'+rc;
   const dob=getClientDob(r); if(dob) return 'dob:'+dob+'|name:'+nameSignature(r?.['Investor']||'');
   const cid=getClientId(r); if(cid) return 'cid:'+normKey(cid);
@@ -1370,20 +1375,44 @@ function showClient(name){
       </div>`;
     }).join('');
 
-    return {comp, product:productGroupOf(items.find(({r})=>!isWithdrawal(r))?.r || items[0]?.r || {}), card:`<div class="fcard ${locked?'locked':(isSold?'sold':(gain<0?'loss':(isEligF?'fe':'')))}" id="fc_${CSS.escape(fond)}">
+    const domId=safeDomId(k);
+    const product=productGroupOf(items.find(({r})=>!isWithdrawal(r))?.r || items[0]?.r || {});
+    const summary={key:k,domId,fond,comp,product,invested:isSold?met.deposits:fi,current:isSold?met.withdrawalsRealized:fc,gain,gp,locked,isSold};
+    return {comp, product, summary, card:`<div class="fcard ${locked?'locked':(isSold?'sold':(gain<0?'loss':(isEligF?'fe':'')))}" id="${domId}">
       <div class="fcard-hdr" onclick="toggleF(this)">
         <div><div class="fcard-nm">${esc(fond)}</div><div class="fcard-type"><span class="tag tag-gray">${esc(comp)}</span><span class="tag tag-purple">${esc(productGroupOf(items.find(({r})=>!isWithdrawal(r))?.r || items[0]?.r || {}))}</span>${dayBadge}</div></div>
         <div class="fstat"><div class="fstat-l">${isSold?'Původně vloženo':'Vloženo'}</div><div class="fstat-v">${czk(isSold?met.deposits:fi)}</div></div>
         <div class="fstat"><div class="fstat-l">${isSold?'Vybráno':'Aktuální'}</div><div class="fstat-v ${isSold?'up':(fc>=fi?'up':'dn')}">${czk(isSold?met.withdrawalsRealized:fc)}</div></div>
         <div class="fstat"><div class="fstat-l">${isSold?'Realizovaný výnos':'Výnos'}</div><div class="fstat-v ${gain>=0?'up':'dn'}">${isSold?czk(gain):pct(gp)}</div></div>
         <button class="btn btn-blue btn-sm" onclick="event.stopPropagation(); addBuyToFund('${esc(name)}', decodeURIComponent('${encodeURIComponent(k)}'))">+ Dokup</button>
-        <button class="btn btn-gray btn-sm btn-lock" onclick="event.stopPropagation(); toggleFundLock('${esc(cl.key)}', decodeURIComponent('${encodeURIComponent(k)}'), '${esc(name)}')">${locked?'🔓 Odemknout':'🔒 Zamknout'}</button>
+        <button class="lock-ico ${locked?'locked':'unlocked'}" title="${locked?'Odemknout fond':'Zamknout fond'}" onclick="event.stopPropagation(); toggleFundLock('${esc(cl.key)}', decodeURIComponent('${encodeURIComponent(k)}'), '${esc(name)}')">${locked?'🔒':'<span class="open-lock">🔓</span>'}</button>
         <button class="btn btn-red btn-sm btn-icon" title="Smazat fond" onclick="event.stopPropagation(); delFundByKey(decodeURIComponent('${encodeURIComponent(k)}'),'${esc(name)}')">🗑</button>
         <span class="chevron">▼</span>
       </div>
       <div class="fbody">${locked?'<div class="lock-note">🔒 Fond je zamčený pro výpočty klienta. V portfoliu zůstává, ale nepočítá se do aktuální hodnoty, výnosu ani průměrného výnosu p.a. v horních kartách.</div>':''}${notice}${(productGroupOf(items.find(({r})=>!isWithdrawal(r))?.r || items[0]?.r || {})==='Retail / OPF'||regularInfo(items).amount)?`<div class="rec-box"><strong>Pravidelná / retailová investice</strong><div class="opf-note">${regularInfo(items).freq}${regularInfo(items).amount?' · '+czk(regularInfo(items).amount):''}${regularInfo(items).day?' · den v měsíci: '+regularInfo(items).day:''} · každá tranše má vlastní 36měsíční daňový test</div><div class="rec-actions"><button class="btn btn-blue btn-sm" onclick="event.stopPropagation(); genMonthlyBuy('${esc(name)}', decodeURIComponent('${encodeURIComponent(k)}'))">+ Vygenerovat měsíční nákup</button></div></div>`:''}${txRows}<div style="height:8px"></div></div>
     </div>`};
   });
+  const quickFundRows=fundCards.map(x=>x.summary).filter(Boolean).sort((a,b)=>b.current-a.current);
+  const quickFundTotal=quickFundRows.reduce((sum,x)=>sum+(Number(x.current)||0),0);
+  const quickFundHtml=`<div class="sec">📋 Rychlý přehled fondů</div>
+    <div class="quick-fund-wrap">
+      <div class="quick-fund-head">
+        <div><div class="quick-fund-title">Rychlá tabulka portfolia</div><div class="quick-fund-sub">Jednoduchý klientský přehled. Detail fondů zůstává níže.</div></div>
+        <div class="quick-fund-sub"><strong>${quickFundRows.length}</strong> fond${quickFundRows.length===1?'':quickFundRows.length<5?'y':'ů'} · ${czk(quickFundTotal)}</div>
+      </div>
+      <div class="quick-fund-scroll"><table class="quick-fund-table">
+        <thead><tr><th>Fond</th><th style="text-align:right">Vloženo</th><th style="text-align:right">Aktuální hodnota</th><th style="text-align:right">Výnos Kč</th><th style="text-align:right">Výnos %</th><th style="text-align:center">Zámek</th><th style="text-align:right">Detail</th></tr></thead>
+        <tbody>${quickFundRows.map(x=>`<tr class="${x.locked?'locked':''}">
+          <td><div class="qf-name">${esc(x.fond)} ${x.locked?'<span class="tag tag-o">zamčeno</span>':''}${x.isSold?'<span class="tag tag-gray">odprodaný</span>':''}</div><div class="qf-meta">${esc(x.comp||'Nezařazeno')} · ${esc(x.product||'FKI')}</div></td>
+          <td class="qf-num">${czk(x.invested)}</td>
+          <td class="qf-num">${czk(x.current)}</td>
+          <td class="qf-num qf-gain ${x.gain>=0?'pos':'neg'}">${czk(x.gain)}</td>
+          <td class="qf-num qf-gain ${x.gp>=0?'pos':'neg'}">${pct(x.gp)}</td>
+          <td style="text-align:center"><button class="lock-ico ${x.locked?'locked':'unlocked'}" title="${x.locked?'Odemknout fond':'Zamknout fond'}" onclick="event.stopPropagation(); toggleFundLock('${esc(cl.key)}', decodeURIComponent('${encodeURIComponent(x.key)}'), '${esc(name)}')">${x.locked?'🔒':'<span class="open-lock">🔓</span>'}</button></td>
+          <td class="qf-actions"><button class="qf-jump" onclick="scrollToFund('${x.domId}')">Otevřít</button></td>
+        </tr>`).join('')}</tbody>
+      </table></div>
+    </div>`;
   const fcards=[...new Set(fundCards.map(x=>x.comp||'Nezařazeno'))].map(comp=>{
     const cards=fundCards.filter(x=>(x.comp||'Nezařazeno')===comp);
     const products=[...new Set(cards.map(x=>x.product||'FKI'))];
@@ -1424,12 +1453,15 @@ function showClient(name){
       <div class="sc"><div class="sc-l">Naplánované odkupy</div><div class="sc-v">${czk(m.scheduledWithdrawn)}</div><div class="sc-n">Neovlivňují dnešní hodnotu</div></div>
     </div>
     ${eligHtml}
-    <div class="sec">📂 Investiční fondy</div>
+    ${quickFundHtml}
+    <div class="sec">📂 Detail investičních fondů</div>
     ${fcards}
     ${clientAllocationHTML(cr, cl.key)}
   `;
 }
 
+function safeDomId(v){ return 'x_'+String(v||'').replace(/[^a-zA-Z0-9_-]/g,'_').slice(0,80); }
+function scrollToFund(id){ const el=document.getElementById(id); if(el){ el.classList.add('exp'); el.scrollIntoView({behavior:'smooth',block:'start'}); } }
 function toggleF(hdr){ hdr.closest('.fcard').classList.toggle('exp'); }
 function toggleFundLock(clientKey, fKey, clientRef){
   const next=!isLockedFund(clientKey, fKey);
