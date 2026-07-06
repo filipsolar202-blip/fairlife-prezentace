@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Investment CRM — Solár Filip</title>
+<title>Investment CRM v39 — Solár Filip</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
@@ -313,7 +313,7 @@ body{font-family:'Inter',sans-serif;background:#f1f5f9;color:#1e293b;font-size:1
     <div class="hdr-icon">FS</div>
     <div>
       <div class="hdr-title">Investment CRM</div>
-      <div class="hdr-sub">Solár Filip · FairLife · v52</div>
+      <div class="hdr-sub">Solár Filip · FairLife · v53</div>
     </div>
   </div>
   <div class="hdr-btns">
@@ -325,6 +325,7 @@ body{font-family:'Inter',sans-serif;background:#f1f5f9;color:#1e293b;font-size:1
     <button class="btn btn-green" onclick="openFkiPurchaseCalc()">🧮 Nákup FKI</button>
     <button class="btn btn-gray" onclick="dlBackupJSON()">💾 Záloha JSON</button>
     <button class="btn btn-gray" onclick="document.getElementById('backupFile').click()">↥ Obnovit JSON</button>
+    <button class="btn btn-gray" onclick="togglePanel('dbtools')">🧹 Servis DB</button>
     <input type="file" id="backupFile" accept=".json" style="display:none" onchange="restoreBackupJSON(event)">
     <button class="btn btn-gray" onclick="dlTemplate()">⬇ Vzor CSV</button>
     <button class="btn btn-blue" onclick="togglePanel('add')">+ Nový záznam</button>
@@ -392,6 +393,22 @@ body{font-family:'Inter',sans-serif;background:#f1f5f9;color:#1e293b;font-size:1
     <button class="btn btn-gray" onclick="exportAumCSV()">⬇ Export AUM CSV</button>
   </div>
   <div id="aumContent"></div>
+</div>
+
+
+<!-- DATABASE SERVICE PANEL -->
+<div class="fund-panel" id="dbtools">
+  <h3>Servis databáze <button class="btn btn-gray btn-sm" onclick="togglePanel('dbtools')">✕ Zavřít</button></h3>
+  <div class="import-info" style="margin-bottom:12px">
+    Oprava kompatibility starších JSON záloh, doplnění ClientID, RČ vazeb, transakčních ID a přepočet portfolií. Použij hlavně po obnově zálohy ze starší verze.
+  </div>
+  <div class="fund-tools" style="grid-template-columns:repeat(4,minmax(160px,1fr));align-items:end">
+    <button class="btn btn-blue" onclick="repairDatabaseNow()">🧹 Opravit databázi</button>
+    <button class="btn btn-gray" onclick="recalculateDatabaseNow()">🔄 Přepočítat vše</button>
+    <button class="btn btn-gray" onclick="showDatabaseStats()">📊 Statistiky DB</button>
+    <button class="btn btn-gray" onclick="dlBackupJSON()">💾 Export JSON</button>
+  </div>
+  <div id="dbtoolsResult" class="import-info" style="margin-top:12px;display:none"></div>
 </div>
 
 <!-- ADD/EDIT PANEL -->
@@ -472,7 +489,9 @@ body{font-family:'Inter',sans-serif;background:#f1f5f9;color:#1e293b;font-size:1
 <div class="toast" id="toast"></div>
 
 <script>
-const APP_VERSION='v45';
+const APP_VERSION='v53';
+const APP_BUILD='2026-07-06';
+const APP_SCHEMA_VERSION=53;
 let fkiMode='new';
 let fkiContextClient='';
 let fkiRows=[];
@@ -842,7 +861,7 @@ function getClientRC(r){ return normalizeRC(r?.['RČ']||r?.['RC']||r?.['Rodné �
 function clientIdentityKey(r){
   // Primární identita klienta musí být rodné číslo / interní ID.
   // Starší verze dávaly přednost ClientID, takže se klient se stejným RČ mohl zobrazit dvakrát,
-  // pokud měl v různých záznamech jiné ClientID. Od v52 se stejným RČ vždy sloučí do jedné karty.
+  // pokud měl v různých záznamech jiné ClientID. Od v53 se stejným RČ vždy sloučí do jedné karty.
   const rc=getClientRC(r); if(rc) return 'rc:'+rc;
   const dob=getClientDob(r); if(dob) return 'dob:'+dob+'|name:'+nameSignature(r?.['Investor']||'');
   const cid=getClientId(r); if(cid) return 'cid:'+normKey(cid);
@@ -915,6 +934,99 @@ function repairWithdrawalClientIds(){
     if(!base) return;
     ['ClientID','RČ','IČO','Datum narození','Poradce','Kód poradce'].forEach(k=>{ if(base[k] && !r[k]) r[k]=base[k]; });
   });
+}
+
+function cleanNumberValue(v){
+  if(v===null||v===undefined||v==='') return 0;
+  if(typeof v==='number') return isFinite(v)?v:0;
+  const x=parseFloat(String(v).replace(/\s/g,'').replace(',', '.'));
+  return isNaN(x)?0:x;
+}
+function normalizeRecordForCurrentVersion(r, idx=0){
+  if(!r || typeof r!=='object') r={};
+  // aliases from older CSV / JSON versions
+  if(r['Cista investice']!==undefined && r['Čistá investice']===undefined) r['Čistá investice']=r['Cista investice'];
+  if(r['Aktualni hodnota investice']!==undefined && r['Aktuální hodnota investice']===undefined) r['Aktuální hodnota investice']=r['Aktualni hodnota investice'];
+  if(r['Pocet vydanych CP']!==undefined && r['Počet vydaných CP']===undefined) r['Počet vydaných CP']=r['Pocet vydanych CP'];
+  if(r['Posledni schvalena hodnota CP']!==undefined && r['Poslední schválená hodnota CP']===undefined) r['Poslední schválená hodnota CP']=r['Posledni schvalena hodnota CP'];
+  if(r['Posledni schvalena hodnota do']!==undefined && r['Poslední schválená hodnota do']===undefined) r['Poslední schválená hodnota do']=r['Posledni schvalena hodnota do'];
+  if(r['Rodne cislo']!==undefined && r['RČ']===undefined) r['RČ']=r['Rodne cislo'];
+  if(r['RC']!==undefined && r['RČ']===undefined) r['RČ']=r['RC'];
+  if(r['Datum narozeni']!==undefined && r['Datum narození']===undefined) r['Datum narození']=r['Datum narozeni'];
+  if(r['ISIN']!==undefined && r['rp.ISIN']===undefined) r['rp.ISIN']=r['ISIN'];
+
+  r['Investor']=String(r['Investor']||r['Klient']||'Neznámý klient').trim();
+  r['Fond']=String(r['Fond']||r['Název fondu']||r['Nazev fondu']||'Neznámý fond').trim();
+  r['Investiční společnost']=String(r['Investiční společnost']||r['Investicni spolecnost']||inferCompany(r['Fond'])||'').trim();
+  r['Typ produktu']=r['Typ produktu']||r['Produktový typ']||r['Produktovy typ']||'FKI';
+  r['Typ transakce']=r['Typ transakce']||r['Transakce']||'Platba';
+  r['Měna']=r['Měna']||r['Mena']||'CZK';
+  r['Poradce']=r['Poradce']||'Solár Filip';
+  r['Čistá investice']=cleanNumberValue(r['Čistá investice']);
+  r['Aktuální hodnota investice']=cleanNumberValue(r['Aktuální hodnota investice']);
+  r['Počet vydaných CP']=cleanNumberValue(r['Počet vydaných CP']);
+  r['Upisovací hodnota']=cleanNumberValue(r['Upisovací hodnota']);
+  r['Poslední schválená hodnota CP']=cleanNumberValue(r['Poslední schválená hodnota CP'])||null;
+  r['Pravidelná částka']=cleanNumberValue(r['Pravidelná částka']);
+  r['Vstupní poplatek']=cleanNumberValue(r['Vstupní poplatek']);
+  r['Datum připsání platby']=parseDobValue(r['Datum připsání platby']||r['Datum pripsani platby']||r['Datum platby']||'')||null;
+  r['Datum emise']=parseDobValue(r['Datum emise']||'')||r['Datum připsání platby']||null;
+  r['Poslední schválená hodnota do']=parseDobValue(r['Poslední schválená hodnota do']||'')||null;
+  r['Datum narození']=parseDobValue(r['Datum narození']||'')||null;
+  r['RČ']=normalizeRC(r['RČ']||'')||null;
+  if(r['RČ']) r['ClientID']='RC_'+r['RČ'];
+  if(!r['ClientID']) r['ClientID']=null;
+  if(!r['_txid']) r['_txid']='TX_MIG_'+Date.now()+'_'+idx+'_'+Math.random().toString(36).slice(2,8);
+  if(r.pending===true && !r['Stav scénáře']) r['Stav scénáře']='čeká';
+  if(!r['Stav scénáře']) r['Stav scénáře']='';
+  if(isWithdrawal(r)){
+    r['Čistá investice']=0;
+    if(r['Aktuální hodnota investice']>0) r['Aktuální hodnota investice']=-Math.abs(r['Aktuální hodnota investice']);
+  } else {
+    if(!r['Aktuální hodnota investice']) r['Aktuální hodnota investice']=r['Čistá investice']||0;
+    if(!r['Počet vydaných CP'] && r['Čistá investice'] && r['Upisovací hodnota']) r['Počet vydaných CP']=r['Čistá investice']/r['Upisovací hodnota'];
+    if(r['Počet vydaných CP'] && r['Poslední schválená hodnota CP']) r['Aktuální hodnota investice']=r['Počet vydaných CP']*r['Poslední schválená hodnota CP'];
+  }
+  return r;
+}
+function rebuildFundValuesFromRecords(){
+  const merged={...(fundValues||{})};
+  (recs||[]).forEach(r=>{
+    if(isWithdrawal(r)) return;
+    const k=fundKey(r); if(!k) return;
+    const nav=currentNav(r)||r['Poslední schválená hodnota CP'];
+    if(!merged[k]) merged[k]={};
+    merged[k]={...merged[k],nav:nav||merged[k].nav||null,date:navDate(r)||merged[k].date||null,fond:r['Fond']||merged[k].fond||'',company:companyOf(r)||merged[k].company||'',product:productTypeOf(r)||merged[k].product||'FKI',isin:r['rp.ISIN']||r['ISIN']||merged[k].isin||'',typ:r['Typ CP']||merged[k].typ||''};
+  });
+  fundValues=merged;
+  normalizeFundValuesKeys();
+}
+function migrateDatabaseInPlace(opts={}){
+  const before=(recs||[]).length;
+  recs=(Array.isArray(recs)?recs:[]).map((r,i)=>normalizeRecordForCurrentVersion(r,i)).filter(r=>r['Investor']&&r['Fond']);
+  ensureClientIds();
+  repairWithdrawalClientIds();
+  unifyClientsByStrongIdentity();
+  rebuildFundValuesFromRecords();
+  if(!opts.silent){
+    toast(`Databáze opravena ✓ (${before} → ${recs.length} záznamů)`, 'ok');
+  }
+  return {before,after:recs.length,clients:getClients().length,funds:Object.keys(fundValues||{}).length};
+}
+function repairDatabaseNow(){
+  const res=migrateDatabaseInPlace(); save(); renderStats(); renderList(); renderFundPanel(); updateFundPickerOptions(); if(activeClient) showClient(activeClient);
+  const box=document.getElementById('dbtoolsResult'); if(box){ box.style.display='block'; box.innerHTML=`<strong>Oprava hotová.</strong><br>Záznamů: ${res.after}<br>Klientů: ${res.clients}<br>Fondů v databázi: ${res.funds}`; }
+}
+function recalculateDatabaseNow(){
+  migrateDatabaseInPlace({silent:true}); save(); renderStats(); renderList(); renderFundPanel(); updateFundPickerOptions(); if(activeClient) showClient(activeClient);
+  toast('Vše přepočítáno ✓','ok');
+}
+function showDatabaseStats(){
+  const cls=getClients();
+  const withdrawals=recs.filter(isWithdrawal).length;
+  const pending=recs.filter(r=>r['Stav scénáře']==='čeká').length;
+  const missingId=recs.filter(r=>!r['ClientID']).length;
+  const box=document.getElementById('dbtoolsResult'); if(box){ box.style.display='block'; box.innerHTML=`<strong>Statistiky databáze</strong><br>Záznamů: ${recs.length}<br>Klientů: ${cls.length}<br>Fondů: ${Object.keys(fundValues||{}).length}<br>Odkupy: ${withdrawals}<br>Čekající nákupy: ${pending}<br>Bez ClientID: ${missingId}`; }
 }
 function sameClient(a,b){ return clientIdentityKey(a) === clientIdentityKey(b); }
 function findClientRef(ref){
@@ -1107,7 +1219,7 @@ function redeemDt(e){ const d=pD(e); if(!d) return null; const r=new Date(d); r.
   try { fundValues = JSON.parse(localStorage.getItem(FSK)) || {}; } catch{ fundValues = {}; }
   normalizeFundValuesKeys();
   if(!recs.length) recs = [...SEED];
-  ensureClientIds();
+  migrateDatabaseInPlace({silent:true});
   save();
   renderStats();
   renderList();
@@ -1899,7 +2011,8 @@ function exportJSON(name){
 
 
 function dlBackupJSON(){
-  const backup={version:16,exportDate:new Date().toISOString(),records:recs,fundValues:fundValues};
+  migrateDatabaseInPlace({silent:true});
+  const backup={version:APP_VERSION,schemaVersion:APP_SCHEMA_VERSION,build:APP_BUILD,exportDate:new Date().toISOString(),records:recs,fundValues:fundValues,lockedFunds:lockedFunds};
   const a=document.createElement('a');
   a.href=URL.createObjectURL(new Blob([JSON.stringify(backup,null,2)],{type:'application/json'}));
   a.download='investment-crm-zaloha-'+new Date().toISOString().split('T')[0]+'.json';
@@ -1914,13 +2027,17 @@ function restoreBackupJSON(e){
   reader.onload=ev=>{
     try{
       const data=JSON.parse(ev.target.result);
-      const records=Array.isArray(data) ? data : (data.records || data.recs || data.transactions || []);
+      const records=Array.isArray(data) ? data : (data.records || data.recs || data.transactions || data.rawData || []);
       const funds=Array.isArray(data) ? {} : (data.fundValues || data.funds || {});
+      const oldVersion=Array.isArray(data) ? 'starší export bez verze' : (data.version || data.schemaVersion || 'neznámá verze');
       if(!Array.isArray(records)) throw new Error('Chybí records');
-      if(!confirm(`Obnovit zálohu? Přepíše se aktuální tabulka (${records.length} záznamů).`)) return;
-      recs=records; fundValues=funds; ensureCompanies(); save(); renderStats(); renderList(); renderFundPanel(); activeClient=null;
+      if(!confirm(`Obnovit zálohu? Přepíše se aktuální tabulka (${records.length} záznamů).\n\nZáloha: ${oldVersion} → CRM ${APP_VERSION}`)) return;
+      recs=records; fundValues=funds; lockedFunds=(data.lockedFunds&&typeof data.lockedFunds==='object')?data.lockedFunds:{};
+      ensureCompanies();
+      const res=migrateDatabaseInPlace({silent:true});
+      save(); renderStats(); renderList(); renderFundPanel(); updateFundPickerOptions(); activeClient=null;
       document.getElementById('detail').classList.remove('open'); document.getElementById('welcome').style.display='flex';
-      toast('Záloha obnovena ✓','ok');
+      toast(`Záloha obnovena a migrována ✓ (${res.after} záznamů)`, 'ok');
     }catch(err){ toast('JSON zálohu se nepodařilo načíst','err'); console.error(err); }
     e.target.value='';
   };
