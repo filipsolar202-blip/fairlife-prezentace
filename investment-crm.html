@@ -348,7 +348,7 @@ body{font-family:'Inter',sans-serif;background:#f1f5f9;color:#1e293b;font-size:1
     <div class="hdr-icon">FS</div>
     <div>
       <div class="hdr-title">Investment CRM</div>
-      <div class="hdr-sub">Solár Filip · FairLife · v67</div>
+      <div class="hdr-sub">Solár Filip · FairLife · v68</div>
     </div>
   </div>
   <div class="hdr-btns">
@@ -520,7 +520,7 @@ body{font-family:'Inter',sans-serif;background:#f1f5f9;color:#1e293b;font-size:1
 <div class="toast" id="toast"></div>
 
 <script>
-const APP_VERSION='v67';
+const APP_VERSION='v68';
 const APP_BUILD='2026-07-06';
 const APP_SCHEMA_VERSION=54;
 let fkiMode='new';
@@ -532,6 +532,21 @@ let fkiNewClientName='';
 function fkiParseMoney(v){ return n(String(v||'').replace(/Kč/g,'').replace(/CZK/gi,'')); }
 function fkiFmtMoneyInput(v){ const x=Math.round(n(v)||0); return x?new Intl.NumberFormat('cs-CZ',{maximumFractionDigits:0}).format(x):'0'; }
 function fkiInputBlur(el,i){ if(el){ el.value=fkiFmtMoneyInput(fkiRows[i]?.amount||0); } fkiSoftUpdate(); }
+function fkiSeedFunds(){
+  const rules=(typeof FKI_COMMISSION_RULES!=='undefined' && Array.isArray(FKI_COMMISSION_RULES))?FKI_COMMISSION_RULES:[];
+  const seen={};
+  return rules.filter(r=>{
+    const key=normKey((r.company||'')+'|'+(r.fund||''));
+    if(seen[key]) return false; seen[key]=true; return true;
+  }).map(r=>({
+    fundKey:'seed:'+normKey((r.company||'')+'|'+(r.fund||'')),
+    name:r.fund||'Fond',
+    company:String(r.company||'').replace(' investiční společnost',''),
+    isin:'', typ:'FKI', clients:0, inv:0, cur:0,
+    pa:Math.max(0, Number(r.trailPct||0)*7 || 7),
+    seed:true
+  }));
+}
 function fkiFundStats(){
   const byFund={};
   const byClientFund={};
@@ -548,7 +563,8 @@ function fkiFundStats(){
     if(!byFund[o.fundKey]) byFund[o.fundKey]={fundKey:o.fundKey,name:o.name,company:o.company,isin:o.isin,typ:o.typ,clients:0,inv:0,cur:0,paWeightedSum:0,paSimpleSum:0};
     const f=byFund[o.fundKey]; f.clients++; f.inv+=o.inv; f.cur+=o.cur; if(isFinite(pa)){ f.paSimpleSum+=pa; f.paWeightedSum+=pa*o.inv; }
   });
-  return Object.values(byFund).map(f=>({...f,pa:f.inv>0?f.paWeightedSum/f.inv:(f.clients?f.paSimpleSum/f.clients:7)})).sort((a,b)=>b.inv-a.inv);
+  const out=Object.values(byFund).map(f=>({...f,pa:f.inv>0?f.paWeightedSum/f.inv:(f.clients?f.paSimpleSum/f.clients:7)})).sort((a,b)=>b.inv-a.inv);
+  return out.length ? out : fkiSeedFunds();
 }
 function fkiDefaultRows(clientName=''){
   const stats=fkiFundStats();
@@ -880,7 +896,7 @@ function renderFkiModule(){
   const clientOptions=fkiLoadClientListOptions();
   const fundOptions=(sel)=>stats.map(f=>`<option value="${esc(f.fundKey)}" ${f.fundKey===sel?'selected':''}>${esc(f.name)} · ${esc(f.company)} · ${pct(f.pa)}</option>`).join('');
   const portfolioHtml=calc.current.items.length?`<div class="fki-client-portfolio"><table class="fki-table"><thead><tr><th>Fond</th><th>Aktuálně</th><th>Výnos</th><th>p.a.</th></tr></thead><tbody>${calc.current.items.map(x=>`<tr class="${x.pending?'pending-row':''}"><td><b>${esc(x.name)}</b>${x.pending?' <span class="pending-badge">čeká</span>':''}<br><span class="fki-muted">${esc(x.company)}</span></td><td>${czk(x.cur)}</td><td class="${x.profit>=0?'pos':'neg'}">${czk(x.profit)}</td><td>${pct(x.pa)}</td></tr>`).join('')}</tbody></table></div>${fkiPerformanceChartHTML(calc.current.items)}`:`<div class="fki-empty">U nového klienta zatím není načtené portfolio. Zadáš pouze návrh nové investice.</div>`;
-  const scenarioPanel=`<div class="fki-card fki-scenario"><div><div class="fki-scenario-title">3) Klientský scénář</div><div class="fki-kpis"><div class="fki-kpi"><small>Nová investice za ${fkiHorizon} let</small><b id="fkiScenarioNew">${czk(calc.projectedNew)}</b></div><div class="fki-kpi"><small>Celkem portfolio</small><b id="fkiScenarioTotal">${czk(calc.totalFuture)}</b></div><div class="fki-kpi"><small>Modelová renta dnes</small><b id="fkiScenarioRentNow">${czk(calc.rentNow)}</b></div><div class="fki-kpi"><small>Modelová renta za ${fkiHorizon} let</small><b id="fkiScenarioRentFuture" class="green">${czk(calc.rentFuture)}</b></div></div><p id="fkiScenarioText" class="fki-muted" style="font-size:14px">${esc(fkiScenarioText())}</p></div><div><div class="fki-actions"><button class="btn btn-gray btn-sm" onclick="fkiCopyScenario()">Kopírovat shrnutí</button><button class="btn btn-blue btn-sm" onclick="fkiSaveScenario()">Uložit scénář do CRM</button></div><div class="fki-pending-banner"><span class="fki-pending-dot"></span><div><b>Uložení scénáře nevytváří potvrzený obchod.</b><br>U klienta vznikne čekající/plánovaný nákup. Po reálné realizaci ho potvrdíš výpisem nebo následnou kontrolou.</div></div></div></div>`;
+  const scenarioPanel=`<div class="fki-card fki-scenario"><div><div class="fki-scenario-title">3) Klientský scénář</div><div class="fki-kpis"><div class="fki-kpi"><small>Nová investice za ${fkiHorizon} let</small><b id="fkiScenarioNew">${czk(calc.projectedNew)}</b></div><div class="fki-kpi"><small>Celkem portfolio</small><b id="fkiScenarioTotal">${czk(calc.totalFuture)}</b></div><div class="fki-kpi"><small>Modelová renta dnes</small><b id="fkiScenarioRentNow">${czk(calc.rentNow)}</b></div><div class="fki-kpi"><small>Modelová renta za ${fkiHorizon} let</small><b id="fkiScenarioRentFuture" class="green">${czk(calc.rentFuture)}</b></div></div><p id="fkiScenarioText" class="fki-muted" style="font-size:14px">${esc(fkiScenarioText())}</p></div><div><div class="fki-actions"><button class="btn btn-gray btn-sm" onclick="fkiCopyScenario()">Kopírovat shrnutí</button><button class="btn btn-gray btn-sm" onclick="fkiExportClientHtml()">🌐 HTML pro klienta</button><button class="btn btn-gray btn-sm" onclick="fkiPrintClientPdf()">🧾 PDF / tisk</button><button class="btn btn-blue btn-sm" onclick="fkiSaveScenario()">Uložit scénář do CRM</button></div><div class="fki-pending-banner"><span class="fki-pending-dot"></span><div><b>Uložení scénáře nevytváří potvrzený obchod.</b><br>U klienta vznikne čekající/plánovaný nákup. Po reálné realizaci ho potvrdíš výpisem nebo následnou kontrolou.</div></div></div></div>`;
   const pendingHtml=calc.current.pending&&calc.current.pending.length?`<div class="fki-pending-banner"><span class="fki-pending-dot"></span><div><b>Klient má čekající nákupy.</b><br>Jsou barevně oddělené a započtené jako plán. Po reálném provedení je bude potřeba potvrdit/importovat skutečný výpis.</div></div>`:'';
   el.innerHTML=`
   <div class="fki-tabs"><button class="fki-tab ${fkiMode==='new'?'active':''}" onclick="fkiSetMode('new')">Nový klient</button><button class="fki-tab ${fkiMode==='existing'?'active':''}" onclick="fkiSetMode('existing')">Stávající klient</button></div>
@@ -2518,10 +2534,20 @@ function exportClientHTML(name, autoPrint=false){
     <section class="section"><div class="section-head"><div><span>Důležité upozornění</span><h2>Informativní charakter reportu</h2></div></div><div class="notice"><p>Tento report byl vytvořen pro informativní účely na základě údajů dostupných ke dni jeho vygenerování. Nejedná se o investiční doporučení, investiční poradenství ani nabídku k nákupu či prodeji investičních nástrojů.</p><p>Historická výkonnost není zárukou budoucích výnosů. Hodnota investice může kolísat a investor může získat zpět méně, než původně investoval.</p><p>Výpočty vycházejí z údajů evidovaných v interním systému a mohou se lišit od oficiálních údajů jednotlivých investičních společností. Rozhodující jsou vždy oficiální výpisy, statuty, sdělení klíčových informací a další dokumentace příslušného fondu nebo investiční společnosti.</p><p>Modelová renta je pouze orientační výpočet. Pro výpočet je použita modelová výnosová sazba odvozená z fondů v kladném výnosu; pokud žádný kladně výkonný fond není dostupný, použije se orientační předpoklad 7 % p.a. Výpočet předpokládá, že klient čerpá pouze roční výnos, nikoli jistinu. Skutečná výše budoucí renty se může výrazně lišit podle vývoje fondů, poplatků, daní, odkupních podmínek a hodnoty podílových listů nebo investičních akcií v době výběru.</p><p>Údaje uvedené v reportu jsou určeny výhradně pro klienta, kterému byl report vystaven. Osobní údaje jsou zpracovávány v souladu s platnými právními předpisy, zejména s Nařízením Evropského parlamentu a Rady (EU) 2016/679 (GDPR), a slouží pouze pro účely evidence, kontroly a servisu klientského portfolia.</p></div></section>
     <div class="contact"><h2>Filip Solár</h2><p>Finanční trenér · Fair-Life</p><p>www.filipsolar.cz</p></div>
   </div>${autoPrint?'<script>setTimeout(()=>window.print(),600)<\/script>':''}</body></html>`;
+  if(autoPrint){
+    const w=window.open('','_blank');
+    if(!w){ toast('Prohlížeč zablokoval nové okno. Povol pop-up a zkus to znovu.','err'); return; }
+    w.document.open(); w.document.write(html); w.document.close();
+    setTimeout(()=>{ try{ w.focus(); w.print(); }catch(e){} },600);
+    toast('Otevřel jsem tisk / uložení do PDF ✓','ok');
+    return;
+  }
   const a=document.createElement('a');
-  a.href=URL.createObjectURL(new Blob([html],{type:'text/html;charset=utf-8'}));
+  const url=URL.createObjectURL(new Blob([html],{type:'text/html;charset=utf-8'}));
+  a.href=url;
   a.download=`report-${displayName.replace(/[^a-zA-Z0-9á-žÁ-Ž]+/g,'_')}.html`;
-  a.click();
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(()=>URL.revokeObjectURL(url),1000);
   toast('HTML report klienta stažen ✓','ok');
 }
 
