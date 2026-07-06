@@ -544,6 +544,8 @@ body{font-family:'Inter',sans-serif;background:#f1f5f9;color:#1e293b;font-size:1
         <div class="fki-modal-sub" id="fkiModalSub">Nový klient nebo stávající klient</div>
       </div>
       <div class="fki-modal-actions">
+        <button class="btn btn-gray btn-sm" onclick="fkiExportClientHtml()">🌐 HTML pro klienta</button>
+        <button class="btn btn-gray btn-sm" onclick="fkiPrintClientPdf()">📄 PDF / tisk</button>
         <button class="btn btn-gray btn-sm" onclick="closeFkiPurchaseCalc()">✕ Zavřít</button>
       </div>
     </div>
@@ -554,7 +556,7 @@ body{font-family:'Inter',sans-serif;background:#f1f5f9;color:#1e293b;font-size:1
 <div class="toast" id="toast"></div>
 
 <script>
-const APP_VERSION='v58';
+const APP_VERSION='v60';
 const APP_BUILD='2026-07-06';
 const APP_SCHEMA_VERSION=54;
 let fkiMode='new';
@@ -760,6 +762,45 @@ function fkiRemoveRow(i){ fkiRows.splice(i,1); renderFkiModule(); }
 function fkiUseFund(i,k){ const st=fkiFundStats().find(x=>x.fundKey===k); if(!st) return; fkiRows[i]={...fkiRows[i],fundKey:k,name:st.name,company:st.company,isin:st.isin,typ:st.typ,rate:Math.max(0,Number(st.pa||7)).toFixed(1),source:'CRM průměr'}; renderFkiModule(); }
 function fkiScenarioText(){ const c=fkiCalc(); const name=fkiMode==='existing'?(fkiContextClient||'stávající klient'):(fkiNewClientName||'nový klient'); return `Scénář pro ${name}: nový vklad ${czk(c.newInv)}, vážený předpoklad celého portfolia ${pct(c.weightedRate)} (samotný nový nákup ${pct(c.newWeightedRate)}), doba modelace ${fkiHorizon} let. Pokud je u fondu nastaven propad, fond se v roce propadu sníží a od té chvíle zůstává zamrazený na nové hodnotě. Modelová hodnota nové investice ${czk(c.projectedNew)}, celkem po započtení současného portfolia ${czk(c.totalFuture)}.`; }
 function fkiCopyScenario(){ navigator.clipboard?.writeText(fkiScenarioText()); toast('Scénář zkopírován ✓','ok'); }
+function fkiClientReportHtml(){
+  const c=fkiCalc();
+  const name=(fkiMode==='existing'?(fkiContextClient||'stávající klient'):(fkiNewClientName||'nový klient')).trim()||'Klient';
+  const rows=(c.rows||[]).filter(r=>n(r.amount)>0 || n(r.topUpAmount)>0);
+  const currentItems=(c.current?.items||[]).slice(0,12);
+  const fundInfo = (typeof FKI_FUND_INFOS==='object' && FKI_FUND_INFOS) ? FKI_FUND_INFOS : {};
+  const infoFor=(name)=>{
+    const key=String(name||'').toLowerCase();
+    const found=Object.keys(fundInfo).find(k=>key.includes(k.toLowerCase()) || k.toLowerCase().includes(key.split(' ')[0]||''));
+    return found ? fundInfo[found] : null;
+  };
+  const htmlRows=rows.map(r=>{
+    const info=infoFor(r.name);
+    return `<article class="fund-card"><div><h3>${esc(r.name)}</h3><div class="muted">${esc(r.company||'FKI')} ${r.isin?` · ${esc(r.isin)}`:''}</div></div><div class="metrics"><div><small>Vklad</small><b>${czk(n(r.amount))}</b></div><div><small>Předpoklad p.a.</small><b>${pct(n(r.rate))}</b></div><div><small>Hodnota za ${fkiHorizon} let</small><b>${czk(fkiFundValueAt(r,fkiHorizon))}</b></div>${n(r.topUpAmount)>0?`<div><small>Dokup v ${n(r.topUpYear)}. roce</small><b>${czk(n(r.topUpAmount))}</b></div>`:''}${n(r.crashPct)>0?`<div><small>Modelovaný propad</small><b>-${n(r.crashPct)} % v ${n(r.crashYear)}. roce</b></div>`:''}</div>${info?`<p class="fund-info">${esc(info)}</p>`:''}</article>`;
+  }).join('') || '<p>Nejsou zadané žádné nové fondy.</p>';
+  const portfolioHtml=currentItems.length?`<section class="card"><h2>Současné portfolio</h2><table><thead><tr><th>Fond</th><th>Aktuálně</th><th>Výnos</th><th>P.A.</th></tr></thead><tbody>${currentItems.map(x=>`<tr><td>${esc(x.name)}</td><td>${czk(x.cur)}</td><td>${czk(x.profit)}</td><td>${pct(x.pa||0)}</td></tr>`).join('')}</tbody></table></section>`:'';
+  const chart=fkiScenarioChartHTML(c);
+  return `<!doctype html><html lang="cs"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>FKI scénář – ${esc(name)}</title><style>
+  :root{--ink:#0f2744;--muted:#64748b;--line:#dbe7f3;--blue:#2563eb;--cyan:#44b5c6;--green:#16a34a;--red:#dc2626;--bg:#eef6ff}*{box-sizing:border-box}body{margin:0;font-family:Inter,Arial,sans-serif;background:linear-gradient(135deg,#f8fcff,#eef6ff);color:var(--ink)}.wrap{max-width:1120px;margin:0 auto;padding:32px}.hero,.card,.fund-card{background:rgba(255,255,255,.78);border:1px solid var(--line);border-radius:24px;box-shadow:0 18px 50px rgba(15,39,68,.08);backdrop-filter:blur(14px)}.hero{padding:32px;margin-bottom:22px}.eyebrow{font-size:12px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--cyan)}h1{font-size:38px;margin:8px 0 10px}h2{font-size:22px;margin:0 0 14px}.lead{font-size:16px;line-height:1.6;color:var(--muted)}.kpis,.metrics{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px}.kpi,.metrics>div{background:rgba(255,255,255,.9);border:1px solid var(--line);border-radius:18px;padding:14px}.kpi small,.metrics small{display:block;color:#8aa0b8;text-transform:uppercase;font-weight:800;font-size:11px}.kpi b,.metrics b{font-size:21px}.card{padding:24px;margin:18px 0}.fund-card{padding:20px;margin:12px 0}.fund-card h3{margin:0 0 4px}.muted{color:var(--muted)}.fund-info{color:var(--muted);line-height:1.55;margin-bottom:0}table{width:100%;border-collapse:collapse}th,td{padding:10px;border-bottom:1px solid var(--line);text-align:left}th{font-size:12px;text-transform:uppercase;color:#8aa0b8}.fki-sim-chart{border:1px solid var(--line);border-radius:22px;padding:18px;background:rgba(255,255,255,.82)}.fki-sim-head{display:flex;justify-content:space-between;gap:16px}.fki-sim-head h4{margin:0 0 4px}.fki-muted,.fki-chart-note{color:var(--muted);font-size:13px}.fki-sim-legend{display:flex;gap:10px;flex-wrap:wrap}.fki-leg{font-size:12px;color:var(--muted)}.fki-leg i{display:inline-block;width:18px;height:3px;margin-right:5px;vertical-align:middle}.fki-chart-wrap svg{width:100%;height:auto}.fki-chart-label{font-size:12px;fill:#64748b}@media print{body{background:white}.wrap{padding:0}.hero,.card,.fund-card{box-shadow:none;break-inside:avoid}.no-print{display:none}}
+  </style></head><body><div class="wrap"><section class="hero"><div class="eyebrow">FairLife · FKI scénář investice</div><h1>${esc(name)}</h1><p class="lead">${esc(fkiScenarioText())}</p><div class="kpis"><div class="kpi"><small>Nový vklad</small><b>${czk(c.newInv)}</b></div><div class="kpi"><small>Hodnota nové investice za ${fkiHorizon} let</small><b>${czk(c.projectedNew)}</b></div><div class="kpi"><small>Celkem portfolio</small><b>${czk(c.totalFuture)}</b></div><div class="kpi"><small>Modelová renta za ${fkiHorizon} let</small><b>${czk(c.rentFuture)}</b></div></div></section>${portfolioHtml}<section class="card"><h2>Model vývoje portfolia</h2>${chart}</section><section class="card"><h2>Navržené fondy</h2>${htmlRows}</section><p class="muted">Výstup je modelový scénář. Nejedná se o investiční doporučení ani garanci budoucího výnosu.</p></div></body></html>`;
+}
+function fkiExportClientHtml(){
+  const name=(fkiMode==='existing'?(fkiContextClient||'klient'):(fkiNewClientName||'novy-klient')).trim()||'klient';
+  const safe=name.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'')||'klient';
+  const blob=new Blob([fkiClientReportHtml()],{type:'text/html;charset=utf-8'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  a.href=url; a.download=`fki-scenar-${safe}.html`; document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(()=>URL.revokeObjectURL(url),1000);
+  toast('HTML výstup pro klienta stažen ✓','ok');
+}
+function fkiPrintClientPdf(){
+  const w=window.open('','_blank');
+  if(!w){ toast('Prohlížeč zablokoval nové okno. Povol pop-up a zkus to znovu.','err'); return; }
+  w.document.open(); w.document.write(fkiClientReportHtml()); w.document.close();
+  w.onload=()=>setTimeout(()=>{ w.focus(); w.print(); },300);
+  toast('Otevřel jsem tisk / uložení do PDF ✓','ok');
+}
+
 function fkiLoadClientListOptions(){ return getClients().sort((a,b)=>a.name.localeCompare(b.name,'cs')).map(c=>`<option value="${esc(c.name)}" ${c.name===fkiContextClient?'selected':''}>${esc(c.name)}</option>`).join(''); }
 function fkiPerformanceChartHTML(items){
   if(!items||!items.length) return '';
@@ -854,7 +895,7 @@ function renderFkiModule(){
   const clientOptions=fkiLoadClientListOptions();
   const fundOptions=(sel)=>stats.map(f=>`<option value="${esc(f.fundKey)}" ${f.fundKey===sel?'selected':''}>${esc(f.name)} · ${esc(f.company)} · ${pct(f.pa)}</option>`).join('');
   const portfolioHtml=calc.current.items.length?`<div class="fki-client-portfolio"><table class="fki-table"><thead><tr><th>Fond</th><th>Aktuálně</th><th>Výnos</th><th>p.a.</th></tr></thead><tbody>${calc.current.items.map(x=>`<tr class="${x.pending?'pending-row':''}"><td><b>${esc(x.name)}</b>${x.pending?' <span class="pending-badge">čeká</span>':''}<br><span class="fki-muted">${esc(x.company)}</span></td><td>${czk(x.cur)}</td><td class="${x.profit>=0?'pos':'neg'}">${czk(x.profit)}</td><td>${pct(x.pa)}</td></tr>`).join('')}</tbody></table></div>${fkiPerformanceChartHTML(calc.current.items)}`:`<div class="fki-empty">U nového klienta zatím není načtené portfolio. Zadáš pouze návrh nové investice.</div>`;
-  const scenarioPanel=`<div class="fki-card fki-scenario"><div><div class="fki-scenario-title">3) Klientský scénář</div><div class="fki-kpis"><div class="fki-kpi"><small>Nová investice za ${fkiHorizon} let</small><b id="fkiScenarioNew">${czk(calc.projectedNew)}</b></div><div class="fki-kpi"><small>Celkem portfolio</small><b id="fkiScenarioTotal">${czk(calc.totalFuture)}</b></div><div class="fki-kpi"><small>Modelová renta dnes</small><b id="fkiScenarioRentNow">${czk(calc.rentNow)}</b></div><div class="fki-kpi"><small>Modelová renta za ${fkiHorizon} let</small><b id="fkiScenarioRentFuture" class="green">${czk(calc.rentFuture)}</b></div></div><p id="fkiScenarioText" class="fki-muted" style="font-size:14px">${esc(fkiScenarioText())}</p></div><div><div class="fki-actions"><button class="btn btn-gray btn-sm" onclick="fkiCopyScenario()">Kopírovat shrnutí</button><button class="btn btn-blue btn-sm" onclick="fkiSaveScenario()">Uložit scénář do CRM</button></div><div class="fki-pending-banner"><span class="fki-pending-dot"></span><div><b>Uložení scénáře nevytváří potvrzený obchod.</b><br>U klienta vznikne čekající/plánovaný nákup. Po reálné realizaci ho potvrdíš výpisem nebo následnou kontrolou.</div></div></div></div>`;
+  const scenarioPanel=`<div class="fki-card fki-scenario"><div><div class="fki-scenario-title">3) Klientský scénář</div><div class="fki-kpis"><div class="fki-kpi"><small>Nová investice za ${fkiHorizon} let</small><b id="fkiScenarioNew">${czk(calc.projectedNew)}</b></div><div class="fki-kpi"><small>Celkem portfolio</small><b id="fkiScenarioTotal">${czk(calc.totalFuture)}</b></div><div class="fki-kpi"><small>Modelová renta dnes</small><b id="fkiScenarioRentNow">${czk(calc.rentNow)}</b></div><div class="fki-kpi"><small>Modelová renta za ${fkiHorizon} let</small><b id="fkiScenarioRentFuture" class="green">${czk(calc.rentFuture)}</b></div></div><p id="fkiScenarioText" class="fki-muted" style="font-size:14px">${esc(fkiScenarioText())}</p></div><div><div class="fki-actions"><button class="btn btn-gray btn-sm" onclick="fkiCopyScenario()">Kopírovat shrnutí</button><button class="btn btn-gray btn-sm" onclick="fkiExportClientHtml()">🌐 HTML pro klienta</button><button class="btn btn-gray btn-sm" onclick="fkiPrintClientPdf()">📄 PDF / tisk</button><button class="btn btn-blue btn-sm" onclick="fkiSaveScenario()">Uložit scénář do CRM</button></div><div class="fki-pending-banner"><span class="fki-pending-dot"></span><div><b>Uložení scénáře nevytváří potvrzený obchod.</b><br>U klienta vznikne čekající/plánovaný nákup. Po reálné realizaci ho potvrdíš výpisem nebo následnou kontrolou.</div></div></div></div>`;
   const pendingHtml=calc.current.pending&&calc.current.pending.length?`<div class="fki-pending-banner"><span class="fki-pending-dot"></span><div><b>Klient má čekající nákupy.</b><br>Jsou barevně oddělené a započtené jako plán. Po reálném provedení je bude potřeba potvrdit/importovat skutečný výpis.</div></div>`:'';
   el.innerHTML=`
   <div class="fki-tabs"><button class="fki-tab ${fkiMode==='new'?'active':''}" onclick="fkiSetMode('new')">Nový klient</button><button class="fki-tab ${fkiMode==='existing'?'active':''}" onclick="fkiSetMode('existing')">Stávající klient</button></div>
