@@ -242,6 +242,7 @@ body{font-family:'Inter',sans-serif;background:#f1f5f9;color:#1e293b;font-size:1
 .fund-row.head{background:#f8fafc;color:#64748b;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.4px}
 .fund-row strong{font-size:12px}
 .company-section{margin:16px 0 10px;background:#eef4ff;border:1px solid #dbeafe;border-radius:10px;padding:10px 14px;font-weight:800;color:#1d4ed8;display:flex;justify-content:space-between;align-items:center}.company-section small{color:#64748b;font-weight:600}
+.company-section .company-main{display:flex;align-items:center;gap:10px;min-width:0}.company-section .company-title{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.company-section .company-stats{display:flex;align-items:center;gap:28px;margin-left:auto}.company-section .company-stat{text-align:right;min-width:112px}.company-section .company-stat-l{font-size:9px;color:#94a3b8;text-transform:uppercase;letter-spacing:.45px;font-weight:900;line-height:1.1}.company-section .company-stat-v{font-size:13px;color:#1e293b;font-weight:950;font-variant-numeric:tabular-nums;margin-top:2px}.company-section .company-stat-v.up{color:#16a34a}.company-section .company-stat-v.dn{color:#dc2626}.company-section .company-count{font-size:11px;color:#64748b;font-weight:800;white-space:nowrap;margin-left:8px}@media(max-width:900px){.company-section{align-items:flex-start;gap:8px;flex-direction:column}.company-section .company-stats{margin-left:0;gap:14px;flex-wrap:wrap}.company-section .company-stat{min-width:92px;text-align:left}}
 .calc-badge{display:inline-flex;align-items:center;gap:4px;border-radius:20px;background:#dcfce7;color:#15803d;padding:2px 7px;font-size:10px;font-weight:700}
 .manual-badge{display:inline-flex;align-items:center;gap:4px;border-radius:20px;background:#fef3c7;color:#b45309;padding:2px 7px;font-size:10px;font-weight:700}
 .tx-return{font-size:11px;font-weight:800;margin-top:3px}
@@ -313,7 +314,7 @@ body{font-family:'Inter',sans-serif;background:#f1f5f9;color:#1e293b;font-size:1
     <div class="hdr-icon">FS</div>
     <div>
       <div class="hdr-title">Investment CRM</div>
-      <div class="hdr-sub">Solár Filip · FairLife · v54</div>
+      <div class="hdr-sub">Solár Filip · FairLife · v56</div>
     </div>
   </div>
   <div class="hdr-btns">
@@ -489,7 +490,7 @@ body{font-family:'Inter',sans-serif;background:#f1f5f9;color:#1e293b;font-size:1
 <div class="toast" id="toast"></div>
 
 <script>
-const APP_VERSION='v54';
+const APP_VERSION='v56';
 const APP_BUILD='2026-07-06';
 const APP_SCHEMA_VERSION=54;
 let fkiMode='new';
@@ -855,9 +856,34 @@ function parseDobValue(v){
 function nameSignature(name){
   return normKey(name).replace(/\b(ing|mgr|bc|mudr|phdr|ml|st)\b/g,'').split(' ').filter(Boolean).sort().join(' ');
 }
-function getClientId(r){ return String(r?.['ClientID']||r?.['ID klienta']||'').trim(); }
+function getClientId(r){ return String(r?.['ClientID']||r?.['ID klienta']||r?.['ID']||'').trim(); }
 function getClientDob(r){ return parseDobValue(r?.['Datum narození']||r?.['Datum narozeni']||r?.['DOB']); }
-function getClientRC(r){ return normalizeRC(r?.['RČ']||r?.['RC']||r?.['Rodné číslo']||r?.['Rodne cislo']); }
+function normalizeRcCandidate(v){
+  if(v==null) return '';
+  let s=String(v).trim();
+  // JSON/CSV občas uloží rodné číslo jako číslo nebo ve vědeckém zápisu.
+  // Převod na celé číslo zabrání tomu, aby 7562090954 a 7.562090954e+9 skončily jako dva klienti.
+  if(/^[-+]?\d+(?:[\.,]\d+)?e[-+]?\d+$/i.test(s) || (typeof v==='number' && Number.isFinite(v))){
+    const num=Number(String(s).replace(',','.'));
+    if(Number.isFinite(num)) s=Math.round(num).toString();
+  }
+  return normalizeRC(s);
+}
+function getClientRC(r){
+  const direct = normalizeRcCandidate(
+    r?.['RČ'] || r?.['RC'] || r?.['Rodné číslo'] || r?.['Rodne cislo'] ||
+    r?.['Rodné číslo / interní ID'] || r?.['Rodne cislo / interni ID'] ||
+    r?.['Interní ID'] || r?.['Interni ID'] || r?.['Klientské ID'] || r?.['Klientske ID']
+  );
+  if(direct) return direct;
+  const cid=String(r?.['ClientID']||r?.['ID klienta']||'').trim();
+  const m=cid.match(/^RC[_-]?(.+)$/i);
+  if(m) return normalizeRcCandidate(m[1]);
+  // Když někdo omylem zadá RČ přímo jako interní ClientID, bereme ho jako silnou identitu.
+  const cidNorm=normalizeRcCandidate(cid);
+  if(/^\d{6,12}$/.test(cidNorm)) return cidNorm;
+  return '';
+}
 function clientIdentityKey(r){
   // Primární identita klienta musí být rodné číslo / interní ID.
   // Starší verze dávaly přednost ClientID, takže se klient se stejným RČ mohl zobrazit dvakrát,
@@ -873,6 +899,7 @@ function nextClientId(){
   return 'CL'+String(max+1).padStart(6,'0');
 }
 function ensureClientIds(){
+  normalizeClientIdentityFields();
   const byKey={};
   recs.forEach(r=>{
     const k=clientIdentityKey(r);
@@ -884,6 +911,20 @@ function ensureClientIds(){
   });
   repairWithdrawalClientIds();
   unifyClientsByStrongIdentity();
+  normalizeClientIdentityFields();
+}
+
+function normalizeClientIdentityFields(){
+  // sjednotí názvy polí z různých verzí/importů a propíše RČ i do ClientID
+  (recs||[]).forEach(r=>{
+    const rc=getClientRC(r);
+    if(rc){
+      r['RČ']=rc;
+      r['ClientID']='RC_'+rc;
+    }
+    const dob=getClientDob(r);
+    if(dob) r['Datum narození']=dob;
+  });
 }
 
 function unifyClientsByStrongIdentity(){
@@ -1530,7 +1571,11 @@ function showClient(name){
   const fcards=[...new Set(fundCards.map(x=>x.comp||'Nezařazeno'))].map(comp=>{
     const cards=fundCards.filter(x=>(x.comp||'Nezařazeno')===comp);
     const products=[...new Set(cards.map(x=>x.product||'FKI'))];
-    return `<div class="company-section"><span>🏢 ${esc(comp)}</span><small>${cards.length} fond${cards.length===1?'':cards.length<5?'y':'ů'}</small></div>` + products.map(prod=>{
+    const companyInvested=cards.reduce((sum,x)=>sum+(Number(x.summary?.invested)||0),0);
+    const companyCurrent=cards.reduce((sum,x)=>sum+(Number(x.summary?.current)||0),0);
+    const companyGain=companyCurrent-companyInvested;
+    const companyPct=companyInvested?companyGain/companyInvested*100:0;
+    return `<div class="company-section"><div class="company-main"><span>🏢</span><span class="company-title">${esc(comp)}</span></div><div class="company-stats"><div class="company-stat"><div class="company-stat-l">Vloženo</div><div class="company-stat-v">${czk(companyInvested)}</div></div><div class="company-stat"><div class="company-stat-l">Aktuální</div><div class="company-stat-v ${companyGain>=0?'up':'dn'}">${czk(companyCurrent)}</div></div><div class="company-stat"><div class="company-stat-l">Výnos</div><div class="company-stat-v ${companyPct>=0?'up':'dn'}">${pct(companyPct)}</div></div><span class="company-count">${cards.length} fond${cards.length===1?'':cards.length<5?'y':'ů'}</span></div></div>` + products.map(prod=>{
       const pcards=cards.filter(x=>(x.product||'FKI')===prod);
       return `<div class="product-line"><span>${esc(prod)}</span><small>${pcards.length} fond${pcards.length===1?'':pcards.length<5?'y':'ů'}</small></div>` + pcards.map(x=>x.card).join('');
     }).join('');
