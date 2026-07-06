@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Investment CRM v54 — Solár Filip</title>
+<title>Investment CRM v59 — Solár Filip</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
@@ -277,6 +277,21 @@ body{font-family:'Inter',sans-serif;background:#f1f5f9;color:#1e293b;font-size:1
 .trail-tools{display:grid;grid-template-columns:170px 160px 1fr auto;gap:10px;align-items:end;margin:10px 0 14px}
 .trail-note{background:#fff7ed;border:1px solid #fed7aa;color:#9a3412;border-radius:14px;padding:10px 12px;font-size:12px;line-height:1.5;margin:10px 0 14px}
 .trail-section-title{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;margin:18px 0 8px}.trail-section-title h4{font-size:14px;font-weight:900;color:#0b3558;margin:0}.trail-section-title small{color:#94a3b8;font-size:11px}.trail-company{border:1px solid #dbeafe;border-radius:18px;overflow:hidden;margin:12px 0;background:rgba(255,255,255,.86);box-shadow:0 12px 30px rgba(15,23,42,.035)}.trail-company-head{display:flex;justify-content:space-between;gap:12px;align-items:center;padding:11px 14px;background:linear-gradient(135deg,rgba(239,246,255,.88),rgba(236,254,255,.55));border-bottom:1px solid #dbeafe}.trail-company-head strong{font-size:14px;color:#0b3558}.trail-company-head span{font-size:11px;color:#64748b}.trail-rule-row{display:grid;grid-template-columns:42px minmax(190px,1.4fr) 130px 110px 115px 110px 80px minmax(170px,1fr);gap:10px;align-items:center;padding:8px 12px;border-bottom:1px solid #edf2f7;font-size:12px}.trail-rule-row:nth-child(even){background:rgba(239,246,255,.34)}.trail-rule-row.head{background:#f8fafc;color:#64748b;font-size:9px;font-weight:900;text-transform:uppercase;letter-spacing:.45px}.trail-rule-row.total{background:#e6f7fb;font-weight:900}.trail-rule-row.zero{opacity:.55}.trail-rule-row input[type=checkbox]{width:16px;height:16px;accent-color:#0b3558}.trail-bj-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px;margin:12px 0}.trail-bj-card{background:linear-gradient(145deg,rgba(255,255,255,.92),rgba(248,250,252,.72));border:1px solid #e2e8f0;border-radius:16px;padding:13px 15px;box-shadow:0 10px 28px rgba(15,23,42,.04)}.trail-bj-card small{display:block;font-size:10px;color:#94a3b8;text-transform:uppercase;letter-spacing:.5px;font-weight:900}.trail-bj-card b{display:block;margin-top:5px;font-size:19px;color:#0b3558}.trail-bj-card b.green{color:#16a34a}.trail-bj-card b.blue{color:#2563eb}.trail-follow-table{border:1px solid #e2e8f0;border-radius:16px;overflow:hidden;background:#fff;margin-top:10px}.trail-follow-row{display:grid;grid-template-columns:minmax(230px,1.5fr) 105px 130px 115px 115px 125px 125px;gap:10px;align-items:center;padding:9px 12px;border-bottom:1px solid #edf2f7;font-size:12px}.trail-follow-row.head{background:#f8fafc;color:#64748b;font-size:9px;font-weight:900;text-transform:uppercase;letter-spacing:.45px}.trail-follow-row.total{background:#eef6ff;font-weight:900}.trail-follow-row.zero{opacity:.55}
+.trail-calc-card{background:linear-gradient(145deg,rgba(255,255,255,.92),rgba(248,250,252,.68));border:1px solid #dbe3ed;border-radius:18px;padding:14px;margin:14px 0 18px;box-shadow:0 14px 36px rgba(15,23,42,.055),inset 0 1px 0 rgba(255,255,255,.88)}
+.trail-calc-card .trail-section-title{margin-top:0}
+.trail-hidden-control{display:flex;align-items:end;gap:8px}
+.trail-hidden-control label{display:flex;align-items:center;gap:8px;font-size:12px;font-weight:800;color:#0b3558;background:#fff;border:1px solid #dbe3ed;border-radius:12px;padding:10px 12px;min-height:42px}
+.trail-rule-row.hidden-row{display:none}
+.trail-rule-row.is-hidden-visible{opacity:.42;background:#f8fafc}
+.trail-rule-row .hide-cell{display:flex;gap:8px;align-items:center}
+.trail-input:focus{outline:2px solid rgba(77,177,200,.35);border-color:#4DB1C8;box-shadow:0 0 0 5px rgba(77,177,200,.12)}
+.client-fund-info{margin-top:12px;padding:14px 16px;border:1px solid #dbe3ed;background:#f8fbff;border-radius:16px;color:#334155}
+.client-fund-info h4{margin:0 0 8px;color:#0b3558;font-size:14px}
+.client-fund-info ul{margin:0;padding-left:18px;display:grid;gap:5px}
+.client-fund-info li{font-size:12px;line-height:1.45;color:#475569}
+.client-fund-info .info-meta{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px}
+.client-fund-info .info-meta span{display:inline-flex;border:1px solid #dbe3ed;border-radius:999px;background:white;color:#0b3558;font-weight:800;font-size:11px;padding:4px 8px}
+
 @media(max-width:1180px){.trail-tools{grid-template-columns:1fr 1fr}.trail-rule-row,.trail-follow-row{grid-template-columns:1fr;gap:5px}.trail-rule-row.head,.trail-follow-row.head{display:none}.trail-num{text-align:left}.trail-input{text-align:left}}
 
 /* FKI PURCHASE MODAL */
@@ -333,7 +348,7 @@ body{font-family:'Inter',sans-serif;background:#f1f5f9;color:#1e293b;font-size:1
     <div class="hdr-icon">FS</div>
     <div>
       <div class="hdr-title">Investment CRM</div>
-      <div class="hdr-sub">Solár Filip · FairLife · v58</div>
+      <div class="hdr-sub">Solár Filip · FairLife · v59</div>
     </div>
   </div>
   <div class="hdr-btns">
@@ -420,23 +435,30 @@ body{font-family:'Inter',sans-serif;background:#f1f5f9;color:#1e293b;font-size:1
 
 <!-- TRAIL COMMISSIONS PANEL -->
 <div class="trail-panel" id="trail">
-  <h3>Následné provize z FKI <button class="btn btn-gray btn-sm" onclick="togglePanel('trail')">✕ Zavřít</button></h3>
+  <h3>Provizní kalkulačky FKI <button class="btn btn-gray btn-sm" onclick="togglePanel('trail')">✕ Zavřít</button></h3>
   <div class="import-info" style="margin-bottom:12px">
-    Přehled počítá pouze FKI fondy z aktuální databáze CRM. Retail / OPF, DIP, DPS a jiné nefondové produkty se do výpočtu nezapočítávají. Následky jsou modelované podle vzoru kalkulačky FKI provizí: <strong>AUM × sazba / 250 × koeficient</strong>. Výplata je orientačně nastavena s měsíčním odstupem po kvartálu.
+    Rozděleno na dvě části: <strong>vstupní kalkulačka</strong> pro nové nákupy / bonifikace / BJ a <strong>následná kalkulačka</strong> pro následné provize z aktuálního FKI AUM. Retail / OPF, DIP, DPS a jiné nefondové produkty se do výpočtu nezapočítávají.
   </div>
   <div class="trail-tools">
     <div class="fg"><label>Období / hodnota ke dni</label><input id="trailPeriodEnd" type="date" onchange="renderTrailPanel()"></div>
     <div class="fg"><label>Koeficient</label><input id="trailCoef" type="number" step="any" value="60" onchange="saveTrailSettings();renderTrailPanel()"></div>
     <div class="fg"><label>Filtr fondu</label><input id="trailSearch" placeholder="Hledat fond / Avant / Codya" oninput="renderTrailPanel()"></div>
+    <div class="trail-hidden-control"><label><input id="trailShowHidden" type="checkbox" onchange="renderTrailPanel()"> Zobrazit skryté</label></div>
     <button class="btn btn-gray" onclick="exportTrailCSV()">⬇ Export CSV</button>
   </div>
   <div class="trail-note">Příklad: hodnota ke dni 31. 3. 2026 → orientační výplata následků cca 10. 5. 2026. Datum lze upravit podle skutečného výpisu od Avant/Codya.</div>
   <div id="trailKpis" class="trail-kpis"></div>
-  <div id="trailBjSummary" class="trail-bj-grid"></div>
-  <div class="trail-section-title"><div><h4>Získatelská provize a BJ podle investiční společnosti</h4><small>Struktura podle aktuální provizní kalkulačky. AUM se doplňuje z CRM, případně lze ručně upravit.</small></div></div>
-  <div id="trailContent"></div>
-  <div class="trail-section-title"><div><h4>Následné provize</h4><small>Roční a kvartální následky z FKI AUM. Výplata typicky s měsíčním odstupem po kvartálu.</small></div></div>
-  <div id="trailFollowContent" class="trail-follow-table"></div>
+
+  <div class="trail-calc-card">
+    <div class="trail-section-title"><div><h4>1) Vstupní kalkulačka / získatelka / BJ</h4><small>Počítá vstupní provizi, vstupní bonus a body. AUM se načítá z CRM nebo ho můžeš přepsat ručně. Vstupní provize je 0–3 %.</small></div></div>
+    <div id="trailBjSummary" class="trail-bj-grid"></div>
+    <div id="trailContent"></div>
+  </div>
+
+  <div class="trail-calc-card">
+    <div class="trail-section-title"><div><h4>2) Následná kalkulačka</h4><small>Roční a kvartální následky z aktuálního FKI AUM. Sazby můžeš upravovat přímo u fondu podle aktuálních podmínek.</small></div></div>
+    <div id="trailFollowContent" class="trail-follow-table"></div>
+  </div>
 </div>
 
 <!-- DATABASE SERVICE PANEL -->
@@ -1631,6 +1653,7 @@ function showClient(name){
       </div>
       <div class="det-actions">
         <button class="btn btn-gray btn-sm" onclick="exportClientHTML('${esc(name)}')">🌐 HTML pro klienta</button>
+        <button class="btn btn-gray btn-sm" onclick="exportClientHTML('${esc(name)}',true)">🧾 PDF / tisk</button>
         <button class="btn btn-green btn-sm" onclick="openFkiPurchaseCalc('${esc(displayName)}')">🧮 Nákup FKI</button>
         <button class="btn btn-gray btn-sm" onclick="exportJSON('${esc(name)}')">⬇ JSON</button>
         <button class="btn btn-gray btn-sm" onclick="editClientPrompt('${esc(name)}')">👤 Upravit klienta</button>
@@ -1816,6 +1839,7 @@ function renderTrailPanel(){
   const coef=n(document.getElementById('trailCoef')?.value||60);
   const q=document.getElementById('trailSearch')?.value||'';
   const search=normKey(q);
+  const showHidden=!!document.getElementById('trailShowHidden')?.checked;
   const crmRows=trailAumByFund();
   const visibleRules=FKI_COMMISSION_RULES.filter(r=>!search || normKey(r.fund+' '+r.company).includes(search));
   let bjTotal=0, initTotal=0, feeTotal=0, bonusTotal=0, aumInitTotal=0, followAnnualTotal=0, followQuarterTotal=0, followAumTotal=0;
@@ -1831,8 +1855,8 @@ function renderTrailPanel(){
       const entryPct=Math.max(0,Math.min(3,n(st.entryPct)));
       const c=calcInitialCommission(aum,entryPct,rule.bonusMode,coef);
       if(!hidden){ gAum+=aum; gFee+=c.fee; gBonus+=c.bonus; gTotal+=c.total; gPoints+=c.points; if(aum>0) active++; }
-      const rowCls=(aum<=0?' zero':'')+(hidden?' zero':'');
-      return `<div class="trail-rule-row${rowCls}"><div style="display:flex;gap:8px;align-items:center"><input type="checkbox" ${hidden?'checked':''} onchange="updateTrailRule('${esc(rule.company)}','${esc(rule.fund)}','hidden',this.checked?1:0)"><span>${esc(rule.label)}</span></div><div><strong>${esc(rule.fund)}</strong></div><div><input class="trail-input" value="${esc(fkiFmtMoneyInput(aum))}" oninput="updateTrailRule('${esc(rule.company)}','${esc(rule.fund)}','manualAum',fkiParseMoney(this.value))" onblur="this.value=fkiFmtMoneyInput(fkiParseMoney(this.value));renderTrailPanel()"></div><div class="trail-num">${czk(c.fee)}</div><div class="trail-num">${c.bonus?czk(c.bonus):'—'}</div><div class="trail-num green">${c.total?czk(c.total):'—'}</div><div class="trail-num">${c.points?Math.round(c.points).toLocaleString('cs-CZ'):'—'}</div><div style="font-size:11px;color:#94a3b8">${esc(rule.note||'')}</div></div>`;
+      const rowCls=(aum<=0?' zero':'')+(hidden?(showHidden?' is-hidden-visible':' hidden-row'):'');
+      return `<div class="trail-rule-row${rowCls}"><div class="hide-cell"><input type="checkbox" ${hidden?'checked':''} onchange="updateTrailRule('${esc(rule.company)}','${esc(rule.fund)}','hidden',this.checked?1:0)"><span>${esc(rule.label)}</span></div><div><strong>${esc(rule.fund)}</strong></div><div><input class="trail-input" value="${esc(fkiFmtMoneyInput(aum))}" onfocus="this.value=this.dataset.raw||fkiParseMoney(this.value);this.select()" data-raw="${esc(aum)}" oninput="updateTrailRuleNoRender('${esc(rule.company)}','${esc(rule.fund)}','manualAum',fkiParseMoney(this.value))" onblur="this.value=fkiFmtMoneyInput(fkiParseMoney(this.value));renderTrailPanel()"></div><div class="trail-num">${czk(c.fee)}</div><div class="trail-num">${c.bonus?czk(c.bonus):'—'}</div><div class="trail-num green">${c.total?czk(c.total):'—'}</div><div class="trail-num">${c.points?Math.round(c.points).toLocaleString('cs-CZ'):'—'}</div><div style="font-size:11px;color:#94a3b8">${esc(rule.note||'')}</div></div>`;
     }).join('');
     bjTotal+=gPoints; initTotal+=gTotal; feeTotal+=gFee; bonusTotal+=gBonus; aumInitTotal+=gAum;
     const color=(rules[0]&&rules[0].color)||'#0b3558';
@@ -1844,7 +1868,7 @@ function renderTrailPanel(){
     const annual=r.aum*(trailPct/100)/250*coef;
     const quarter=annual/4;
     followAumTotal+=r.aum; followAnnualTotal+=annual; followQuarterTotal+=quarter;
-    return `<div class="trail-follow-row ${r.aum<=0?'zero':''}"><div class="trail-name"><strong>${esc(r.name)}</strong><small>${esc(r.company)} · ${r.clients} klientů · ${r.tx} transakcí</small></div><div class="trail-num">${r.clients}</div><div class="trail-num">${czk(r.aum)}</div><div><input class="trail-input" value="${trailPct.toFixed(2).replace('.',',')}" oninput="updateTrailSetting('${esc(r.key)}','trailPct',this.value)"></div><div class="trail-num green">${czk(annual)}</div><div class="trail-num blue">${czk(quarter)}</div><div class="trail-num">${esc(trailPayoutDate(document.getElementById('trailPeriodEnd')?.value||''))}</div></div>`;
+    return `<div class="trail-follow-row ${r.aum<=0?'zero':''}"><div class="trail-name"><strong>${esc(r.name)}</strong><small>${esc(r.company)} · ${r.clients} klientů · ${r.tx} transakcí</small></div><div class="trail-num">${r.clients}</div><div class="trail-num">${czk(r.aum)}</div><div><input class="trail-input" value="${trailPct.toFixed(2).replace('.',',')}" onfocus="this.select()" oninput="updateTrailSettingNoRender('${esc(r.key)}','trailPct',this.value)" onblur="renderTrailPanel()"></div><div class="trail-num green">${czk(annual)}</div><div class="trail-num blue">${czk(quarter)}</div><div class="trail-num">${esc(trailPayoutDate(document.getElementById('trailPeriodEnd')?.value||''))}</div></div>`;
   }).join('');
   const period=document.getElementById('trailPeriodEnd')?.value||'';
   const kpis=document.getElementById('trailKpis'); if(kpis) kpis.innerHTML=`<div class="trail-kpi"><div class="trail-kpi-l">FKI AUM z CRM</div><div class="trail-kpi-v blue">${czk(followAumTotal)}</div></div><div class="trail-kpi"><div class="trail-kpi-l">Získatelská provize</div><div class="trail-kpi-v green">${czk(initTotal)}</div></div><div class="trail-kpi"><div class="trail-kpi-l">BJ / body</div><div class="trail-kpi-v blue">${Math.round(bjTotal).toLocaleString('cs-CZ')}</div></div><div class="trail-kpi"><div class="trail-kpi-l">Následky ročně</div><div class="trail-kpi-v green">${czk(followAnnualTotal)}</div></div><div class="trail-kpi"><div class="trail-kpi-l">Následky kvartálně</div><div class="trail-kpi-v green">${czk(followQuarterTotal)}</div></div><div class="trail-kpi"><div class="trail-kpi-l">Očekávaná výplata</div><div class="trail-kpi-v">${esc(trailPayoutDate(period))}</div></div>`;
@@ -1854,7 +1878,9 @@ function renderTrailPanel(){
   saveTrailSettings();
 }
 function updateTrailRule(company,fund,field,value){ const rule=FKI_COMMISSION_RULES.find(r=>r.company===company && r.fund===fund); if(!rule) return; const st=ruleSettingFor(rule); if(field==='manualAum') st.manualAum=Math.max(0,n(value)); else if(field==='hidden') st.hidden=!!n(value); else st[field]=value; saveTrailSettings(); clearTimeout(window.__trailTimer); window.__trailTimer=setTimeout(renderTrailPanel,120); }
+function updateTrailRuleNoRender(company,fund,field,value){ const rule=FKI_COMMISSION_RULES.find(r=>r.company===company && r.fund===fund); if(!rule) return; const st=ruleSettingFor(rule); if(field==='manualAum') st.manualAum=Math.max(0,n(value)); else if(field==='hidden') st.hidden=!!n(value); else st[field]=value; saveTrailSettings(); }
 function updateTrailSetting(key,field,value){ if(!trailSettings[key]) trailSettings[key]={}; let v=n(value); if(field==='entryPct') v=Math.max(0,Math.min(3,v)); if(field==='trailPct') v=Math.max(0,v); trailSettings[key][field]=v; saveTrailSettings(); clearTimeout(window.__trailTimer); window.__trailTimer=setTimeout(renderTrailPanel,250); }
+function updateTrailSettingNoRender(key,field,value){ if(!trailSettings[key]) trailSettings[key]={}; let v=n(value); if(field==='entryPct') v=Math.max(0,Math.min(3,v)); if(field==='trailPct') v=Math.max(0,v); trailSettings[key][field]=v; saveTrailSettings(); }
 function exportTrailCSV(){
   const coef=n(document.getElementById('trailCoef')?.value||60), period=document.getElementById('trailPeriodEnd')?.value||'';
   const crmRows=trailAumByFund();
@@ -2333,7 +2359,7 @@ function restoreBackupJSON(e){
   reader.readAsText(file,'UTF-8');
 }
 
-function exportClientHTML(name){
+function exportClientHTML(name, autoPrint=false){
   const cl=findClientRef(name); if(!cl) return;
   const displayName = cl.name || clientDisplayNameFromRecords(cl.recs) || String(name).replace(/^cid:/,'');
   const m=cl.metrics;
@@ -2435,7 +2461,7 @@ function exportClientHTML(name){
         <div><small>Průměrný roční výnos</small><b class="${f.ann>=0?'up':'dn'}">${isNaN(f.ann)?'—':pct(f.ann)+' p.a.'}</b></div>
         <div><small>Časový test</small><b>${f.taxInfo?.eligible?'splněno':(f.taxInfo?.label||'—')}</b></div>
       </div>
-      ${f.locked?'<div class="locked-note">Tento fond je v reportu vedený samostatně jako uzamčený. Zůstává v portfoliu a jeho reálné zhodnocení je níže uvedené, ale nepočítá se do horních souhrnných metrik klienta.</div>':''}<table class="mini"><thead><tr><th>Transakce</th><th>Datum</th><th>Investice</th><th>Počet CP</th><th>Hodnota CP</th><th>Aktuální hodnota</th><th>Zhodnocení</th></tr></thead><tbody>
+      ${f.locked?'<div class="locked-note">Tento fond je v reportu vedený samostatně jako uzamčený. Zůstává v portfoliu a jeho reálné zhodnocení je níže uvedené, ale nepočítá se do horních souhrnných metrik klienta.</div>':''}${fkiPresentationInfoHTML(f.name)}<table class="mini"><thead><tr><th>Transakce</th><th>Datum</th><th>Investice</th><th>Počet CP</th><th>Hodnota CP</th><th>Aktuální hodnota</th><th>Zhodnocení</th></tr></thead><tbody>
         ${f.items.slice().sort((a,b)=>(pD(a['Datum emise'])||pD(a['Datum připsání platby'])||0)-(pD(b['Datum emise'])||pD(b['Datum připsání platby'])||0)).map((r,i)=>{ const dep=depositVal(r); const cv=curVal(r); const txPct=dep>0?((cv-dep)/dep*100):null; return `<tr><td>${esc(r['Typ transakce']||'Platba')} ${isWithdrawal(r)?'':'#'+(i+1)}</td><td>${dt(r['Datum emise']||r['Datum připsání platby'])}</td><td>${czk(dep)}</td><td>${effectiveQty(r)?Number(effectiveQty(r)).toLocaleString('cs-CZ',{maximumFractionDigits:4}):'—'}</td><td>${currentNav(r)?Number(currentNav(r)).toLocaleString('cs-CZ',{maximumFractionDigits:4}):'—'}</td><td>${czk(cv)}</td><td class="${txPct==null?'':(txPct>=0?'up':'dn')}">${txPct==null?'—':pct(txPct)}</td></tr>` }).join('')}
       </tbody></table>
     </section>`).join('');
@@ -2463,7 +2489,7 @@ function exportClientHTML(name){
     <section class="section"><div class="section-head"><div><span>Detail</span><h2>Detail jednotlivých fondů</h2></div></div>${fundCards}</section>
     <section class="section"><div class="section-head"><div><span>Důležité upozornění</span><h2>Informativní charakter reportu</h2></div></div><div class="notice"><p>Tento report byl vytvořen pro informativní účely na základě údajů dostupných ke dni jeho vygenerování. Nejedná se o investiční doporučení, investiční poradenství ani nabídku k nákupu či prodeji investičních nástrojů.</p><p>Historická výkonnost není zárukou budoucích výnosů. Hodnota investice může kolísat a investor může získat zpět méně, než původně investoval.</p><p>Výpočty vycházejí z údajů evidovaných v interním systému a mohou se lišit od oficiálních údajů jednotlivých investičních společností. Rozhodující jsou vždy oficiální výpisy, statuty, sdělení klíčových informací a další dokumentace příslušného fondu nebo investiční společnosti.</p><p>Modelová renta je pouze orientační výpočet. Pro výpočet je použita modelová výnosová sazba odvozená z fondů v kladném výnosu; pokud žádný kladně výkonný fond není dostupný, použije se orientační předpoklad 7 % p.a. Výpočet předpokládá, že klient čerpá pouze roční výnos, nikoli jistinu. Skutečná výše budoucí renty se může výrazně lišit podle vývoje fondů, poplatků, daní, odkupních podmínek a hodnoty podílových listů nebo investičních akcií v době výběru.</p><p>Údaje uvedené v reportu jsou určeny výhradně pro klienta, kterému byl report vystaven. Osobní údaje jsou zpracovávány v souladu s platnými právními předpisy, zejména s Nařízením Evropského parlamentu a Rady (EU) 2016/679 (GDPR), a slouží pouze pro účely evidence, kontroly a servisu klientského portfolia.</p></div></section>
     <div class="contact"><h2>Filip Solár</h2><p>Finanční trenér · Fair-Life</p><p>www.filipsolar.cz</p></div>
-  </div></body></html>`;
+  </div>${autoPrint?'<script>setTimeout(()=>window.print(),600)<\/script>':''}</body></html>`;
   const a=document.createElement('a');
   a.href=URL.createObjectURL(new Blob([html],{type:'text/html;charset=utf-8'}));
   a.download=`report-${displayName.replace(/[^a-zA-Z0-9á-žÁ-Ž]+/g,'_')}.html`;
