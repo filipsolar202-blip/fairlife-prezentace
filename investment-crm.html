@@ -276,7 +276,8 @@ body{font-family:'Inter',sans-serif;background:#f1f5f9;color:#1e293b;font-size:1
 .trail-name strong{display:block;font-size:13px;color:#1e293b}.trail-name small{display:block;font-size:10px;color:#94a3b8;margin-top:2px}.trail-num{text-align:right;font-variant-numeric:tabular-nums;font-weight:800;white-space:nowrap}.trail-input{width:100%;border:1px solid #dbe3ed;border-radius:10px;padding:8px 9px;font-family:inherit;font-size:12px;background:#fff;text-align:right}.trail-input:focus{outline:none;border-color:#4DB1C8;box-shadow:0 0 0 4px rgba(77,177,200,.16)}
 .trail-tools{display:grid;grid-template-columns:170px 160px 1fr auto;gap:10px;align-items:end;margin:10px 0 14px}
 .trail-note{background:#fff7ed;border:1px solid #fed7aa;color:#9a3412;border-radius:14px;padding:10px 12px;font-size:12px;line-height:1.5;margin:10px 0 14px}
-@media(max-width:1050px){.trail-tools{grid-template-columns:1fr 1fr}.trail-row{grid-template-columns:1fr;gap:5px}.trail-row.head{display:none}.trail-num{text-align:left}.trail-input{text-align:left}}
+.trail-section-title{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;margin:18px 0 8px}.trail-section-title h4{font-size:14px;font-weight:900;color:#0b3558;margin:0}.trail-section-title small{color:#94a3b8;font-size:11px}.trail-company{border:1px solid #dbeafe;border-radius:18px;overflow:hidden;margin:12px 0;background:rgba(255,255,255,.86);box-shadow:0 12px 30px rgba(15,23,42,.035)}.trail-company-head{display:flex;justify-content:space-between;gap:12px;align-items:center;padding:11px 14px;background:linear-gradient(135deg,rgba(239,246,255,.88),rgba(236,254,255,.55));border-bottom:1px solid #dbeafe}.trail-company-head strong{font-size:14px;color:#0b3558}.trail-company-head span{font-size:11px;color:#64748b}.trail-rule-row{display:grid;grid-template-columns:42px minmax(190px,1.4fr) 130px 110px 115px 110px 80px minmax(170px,1fr);gap:10px;align-items:center;padding:8px 12px;border-bottom:1px solid #edf2f7;font-size:12px}.trail-rule-row:nth-child(even){background:rgba(239,246,255,.34)}.trail-rule-row.head{background:#f8fafc;color:#64748b;font-size:9px;font-weight:900;text-transform:uppercase;letter-spacing:.45px}.trail-rule-row.total{background:#e6f7fb;font-weight:900}.trail-rule-row.zero{opacity:.55}.trail-rule-row input[type=checkbox]{width:16px;height:16px;accent-color:#0b3558}.trail-bj-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px;margin:12px 0}.trail-bj-card{background:linear-gradient(145deg,rgba(255,255,255,.92),rgba(248,250,252,.72));border:1px solid #e2e8f0;border-radius:16px;padding:13px 15px;box-shadow:0 10px 28px rgba(15,23,42,.04)}.trail-bj-card small{display:block;font-size:10px;color:#94a3b8;text-transform:uppercase;letter-spacing:.5px;font-weight:900}.trail-bj-card b{display:block;margin-top:5px;font-size:19px;color:#0b3558}.trail-bj-card b.green{color:#16a34a}.trail-bj-card b.blue{color:#2563eb}.trail-follow-table{border:1px solid #e2e8f0;border-radius:16px;overflow:hidden;background:#fff;margin-top:10px}.trail-follow-row{display:grid;grid-template-columns:minmax(230px,1.5fr) 105px 130px 115px 115px 125px 125px;gap:10px;align-items:center;padding:9px 12px;border-bottom:1px solid #edf2f7;font-size:12px}.trail-follow-row.head{background:#f8fafc;color:#64748b;font-size:9px;font-weight:900;text-transform:uppercase;letter-spacing:.45px}.trail-follow-row.total{background:#eef6ff;font-weight:900}.trail-follow-row.zero{opacity:.55}
+@media(max-width:1180px){.trail-tools{grid-template-columns:1fr 1fr}.trail-rule-row,.trail-follow-row{grid-template-columns:1fr;gap:5px}.trail-rule-row.head,.trail-follow-row.head{display:none}.trail-num{text-align:left}.trail-input{text-align:left}}
 
 /* FKI PURCHASE MODAL */
 
@@ -332,7 +333,7 @@ body{font-family:'Inter',sans-serif;background:#f1f5f9;color:#1e293b;font-size:1
     <div class="hdr-icon">FS</div>
     <div>
       <div class="hdr-title">Investment CRM</div>
-      <div class="hdr-sub">Solár Filip · FairLife · v57</div>
+      <div class="hdr-sub">Solár Filip · FairLife · v58</div>
     </div>
   </div>
   <div class="hdr-btns">
@@ -431,7 +432,11 @@ body{font-family:'Inter',sans-serif;background:#f1f5f9;color:#1e293b;font-size:1
   </div>
   <div class="trail-note">Příklad: hodnota ke dni 31. 3. 2026 → orientační výplata následků cca 10. 5. 2026. Datum lze upravit podle skutečného výpisu od Avant/Codya.</div>
   <div id="trailKpis" class="trail-kpis"></div>
-  <div id="trailContent" class="trail-table"></div>
+  <div id="trailBjSummary" class="trail-bj-grid"></div>
+  <div class="trail-section-title"><div><h4>Získatelská provize a BJ podle investiční společnosti</h4><small>Struktura podle aktuální provizní kalkulačky. AUM se doplňuje z CRM, případně lze ručně upravit.</small></div></div>
+  <div id="trailContent"></div>
+  <div class="trail-section-title"><div><h4>Následné provize</h4><small>Roční a kvartální následky z FKI AUM. Výplata typicky s měsíčním odstupem po kvartálu.</small></div></div>
+  <div id="trailFollowContent" class="trail-follow-table"></div>
 </div>
 
 <!-- DATABASE SERVICE PANEL -->
@@ -527,7 +532,7 @@ body{font-family:'Inter',sans-serif;background:#f1f5f9;color:#1e293b;font-size:1
 <div class="toast" id="toast"></div>
 
 <script>
-const APP_VERSION='v57';
+const APP_VERSION='v58';
 const APP_BUILD='2026-07-06';
 const APP_SCHEMA_VERSION=54;
 let fkiMode='new';
@@ -1716,14 +1721,63 @@ const TRAIL_SETTINGS_KEY='crm3_fki_trail_settings';
 let trailSettings={};
 try{ trailSettings=JSON.parse(localStorage.getItem(TRAIL_SETTINGS_KEY)||'{}')||{}; }catch{ trailSettings={}; }
 const DEFAULT_TRAIL_RATES=[
-  ['csnf',0],['r2p',2.4],['nemomax',0.9],['vihorev',0.9],['aguila',0.9],['domus',0.7],['4gimel',0.75],['realia',1.0],['wero',1.1],['gartal',1.0],['domoplan',0.5],['brixx',0.5],['marianska',0.5],['spilberk',1.0],['avant loan',0.8],['real luxembourg',1.0],['semper',1.0],['ebm',1.0],['fckd',0.6],['fčkd',0.6],['reverzni',1.05],['reverzní',1.05],['pffl',0.6],['julius',1.2],['meinl',1.2],['adax',1.0],['silverline',0.65],['artefin',0.85],['zdr',0.6],['vigo',0.6],['direct',0.8],['esg',0.6],['penta',0.8],['j&t arch',0.8],['jt arch',0.8],['atris',0.8],['edward',1.39]
+  ['csnf',0],['r2p',2.4],['nemomax',0.9],['vihorev',0.9],['aguila',0.9],['domus',0.7],['4gimel',0.75],['realia',1.0],['wero',1.1],['gartal',1.0],['domoplan',0.5],['brixx',0.5],['marianska',0.5],['spilberk',1.0],['avant loan',0.8],['real luxembourg',1.0],['semper',1.0],['ebm',1.0],['jrd eco',0],['fckd',0.6],['fond ceskeho bydleni',0.6],['reverzni',1.05],['pffl',0.6],['julius',1.2],['meinl',1.2],['adax',1.0],['silverline',0.65],['artefin',0.85],['zdr',0.6],['vigo',0.6],['direct',0.8],['esg',0.6],['penta',0.8],['koor',0],['fidurock',0],['j&t arch',0.8],['jt arch',0.8],['nase cesko',0],['world private capital',0],['atris',0.8],['edward',1.39],['wood realitni',0]
+];
+const FKI_COMMISSION_RULES=[
+  {company:'Avant investiční společnost', color:'#0b5c7a', label:'1.', fund:'R2P', aliases:['r2p'], entryPct:0, bonusMode:'none', trailPct:2.4, note:''},
+  {company:'Avant investiční společnost', color:'#0b5c7a', label:'2.', fund:'NEMOMAX', aliases:['nemomax'], entryPct:3, bonusMode:'bt', trailPct:0.9, note:'3% vstupní bonus přes BT'},
+  {company:'Avant investiční společnost', color:'#0b5c7a', label:'3.', fund:'VIHOREV', aliases:['vihorev'], entryPct:3, bonusMode:'bt', trailPct:0.9, note:'3% vstupní bonus přes BT'},
+  {company:'Avant investiční společnost', color:'#0b5c7a', label:'4.', fund:'AGUILA', aliases:['aguila'], entryPct:2, bonusMode:'bt', trailPct:0.9, note:'2% vstupní bonus přes BT'},
+  {company:'Avant investiční společnost', color:'#0b5c7a', label:'5.', fund:'DOMUS', aliases:['domus'], entryPct:2, bonusMode:'cash', trailPct:0.7, note:'výplata mimo BT, 2% vstupní bonus'},
+  {company:'Avant investiční společnost', color:'#0b5c7a', label:'6.', fund:'4GIMEL', aliases:['4gimel'], entryPct:0, bonusMode:'none', trailPct:0.75, note:''},
+  {company:'Avant investiční společnost', color:'#0b5c7a', label:'7.', fund:'REALIA', aliases:['realia podfond retail parks','realia'], entryPct:2, bonusMode:'bt', trailPct:1.0, note:'2% vstupní bonus do 31.12.2025'},
+  {company:'Avant investiční společnost', color:'#0b5c7a', label:'8.', fund:'REALIA EUR', aliases:['realia eur'], entryPct:2, bonusMode:'bt', trailPct:1.1, note:'2% vstupní bonus do 31.12.2025'},
+  {company:'Avant investiční společnost', color:'#0b5c7a', label:'9.', fund:'Domoplán', aliases:['domoplan','domoplán','brixx','marianska','mariánská'], entryPct:3, bonusMode:'bt', trailPct:0.5, note:'3% vstupní bonus přes BT'},
+  {company:'Avant investiční společnost', color:'#0b5c7a', label:'10.', fund:'Gartal', aliases:['gartal'], entryPct:2, bonusMode:'bt', trailPct:1.0, note:'2% vstupní bonus přes BT'},
+  {company:'Avant investiční společnost', color:'#0b5c7a', label:'11.', fund:'WERO', aliases:['wero','vero'], entryPct:2, bonusMode:'cash', trailPct:1.1, note:'výplata mimo BT, 2%'},
+  {company:'Avant investiční společnost', color:'#0b5c7a', label:'12.', fund:'Spilberk', aliases:['spilberk'], entryPct:2, bonusMode:'cash', trailPct:1.0, note:'výplata mimo BT, 2% vstupní bonus'},
+  {company:'Avant investiční společnost', color:'#0b5c7a', label:'13.', fund:'Avant Loan', aliases:['avant loan'], entryPct:2.5, bonusMode:'bt', trailPct:0.8, note:'2,5% vstupní bonus přes BT'},
+  {company:'Avant investiční společnost', color:'#0b5c7a', label:'14.', fund:'Real Luxembourg', aliases:['real luxembourg'], entryPct:3, bonusMode:'bt', trailPct:1.0, note:'3% vstupní bonus přes BT'},
+  {company:'Avant investiční společnost', color:'#0b5c7a', label:'15.', fund:'Semper CZK i EUR', aliases:['semper'], entryPct:0, bonusMode:'none', trailPct:1.0, note:''},
+  {company:'Avant investiční společnost', color:'#0b5c7a', label:'16.', fund:'EBM', aliases:['ebm'], entryPct:2, bonusMode:'bt', trailPct:1.0, note:'2% vstupní bonus přes BT'},
+  {company:'Avant investiční společnost', color:'#0b5c7a', label:'36.', fund:'JRD Eco', aliases:['jrd eco','jrd'], entryPct:2, bonusMode:'bt', trailPct:0, note:'2% vstupní bonus přes BT'},
+  {company:'CODYA investiční společnost', color:'#4DB1C8', label:'17.', fund:'Fond českého bydlení', aliases:['fond ceskeho bydleni','fond českého bydlení','fcb'], entryPct:0, bonusMode:'none', trailPct:0.6, note:''},
+  {company:'CODYA investiční společnost', color:'#4DB1C8', label:'19.', fund:'Reverzní hypo', aliases:['reverzni','reverzní'], entryPct:2, bonusMode:'bt', trailPct:1.05, note:'2% vstupní bonus, výplata přes BT od 1.8.2024'},
+  {company:'CODYA investiční společnost', color:'#4DB1C8', label:'20.', fund:'PFFL', aliases:['pffl'], entryPct:0, bonusMode:'none', trailPct:0.6, note:''},
+  {company:'CODYA investiční společnost', color:'#4DB1C8', label:'21.', fund:'Direct PRO', aliases:['direct pro','direct'], entryPct:0, bonusMode:'none', trailPct:0.8, note:''},
+  {company:'CODYA investiční společnost', color:'#4DB1C8', label:'22.', fund:'Julius Meinl', aliases:['julius','meinl'], entryPct:2, bonusMode:'bt', trailPct:1.2, note:'2% vstupní bonus přes BT'},
+  {company:'CODYA investiční společnost', color:'#4DB1C8', label:'23.', fund:'Adax', aliases:['adax'], entryPct:2, bonusMode:'bt', trailPct:1.0, note:'2% vyplácené v polovině roku 2026'},
+  {company:'CODYA investiční společnost', color:'#4DB1C8', label:'24.', fund:'ESG Senior Care', aliases:['esg senior care','esg'], entryPct:1, bonusMode:'bt', trailPct:0.6, note:'1% bonus přes BT'},
+  {company:'CODYA investiční společnost', color:'#4DB1C8', label:'25.', fund:'Silverline', aliases:['silverline'], entryPct:2, bonusMode:'bt', trailPct:0.65, note:'2% do konce roku 2024'},
+  {company:'CODYA investiční společnost', color:'#4DB1C8', label:'26.', fund:'Vigo', aliases:['vigo'], entryPct:0, bonusMode:'none', trailPct:0.6, note:'= Direct'},
+  {company:'CODYA investiční společnost', color:'#4DB1C8', label:'27.', fund:'ARTEFIN', aliases:['artefin'], entryPct:2, bonusMode:'bt', trailPct:0.85, note:'výplata mimo BT, 2%'},
+  {company:'CODYA investiční společnost', color:'#4DB1C8', label:'28.', fund:'Penta', aliases:['penta'], entryPct:0, bonusMode:'none', trailPct:0.8, note:''},
+  {company:'CODYA investiční společnost', color:'#4DB1C8', label:'34.', fund:'KOOR', aliases:['koor'], entryPct:1, bonusMode:'bt', trailPct:0, note:'1% vstupní bonus'},
+  {company:'CODYA investiční společnost', color:'#4DB1C8', label:'37.', fund:'Fidurock', aliases:['fidurock','fidurock retail parks'], entryPct:1.5, bonusMode:'bt', trailPct:0, note:'výplata mimo BT do 30.9., od 1.10. 1,5% přes BT'},
+  {company:'J&T Banka', color:'#d97706', label:'29.', fund:'J&T Arch', aliases:['j&t arch','jt arch'], entryPct:1, bonusMode:'bt', trailPct:0.8, note:'1% vstupní bonus přes BT'},
+  {company:'J&T Banka', color:'#d97706', label:'30.', fund:'J&T Naše ČESKO', aliases:['nase cesko','naše česko'], entryPct:0, bonusMode:'none', trailPct:0, note:''},
+  {company:'J&T Banka', color:'#d97706', label:'31.', fund:'J&T World Private Capital', aliases:['world private capital','world private'], entryPct:0, bonusMode:'none', trailPct:0, note:''},
+  {company:'ATRIS investiční společnost', color:'#8b5cf6', label:'32.', fund:'ATRIS', aliases:['atris'], entryPct:3, bonusMode:'bt', trailPct:0.8, note:'3% vstupní bonus přes BT'},
+  {company:'WOOD & Company', color:'#16a34a', label:'33.', fund:'Edward', aliases:['edward'], entryPct:0, bonusMode:'none', trailPct:1.39, note:''},
+  {company:'WOOD & Company', color:'#16a34a', label:'35.', fund:'WOOD Realitní OPF', aliases:['wood realitni','wood realitní'], entryPct:0, bonusMode:'none', trailPct:0, note:''}
 ];
 function defaultTrailRatePct(name){ const k=normKey(name); const hit=DEFAULT_TRAIL_RATES.find(([needle])=>k.includes(normKey(needle))); return hit?hit[1]:0; }
-function defaultEntryFeePct(name){ const k=normKey(name); if(k.includes('csnf')||k.includes('nemomax')||k.includes('vihorev')||k.includes('domoplan')||k.includes('real luxembourg')||k.includes('atris')) return 3; if(k.includes('aguila')||k.includes('domus')||k.includes('realia')||k.includes('gartal')||k.includes('wero')||k.includes('spilberk')||k.includes('ebm')||k.includes('julius')||k.includes('meinl')||k.includes('adax')||k.includes('fckd')||k.includes('fčkd')) return 2; if(k.includes('j&t arch')||k.includes('jt arch')) return 1; return 0; }
+function defaultEntryFeePct(name){ const rule=ruleForFundName(name); return rule?rule.entryPct:0; }
+function ruleForFundName(name){ const k=normKey(name); return FKI_COMMISSION_RULES.find(r=>(r.aliases||[]).some(a=>k.includes(normKey(a)))); }
 function trailSettingFor(key, name){
-  if(!trailSettings[key]) trailSettings[key]={entryPct:defaultEntryFeePct(name), trailPct:defaultTrailRatePct(name)};
-  if(trailSettings[key].entryPct===undefined) trailSettings[key].entryPct=defaultEntryFeePct(name);
-  if(trailSettings[key].trailPct===undefined) trailSettings[key].trailPct=defaultTrailRatePct(name);
+  const rule=ruleForFundName(name);
+  if(!trailSettings[key]) trailSettings[key]={entryPct:rule?rule.entryPct:defaultEntryFeePct(name), trailPct:rule?rule.trailPct:defaultTrailRatePct(name), hidden:false, manualAum:null};
+  if(trailSettings[key].entryPct===undefined) trailSettings[key].entryPct=rule?rule.entryPct:defaultEntryFeePct(name);
+  if(trailSettings[key].trailPct===undefined) trailSettings[key].trailPct=rule?rule.trailPct:defaultTrailRatePct(name);
+  if(trailSettings[key].hidden===undefined) trailSettings[key].hidden=false;
+  return trailSettings[key];
+}
+function ruleSettingFor(rule){
+  const key='rule:'+normKey(rule.company+'|'+rule.fund);
+  if(!trailSettings[key]) trailSettings[key]={entryPct:rule.entryPct, trailPct:rule.trailPct, hidden:false, manualAum:null};
+  if(trailSettings[key].entryPct===undefined) trailSettings[key].entryPct=rule.entryPct;
+  if(trailSettings[key].trailPct===undefined) trailSettings[key].trailPct=rule.trailPct;
+  if(trailSettings[key].hidden===undefined) trailSettings[key].hidden=false;
   return trailSettings[key];
 }
 function saveTrailSettings(){ localStorage.setItem(TRAIL_SETTINGS_KEY, JSON.stringify(trailSettings)); }
@@ -1737,42 +1791,86 @@ function trailAumByFund(){
   });
   return Object.values(map).map(x=>({...x,clients:x.clients.size})).sort((a,b)=>b.aum-a.aum);
 }
+function trailAumForRule(rule, crmRows){
+  const aliases=(rule.aliases||[]).map(normKey);
+  const hits=crmRows.filter(r=>aliases.some(a=>normKey(r.name).includes(a)));
+  return {aum:hits.reduce((s,r)=>s+r.aum,0), clients:hits.reduce((s,r)=>s+r.clients,0), tx:hits.reduce((s,r)=>s+r.tx,0)};
+}
 function initTrailPanelDefaults(){
   const d=document.getElementById('trailPeriodEnd');
   if(d && !d.value){ const now=new Date(); const qEndMonth=Math.floor(now.getMonth()/3)*3-1; let y=now.getFullYear(), m=qEndMonth; if(m<0){m=11;y--;} const e=new Date(y,m+1,0); d.value=e.toISOString().slice(0,10); }
   const coef=document.getElementById('trailCoef'); if(coef && !coef.value) coef.value='60';
 }
 function trailPayoutDate(periodEnd){ const d=pD(periodEnd)||todayDate(); const x=new Date(d); x.setDate(x.getDate()+40); return x.toLocaleDateString('cs-CZ'); }
+function calcInitialCommission(aum, entryPct, bonusMode, coef){
+  const fee=aum*(1/100)/250*coef; // provize z poplatku dle předlohy: 1 % / 250 × koeficient
+  let bonus=0;
+  if(bonusMode==='bt') bonus=aum*(entryPct/100)/250*coef;
+  else if(bonusMode==='cash') bonus=aum*(entryPct/100);
+  const total=fee+bonus;
+  const points=coef>0 ? (fee/coef + (bonusMode==='cash' ? (bonus/1000)*4 : bonus/coef)) : 0;
+  return {fee,bonus,total,points};
+}
 function renderTrailPanel(){
   initTrailPanelDefaults();
   const coef=n(document.getElementById('trailCoef')?.value||60);
   const q=document.getElementById('trailSearch')?.value||'';
   const search=normKey(q);
-  const rows=trailAumByFund().filter(r=>!search || normKey(r.name+' '+r.company).includes(search));
-  let totalAum=0,totalInitial=0,totalAnnual=0,totalQuarter=0;
-  const lineHtml=rows.map(r=>{
+  const crmRows=trailAumByFund();
+  const visibleRules=FKI_COMMISSION_RULES.filter(r=>!search || normKey(r.fund+' '+r.company).includes(search));
+  let bjTotal=0, initTotal=0, feeTotal=0, bonusTotal=0, aumInitTotal=0, followAnnualTotal=0, followQuarterTotal=0, followAumTotal=0;
+  const groups=[...new Set(visibleRules.map(r=>r.company))];
+  const groupedHtml=groups.map(company=>{
+    const rules=visibleRules.filter(r=>r.company===company);
+    let gAum=0,gFee=0,gBonus=0,gTotal=0,gPoints=0,active=0;
+    const body=rules.map(rule=>{
+      const st=ruleSettingFor(rule);
+      const crm=trailAumForRule(rule,crmRows);
+      const aum=(st.manualAum!==null && st.manualAum!==undefined && st.manualAum!=='') ? Math.max(0,n(st.manualAum)) : crm.aum;
+      const hidden=!!st.hidden;
+      const entryPct=Math.max(0,Math.min(3,n(st.entryPct)));
+      const c=calcInitialCommission(aum,entryPct,rule.bonusMode,coef);
+      if(!hidden){ gAum+=aum; gFee+=c.fee; gBonus+=c.bonus; gTotal+=c.total; gPoints+=c.points; if(aum>0) active++; }
+      const rowCls=(aum<=0?' zero':'')+(hidden?' zero':'');
+      return `<div class="trail-rule-row${rowCls}"><div style="display:flex;gap:8px;align-items:center"><input type="checkbox" ${hidden?'checked':''} onchange="updateTrailRule('${esc(rule.company)}','${esc(rule.fund)}','hidden',this.checked?1:0)"><span>${esc(rule.label)}</span></div><div><strong>${esc(rule.fund)}</strong></div><div><input class="trail-input" value="${esc(fkiFmtMoneyInput(aum))}" oninput="updateTrailRule('${esc(rule.company)}','${esc(rule.fund)}','manualAum',fkiParseMoney(this.value))" onblur="this.value=fkiFmtMoneyInput(fkiParseMoney(this.value));renderTrailPanel()"></div><div class="trail-num">${czk(c.fee)}</div><div class="trail-num">${c.bonus?czk(c.bonus):'—'}</div><div class="trail-num green">${c.total?czk(c.total):'—'}</div><div class="trail-num">${c.points?Math.round(c.points).toLocaleString('cs-CZ'):'—'}</div><div style="font-size:11px;color:#94a3b8">${esc(rule.note||'')}</div></div>`;
+    }).join('');
+    bjTotal+=gPoints; initTotal+=gTotal; feeTotal+=gFee; bonusTotal+=gBonus; aumInitTotal+=gAum;
+    const color=(rules[0]&&rules[0].color)||'#0b3558';
+    return `<div class="trail-company"><div class="trail-company-head" style="border-left:4px solid ${color}"><div><strong>${esc(company)}</strong><br><span>${rules.length} fondů · ${active} s AUM &gt; 0</span></div><div class="trail-num">${czk(gAum)} · ${czk(gTotal)} · ${Math.round(gPoints).toLocaleString('cs-CZ')} BJ</div></div><div class="trail-rule-row head"><div>Skrýt #</div><div>Fond</div><div>AUM</div><div>Prov. z popl.</div><div>Vst. bonus</div><div>Celkem</div><div>Body</div><div>Poznámka</div></div>${body}<div class="trail-rule-row total"><div></div><div>Celkem</div><div class="trail-num">${czk(gAum)}</div><div class="trail-num">${czk(gFee)}</div><div class="trail-num">${czk(gBonus)}</div><div class="trail-num green">${czk(gTotal)}</div><div class="trail-num">${Math.round(gPoints).toLocaleString('cs-CZ')}</div><div></div></div></div>`;
+  }).join('');
+  const followRows=crmRows.filter(r=>!search || normKey(r.name+' '+r.company).includes(search)).map(r=>{
     const st=trailSettingFor(r.key,r.name);
-    const entryPct=Math.max(0,Math.min(3,n(st.entryPct)));
     const trailPct=Math.max(0,n(st.trailPct));
-    const initial=r.aum*(entryPct/100)/250*coef;
     const annual=r.aum*(trailPct/100)/250*coef;
     const quarter=annual/4;
-    totalAum+=r.aum; totalInitial+=initial; totalAnnual+=annual; totalQuarter+=quarter;
-    return `<div class="trail-row ${r.aum<=0?'zero':''}"><div class="trail-name"><strong>${esc(r.name)}</strong><small>${esc(r.company)} · ${r.clients} klientů · ${r.tx} transakcí</small></div><div class="trail-num">${r.clients}</div><div class="trail-num">${czk(r.aum)}</div><div><input class="trail-input" value="${entryPct.toFixed(2).replace('.',',')}" oninput="updateTrailSetting('${esc(r.key)}','entryPct',this.value)"></div><div class="trail-num">${czk(initial)}</div><div><input class="trail-input" value="${trailPct.toFixed(2).replace('.',',')}" oninput="updateTrailSetting('${esc(r.key)}','trailPct',this.value)"></div><div class="trail-num green">${czk(annual)}</div><div class="trail-num blue">${czk(quarter)}</div></div>`;
+    followAumTotal+=r.aum; followAnnualTotal+=annual; followQuarterTotal+=quarter;
+    return `<div class="trail-follow-row ${r.aum<=0?'zero':''}"><div class="trail-name"><strong>${esc(r.name)}</strong><small>${esc(r.company)} · ${r.clients} klientů · ${r.tx} transakcí</small></div><div class="trail-num">${r.clients}</div><div class="trail-num">${czk(r.aum)}</div><div><input class="trail-input" value="${trailPct.toFixed(2).replace('.',',')}" oninput="updateTrailSetting('${esc(r.key)}','trailPct',this.value)"></div><div class="trail-num green">${czk(annual)}</div><div class="trail-num blue">${czk(quarter)}</div><div class="trail-num">${esc(trailPayoutDate(document.getElementById('trailPeriodEnd')?.value||''))}</div></div>`;
   }).join('');
   const period=document.getElementById('trailPeriodEnd')?.value||'';
-  const kpis=document.getElementById('trailKpis'); if(kpis) kpis.innerHTML=`<div class="trail-kpi"><div class="trail-kpi-l">FKI AUM</div><div class="trail-kpi-v blue">${czk(totalAum)}</div></div><div class="trail-kpi"><div class="trail-kpi-l">Vstupní provize model</div><div class="trail-kpi-v">${czk(totalInitial)}</div></div><div class="trail-kpi"><div class="trail-kpi-l">Následky ročně</div><div class="trail-kpi-v green">${czk(totalAnnual)}</div></div><div class="trail-kpi"><div class="trail-kpi-l">Následky kvartálně</div><div class="trail-kpi-v green">${czk(totalQuarter)}</div></div><div class="trail-kpi"><div class="trail-kpi-l">Očekávaná výplata</div><div class="trail-kpi-v">${esc(trailPayoutDate(period))}</div></div>`;
-  const cont=document.getElementById('trailContent'); if(cont) cont.innerHTML=`<div class="trail-row head"><div>Fond</div><div>Klientů</div><div>AUM</div><div>Vstupní %</div><div>Vstupní provize</div><div>Následná %</div><div>Ročně</div><div>Kvartálně</div></div>${lineHtml||'<div class="empty">Žádné FKI fondy k zobrazení.</div>'}<div class="trail-row total"><div>Celkem</div><div></div><div class="trail-num">${czk(totalAum)}</div><div></div><div class="trail-num">${czk(totalInitial)}</div><div></div><div class="trail-num">${czk(totalAnnual)}</div><div class="trail-num">${czk(totalQuarter)}</div></div>`;
+  const kpis=document.getElementById('trailKpis'); if(kpis) kpis.innerHTML=`<div class="trail-kpi"><div class="trail-kpi-l">FKI AUM z CRM</div><div class="trail-kpi-v blue">${czk(followAumTotal)}</div></div><div class="trail-kpi"><div class="trail-kpi-l">Získatelská provize</div><div class="trail-kpi-v green">${czk(initTotal)}</div></div><div class="trail-kpi"><div class="trail-kpi-l">BJ / body</div><div class="trail-kpi-v blue">${Math.round(bjTotal).toLocaleString('cs-CZ')}</div></div><div class="trail-kpi"><div class="trail-kpi-l">Následky ročně</div><div class="trail-kpi-v green">${czk(followAnnualTotal)}</div></div><div class="trail-kpi"><div class="trail-kpi-l">Následky kvartálně</div><div class="trail-kpi-v green">${czk(followQuarterTotal)}</div></div><div class="trail-kpi"><div class="trail-kpi-l">Očekávaná výplata</div><div class="trail-kpi-v">${esc(trailPayoutDate(period))}</div></div>`;
+  const bj=document.getElementById('trailBjSummary'); if(bj) bj.innerHTML=`<div class="trail-bj-card"><small>AUM pro získatelky</small><b>${czk(aumInitTotal)}</b></div><div class="trail-bj-card"><small>Provize z poplatku</small><b>${czk(feeTotal)}</b></div><div class="trail-bj-card"><small>Vstupní bonusy</small><b>${czk(bonusTotal)}</b></div><div class="trail-bj-card"><small>Provize celkem</small><b class="green">${czk(initTotal)}</b></div><div class="trail-bj-card"><small>BJ celkem</small><b class="blue">${Math.round(bjTotal).toLocaleString('cs-CZ')}</b></div>`;
+  const cont=document.getElementById('trailContent'); if(cont) cont.innerHTML=groupedHtml||'<div class="empty">Žádné FKI fondy k zobrazení.</div>';
+  const follow=document.getElementById('trailFollowContent'); if(follow) follow.innerHTML=`<div class="trail-follow-row head"><div>Fond</div><div>Klientů</div><div>AUM</div><div>Následná %</div><div>Ročně</div><div>Kvartálně</div><div>Výplata</div></div>${followRows||'<div class="empty">Žádné FKI fondy k zobrazení.</div>'}<div class="trail-follow-row total"><div>Celkem</div><div></div><div class="trail-num">${czk(followAumTotal)}</div><div></div><div class="trail-num">${czk(followAnnualTotal)}</div><div class="trail-num">${czk(followQuarterTotal)}</div><div></div></div>`;
   saveTrailSettings();
 }
+function updateTrailRule(company,fund,field,value){ const rule=FKI_COMMISSION_RULES.find(r=>r.company===company && r.fund===fund); if(!rule) return; const st=ruleSettingFor(rule); if(field==='manualAum') st.manualAum=Math.max(0,n(value)); else if(field==='hidden') st.hidden=!!n(value); else st[field]=value; saveTrailSettings(); clearTimeout(window.__trailTimer); window.__trailTimer=setTimeout(renderTrailPanel,120); }
 function updateTrailSetting(key,field,value){ if(!trailSettings[key]) trailSettings[key]={}; let v=n(value); if(field==='entryPct') v=Math.max(0,Math.min(3,v)); if(field==='trailPct') v=Math.max(0,v); trailSettings[key][field]=v; saveTrailSettings(); clearTimeout(window.__trailTimer); window.__trailTimer=setTimeout(renderTrailPanel,250); }
 function exportTrailCSV(){
   const coef=n(document.getElementById('trailCoef')?.value||60), period=document.getElementById('trailPeriodEnd')?.value||'';
-  const rows=trailAumByFund();
-  const header=['Obdobi','Fond','Spolecnost','Klientu','AUM','Vstupni %','Vstupni provize','Nasledna %','Nasledky rocne','Nasledky kvartalne','Ocekavana vyplata'];
-  const lines=[header.join(';')];
-  rows.forEach(r=>{ const st=trailSettingFor(r.key,r.name); const e=Math.max(0,Math.min(3,n(st.entryPct))); const t=Math.max(0,n(st.trailPct)); const initial=r.aum*(e/100)/250*coef; const annual=r.aum*(t/100)/250*coef; lines.push([period,r.name,r.company,r.clients,Math.round(r.aum),String(e).replace('.',','),Math.round(initial),String(t).replace('.',','),Math.round(annual),Math.round(annual/4),trailPayoutDate(period)].map(v=>'"'+String(v).replace(/"/g,'""')+'"').join(';')); });
-  const blob=new Blob([lines.join('\n')],{type:'text/csv;charset=utf-8'}); const url=URL.createObjectURL(blob); const a=document.createElement('a'); a.href=url; a.download='fki-nasledky.csv'; a.click(); URL.revokeObjectURL(url);
+  const crmRows=trailAumByFund();
+  const lines=[];
+  lines.push(['Typ','Obdobi','Spolecnost','Fond','Klientu','AUM','Vstupni %','Provize z poplatku','Vstupni bonus','Provize celkem','BJ','Nasledna %','Nasledky rocne','Nasledky kvartalne','Ocekavana vyplata','Poznamka'].join(';'));
+  FKI_COMMISSION_RULES.forEach(rule=>{
+    const st=ruleSettingFor(rule); if(st.hidden) return;
+    const crm=trailAumForRule(rule,crmRows);
+    const aum=(st.manualAum!==null && st.manualAum!==undefined && st.manualAum!=='') ? Math.max(0,n(st.manualAum)) : crm.aum;
+    const entryPct=Math.max(0,Math.min(3,n(st.entryPct)));
+    const c=calcInitialCommission(aum,entryPct,rule.bonusMode,coef);
+    const trailPct=Math.max(0,n(st.trailPct));
+    const annual=aum*(trailPct/100)/250*coef;
+    lines.push(['Ziskatelska',period,rule.company,rule.fund,crm.clients,Math.round(aum),String(entryPct).replace('.',','),Math.round(c.fee),Math.round(c.bonus),Math.round(c.total),Math.round(c.points),String(trailPct).replace('.',','),Math.round(annual),Math.round(annual/4),trailPayoutDate(period),rule.note||''].map(v=>'"'+String(v).replace(/"/g,'""')+'"').join(';'));
+  });
+  const blob=new Blob([lines.join('\n')],{type:'text/csv;charset=utf-8'}); const url=URL.createObjectURL(blob); const a=document.createElement('a'); a.href=url; a.download='fki-provize-bj-nasledky.csv'; a.click(); URL.revokeObjectURL(url);
 }
 
 // ── ADD / EDIT ─────────────────────────────────
