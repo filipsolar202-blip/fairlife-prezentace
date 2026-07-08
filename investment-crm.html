@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Investment CRM v71 — Solár Filip</title>
+<title>Investment CRM v72 — Solár Filip</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
@@ -348,7 +348,7 @@ body{font-family:'Inter',sans-serif;background:#f1f5f9;color:#1e293b;font-size:1
     <div class="hdr-icon">FS</div>
     <div>
       <div class="hdr-title">Investment CRM</div>
-      <div class="hdr-sub">Solár Filip · FairLife · v71</div>
+      <div class="hdr-sub">Solár Filip · FairLife · v72</div>
     </div>
   </div>
   <div class="hdr-btns">
@@ -522,7 +522,7 @@ body{font-family:'Inter',sans-serif;background:#f1f5f9;color:#1e293b;font-size:1
 <div class="toast" id="toast"></div>
 
 <script>
-const APP_VERSION='v71';
+const APP_VERSION='v72';
 const APP_BUILD='2026-07-06';
 const APP_SCHEMA_VERSION=55;
 let fkiMode='new';
@@ -2911,20 +2911,95 @@ function newFundMasterForm(){
   const s=document.getElementById('fv_fond'); if(s) s.value='';
   const box=document.getElementById('fundAuditBox'); if(box){box.style.display='block'; box.innerHTML='<strong>Nový fond:</strong> vyplň název, ISIN, společnost, typ akcie/CP, hodnotu CP a následnou provizi. ISIN je hlavní identifikátor, název je pouze popis.';}
 }
-function auditFundIntegrity(){
+function fundAuditData(){
   const byIsin={}, byName={};
   (recs||[]).forEach(r=>{
     if(isWithdrawal(r)) return;
     const isin=String(r['rp.ISIN']||r['ISIN']||'').trim();
-    const name=normKey(cleanFundName(r['Fond']||'',companyOf(r)));
-    if(isin){ if(!byIsin[isin]) byIsin[isin]=new Set(); byIsin[isin].add(cleanFundName(r['Fond']||'',companyOf(r))); }
-    if(name){ if(!byName[name]) byName[name]=new Set(); if(isin) byName[name].add(isin); }
+    const clean=cleanFundName(r['Fond']||'',companyOf(r));
+    const name=normKey(clean);
+    const company=companyOf(r)||'';
+    const typ=String(r['Typ CP']||'').trim();
+    if(isin){
+      if(!byIsin[isin]) byIsin[isin]={names:new Set(),companies:new Set(),types:new Set(),count:0};
+      if(clean) byIsin[isin].names.add(clean);
+      if(company) byIsin[isin].companies.add(company);
+      if(typ) byIsin[isin].types.add(typ);
+      byIsin[isin].count++;
+    }
+    if(name){
+      if(!byName[name]) byName[name]={label:clean,isins:new Set(),companies:new Set(),types:new Set(),count:0};
+      if(isin) byName[name].isins.add(isin);
+      if(company) byName[name].companies.add(company);
+      if(typ) byName[name].types.add(typ);
+      byName[name].count++;
+    }
   });
-  const sameIsinManyNames=Object.entries(byIsin).filter(([k,set])=>set.size>1).map(([isin,set])=>`${esc(isin)}: ${[...set].map(esc).join(' / ')}`);
-  const sameNameManyIsin=Object.entries(byName).filter(([k,set])=>set.size>1).map(([name,set])=>`${esc(name)}: ${[...set].map(esc).join(' / ')}`);
+  Object.values(fundValues||{}).forEach(fv=>{
+    const isin=String(fv?.isin||'').trim();
+    const clean=cleanFundName(fv?.fond||'',fv?.company||'');
+    const name=normKey(clean);
+    const company=String(fv?.company||'').trim();
+    const typ=String(fv?.typ||'').trim();
+    if(isin){
+      if(!byIsin[isin]) byIsin[isin]={names:new Set(),companies:new Set(),types:new Set(),count:0};
+      if(clean) byIsin[isin].names.add(clean);
+      if(company) byIsin[isin].companies.add(company);
+      if(typ) byIsin[isin].types.add(typ);
+    }
+    if(name){
+      if(!byName[name]) byName[name]={label:clean,isins:new Set(),companies:new Set(),types:new Set(),count:0};
+      if(isin) byName[name].isins.add(isin);
+      if(company) byName[name].companies.add(company);
+      if(typ) byName[name].types.add(typ);
+    }
+  });
+  return {byIsin,byName};
+}
+function auditFundIntegrity(){
+  const {byIsin,byName}=fundAuditData();
   const missing=(recs||[]).filter(r=>!isWithdrawal(r)&&!(r['rp.ISIN']||r['ISIN'])).length;
+  const alias=Object.entries(byIsin).filter(([k,v])=>v.names.size>1 && v.companies.size<=1 && v.types.size<=1)
+    .map(([isin,v])=>`${esc(isin)}: ${[...v.names].map(esc).join(' / ')}`);
+  const isinConflicts=Object.entries(byIsin).filter(([k,v])=>v.companies.size>1 || v.types.size>1)
+    .map(([isin,v])=>`${esc(isin)}: společnosti ${[...v.companies].map(esc).join(' / ')||'—'}; typy ${[...v.types].map(esc).join(' / ')||'—'}; názvy ${[...v.names].map(esc).join(' / ')||'—'}`);
+  const likelyDupes=Object.entries(byName).filter(([k,v])=>v.isins.size>1)
+    .map(([name,v])=>`${esc(v.label||name)}: ${[...v.isins].map(esc).join(' / ')}`);
+  const missingTrail=uniqueFunds().filter(f=>f.isin && (f.trailPct===undefined||f.trailPct===null||f.trailPct==='')).length;
+  const missingTyp=uniqueFunds().filter(f=>f.isin && !f.typ).length;
   const box=document.getElementById('fundAuditBox');
-  if(box){ box.style.display='block'; box.innerHTML=`<strong>Kontrola fondů</strong><br>Transakcí bez ISIN: <b>${missing}</b><br>Stejný ISIN pod více názvy: ${sameIsinManyNames.length?'<br>'+sameIsinManyNames.slice(0,8).join('<br>'):'OK'}<br>Stejný název s více ISIN: ${sameNameManyIsin.length?'<br>'+sameNameManyIsin.slice(0,8).join('<br>'):'OK'}<br><span style="color:#64748b">Opravu historických záznamů dělej jen přes konkrétní transakci nebo import skutečného výpisu. Uložení centrálního fondu už nemění ISIN v klientských transakcích.</span>`; }
+  if(box){ box.style.display='block'; box.innerHTML=`
+    <strong>Kontrola databáze fondů</strong><br>
+    Fondů / ISIN v databázi: <b>${Object.keys(byIsin).length}</b><br>
+    Transakcí bez ISIN: <b class="${missing?'bad':'good'}">${missing}</b><br>
+    Skutečné konflikty ISIN (jiná společnost nebo typ CP): <b class="${isinConflicts.length?'bad':'good'}">${isinConflicts.length}</b>${isinConflicts.length?'<br>'+isinConflicts.slice(0,10).join('<br>'):''}<br>
+    Pravděpodobné duplicity názvu s více ISIN: <b class="${likelyDupes.length?'warn':'good'}">${likelyDupes.length}</b>${likelyDupes.length?'<br>'+likelyDupes.slice(0,10).join('<br>'):''}<br>
+    Různé názvy u stejného ISIN: <b>${alias.length}</b> <span style="color:#64748b">(většinou OK — zkratka vs. oficiální název)</span>${alias.length?'<details><summary>Zobrazit aliasy</summary>'+alias.slice(0,20).join('<br>')+'</details>':''}<br>
+    Chybí následná provize: <b class="${missingTrail?'warn':'good'}">${missingTrail}</b><br>
+    Chybí typ CP: <b class="${missingTyp?'warn':'good'}">${missingTyp}</b><br>
+    <span style="color:#64748b">ISIN je hlavní identifikátor. Název fondu je pouze zobrazovací popis. Pokud změna vypadá jako duplicita, CRM se před uložením zeptá, jestli použít údaje z formuláře jako správné.</span>`; }
+}
+function confirmFundIdentityChange({oldKey,newKey,fond,isin,typ,company}){
+  const {byIsin,byName}=fundAuditData();
+  const normName=normKey(cleanFundName(fond,company));
+  const isinInfo=byIsin[isin];
+  const nameInfo=byName[normName];
+  const warnings=[];
+  if(isinInfo){
+    const otherNames=[...isinInfo.names].filter(x=>normKey(x)!==normName);
+    const otherCompanies=[...isinInfo.companies].filter(x=>normKey(x)!==normKey(company));
+    const otherTypes=[...isinInfo.types].filter(x=>normKey(x)!==normKey(typ));
+    if(otherNames.length) warnings.push(`Stejný ISIN už existuje pod názvem:\n- ${otherNames.join('\n- ')}`);
+    if(otherCompanies.length) warnings.push(`Stejný ISIN má jinou společnost: ${otherCompanies.join(', ')}`);
+    if(otherTypes.length) warnings.push(`Stejný ISIN má jiný typ CP: ${otherTypes.join(', ')}`);
+  }
+  if(nameInfo){
+    const otherIsins=[...nameInfo.isins].filter(x=>normKey(x)!==normKey(isin));
+    if(otherIsins.length) warnings.push(`Stejný název už existuje s jiným ISIN:\n- ${otherIsins.join('\n- ')}`);
+  }
+  if(oldKey && oldKey!==newKey){ warnings.push(`Mění se identita centrálního fondu.\nPůvodní klíč: ${oldKey}\nNový klíč: ${newKey}`); }
+  if(!warnings.length) return true;
+  return confirm(`Kontrola fondu našla možnou duplicitu / změnu identity.\n\n${warnings.join('\n\n')}\n\nOK = použít údaje z formuláře jako správné zobrazovací údaje pro tento ISIN.\nStorno = nic neukládat a zkontrolovat ručně.`);
 }
 function addOrUpdateFundMaster(){
   const oldKey=(document.getElementById('fv_fond').value||'').trim();
@@ -2944,6 +3019,10 @@ function addOrUpdateFundMaster(){
   if(trailPct===null){ toast('Doplň následnou provizi % p.a. pro výpočet následků','err'); return; }
 
   const newKey=fundKeyFromParts(fond, isin, typ);
+  if(!confirmFundIdentityChange({oldKey,newKey,fond,isin,typ,company})){
+    toast('Uložení fondu zrušeno — nejdřív zkontroluj ISIN / název / typ CP.','err');
+    return;
+  }
   const exists=fundValues[newKey]||{};
   // Bezpečnostní pravidlo: centrální uložení fondu nikdy hromadně nepřepisuje ISIN v klientských transakcích.
   // ISIN je primární identifikátor historické pozice a jeho změna může sloučit dva různé fondy.
