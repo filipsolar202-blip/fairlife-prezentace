@@ -234,7 +234,8 @@ body{font-family:'Inter',sans-serif;background:#f1f5f9;color:#1e293b;font-size:1
 .aum-row{display:grid;grid-template-columns:2fr 120px 120px 120px 100px 100px 72px;gap:10px;align-items:center;padding:10px 12px;border-bottom:1px solid #f1f5f9;font-size:12px}
 .aum-row:last-child{border-bottom:none}
 .aum-row.head{background:#f8fafc;color:#64748b;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.4px}
-.aum-row strong{font-size:13px}.aum-row.loss{opacity:.72;background:#fff7f7}.aum-row.locked,.fund-row.locked{background:#fff7ed;opacity:.72}
+.aum-row strong{font-size:13px}.aum-row.loss{opacity:.72;background:#fff7f7}.aum-row.locked,.fund-row.locked,.trail-follow-row.locked{background:#fff1f2;opacity:.82}
+.aum-row.locked strong,.trail-follow-row.locked strong{color:#b91c1c}
 @media(max-width:900px){.aum-layout{grid-template-columns:1fr}.aum-row{grid-template-columns:1fr;gap:4px}}
 
 .fund-row{display:grid;grid-template-columns:minmax(260px,2fr) 95px 105px 70px 75px 212px;gap:8px;align-items:center;padding:7px 10px;border-bottom:1px solid #f1f5f9;font-size:12px}
@@ -1972,11 +1973,10 @@ function trailAumByFund(){
   const map={};
   recs.filter(isFkiRecord).forEach(r=>{
     const k=fundKey(r); if(!k) return;
-    if(isGloballyLockedFund(k)) return;
-    if(!map[k]) map[k]={key:k,name:cleanFundName(r['Fond'],companyOf(r)),company:companyOf(r),aum:0,invested:0,clients:new Set(),tx:0};
-    map[k].aum+=Math.max(0,curVal(r)); map[k].invested+=depositVal(r); map[k].clients.add(clientIdentityKey(r)); map[k].tx++;
+    if(!map[k]) map[k]={key:k,name:cleanFundName(r['Fond'],companyOf(r)),company:companyOf(r),aum:0,rawAum:0,invested:0,clients:new Set(),tx:0,locked:isGloballyLockedFund(k)};
+    map[k].rawAum+=Math.max(0,curVal(r)); map[k].invested+=depositVal(r); map[k].clients.add(clientIdentityKey(r)); map[k].tx++;
   });
-  return Object.values(map).map(x=>({...x,clients:x.clients.size})).sort((a,b)=>b.aum-a.aum);
+  return Object.values(map).map(x=>({...x,aum:x.locked?0:x.rawAum,clients:x.clients.size})).sort((a,b)=>(b.rawAum||0)-(a.rawAum||0));
 }
 function trailAumForRule(rule, crmRows){
   const aliases=(rule.aliases||[]).map(normKey);
@@ -2032,7 +2032,7 @@ function renderTrailPanel(){
     const annual=r.aum*(trailPct/100)/250*coef;
     const quarter=annual/4;
     followAumTotal+=r.aum; followAnnualTotal+=annual; followQuarterTotal+=quarter;
-    return `<div class="trail-follow-row ${r.aum<=0?'zero':''}"><div class="trail-name"><strong>${esc(r.name)}</strong><small>${esc(r.company)} · ${r.tx} transakcí</small></div><div class="trail-cell"><small>Klientů</small><b>${r.clients}</b></div><div class="trail-cell"><small>AUM</small><b>${czk(r.aum)}</b></div><div class="trail-cell"><small>Následná %</small><input class="trail-input" value="${trailPct.toFixed(2).replace('.',',')}" onfocus="this.select()" oninput="updateTrailSettingNoRender('${esc(r.key)}','trailPct',this.value)" onblur="renderTrailPanel()"></div><div class="trail-cell"><small>Ročně</small><b class="green">${czk(annual)}</b></div><div class="trail-cell"><small>Kvartálně</small><b class="blue">${czk(quarter)}</b></div><div class="trail-cell"><small>Výplata</small><b>${esc(trailPayoutDate(document.getElementById('trailPeriodEnd')?.value||''))}</b></div><div class="trail-cell"><small>Zámek</small><button class="lock-ico unlocked" title="Zamknout fond všude" onclick="toggleGlobalFundLock(decodeURIComponent('${encodeURIComponent(r.key)}'))"><span class="open-lock">🔓</span></button></div></div>`;
+    return `<div class="trail-follow-row ${r.locked?'locked':(r.aum<=0?'zero':'')}"><div class="trail-name"><strong>${esc(r.name)}</strong> ${r.locked?'<span class="tag tag-r">zamčeno</span>':''}<small>${esc(r.company)} · ${r.tx} transakcí</small></div><div class="trail-cell"><small>Klientů</small><b>${r.clients}</b></div><div class="trail-cell"><small>AUM</small><b>${czk(r.rawAum||r.aum)}</b>${r.locked?'<small style="color:#b91c1c">mimo následky</small>':''}</div><div class="trail-cell"><small>Následná %</small><input class="trail-input" value="${trailPct.toFixed(2).replace('.',',')}" onfocus="this.select()" oninput="updateTrailSettingNoRender('${esc(r.key)}','trailPct',this.value)" onblur="renderTrailPanel()"></div><div class="trail-cell"><small>Ročně</small><b class="green">${czk(annual)}</b></div><div class="trail-cell"><small>Kvartálně</small><b class="blue">${czk(quarter)}</b></div><div class="trail-cell"><small>Výplata</small><b>${esc(trailPayoutDate(document.getElementById('trailPeriodEnd')?.value||''))}</b></div><div class="trail-cell"><small>Zámek</small><button class="lock-ico ${r.locked?'locked':'unlocked'}" title="${r.locked?'Odemknout fond všude':'Zamknout fond všude'}" onclick="toggleGlobalFundLock(decodeURIComponent('${encodeURIComponent(r.key)}'))">${r.locked?'🔒':'<span class="open-lock">🔓</span>'}</button></div></div>`;
   }).join('');
   const period=document.getElementById('trailPeriodEnd')?.value||'';
   const kpis=document.getElementById('trailKpis'); if(kpis) kpis.innerHTML=`<div class="trail-kpi"><div class="trail-kpi-l">FKI AUM</div><div class="trail-kpi-v blue">${czk(followAumTotal)}</div></div><div class="trail-kpi"><div class="trail-kpi-l">Následky ročně</div><div class="trail-kpi-v green">${czk(followAnnualTotal)}</div></div><div class="trail-kpi"><div class="trail-kpi-l">Následky kvartálně</div><div class="trail-kpi-v green">${czk(followQuarterTotal)}</div></div><div class="trail-kpi"><div class="trail-kpi-l">Příští provize</div><div class="trail-kpi-v">${esc(trailPayoutDate(period))}</div></div>`;
@@ -2980,7 +2980,6 @@ function aumData(){
     const comp=companyOf(r)||'Nezařazeno';
     const fond=cleanFundName(r['Fond']||'Nezařazeno', comp);
     const key=fundKeyFromParts(fond, isin, r['Typ CP']||'');
-    if(isGloballyLockedFund(key)) return;
     if(!funds[key]){
       funds[key]={
         key,
@@ -2993,7 +2992,9 @@ function aumData(){
         tx:0,
         invested:0,
         withdrawn:0,
-        current:0
+        current:0,
+        rawCurrent:0,
+        locked:isGloballyLockedFund(key)
       };
     }
     const f=funds[key];
@@ -3004,17 +3005,18 @@ function aumData(){
       return;
     }
     f.invested += depositVal(r);
-    f.current += curVal(r);
+    f.rawCurrent += curVal(r);
     if(!f.isin && isin) f.isin=isin;
     if(!f.typ && r['Typ CP']) f.typ=r['Typ CP'];
   });
   const list=Object.values(funds).map(f=>{
-    f.current=Math.max(0, f.current - f.withdrawn);
+    f.rawCurrent=Math.max(0, f.rawCurrent - f.withdrawn);
+    f.current=f.locked ? 0 : f.rawCurrent;
     f.netInvested=Math.max(0, f.invested - f.withdrawn);
-    f.profit=f.current - f.netInvested;
+    f.profit=f.rawCurrent - f.netInvested;
     f.share=0;
     return f;
-  }).filter(f=>f.current>0.01).sort((a,b)=>b.current-a.current);
+  }).filter(f=>f.rawCurrent>0.01).sort((a,b)=>b.rawCurrent-a.rawCurrent);
   const total=list.reduce((s,f)=>s+f.current,0);
   list.forEach(f=>{ f.share=total?f.current/total*100:0; });
   return {list,total};
@@ -3078,7 +3080,7 @@ function renderAumPanel(){
       const clients=new Set(); items.forEach(f=>f.clients.forEach(c=>clients.add(c)));
       return `<div class="company-section"><span>🏢 ${esc(comp)}</span><small>${czk(sum)} · ${items.length} fond${items.length===1?'':items.length<5?'y':'ů'} · ${clients.size} klient${clients.size===1?'':clients.size<5?'i':'ů'}</small></div>`+
       `<div class="aum-row head"><div>Fond</div><div>AUM</div><div>Podíl</div><div>Netto vklad</div><div>Klientů</div><div>Transakcí</div><div>Akce</div></div>`+
-      items.sort((a,b)=>b.current-a.current).map(f=>`<div class="aum-row ${f.profit<0?'loss':''}"><div><strong>${esc(f.fond)}</strong><div style="color:#94a3b8;font-size:11px">${esc(f.product)} · ${f.isin?esc(f.isin):'<span style="color:#dc2626;font-weight:800">⚠ ISIN chybí</span>'} · ${esc(f.typ||'typ CP neuveden')}</div></div><div><strong>${czk(f.current)}</strong></div><div>${filteredTotal?pct(f.current/filteredTotal*100):'—'}</div><div>${czk(f.netInvested)}</div><div><button class="btn btn-gray btn-sm" onclick="showAumFundClients(decodeURIComponent('${encodeURIComponent(f.key)}'))">${f.clients.size} klient${f.clients.size===1?'':'ů'}</button></div><div>${f.tx}</div><div><button class="lock-ico unlocked" title="Zamknout fond všude" onclick="toggleGlobalFundLock(decodeURIComponent('${encodeURIComponent(f.key)}'))"><span class="open-lock">🔓</span></button></div></div><div class="fund-clients-panel" id="aum_clients_${esc(f.key).replace(/[^a-zA-Z0-9_-]/g,'_')}">${aumFundClientsHTML(f.key)}</div>`).join('');
+      items.sort((a,b)=>(b.rawCurrent||0)-(a.rawCurrent||0)).map(f=>`<div class="aum-row ${f.locked?'locked':(f.profit<0?'loss':'')}"><div><strong>${esc(f.fond)}</strong> ${f.locked?'<span class="tag tag-r">zamčeno</span>':''}<div style="color:#94a3b8;font-size:11px">${esc(f.product)} · ${f.isin?esc(f.isin):'<span style="color:#dc2626;font-weight:800">⚠ ISIN chybí</span>'} · ${esc(f.typ||'typ CP neuveden')}</div></div><div><strong>${czk(f.rawCurrent)}</strong>${f.locked?'<div style="color:#b91c1c;font-size:10px;font-weight:800">mimo aktuální AUM</div>':''}</div><div>${f.locked?'—':(filteredTotal?pct(f.current/filteredTotal*100):'—')}</div><div>${czk(f.netInvested)}</div><div><button class="btn btn-gray btn-sm" onclick="showAumFundClients(decodeURIComponent('${encodeURIComponent(f.key)}'))">${f.clients.size} klient${f.clients.size===1?'':'ů'}</button></div><div>${f.tx}</div><div><button class="lock-ico ${f.locked?'locked':'unlocked'}" title="${f.locked?'Odemknout fond všude':'Zamknout fond všude'}" onclick="toggleGlobalFundLock(decodeURIComponent('${encodeURIComponent(f.key)}'))">${f.locked?'🔒':'<span class="open-lock">🔓</span>'}</button></div></div><div class="fund-clients-panel" id="aum_clients_${esc(f.key).replace(/[^a-zA-Z0-9_-]/g,'_')}">${aumFundClientsHTML(f.key)}</div>`).join('');
     }).join('');
 
     box.innerHTML=`
