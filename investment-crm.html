@@ -399,16 +399,16 @@ body{background:radial-gradient(circle at 16% 0%,rgba(77,177,200,.18),transparen
   </div>
   <div class="hdr-btns">
     <button class="btn btn-gray" id="privacyBtn" onclick="togglePrivacy()">🙈 Skrýt klienty</button>
-    <button class="btn btn-gray" onclick="mergeClientsPrompt()">👥 Sloučit klienty</button>
+    <button class="btn btn-blue" onclick="togglePanel('add')">+ Nový záznam</button>
+    <button class="btn btn-green" onclick="openFkiPurchaseCalc()">🧮 Nákup FKI</button>
     <button class="btn btn-gray" onclick="togglePanel('imp')">⬆ Import CSV</button>
     <button class="btn btn-gray" onclick="togglePanel('funds')">📈 Fondy / NAV</button>
     <button class="btn btn-gray" onclick="togglePanel('aum')">📊 AUM + následky</button>
-    <button class="btn btn-green" onclick="openFkiPurchaseCalc()">🧮 Nákup FKI</button>
+    <button class="btn btn-gray" onclick="mergeClientsPrompt()">👥 Sloučit klienty</button>
     <button class="btn btn-gray" onclick="dlBackupJSON()">💾 Záloha JSON</button>
     <button class="btn btn-gray" onclick="document.getElementById('backupFile').click()">↥ Obnovit JSON</button>
     <input type="file" id="backupFile" accept=".json" style="display:none" onchange="restoreBackupJSON(event)">
     <button class="btn btn-gray" onclick="dlTemplate()">⬇ Vzor CSV</button>
-    <button class="btn btn-blue" onclick="togglePanel('add')">+ Nový záznam</button>
   </div>
 </div>
 
