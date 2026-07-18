@@ -231,13 +231,13 @@ body{font-family:'Inter',sans-serif;background:#f1f5f9;color:#1e293b;font-size:1
 .aum-company-value{text-align:right;font-size:14px;font-weight:900;color:#16a34a;white-space:nowrap}
 .aum-subtitle{font-size:12px;color:#64748b;margin:8px 0 10px}
 
-.aum-row{display:grid;grid-template-columns:2fr 120px 120px 120px 100px 100px;gap:10px;align-items:center;padding:10px 12px;border-bottom:1px solid #f1f5f9;font-size:12px}
+.aum-row{display:grid;grid-template-columns:2fr 120px 120px 120px 100px 100px 72px;gap:10px;align-items:center;padding:10px 12px;border-bottom:1px solid #f1f5f9;font-size:12px}
 .aum-row:last-child{border-bottom:none}
 .aum-row.head{background:#f8fafc;color:#64748b;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.4px}
-.aum-row strong{font-size:13px}.aum-row.loss{opacity:.72;background:#fff7f7}
+.aum-row strong{font-size:13px}.aum-row.loss{opacity:.72;background:#fff7f7}.aum-row.locked,.fund-row.locked{background:#fff7ed;opacity:.72}
 @media(max-width:900px){.aum-layout{grid-template-columns:1fr}.aum-row{grid-template-columns:1fr;gap:4px}}
 
-.fund-row{display:grid;grid-template-columns:minmax(260px,2fr) 95px 105px 70px 75px 160px;gap:8px;align-items:center;padding:7px 10px;border-bottom:1px solid #f1f5f9;font-size:12px}
+.fund-row{display:grid;grid-template-columns:minmax(260px,2fr) 95px 105px 70px 75px 212px;gap:8px;align-items:center;padding:7px 10px;border-bottom:1px solid #f1f5f9;font-size:12px}
 .fund-row:last-child{border-bottom:none}
 .fund-row.head{background:#f8fafc;color:#64748b;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.4px}
 .fund-row strong{font-size:12px}
@@ -276,7 +276,7 @@ body{font-family:'Inter',sans-serif;background:#f1f5f9;color:#1e293b;font-size:1
 .trail-name strong{display:block;font-size:13px;color:#1e293b}.trail-name small{display:block;font-size:10px;color:#94a3b8;margin-top:2px}.trail-num{text-align:right;font-variant-numeric:tabular-nums;font-weight:800;white-space:nowrap}.trail-input{width:100%;border:1px solid #dbe3ed;border-radius:10px;padding:8px 9px;font-family:inherit;font-size:12px;background:#fff;text-align:right}.trail-input:focus{outline:none;border-color:#4DB1C8;box-shadow:0 0 0 4px rgba(77,177,200,.16)}
 .trail-tools{display:grid;grid-template-columns:170px 160px 1fr auto;gap:10px;align-items:end;margin:10px 0 14px}
 .trail-note{background:#fff7ed;border:1px solid #fed7aa;color:#9a3412;border-radius:14px;padding:10px 12px;font-size:12px;line-height:1.5;margin:10px 0 14px}
-.trail-section-title{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;margin:18px 0 8px}.trail-section-title h4{font-size:14px;font-weight:900;color:#0b3558;margin:0}.trail-section-title small{color:#94a3b8;font-size:11px}.trail-company{border:1px solid #dbeafe;border-radius:18px;overflow:hidden;margin:12px 0;background:rgba(255,255,255,.86);box-shadow:0 12px 30px rgba(15,23,42,.035)}.trail-company-head{display:flex;justify-content:space-between;gap:12px;align-items:center;padding:11px 14px;background:linear-gradient(135deg,rgba(239,246,255,.88),rgba(236,254,255,.55));border-bottom:1px solid #dbeafe}.trail-company-head strong{font-size:14px;color:#0b3558}.trail-company-head span{font-size:11px;color:#64748b}.trail-rule-row{display:grid;grid-template-columns:42px minmax(190px,1.4fr) 130px 110px 115px 110px 80px minmax(170px,1fr);gap:10px;align-items:center;padding:8px 12px;border-bottom:1px solid #edf2f7;font-size:12px}.trail-rule-row:nth-child(even){background:rgba(239,246,255,.34)}.trail-rule-row.head{background:#f8fafc;color:#64748b;font-size:9px;font-weight:900;text-transform:uppercase;letter-spacing:.45px}.trail-rule-row.total{background:#e6f7fb;font-weight:900}.trail-rule-row.zero{opacity:.55}.trail-rule-row input[type=checkbox]{width:16px;height:16px;accent-color:#0b3558}.trail-bj-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px;margin:12px 0}.trail-bj-card{background:linear-gradient(145deg,rgba(255,255,255,.92),rgba(248,250,252,.72));border:1px solid #e2e8f0;border-radius:16px;padding:13px 15px;box-shadow:0 10px 28px rgba(15,23,42,.04)}.trail-bj-card small{display:block;font-size:10px;color:#94a3b8;text-transform:uppercase;letter-spacing:.5px;font-weight:900}.trail-bj-card b{display:block;margin-top:5px;font-size:19px;color:#0b3558}.trail-bj-card b.green{color:#16a34a}.trail-bj-card b.blue{color:#2563eb}.trail-follow-table{border:1px solid #e2e8f0;border-radius:16px;overflow:hidden;background:#fff;margin-top:10px}.trail-follow-row{display:grid;grid-template-columns:minmax(260px,1.45fr) 90px 135px 105px 125px 125px 100px;gap:10px;align-items:center;padding:10px 12px;border-bottom:1px solid #edf2f7;font-size:12px}.trail-follow-row.head{background:#f8fafc;color:#64748b;font-size:9px;font-weight:900;text-transform:uppercase;letter-spacing:.45px}.trail-follow-row.total{background:#eef6ff;font-weight:900}.trail-follow-row.zero{opacity:.55}.trail-cell small{display:block;font-size:9px;color:#94a3b8;text-transform:uppercase;letter-spacing:.4px;font-weight:900;margin-bottom:3px}.trail-cell b{display:block;font-variant-numeric:tabular-nums}.trail-cell .green{color:#16a34a}.trail-cell .blue{color:#2563eb}
+.trail-section-title{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;margin:18px 0 8px}.trail-section-title h4{font-size:14px;font-weight:900;color:#0b3558;margin:0}.trail-section-title small{color:#94a3b8;font-size:11px}.trail-company{border:1px solid #dbeafe;border-radius:18px;overflow:hidden;margin:12px 0;background:rgba(255,255,255,.86);box-shadow:0 12px 30px rgba(15,23,42,.035)}.trail-company-head{display:flex;justify-content:space-between;gap:12px;align-items:center;padding:11px 14px;background:linear-gradient(135deg,rgba(239,246,255,.88),rgba(236,254,255,.55));border-bottom:1px solid #dbeafe}.trail-company-head strong{font-size:14px;color:#0b3558}.trail-company-head span{font-size:11px;color:#64748b}.trail-rule-row{display:grid;grid-template-columns:42px minmax(190px,1.4fr) 130px 110px 115px 110px 80px minmax(170px,1fr);gap:10px;align-items:center;padding:8px 12px;border-bottom:1px solid #edf2f7;font-size:12px}.trail-rule-row:nth-child(even){background:rgba(239,246,255,.34)}.trail-rule-row.head{background:#f8fafc;color:#64748b;font-size:9px;font-weight:900;text-transform:uppercase;letter-spacing:.45px}.trail-rule-row.total{background:#e6f7fb;font-weight:900}.trail-rule-row.zero{opacity:.55}.trail-rule-row input[type=checkbox]{width:16px;height:16px;accent-color:#0b3558}.trail-bj-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px;margin:12px 0}.trail-bj-card{background:linear-gradient(145deg,rgba(255,255,255,.92),rgba(248,250,252,.72));border:1px solid #e2e8f0;border-radius:16px;padding:13px 15px;box-shadow:0 10px 28px rgba(15,23,42,.04)}.trail-bj-card small{display:block;font-size:10px;color:#94a3b8;text-transform:uppercase;letter-spacing:.5px;font-weight:900}.trail-bj-card b{display:block;margin-top:5px;font-size:19px;color:#0b3558}.trail-bj-card b.green{color:#16a34a}.trail-bj-card b.blue{color:#2563eb}.trail-follow-table{border:1px solid #e2e8f0;border-radius:16px;overflow:hidden;background:#fff;margin-top:10px}.trail-follow-row{display:grid;grid-template-columns:minmax(260px,1.45fr) 90px 135px 105px 125px 125px 100px 70px;gap:10px;align-items:center;padding:10px 12px;border-bottom:1px solid #edf2f7;font-size:12px}.trail-follow-row.head{background:#f8fafc;color:#64748b;font-size:9px;font-weight:900;text-transform:uppercase;letter-spacing:.45px}.trail-follow-row.total{background:#eef6ff;font-weight:900}.trail-follow-row.zero{opacity:.55}.trail-cell small{display:block;font-size:9px;color:#94a3b8;text-transform:uppercase;letter-spacing:.4px;font-weight:900;margin-bottom:3px}.trail-cell b{display:block;font-variant-numeric:tabular-nums}.trail-cell .green{color:#16a34a}.trail-cell .blue{color:#2563eb}
 .trail-calc-card{background:linear-gradient(145deg,rgba(255,255,255,.92),rgba(248,250,252,.68));border:1px solid #dbe3ed;border-radius:18px;padding:14px;margin:14px 0 18px;box-shadow:0 14px 36px rgba(15,23,42,.055),inset 0 1px 0 rgba(255,255,255,.88)}
 .trail-calc-card .trail-section-title{margin-top:0}
 .trail-hidden-control{display:flex;align-items:end;gap:8px}
@@ -373,6 +373,8 @@ body{background:radial-gradient(circle at 16% 0%,rgba(77,177,200,.18),transparen
 .crow:hover,.fcard-hdr:hover{background:rgba(239,246,255,.68)}.crow.sel{background:rgba(239,246,255,.88)}
 .drop-zone,.import-info,.tx,.client-allocation-row,.aum-card,.aum-chartbox,.aum-company-card,.fund-client-chip{background:rgba(255,255,255,.68);border-color:rgba(219,227,237,.86)}
 .btn{box-shadow:0 8px 20px rgba(15,23,42,.045)}.btn:hover{transform:translateY(-1px)}
+.hdr-btns .btn{min-width:128px;height:38px;justify-content:center}.hdr-btns #privacyBtn{min-width:128px}.hdr-btns .btn-blue,.hdr-btns .btn-green{min-width:132px}
+.det-actions .btn{height:32px;justify-content:center}.fund-row .btn{min-width:58px;justify-content:center}
 
 @media (max-width: 900px){
   .hdr{height:auto;min-height:58px;padding:10px 14px;gap:10px;align-items:flex-start;flex-direction:column}
@@ -999,8 +1001,17 @@ try { lockedFunds = JSON.parse(localStorage.getItem(LSK)) || {}; } catch { locke
 
 function save(){ localStorage.setItem(SK, JSON.stringify(recs)); localStorage.setItem(FSK, JSON.stringify(fundValues)); localStorage.setItem(LSK, JSON.stringify(lockedFunds)); }
 function lockKey(clientKey, fKey){ return String(clientKey||'') + '||' + String(fKey||''); }
-function isLockedFund(clientKey, fKey){ return !!lockedFunds[lockKey(clientKey, fKey)]; }
+function globalLockKey(fKey){ return lockKey('__GLOBAL_FUND__', fKey); }
+function isGloballyLockedFund(fKey){ return !!lockedFunds[globalLockKey(fKey)]; }
+function isLockedFund(clientKey, fKey){ return isGloballyLockedFund(fKey) || !!lockedFunds[lockKey(clientKey, fKey)]; }
 function setLockedFund(clientKey, fKey, value){ const k=lockKey(clientKey,fKey); if(value) lockedFunds[k]=true; else delete lockedFunds[k]; save(); }
+function setGlobalFundLock(fKey, value){
+  const key=String(fKey||'');
+  if(!key) return;
+  Object.keys(lockedFunds||{}).forEach(k=>{ if(k.endsWith('||'+key)) delete lockedFunds[k]; });
+  if(value) lockedFunds[globalLockKey(key)]=true;
+  save();
+}
 function unlockedRecords(items, clientKey){ return (items||[]).filter(r=>!clientKey || !isLockedFund(clientKey, fundKey(r))); }
 
 // ── HELPERS ────────────────────────────────────
@@ -1771,14 +1782,14 @@ function showClient(name){
         <div class="det-sub">${cr.length} transakcí · ${Object.keys(fm).length} fondů${m.lockedCount?' · 🔒 část portfolia zamčena pro výpočty':''} · ID: ${esc(cl.recs[0]?.['ClientID']||'—')}${getClientDob(cl.recs[0])?' · narození: '+dt(getClientDob(cl.recs[0])):''}</div>
       </div>
       <div class="det-actions">
+        <button class="btn btn-gray btn-sm" onclick="editClientPrompt('${esc(name)}')">👤 Upravit klienta</button>
+        <button class="btn btn-green btn-sm" onclick="openFkiPurchaseCalc('${esc(displayName)}')">🧮 Nákup FKI</button>
+        <button class="btn btn-blue btn-sm" onclick="openAdd('${esc(cl.name)}')">+ Přidat fond</button>
         <button class="btn btn-gray btn-sm" onclick="openClientReportWizard('${esc(name)}')">🌐 HTML pro klienta</button>
         <button class="btn btn-gray btn-sm" onclick="openClientReportWizard('${esc(name)}',true)">🧾 PDF / tisk</button>
-        <button class="btn btn-green btn-sm" onclick="openFkiPurchaseCalc('${esc(displayName)}')">🧮 Nákup FKI</button>
         <button class="btn btn-gray btn-sm" onclick="exportJSON('${esc(name)}')">⬇ JSON</button>
-        <button class="btn btn-gray btn-sm" onclick="editClientPrompt('${esc(name)}')">👤 Upravit klienta</button>
         <button class="btn btn-gray btn-sm" onclick="mergeClientsPrompt('${esc(name)}')">👥 Sloučit</button>
-        <button class="btn btn-red btn-sm" onclick="delClient('${esc(name)}')">🗑 Smazat klienta</button>
-        <button class="btn btn-blue btn-sm" onclick="openAdd('${esc(cl.name)}')">+ Přidat fond</button>
+        <button class="btn btn-red btn-sm btn-icon" title="Smazat klienta" onclick="delClient('${esc(name)}')">🗑</button>
       </div>
     </div>
     <div class="stats">
@@ -1829,12 +1840,18 @@ function safeDomId(v){ return 'x_'+String(v||'').replace(/[^a-zA-Z0-9_-]/g,'_').
 function scrollToFund(id){ const el=document.getElementById(id); if(el){ el.classList.add('exp'); el.scrollIntoView({behavior:'smooth',block:'start'}); } }
 function toggleF(hdr){ hdr.closest('.fcard').classList.toggle('exp'); }
 function toggleFundLock(clientKey, fKey, clientRef){
-  const next=!isLockedFund(clientKey, fKey);
-  setLockedFund(clientKey, fKey, next);
-  toast(next?'Fond zamčen pro výpočty klienta ✓':'Fond odemčen a znovu počítán ✓','ok');
+  toggleGlobalFundLock(fKey, clientRef || clientKey);
+}
+function toggleGlobalFundLock(fKey, clientRef){
+  const next=!isGloballyLockedFund(fKey);
+  setGlobalFundLock(fKey, next);
+  toast(next?'Fond zamčen všude a vyřazen z aktuálního AUM ✓':'Fond odemčen u všech klientů ✓','ok');
   renderStats();
   renderList();
-  showClient(clientRef || clientKey);
+  renderFundPanel();
+  renderAumPanel();
+  renderTrailPanel();
+  if(clientRef || activeClient) showClient(clientRef || activeClient);
 }
 
 
@@ -1955,6 +1972,7 @@ function trailAumByFund(){
   const map={};
   recs.filter(isFkiRecord).forEach(r=>{
     const k=fundKey(r); if(!k) return;
+    if(isGloballyLockedFund(k)) return;
     if(!map[k]) map[k]={key:k,name:cleanFundName(r['Fond'],companyOf(r)),company:companyOf(r),aum:0,invested:0,clients:new Set(),tx:0};
     map[k].aum+=Math.max(0,curVal(r)); map[k].invested+=depositVal(r); map[k].clients.add(clientIdentityKey(r)); map[k].tx++;
   });
@@ -2014,13 +2032,13 @@ function renderTrailPanel(){
     const annual=r.aum*(trailPct/100)/250*coef;
     const quarter=annual/4;
     followAumTotal+=r.aum; followAnnualTotal+=annual; followQuarterTotal+=quarter;
-    return `<div class="trail-follow-row ${r.aum<=0?'zero':''}"><div class="trail-name"><strong>${esc(r.name)}</strong><small>${esc(r.company)} · ${r.tx} transakcí</small></div><div class="trail-cell"><small>Klientů</small><b>${r.clients}</b></div><div class="trail-cell"><small>AUM</small><b>${czk(r.aum)}</b></div><div class="trail-cell"><small>Následná %</small><input class="trail-input" value="${trailPct.toFixed(2).replace('.',',')}" onfocus="this.select()" oninput="updateTrailSettingNoRender('${esc(r.key)}','trailPct',this.value)" onblur="renderTrailPanel()"></div><div class="trail-cell"><small>Ročně</small><b class="green">${czk(annual)}</b></div><div class="trail-cell"><small>Kvartálně</small><b class="blue">${czk(quarter)}</b></div><div class="trail-cell"><small>Výplata</small><b>${esc(trailPayoutDate(document.getElementById('trailPeriodEnd')?.value||''))}</b></div></div>`;
+    return `<div class="trail-follow-row ${r.aum<=0?'zero':''}"><div class="trail-name"><strong>${esc(r.name)}</strong><small>${esc(r.company)} · ${r.tx} transakcí</small></div><div class="trail-cell"><small>Klientů</small><b>${r.clients}</b></div><div class="trail-cell"><small>AUM</small><b>${czk(r.aum)}</b></div><div class="trail-cell"><small>Následná %</small><input class="trail-input" value="${trailPct.toFixed(2).replace('.',',')}" onfocus="this.select()" oninput="updateTrailSettingNoRender('${esc(r.key)}','trailPct',this.value)" onblur="renderTrailPanel()"></div><div class="trail-cell"><small>Ročně</small><b class="green">${czk(annual)}</b></div><div class="trail-cell"><small>Kvartálně</small><b class="blue">${czk(quarter)}</b></div><div class="trail-cell"><small>Výplata</small><b>${esc(trailPayoutDate(document.getElementById('trailPeriodEnd')?.value||''))}</b></div><div class="trail-cell"><small>Zámek</small><button class="lock-ico unlocked" title="Zamknout fond všude" onclick="toggleGlobalFundLock(decodeURIComponent('${encodeURIComponent(r.key)}'))"><span class="open-lock">🔓</span></button></div></div>`;
   }).join('');
   const period=document.getElementById('trailPeriodEnd')?.value||'';
   const kpis=document.getElementById('trailKpis'); if(kpis) kpis.innerHTML=`<div class="trail-kpi"><div class="trail-kpi-l">FKI AUM</div><div class="trail-kpi-v blue">${czk(followAumTotal)}</div></div><div class="trail-kpi"><div class="trail-kpi-l">Následky ročně</div><div class="trail-kpi-v green">${czk(followAnnualTotal)}</div></div><div class="trail-kpi"><div class="trail-kpi-l">Následky kvartálně</div><div class="trail-kpi-v green">${czk(followQuarterTotal)}</div></div><div class="trail-kpi"><div class="trail-kpi-l">Příští provize</div><div class="trail-kpi-v">${esc(trailPayoutDate(period))}</div></div>`;
   const bj=document.getElementById('trailBjSummary'); if(bj) bj.innerHTML=`<div class="trail-bj-card"><small>AUM pro získatelky</small><b>${czk(aumInitTotal)}</b></div><div class="trail-bj-card"><small>Provize z poplatku</small><b>${czk(feeTotal)}</b></div><div class="trail-bj-card"><small>Vstupní bonusy</small><b>${czk(bonusTotal)}</b></div><div class="trail-bj-card"><small>Provize celkem</small><b class="green">${czk(initTotal)}</b></div><div class="trail-bj-card"><small>BJ celkem</small><b class="blue">${Math.round(bjTotal).toLocaleString('cs-CZ')}</b></div>`;
   const cont=document.getElementById('trailContent'); if(cont) cont.innerHTML=groupedHtml||'<div class="empty">Žádné FKI fondy k zobrazení.</div>';
-  const follow=document.getElementById('trailFollowContent'); if(follow) follow.innerHTML=`${followRows||'<div class="empty">Žádné FKI fondy k zobrazení.</div>'}<div class="trail-follow-row total"><div>Celkem</div><div></div><div class="trail-cell"><small>AUM</small><b>${czk(followAumTotal)}</b></div><div></div><div class="trail-cell"><small>Ročně</small><b>${czk(followAnnualTotal)}</b></div><div class="trail-cell"><small>Kvartálně</small><b>${czk(followQuarterTotal)}</b></div><div></div></div>`;
+  const follow=document.getElementById('trailFollowContent'); if(follow) follow.innerHTML=`${followRows||'<div class="empty">Žádné FKI fondy k zobrazení.</div>'}<div class="trail-follow-row total"><div>Celkem</div><div></div><div class="trail-cell"><small>AUM</small><b>${czk(followAumTotal)}</b></div><div></div><div class="trail-cell"><small>Ročně</small><b>${czk(followAnnualTotal)}</b></div><div class="trail-cell"><small>Kvartálně</small><b>${czk(followQuarterTotal)}</b></div><div></div><div></div></div>`;
   saveTrailSettings();
 }
 function updateTrailRule(company,fund,field,value){ const rule=FKI_COMMISSION_RULES.find(r=>r.company===company && r.fund===fund); if(!rule) return; const st=ruleSettingFor(rule); if(field==='manualAum') st.manualAum=Math.max(0,n(value)); else if(field==='hidden') st.hidden=!!n(value); else st[field]=value; saveTrailSettings(); clearTimeout(window.__trailTimer); window.__trailTimer=setTimeout(renderTrailPanel,120); }
@@ -2962,6 +2980,7 @@ function aumData(){
     const comp=companyOf(r)||'Nezařazeno';
     const fond=cleanFundName(r['Fond']||'Nezařazeno', comp);
     const key=fundKeyFromParts(fond, isin, r['Typ CP']||'');
+    if(isGloballyLockedFund(key)) return;
     if(!funds[key]){
       funds[key]={
         key,
@@ -3058,14 +3077,14 @@ function renderAumPanel(){
       const sum=items.reduce((s,f)=>s+f.current,0);
       const clients=new Set(); items.forEach(f=>f.clients.forEach(c=>clients.add(c)));
       return `<div class="company-section"><span>🏢 ${esc(comp)}</span><small>${czk(sum)} · ${items.length} fond${items.length===1?'':items.length<5?'y':'ů'} · ${clients.size} klient${clients.size===1?'':clients.size<5?'i':'ů'}</small></div>`+
-      `<div class="aum-row head"><div>Fond</div><div>AUM</div><div>Podíl</div><div>Netto vklad</div><div>Klientů</div><div>Transakcí</div></div>`+
-      items.sort((a,b)=>b.current-a.current).map(f=>`<div class="aum-row ${f.profit<0?'loss':''}"><div><strong>${esc(f.fond)}</strong><div style="color:#94a3b8;font-size:11px">${esc(f.product)} · ${f.isin?esc(f.isin):'<span style="color:#dc2626;font-weight:800">⚠ ISIN chybí</span>'} · ${esc(f.typ||'typ CP neuveden')}</div></div><div><strong>${czk(f.current)}</strong></div><div>${filteredTotal?pct(f.current/filteredTotal*100):'—'}</div><div>${czk(f.netInvested)}</div><div><button class="btn btn-gray btn-sm" onclick="showAumFundClients(decodeURIComponent('${encodeURIComponent(f.key)}'))">${f.clients.size} klient${f.clients.size===1?'':'ů'}</button></div><div>${f.tx}</div></div><div class="fund-clients-panel" id="aum_clients_${esc(f.key).replace(/[^a-zA-Z0-9_-]/g,'_')}">${aumFundClientsHTML(f.key)}</div>`).join('');
+      `<div class="aum-row head"><div>Fond</div><div>AUM</div><div>Podíl</div><div>Netto vklad</div><div>Klientů</div><div>Transakcí</div><div>Akce</div></div>`+
+      items.sort((a,b)=>b.current-a.current).map(f=>`<div class="aum-row ${f.profit<0?'loss':''}"><div><strong>${esc(f.fond)}</strong><div style="color:#94a3b8;font-size:11px">${esc(f.product)} · ${f.isin?esc(f.isin):'<span style="color:#dc2626;font-weight:800">⚠ ISIN chybí</span>'} · ${esc(f.typ||'typ CP neuveden')}</div></div><div><strong>${czk(f.current)}</strong></div><div>${filteredTotal?pct(f.current/filteredTotal*100):'—'}</div><div>${czk(f.netInvested)}</div><div><button class="btn btn-gray btn-sm" onclick="showAumFundClients(decodeURIComponent('${encodeURIComponent(f.key)}'))">${f.clients.size} klient${f.clients.size===1?'':'ů'}</button></div><div>${f.tx}</div><div><button class="lock-ico unlocked" title="Zamknout fond všude" onclick="toggleGlobalFundLock(decodeURIComponent('${encodeURIComponent(f.key)}'))"><span class="open-lock">🔓</span></button></div></div><div class="fund-clients-panel" id="aum_clients_${esc(f.key).replace(/[^a-zA-Z0-9_-]/g,'_')}">${aumFundClientsHTML(f.key)}</div>`).join('');
     }).join('');
 
     box.innerHTML=`
       <div class="aum-grid">
-        <div class="aum-card"><div class="aum-card-l">Celkové AUM pod správou</div><div class="aum-card-v">${czk(total)}</div></div>
-        <div class="aum-card"><div class="aum-card-l">Zobrazené AUM</div><div class="aum-card-v">${czk(filteredTotal)}</div></div>
+        <div class="aum-card"><div class="aum-card-l">Aktuální AUM</div><div class="aum-card-v">${czk(total)}</div></div>
+        <div class="aum-card"><div class="aum-card-l">Aktuální AUM ve filtru</div><div class="aum-card-v">${czk(filteredTotal)}</div></div>
         <div class="aum-card"><div class="aum-card-l">Fondů v zobrazení</div><div class="aum-card-v">${filtered.length}</div></div>
         <div class="aum-card"><div class="aum-card-l">Klientů v zobrazení</div><div class="aum-card-v">${totalClients.size}</div></div>
         <div class="aum-card"><div class="aum-card-l">Netto vloženo</div><div class="aum-card-v">${czk(totalNet)}</div></div>
@@ -3152,7 +3171,7 @@ function renderFundPanel(){
     return `<div class="company-section"><span>🏢 ${esc(comp)}</span><small>${items.length} fond${items.length===1?'':items.length<5?'y':'ů'}</small></div>`+
     prods.map(prod=>{ const pitems=items.filter(f=>(f.product||'FKI')===prod); return `<div class="product-line"><span>${esc(prod)}</span><small>${pitems.length} fond${pitems.length===1?'':pitems.length<5?'y':'ů'}</small></div>`+
     `<div class="fund-row head"><div>Fond</div><div>Hodnota CP</div><div>Platnost</div><div>Klientů</div><div>Transakcí</div><div>Akce</div></div>`+
-    pitems.map(f=>`<div class="fund-row"><div><strong>${esc(f.fond)}</strong><div style="color:#94a3b8;font-size:11px">${esc(f.product||'FKI')} · ${f.isin?esc(f.isin):'<span style="color:#dc2626;font-weight:800">⚠ DOPLNIT ISIN</span>'} · ${esc(f.typ||'typ CP neuveden')} · následná ${f.trailPct!==undefined&&f.trailPct!==null?String(f.trailPct).replace('.',',')+' %':'—'}</div></div><div><strong>${f.nav?Number(f.nav).toFixed(4):'—'}</strong></div><div>${dt(f.date)}</div><div>${f.clients.size}</div><div>${f.count}</div><div style="display:flex;gap:4px;flex-wrap:nowrap;align-items:center"><button class="btn btn-gray btn-sm" onclick="selectFundMaster(decodeURIComponent('${encodeURIComponent(f.key)}'))">Upravit</button><button class="btn btn-gray btn-sm" onclick="showFundClients(decodeURIComponent('${encodeURIComponent(f.key)}'))">Klienti</button><button class="btn btn-red btn-sm btn-icon" title="Smazat" onclick="deleteFundMaster(decodeURIComponent('${encodeURIComponent(f.key)}'))">🗑</button></div></div><div class="fund-clients-panel" id="fund_clients_${esc(f.key).replace(/[^a-zA-Z0-9_-]/g,'_')}">${fundClientsHTML(f.key)}</div>`).join('')}).join('')
+    pitems.map(f=>`<div class="fund-row ${isGloballyLockedFund(f.key)?'locked':''}"><div><strong>${esc(f.fond)}</strong> ${isGloballyLockedFund(f.key)?'<span class="tag tag-o">zamčeno globálně</span>':''}<div style="color:#94a3b8;font-size:11px">${esc(f.product||'FKI')} · ${f.isin?esc(f.isin):'<span style="color:#dc2626;font-weight:800">⚠ DOPLNIT ISIN</span>'} · ${esc(f.typ||'typ CP neuveden')} · následná ${f.trailPct!==undefined&&f.trailPct!==null?String(f.trailPct).replace('.',',')+' %':'—'}</div></div><div><strong>${f.nav?Number(f.nav).toFixed(4):'—'}</strong></div><div>${dt(f.date)}</div><div>${f.clients.size}</div><div>${f.count}</div><div style="display:flex;gap:4px;flex-wrap:nowrap;align-items:center"><button class="btn btn-gray btn-sm" onclick="selectFundMaster(decodeURIComponent('${encodeURIComponent(f.key)}'))">Upravit</button><button class="btn btn-gray btn-sm" onclick="showFundClients(decodeURIComponent('${encodeURIComponent(f.key)}'))">Klienti</button><button class="btn btn-red btn-sm btn-icon" title="Smazat" onclick="deleteFundMaster(decodeURIComponent('${encodeURIComponent(f.key)}'))">🗑</button><button class="lock-ico ${isGloballyLockedFund(f.key)?'locked':'unlocked'}" title="${isGloballyLockedFund(f.key)?'Odemknout fond všude':'Zamknout fond všude'}" onclick="toggleGlobalFundLock(decodeURIComponent('${encodeURIComponent(f.key)}'))">${isGloballyLockedFund(f.key)?'🔒':'<span class="open-lock">🔓</span>'}</button></div></div><div class="fund-clients-panel" id="fund_clients_${esc(f.key).replace(/[^a-zA-Z0-9_-]/g,'_')}">${fundClientsHTML(f.key)}</div>`).join('')}).join('')
   }).join('');
 }
 function selectFundMaster(key){
