@@ -2451,13 +2451,15 @@ function openExternal(url){
   window.open(url, '_blank', 'noopener,noreferrer');
 }
 
-const CALCULATOR_PAGE_URL = 'https://filipsolar202-blip.github.io/fairlife-prezentace/klientska-kalkulacka.html';
+const CALCULATOR_PAGE_URL = 'klientska-kalkulacka.html';
+const CALCULATOR_PAGE_VERSION = '2026-07-19-2';
 let activeCalculatorTab = 'invest';
 
 function calculatorUrl(startTab='invest'){
   const safeTab = ['invest','risk','mortgage','report'].includes(startTab) ? startTab : 'invest';
-  const url = new URL(CALCULATOR_PAGE_URL);
+  const url = new URL(CALCULATOR_PAGE_URL, window.location.href);
   url.searchParams.set('tab', safeTab);
+  url.searchParams.set('v', CALCULATOR_PAGE_VERSION);
   return url.toString();
 }
 
