@@ -224,6 +224,18 @@ canvas{width:100%;height:330px}
 .mortgageCards{display:grid;grid-template-columns:1fr 1fr 1fr;gap:18px;margin-top:18px}
 .mortgageHero{padding:24px}
 .mortgageNote{background:#fff7ed;border:1px solid #fed7aa;color:#7c2d12;border-radius:18px;padding:16px;font-size:14px;line-height:1.45;margin-top:14px}
+.taxBenefit{margin-top:18px;padding:24px;border-radius:24px;background:linear-gradient(135deg,rgba(234,248,238,.92),rgba(255,255,255,.9));border:1px solid #b9e7c6;box-shadow:var(--shadow)}
+.taxBenefit h2{color:#14532d}
+.taxGrid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:14px}
+.taxPill{background:rgba(255,255,255,.78);border:1px solid rgba(185,231,198,.92);border-radius:18px;padding:15px 16px}
+.taxPill small{display:block;color:#527062;font-size:12px;font-weight:850;margin-bottom:6px}
+.taxPill strong{display:block;color:#14532d;font-size:20px;letter-spacing:-.035em}
+.taxNote{margin:14px 0 0;color:#416052;font-size:13px;line-height:1.45}
+.riskMiniGrid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:18px}
+.riskMini{background:#fff;border:1px solid var(--line);border-radius:20px;padding:16px}
+.riskMini small{display:block;color:#667085;font-weight:850;font-size:12px;margin-bottom:7px}
+.riskMini strong{display:block;font-size:21px;letter-spacing:-.035em}
+.riskMini.blue strong{color:#2563eb}.riskMini.green strong{color:#16a34a}.riskMini.purple strong{color:#7c3aed}.riskMini.orange strong{color:#f59e0b}
 .dot.r{background:#ef4444}.dot.inv{background:#16a34a}.dot.payoff{background:#2563eb}
 
 .reportWrap{display:grid;grid-template-columns:360px 1fr;gap:18px;align-items:start}
@@ -262,7 +274,7 @@ canvas{width:100%;height:330px}
 @media(max-width:1250px){.reportWrap,.reportHero,.reportSplit{grid-template-columns:1fr}.reportKpis{grid-template-columns:1fr 1fr}}
 @media print{body{background:#fff}.topbar,.reportControls{display:none!important}.app{padding:0;max-width:none}.reportWrap{display:block}.card{box-shadow:none;border:none}.reportDoc{box-shadow:none;border:none;border-radius:0}.hidden{display:none!important}.reportKpis{grid-template-columns:repeat(4,1fr)}.reportSection{break-inside:avoid}}
 
-@media(max-width:1250px){.mortgageLayout,.riskLayout{grid-template-columns:1fr}.mortgageCards{grid-template-columns:1fr}}
+@media(max-width:1250px){.mortgageLayout,.riskLayout{grid-template-columns:1fr}.mortgageCards,.taxGrid,.riskMiniGrid{grid-template-columns:1fr}}
 
 .hidden{display:none}
 
@@ -317,7 +329,7 @@ canvas{width:100%;height:330px}
       <div class="tab" onclick="switchTab('mortgage')">Hypotéka</div>
       <div class="tab" onclick="switchTab('report')">Report</div>
     </nav>
-    <div class="profile"><a class="homeLink" href="index.html">Rozcestník</a><div class="avatar"></div><div><strong>Filip Solár</strong><span>Poradce</span></div></div>
+    <div class="profile"><div class="avatar"></div><div><strong>Filip Solár</strong><span>Poradce</span></div></div>
   </div>
 
   <section id="investPage">
@@ -329,38 +341,38 @@ canvas{width:100%;height:330px}
 
           <div class="field">
             <label>Jméno klienta</label>
-            <input id="clientName" value="Novák Martin">
+            <input id="clientName" value="" placeholder="Jméno klienta">
           </div>
 
           <div class="formgrid">
-            <div class="field suffix"><label>Věk dnes</label><input id="age" type="number" value="35"><small>let</small></div>
-            <div class="field suffix"><label>Renta od věku</label><input id="rentAge" type="number" value="45"><small>let</small></div>
+            <div class="field suffix"><label>Věk dnes</label><input id="age" type="number" value="" placeholder="věk klienta"><small>let</small></div>
+            <div class="field suffix"><label>Renta od věku</label><input id="rentAge" type="number" value="" placeholder="od kdy chce rentu"><small>let</small></div>
           </div>
 
-          <div class="field suffix"><label>Renta 1 měsíčně</label><input id="rent1" type="text" inputmode="numeric" value="180000"><small>Kč</small></div>
+          <div class="field suffix"><label>Renta 1 měsíčně</label><input id="rent1" type="text" inputmode="numeric" value="" placeholder="sem napiš cílovou měsíční rentu"><small>Kč</small></div>
           <div class="formgrid">
-            <div class="field suffix"><label>Renta 1 do věku</label><input id="rent1Until" type="number" value="75"><small>let</small></div>
-            <div class="field suffix"><label>Renta 2 od věku</label><input id="rent2From" type="number" value="75"><small>let</small></div>
+            <div class="field suffix"><label>Renta 1 do věku</label><input id="rent1Until" type="number" value="" placeholder="do jakého věku"><small>let</small></div>
+            <div class="field suffix"><label>Renta 2 od věku</label><input id="rent2From" type="number" value="" placeholder="od jakého věku"><small>let</small></div>
           </div>
-          <div class="field suffix"><label>Renta 2 měsíčně</label><input id="rent2" type="text" inputmode="numeric" value="150000"><small>Kč</small></div>
+          <div class="field suffix"><label>Renta 2 měsíčně</label><input id="rent2" type="text" inputmode="numeric" value="" placeholder="sem napiš druhou fázi renty"><small>Kč</small></div>
 
           <div class="formgrid">
-            <div class="field suffix"><label>Renta má vydržet do věku</label><input id="endAge" type="number" value="90"><small>let</small></div>
-            <div class="field suffix"><label>Zhodnocení p.a.</label><input id="pre" type="number" step="0.1" value="8"><small>%</small></div>
+            <div class="field suffix"><label>Renta má vydržet do věku</label><input id="endAge" type="number" value="" placeholder="např. do 90 let"><small>let</small></div>
+            <div class="field suffix"><label>Zhodnocení p.a.</label><input id="pre" type="number" step="0.1" value="" placeholder="před rentou"><small>%</small></div>
           </div>
           <div class="formgrid">
-            <div class="field suffix"><label>Zhodnocení v rentě</label><input id="post" type="number" step="0.1" value="7"><small>%</small></div>
-            <div class="field suffix"><label>Odkaz dětem</label><input id="legacy" type="text" inputmode="numeric" value="0"><small>Kč</small></div>
+            <div class="field suffix"><label>Zhodnocení v rentě</label><input id="post" type="number" step="0.1" value="" placeholder="během renty"><small>%</small></div>
+            <div class="field suffix"><label>Odkaz dětem</label><input id="legacy" type="text" inputmode="numeric" value="" placeholder="pokud má zůstat kapitál"><small>Kč</small></div>
           </div>
 
-          <div class="field suffix"><label>Majetek určený k budoucímu prodeji (exit)</label><input id="current" type="text" inputmode="numeric" value="150000"><small>Kč</small></div>
+          <div class="field suffix"><label>Majetek určený k budoucímu prodeji (exit)</label><input id="current" type="text" inputmode="numeric" value="" placeholder="sem napiš hodnotu majetku"><small>Kč</small></div>
           <div class="field suffix"><label>Zhodnocení majetku do exitu</label><select id="currentYield"><option value="2">2 % p.a.</option><option value="3">3 % p.a.</option><option value="4" selected>4 % p.a.</option><option value="5">5 % p.a.</option></select></div>
-          <div class="field suffix"><label>Příjem z pronájmu v rentě</label><input id="rentalIncome" type="text" inputmode="numeric" value="0"><small>Kč</small></div>
+          <div class="field suffix"><label>Příjem z pronájmu v rentě</label><input id="rentalIncome" type="text" inputmode="numeric" value="" placeholder="sem napiš měsíční nájem"><small>Kč</small></div>
           <div class="assetMini">
             <small>Budoucí hodnota majetku při exitu</small><br>
             <strong id="assetInlineValue">—</strong>
           </div>
-          <div class="field suffix"><label>Jednorázová investice dnes</label><input id="lump" type="text" inputmode="numeric" value="3000000"><small>Kč</small></div>
+          <div class="field suffix"><label>Jednorázová investice dnes</label><input id="lump" type="text" inputmode="numeric" value="" placeholder="sem napiš aktuální investice"><small>Kč</small></div>
 
           <button onclick="calculate()">Přepočítat plán</button>
 
@@ -485,24 +497,29 @@ canvas{width:100%;height:330px}
             <input id="riskExtraSocial" type="checkbox" style="width:16px;min-height:16px;margin:0">
             OSVČ si platí vyšší sociální pojištění
           </label>
-          <div class="field suffix"><label>Měsíční sociální pojištění OSVČ</label><input id="riskSocialPayment" type="text" inputmode="numeric" value="0"><small>Kč</small></div>
-          <div class="field suffix"><label>Čistý měsíční příjem klienta</label><input id="riskIncome" type="text" inputmode="numeric" value="90000"><small>Kč</small></div>
-          <div class="field suffix"><label>Měsíční výdaje domácnosti bez hypotéky</label><input id="riskExpenses" type="text" inputmode="numeric" value="70000"><small>Kč</small></div>
-          <div class="field suffix"><label>Splátky ostatních úvěrů</label><input id="riskOtherLoans" type="text" inputmode="numeric" value="0"><small>Kč</small></div>
-          <div class="field suffix"><label>Invalidní důchod 3. stupně</label><input id="riskInvalidPension" type="text" inputmode="numeric" value="22000"><small>Kč</small></div>
+          <div class="field suffix"><label>Měsíční sociální pojištění OSVČ</label><input id="riskSocialPayment" type="text" inputmode="numeric" value="" placeholder="sem napiš platbu OSVČ"><small>Kč</small></div>
+          <div class="field suffix"><label>Čistý měsíční příjem klienta</label><input id="riskIncome" type="text" inputmode="numeric" value="" placeholder="sem napiš příjem klienta"><small>Kč</small></div>
+          <div class="field suffix"><label>Měsíční výdaje domácnosti bez hypotéky</label><input id="riskExpenses" type="text" inputmode="numeric" value="" placeholder="sem napiš výdaje domácnosti"><small>Kč</small></div>
+          <div class="field suffix"><label>Splátky ostatních úvěrů</label><input id="riskOtherLoans" type="text" inputmode="numeric" value="" placeholder="sem napiš měsíční splátky"><small>Kč</small></div>
+          <div class="field suffix"><label>Ostatní závazky k doplacení při smrti</label><input id="riskOtherDebt" type="text" inputmode="numeric" value="" placeholder="sem napiš zůstatek závazků"><small>Kč</small></div>
+          <div class="field suffix"><label>Invalidní důchod 3. stupně</label><input id="riskInvalidPension" type="text" inputmode="numeric" value="" placeholder="sem napiš odhad z IDA / ČSSZ"><small>Kč</small></div>
           <label style="display:flex;align-items:center;gap:8px;margin:-2px 0 12px;font-size:13px;font-weight:800;color:#40516b">
-            <input id="riskAutoPensions" type="checkbox" checked style="width:16px;min-height:16px;margin:0">
+            <input id="riskAutoPensions" type="checkbox" style="width:16px;min-height:16px;margin:0">
             Orientačně dopočítat státní důchody podle typu příjmu
           </label>
           <div class="formgrid">
-            <div class="field suffix"><label>Vdovský/vdovecký důchod</label><input id="riskWidowPension" type="text" inputmode="numeric" value="15000"><small>Kč</small></div>
-            <div class="field suffix"><label>Sirotčí důchod / dítě</label><input id="riskOrphanPension" type="text" inputmode="numeric" value="12000"><small>Kč</small></div>
+            <div class="field suffix"><label>Vdovský/vdovecký důchod</label><input id="riskWidowPension" type="text" inputmode="numeric" value="" placeholder="sem napiš odhad"><small>Kč</small></div>
+            <div class="field suffix"><label>Sirotčí důchod / dítě</label><input id="riskOrphanPension" type="text" inputmode="numeric" value="" placeholder="sem napiš odhad na dítě"><small>Kč</small></div>
           </div>
-          <div class="field suffix"><label>Počet nezaopatřených dětí</label><input id="riskChildren" type="number" value="1"><small>děti</small></div>
+          <div class="field suffix"><label>Počet nezaopatřených dětí</label><input id="riskChildren" type="number" value="" placeholder="počet dětí"><small>děti</small></div>
+          <div class="formgrid">
+            <div class="field suffix"><label>Rezerva na pohřeb / první náklady</label><input id="riskFuneralReserve" type="text" inputmode="numeric" value="" placeholder="např. 150 000"><small>Kč</small></div>
+            <div class="field suffix"><label>Denní odškodné úrazu</label><input id="riskDailyCompensation" type="text" inputmode="numeric" value="" placeholder="volitelné"><small>Kč/den</small></div>
+          </div>
 
           <h3 style="margin-top:18px">Navázání na plán</h3>
-          <div class="field suffix"><label>Aktuální krytí invalidity 3. stupně</label><input id="riskCurrentInvalidCover" type="text" inputmode="numeric" value="0"><small>Kč</small></div>
-          <div class="field suffix"><label>Aktuální krytí smrti</label><input id="riskCurrentDeathCover" type="text" inputmode="numeric" value="0"><small>Kč</small></div>
+          <div class="field suffix"><label>Aktuální krytí invalidity 3. stupně</label><input id="riskCurrentInvalidCover" type="text" inputmode="numeric" value="" placeholder="sem napiš stávající krytí"><small>Kč</small></div>
+          <div class="field suffix"><label>Aktuální krytí smrti</label><input id="riskCurrentDeathCover" type="text" inputmode="numeric" value="" placeholder="sem napiš stávající krytí"><small>Kč</small></div>
 
           <button onclick="calculateRisk()">Přepočítat pojištění</button>
 
@@ -543,15 +560,15 @@ canvas{width:100%;height:330px}
         <div class="bottomGrid">
           <div class="resultBox blue">
             <h3>Potřebný kapitál při invaliditě</h3>
-            <p>Kapitál potřebný dnes pro okamžitý přechod do rentového režimu</p>
+            <p>Kapitál podle pravidla: každých 5 000 Kč měsíčně = 1 mil. Kč</p>
             <div class="value" id="riskInvalidCapital">—</div>
-            <p>Počítá rentu od dnešního věku až do konce plánu, po odečtení invalidního důchodu.</p>
+            <p>Výdaje domácnosti jsou navýšené o 20 % a je odečten orientační invalidní důchod.</p>
           </div>
           <div class="resultBox green">
             <h3>Potřebný kapitál pro rodinu</h3>
-            <p>Splacení hypotéky + kapitál na měsíční výpadek rodiny</p>
+            <p>Splacení hypotéky, závazků a kapitál na měsíční výpadek rodiny</p>
             <div class="value" id="riskDeathCapital">—</div>
-            <p>Výdaje domácnosti po odečtení vdovského a sirotčích důchodů.</p>
+            <p>Výdaje domácnosti jsou snížené o 20 % a jsou odečteny pozůstalostní důchody.</p>
           </div>
           <div class="resultBox purple">
             <h3>Doporučené dokrytí</h3>
@@ -559,6 +576,13 @@ canvas{width:100%;height:330px}
             <div class="value" id="riskCoverGap">—</div>
             <p>Číslo má ukázat, kolik ještě chybí chránit pro udržení rentového plánu.</p>
           </div>
+        </div>
+
+        <div class="riskMiniGrid">
+          <div class="riskMini orange"><small>Pracovní neschopnost</small><strong id="riskSickPayGap">—</strong></div>
+          <div class="riskMini purple"><small>Závažné onemocnění</small><strong id="riskCriticalIllness">—</strong></div>
+          <div class="riskMini blue"><small>Trvalé následky úrazu</small><strong id="riskAccidentPermanent">—</strong></div>
+          <div class="riskMini green"><small>Denní odškodné</small><strong id="riskDailyCompensationOut">—</strong></div>
         </div>
       </main>
 
@@ -589,16 +613,20 @@ canvas{width:100%;height:330px}
           <p class="desc">Rychlý model pro klienta: kdy investice doroste na zbývající dluh a co se stane, pokud klient hypotéku v tomto bodě doplatí.</p>
 
           <h3>Současná hypotéka</h3>
-          <div class="field suffix"><label>Výše hypotéky</label><input id="mortgageAmount" type="text" inputmode="numeric" value="5000000"><small>Kč</small></div>
+          <div class="field suffix"><label>Výše hypotéky</label><input id="mortgageAmount" type="text" inputmode="numeric" value="" placeholder="sem napiš výši hypotéky"><small>Kč</small></div>
           <div class="formgrid">
-            <div class="field suffix"><label>Úroková sazba</label><input id="mortgageRate" type="number" step="0.01" value="4.89"><small>%</small></div>
-            <div class="field suffix"><label>Doba splácení</label><input id="mortgageYears" type="number" value="30"><small>let</small></div>
+            <div class="field suffix"><label>Úroková sazba</label><input id="mortgageRate" type="number" step="0.01" value="" placeholder="sem napiš sazbu"><small>%</small></div>
+            <div class="field suffix"><label>Doba splácení</label><input id="mortgageYears" type="number" value="" placeholder="počet let"><small>let</small></div>
+          </div>
+          <div class="formgrid">
+            <div class="field suffix"><label>Délka fixace pro ukázku</label><input id="mortgageFixYears" type="number" value="" min="1" max="30" placeholder="např. 3 roky"><small>let</small></div>
+            <div class="field suffix"><label>Roční limit odpočtu úroků</label><select id="mortgageTaxLimit"><option value="150000" selected>150 000 Kč</option><option value="300000">300 000 Kč</option><option value="0">bez limitu</option></select></div>
           </div>
 
           <h3 style="margin-top:18px">Investiční varianta</h3>
-          <div class="field suffix"><label>Jednorázová investice</label><input id="mortgageLumpInvest" type="text" inputmode="numeric" value="500000"><small>Kč</small></div>
-          <div class="field suffix"><label>Pravidelná investice měsíčně</label><input id="mortgageMonthlyInvest" type="text" inputmode="numeric" value="10000"><small>Kč</small></div>
-          <div class="field suffix"><label>Zhodnocení investice</label><input id="mortgageInvestYield" type="number" step="0.1" value="7"><small>%</small></div>
+          <div class="field suffix"><label>Jednorázová investice</label><input id="mortgageLumpInvest" type="text" inputmode="numeric" value="" placeholder="sem napiš startovní investici"><small>Kč</small></div>
+          <div class="field suffix"><label>Pravidelná investice měsíčně</label><input id="mortgageMonthlyInvest" type="text" inputmode="numeric" value="" placeholder="sem napiš měsíční investici"><small>Kč</small></div>
+          <div class="field suffix"><label>Zhodnocení investice</label><input id="mortgageInvestYield" type="number" step="0.1" value="" placeholder="očekávané p.a."><small>%</small></div>
 
           <button onclick="calculateMortgage()">Přepočítat hypotéku</button>
 
@@ -634,6 +662,18 @@ canvas{width:100%;height:330px}
             </div>
           </div>
           <canvas id="mortgageChart" width="1060" height="380"></canvas>
+        </div>
+
+        <div class="taxBenefit">
+          <h2>Daňová úspora z úroků</h2>
+          <p class="desc" style="margin-bottom:0">Orientační ukázka, kolik může klient získat zpět přes daňový odpočet úroků během zvolené fixace. Skutečný nárok závisí na splnění daňových podmínek.</p>
+          <div class="taxGrid">
+            <div class="taxPill"><small>Úroky za fixaci</small><strong id="mortgageTaxInterest">—</strong></div>
+            <div class="taxPill"><small>Možná vratka 15 %</small><strong id="mortgageTaxRefund">—</strong></div>
+            <div class="taxPill"><small>Efekt měsíčně</small><strong id="mortgageTaxMonthly">—</strong></div>
+            <div class="taxPill"><small>Kolik splátek pokryje</small><strong id="mortgageTaxPayments">—</strong></div>
+          </div>
+          <p class="taxNote" id="mortgageTaxNote">—</p>
         </div>
 
         <div class="mortgageCards">
@@ -783,6 +823,12 @@ canvas{width:100%;height:330px}
             <div class="reportKpi green"><small>Aktuální majetek + investice</small><strong id="reportUsableAssets">—</strong></div>
             <div class="reportKpi purple"><small>Státní dávky</small><strong id="reportStateBenefits">—</strong></div>
           </div>
+          <div class="reportKpis">
+            <div class="reportKpi blue"><small>Pracovní neschopnost</small><strong id="reportSickPayGap">—</strong></div>
+            <div class="reportKpi purple"><small>Závažné onemocnění</small><strong id="reportCriticalIllness">—</strong></div>
+            <div class="reportKpi green"><small>Trvalé následky úrazu</small><strong id="reportAccidentPermanent">—</strong></div>
+            <div class="reportKpi red"><small>Denní odškodné</small><strong id="reportDailyCompensation">—</strong></div>
+          </div>
           <p class="reportText">Invalidita ukazuje, jaký kapitál je potřeba, pokud by klient musel okamžitě přejít do rentového režimu. Smrt ukazuje, kolik kapitálu by rodině pomohlo splatit hypotéku a dlouhodobě pokrýt měsíční rozdíl mezi výdaji a dávkami od státu.</p>
         </section>
 
@@ -815,7 +861,7 @@ function formatMoneyValue(v){
 }
 
 function setupMoneyInputs(){
-  const ids = ["rent1","rent2","legacy","current","lump","rentalIncome","mortgageAmount","mortgageLumpInvest","mortgageMonthlyInvest","riskIncome","riskExpenses","riskOtherLoans","riskInvalidPension","riskWidowPension","riskOrphanPension","riskCurrentInvalidCover","riskCurrentDeathCover","riskSocialPayment"];
+  const ids = ["rent1","rent2","legacy","current","lump","rentalIncome","mortgageAmount","mortgageLumpInvest","mortgageMonthlyInvest","riskIncome","riskExpenses","riskOtherLoans","riskOtherDebt","riskInvalidPension","riskWidowPension","riskOrphanPension","riskFuneralReserve","riskDailyCompensation","riskCurrentInvalidCover","riskCurrentDeathCover","riskSocialPayment"];
   ids.forEach(id=>{
     const el = document.getElementById(id);
     if(!el) return;
@@ -1075,10 +1121,49 @@ function mortgageInputs(){
   const amount = num('mortgageAmount');
   const annualRate = val('mortgageRate')/100;
   const years = Math.max(1, val('mortgageYears'));
+  const fixYears = Math.min(years, Math.max(1, val('mortgageFixYears') || 3));
+  const taxLimit = Math.max(0, val('mortgageTaxLimit'));
   const monthlyRate = annualRate/12;
   const months = years*12;
   const payment = monthlyRate === 0 ? amount/months : amount * monthlyRate / (1 - Math.pow(1+monthlyRate, -months));
-  return {amount, annualRate, years, monthlyRate, months, payment};
+  return {amount, annualRate, years, fixYears, taxLimit, monthlyRate, months, payment};
+}
+
+function buildMortgageTaxBenefit(){
+  const m = mortgageInputs();
+  const fixMonths = Math.min(m.months, Math.round(m.fixYears * 12));
+  let debt = m.amount;
+  let interestInFix = 0;
+  const interestByYear = [];
+
+  for(let month=1; month<=fixMonths; month++){
+    const interest = debt * m.monthlyRate;
+    const principal = Math.max(0, m.payment - interest);
+    debt = Math.max(0, debt - principal);
+    interestInFix += interest;
+    const yearIndex = Math.ceil(month / 12) - 1;
+    interestByYear[yearIndex] = (interestByYear[yearIndex] || 0) + interest;
+  }
+
+  const deductibleInterest = interestByYear.reduce((sum, interest)=>{
+    const capped = m.taxLimit > 0 ? Math.min(interest, m.taxLimit) : interest;
+    return sum + capped;
+  }, 0);
+  const refund = deductibleInterest * 0.15;
+  const monthlyEffect = fixMonths > 0 ? refund / fixMonths : 0;
+  const paymentCount = m.payment > 0 ? refund / m.payment : 0;
+
+  return {
+    fixMonths,
+    interestInFix,
+    deductibleInterest,
+    refund,
+    monthlyEffect,
+    paymentCount,
+    finalDebt: debt,
+    limit: m.taxLimit,
+    fixYears: m.fixYears
+  };
 }
 
 function buildMortgageSeries(){
@@ -1205,6 +1290,7 @@ function drawMortgageChart(data){
 function calculateMortgage(){
   if(!document.getElementById('mortgageAmount')) return;
   const data=buildMortgageSeries();
+  const tax=buildMortgageTaxBenefit();
   const crossText=data.cross ? (Math.ceil(data.cross.month/12) + ". rok") : "neprotne se";
   const safePayoffText=data.safePayoff ? (Math.ceil(data.safePayoff.month/12) + ". rok") : "nedosáhne";
   const crossValue=data.cross ? fmt(data.cross.investment) : "—";
@@ -1224,6 +1310,15 @@ function calculateMortgage(){
   mortgageStrategyDiff.textContent=diff===null ? "—" : (diff>=0 ? "+" : "−") + fmt(Math.abs(diff));
   mortgageFreedPayment.textContent=data.cross ? fmt(data.payoffMonthlyAfter) + " / měsíc" : "—";
   if(typeof mortgageSafePayoffCard !== 'undefined') mortgageSafePayoffCard.textContent=safePayoffText;
+
+  if(typeof mortgageTaxInterest !== 'undefined') mortgageTaxInterest.textContent=fmt(tax.interestInFix);
+  if(typeof mortgageTaxRefund !== 'undefined') mortgageTaxRefund.textContent=fmt(tax.refund);
+  if(typeof mortgageTaxMonthly !== 'undefined') mortgageTaxMonthly.textContent=fmt(tax.monthlyEffect) + " / měsíc";
+  if(typeof mortgageTaxPayments !== 'undefined') mortgageTaxPayments.textContent=(Math.round(tax.paymentCount * 10) / 10).toLocaleString('cs-CZ') + " splátky";
+  if(typeof mortgageTaxNote !== 'undefined'){
+    const limitText = tax.limit > 0 ? "Počítám s ročním limitem odpočtu " + fmt(tax.limit) + "." : "Počítám bez ročního limitu odpočtu.";
+    mortgageTaxNote.textContent = "Za " + tax.fixYears.toLocaleString('cs-CZ') + " roky fixace klient orientačně zaplatí na úrocích " + fmt(tax.interestInFix) + ". Při sazbě 15 % může daňový efekt vycházet přibližně na " + fmt(tax.refund) + ", tedy asi " + fmt(tax.monthlyEffect) + " měsíčně. " + limitText;
+  }
 
 
   mortgageSideDebt.textContent=fmt(num('mortgageAmount'));
@@ -1298,6 +1393,7 @@ function setMoneyInputValue(id, value){
 function autoUpdateRiskPensions(){
   const auto = document.getElementById('riskAutoPensions');
   if(!auto || !auto.checked) return;
+  if(num('riskIncome') <= 0) return;
   const est = estimateStatePensionsFromIncome();
   setMoneyInputValue('riskInvalidPension', est.invalid);
   setMoneyInputValue('riskWidowPension', est.widow);
@@ -1326,6 +1422,16 @@ function requiredCapitalFromMonthlySchedule(startAge, endAge, monthlyGapFn, yld)
   return Math.ceil(capital);
 }
 
+function capitalByFiveThousandRule(monthlyGap){
+  if(monthlyGap <= 0) return 0;
+  return Math.ceil(monthlyGap / 5000) * 1000000;
+}
+
+function roundUpToHundredThousand(value){
+  if(value <= 0) return 0;
+  return Math.ceil(value / 100000) * 100000;
+}
+
 function calculateRisk(){
   if(!document.getElementById('riskIncome')) return;
   autoUpdateRiskPensions();
@@ -1340,24 +1446,30 @@ function calculateRisk(){
 
   const expenses = num('riskExpenses');
   const otherLoans = num('riskOtherLoans');
+  const otherDebt = num('riskOtherDebt');
+  const funeralReserve = Math.max(0, num('riskFuneralReserve') || 150000);
+  const incomeType = document.getElementById('riskIncomeType')?.value || 'employee';
+  const income = num('riskIncome');
   const invalidPension = num('riskInvalidPension');
   const widowPension = num('riskWidowPension');
   const orphanPension = num('riskOrphanPension');
   const children = Math.max(0, val('riskChildren'));
-  const currentAge = Math.max(0, num('age'));
-  const endAgeValue = Math.max(currentAge + 1, num('endAge'));
 
-  // Invalidita: klient se okamžitě přesouvá do rentového režimu.
-  // Potřebný kapitál dnes kryje rentu od aktuálního věku až do konce plánu.
-  const invalidGap = Math.max(0, Math.max(num('rent1'), num('rent2')) - num('rentalIncome') - invalidPension);
-  const invalidCapital = requiredCapitalFromMonthlySchedule(currentAge, endAgeValue, (age)=>Math.max(0, grossRentAtAge(age) - num('rentalIncome') - invalidPension), num('post')/100);
+  // Invalidita: výdaje domácnosti rostou o 20 %. Každých chybějících 5 000 Kč měsíčně = 1 mil. Kč kapitálu.
+  const invalidGap = Math.max(0, expenses * 1.2 + mortgagePaymentValue + otherLoans - invalidPension);
+  const invalidCapital = capitalByFiveThousandRule(invalidGap);
 
-  // Smrt: cílem je splacení hypotéky + kapitál, který rodině nahradí měsíční výpadek výdajů.
-  // Hypoteční splátka není v běžných výdajích, protože hypotéka se má při smrti umořit kapitálem.
+  // Smrt: výdaje domácnosti statisticky klesají o 20 %. Hypotéka a další závazky se řeší jednorázově.
   const familyPensions = widowPension + orphanPension * children;
-  const deathGap = Math.max(0, expenses + otherLoans - familyPensions);
-  const deathIncomeCapital = requiredCapitalFromMonthlySchedule(currentAge, endAgeValue, ()=>deathGap, num('post')/100);
-  const deathCapital = mortgageDebtValue + deathIncomeCapital;
+  const deathGap = Math.max(0, expenses * 0.8 + otherLoans - familyPensions);
+  const deathIncomeCapital = capitalByFiveThousandRule(deathGap);
+  const deathCapitalBase = mortgageDebtValue + otherDebt + deathIncomeCapital;
+  const deathCapital = deathCapitalBase > 0 ? Math.max(deathCapitalBase, funeralReserve) : funeralReserve;
+
+  const sicknessGap = incomeType === 'employee' ? income * 0.4 : income;
+  const criticalIllness = roundUpToHundredThousand(income * 12);
+  const accidentPermanent = 1000000;
+  const dailyCompensation = num('riskDailyCompensation');
 
   const householdGap = Math.max(0, expenses + mortgagePaymentValue + otherLoans - invalidPension);
   const invalidMissingAfterAssets = Math.max(0, invalidCapital - usableAssetsNow - num('riskCurrentInvalidCover'));
@@ -1373,6 +1485,10 @@ function calculateRisk(){
   riskInvalidCapital.textContent = fmt(invalidCapital);
   riskDeathCapital.textContent = fmt(deathCapital);
   riskCoverGap.textContent = fmt(invalidMissingAfterAssets + deathMissingAfterAssets);
+  if(typeof riskSickPayGap !== 'undefined') riskSickPayGap.textContent = fmt(sicknessGap) + ' / měsíc';
+  if(typeof riskCriticalIllness !== 'undefined') riskCriticalIllness.textContent = fmt(criticalIllness);
+  if(typeof riskAccidentPermanent !== 'undefined') riskAccidentPermanent.textContent = fmt(accidentPermanent);
+  if(typeof riskDailyCompensationOut !== 'undefined') riskDailyCompensationOut.textContent = dailyCompensation > 0 ? fmt(dailyCompensation) + ' / den' : 'volitelné';
 
   riskSideRent.textContent = fmt(rentNeed) + ' / měsíc';
   riskSideAsset.textContent = fmt(currentAssetNow);
@@ -1382,7 +1498,9 @@ function calculateRisk(){
   if(typeof riskSideExpenses !== 'undefined') riskSideExpenses.textContent = fmt(expenses) + ' + ' + fmt(otherLoans) + ' + hypo ' + fmt(mortgagePaymentValue) + ' = ' + fmt(expenses + otherLoans + mortgagePaymentValue) + ' / měsíc';
 
   const invalidCardText = document.querySelector('#riskInvalidGap')?.parentElement?.querySelector('p');
-  if(invalidCardText) invalidCardText.innerHTML = 'Chybějící částka k okamžité rentě po započtení invalidního důchodu. Dnešní měsíční rozdíl domácnosti: <strong>' + fmt(householdGap) + ' / měsíc</strong>.';
+  if(invalidCardText) invalidCardText.innerHTML = 'Výdaje domácnosti jsou navýšené o 20 %, započítá se hypotéka, ostatní splátky a orientační invalidní důchod. Dnešní měsíční rozdíl domácnosti: <strong>' + fmt(householdGap) + ' / měsíc</strong>.';
+  const deathCardText = document.querySelector('#riskDeathGap')?.parentElement?.querySelector('p');
+  if(deathCardText) deathCardText.innerHTML = 'Výdaje domácnosti jsou snížené o 20 %, započítá se vdovský/vdovecký a sirotčí důchod. Hypotéka a závazky se počítají zvlášť jednorázově.';
   if(typeof updateReport === 'function') updateReport();
 }
 
@@ -1426,29 +1544,36 @@ function drawReportBar(canvas, bars){
 }
 
 function getReportRiskNumbers(){
-  const currentAge = Math.max(0, num('age'));
-  const endAgeValue = Math.max(currentAge + 1, num('endAge'));
   const currentAssetNow = num('current');
   const currentInvestmentsNow = num('lump');
   const usableAssetsNow = currentAssetNow + currentInvestmentsNow;
   const m = document.getElementById('mortgageAmount') ? mortgageInputs() : {payment:0, amount:0};
+  const income = num('riskIncome');
+  const incomeType = document.getElementById('riskIncomeType')?.value || 'employee';
   const invalidPension = num('riskInvalidPension');
   const widowPension = num('riskWidowPension');
   const orphanPension = num('riskOrphanPension');
   const children = Math.max(0, val('riskChildren'));
   const expenses = num('riskExpenses');
   const otherLoans = num('riskOtherLoans');
-  const invalidGap = Math.max(0, Math.max(num('rent1'), num('rent2')) - num('rentalIncome') - invalidPension);
-  const invalidCapital = requiredCapitalFromMonthlySchedule(currentAge, endAgeValue, (age)=>Math.max(0, grossRentAtAge(age) - num('rentalIncome') - invalidPension), num('post')/100);
+  const otherDebt = num('riskOtherDebt');
+  const funeralReserve = Math.max(0, num('riskFuneralReserve') || 150000);
+  const invalidGap = Math.max(0, expenses * 1.2 + (m.payment || 0) + otherLoans - invalidPension);
+  const invalidCapital = capitalByFiveThousandRule(invalidGap);
   const familyPensions = widowPension + orphanPension * children;
-  const deathGap = Math.max(0, expenses + otherLoans - familyPensions);
-  const deathIncomeCapital = requiredCapitalFromMonthlySchedule(currentAge, endAgeValue, ()=>deathGap, num('post')/100);
-  const deathCapital = (m.amount || 0) + deathIncomeCapital;
+  const deathGap = Math.max(0, expenses * 0.8 + otherLoans - familyPensions);
+  const deathIncomeCapital = capitalByFiveThousandRule(deathGap);
+  const deathCapitalBase = (m.amount || 0) + otherDebt + deathIncomeCapital;
+  const deathCapital = deathCapitalBase > 0 ? Math.max(deathCapitalBase, funeralReserve) : funeralReserve;
+  const sicknessGap = incomeType === 'employee' ? income * 0.4 : income;
+  const criticalIllness = roundUpToHundredThousand(income * 12);
   return {
     invalidGap, deathGap, invalidCapital, deathCapital, usableAssetsNow,
     invalidCover: Math.max(0, invalidCapital - usableAssetsNow - num('riskCurrentInvalidCover')),
     deathCover: Math.max(0, deathCapital - usableAssetsNow - num('riskCurrentDeathCover')),
-    invalidPension, familyPensions
+    invalidPension, familyPensions, sicknessGap, criticalIllness,
+    accidentPermanent: 1000000,
+    dailyCompensation: num('riskDailyCompensation')
   };
 }
 
@@ -1515,8 +1640,10 @@ function updateReport(){
 
 
 document.querySelectorAll('input, select').forEach(i=>{
-  if(!["rent1","rent2","legacy","current","lump","rentalIncome","mortgageAmount","mortgageLumpInvest","mortgageMonthlyInvest","riskIncome","riskExpenses","riskOtherLoans","riskInvalidPension","riskWidowPension","riskOrphanPension","riskCurrentInvalidCover","riskCurrentDeathCover","riskSocialPayment"].includes(i.id)){
-    i.addEventListener('input',()=>{ calculate(); calculateMortgage(); calculateRisk(); });
+  if(!["rent1","rent2","legacy","current","lump","rentalIncome","mortgageAmount","mortgageLumpInvest","mortgageMonthlyInvest","riskIncome","riskExpenses","riskOtherLoans","riskOtherDebt","riskInvalidPension","riskWidowPension","riskOrphanPension","riskFuneralReserve","riskDailyCompensation","riskCurrentInvalidCover","riskCurrentDeathCover","riskSocialPayment"].includes(i.id)){
+    const recalc=()=>{ calculate(); calculateMortgage(); calculateRisk(); };
+    i.addEventListener('input',recalc);
+    i.addEventListener('change',recalc);
   }
 });
 
@@ -1614,9 +1741,9 @@ updateReport();
   }
 
   function reportRiskNumbers(){
-    const currentAge=numberVal('age');
-    const endAge=Math.max(currentAge+1,numberVal('endAge'));
     const currentAssets=money('current')+money('lump');
+    const income=money('riskIncome');
+    const incomeType=byId('riskIncomeType')?.value || 'employee';
     const invalidPension=money('riskInvalidPension');
     const widow=money('riskWidowPension');
     const orphan=money('riskOrphanPension');
@@ -1624,17 +1751,22 @@ updateReport();
     const familyPensions=widow+orphan*children;
     const expenses=money('riskExpenses');
     const otherLoans=money('riskOtherLoans');
+    const otherDebt=money('riskOtherDebt');
+    const funeralReserve=Math.max(0,money('riskFuneralReserve')||150000);
     const mortgage=mortgageModel();
-    const post=(numberVal('post')||0)/100;
-    const invalidGap=Math.max(0,Math.max(money('rent1'),money('rent2'))-money('rentalIncome')-invalidPension);
-    const invalidCapital=capitalForMonthlySchedule(currentAge,endAge,(age)=>Math.max(0,rentAt(age)-money('rentalIncome')-invalidPension),post);
-    // U smrti se počítá s doplacením jistiny hypotéky zvlášť. Měsíční výpadek rodiny proto pracuje s výdaji domácnosti a ostatními úvěry bez hypoteční splátky.
-    const deathGap=Math.max(0,expenses+otherLoans-familyPensions);
-    const deathIncomeCapital=capitalForMonthlySchedule(currentAge,endAge,()=>deathGap,post);
-    const deathCapital=(mortgage.amount||0)+deathIncomeCapital;
+    const invalidGap=Math.max(0,expenses*1.2+(mortgage.payment||0)+otherLoans-invalidPension);
+    const invalidCapital=capitalByFiveThousandRule(invalidGap);
+    const deathGap=Math.max(0,expenses*.8+otherLoans-familyPensions);
+    const deathIncomeCapital=capitalByFiveThousandRule(deathGap);
+    const deathCapitalBase=(mortgage.amount||0)+otherDebt+deathIncomeCapital;
+    const deathCapital=deathCapitalBase>0?Math.max(deathCapitalBase,funeralReserve):funeralReserve;
     const invalidCover=Math.max(0,invalidCapital-currentAssets-money('riskCurrentInvalidCover'));
     const deathCover=Math.max(0,deathCapital-currentAssets-money('riskCurrentDeathCover'));
-    return {currentAge,endAge,currentAssets,invalidPension,familyPensions,expenses,otherLoans,mortgage,invalidGap,invalidCapital,deathGap,deathIncomeCapital,deathCapital,invalidCover,deathCover};
+    const sicknessGap=incomeType==='employee'?income*.4:income;
+    const criticalIllness=roundUpToHundredThousand(income*12);
+    const accidentPermanent=1000000;
+    const dailyCompensation=money('riskDailyCompensation');
+    return {currentAssets,income,incomeType,invalidPension,familyPensions,expenses,otherLoans,otherDebt,funeralReserve,mortgage,invalidGap,invalidCapital,deathGap,deathIncomeCapital,deathCapital,invalidCover,deathCover,sicknessGap,criticalIllness,accidentPermanent,dailyCompensation};
   }
 
   function drawLine(canvas, series, keys){
@@ -1716,25 +1848,29 @@ updateReport();
     setText('reportDeathCover', safeFmt(rn.deathCover));
     setText('reportUsableAssets', safeFmt(rn.currentAssets));
     setText('reportStateBenefits', 'Inv. '+safeFmt(rn.invalidPension)+' / rodina '+safeFmt(rn.familyPensions));
+    setText('reportSickPayGap', safeFmt(rn.sicknessGap)+' / měsíc');
+    setText('reportCriticalIllness', safeFmt(rn.criticalIllness));
+    setText('reportAccidentPermanent', safeFmt(rn.accidentPermanent));
+    setText('reportDailyCompensation', rn.dailyCompensation>0?safeFmt(rn.dailyCompensation)+' / den':'volitelné');
     drawBars(byId('reportRiskChart'),[
-      {label:'Renta',value:Math.max(money('rent1'),money('rent2')),color:'#2563eb'},
+      {label:'Invalidita',value:rn.invalidCapital,color:'#2563eb'},
+      {label:'Smrt',value:rn.deathCapital,color:'#ef4444'},
       {label:'Inv. důchod',value:rn.invalidPension,color:'#16a34a'},
-      {label:'Invalidita chybí',value:rn.invalidGap,color:'#ef4444'},
-      {label:'Rodina chybí',value:rn.deathGap,color:'#f59e0b'}
+      {label:'PN',value:rn.sicknessGap*12,color:'#f59e0b'}
     ]);
 
     // klientsky čisté doplnění rozkladu pojištění
     const riskSection=byId('reportRiskSection');
     if(riskSection && !byId('riskBreakdownV24')){
       const div=document.createElement('div'); div.id='riskBreakdownV24'; div.className='reportMiniGrid';
-      div.innerHTML='<div class="reportKpi blue"><small>Smrt – hypotéka k doplacení</small><strong id="rbMortgageDebt">—</strong></div><div class="reportKpi red"><small>Výdaje + ostatní úvěry</small><strong id="rbFamilyExpenses">—</strong></div><div class="reportKpi green"><small>Státní dávky rodině</small><strong id="rbFamilyBenefits">—</strong></div>';
+      div.innerHTML='<div class="reportKpi blue"><small>Smrt – hypotéka k doplacení</small><strong id="rbMortgageDebt">—</strong></div><div class="reportKpi red"><small>Výdaje po snížení o 20 %</small><strong id="rbFamilyExpenses">—</strong></div><div class="reportKpi green"><small>Státní dávky rodině</small><strong id="rbFamilyBenefits">—</strong></div>';
       const p=document.createElement('p'); p.className='reportLineNote'; p.id='riskNoteV24';
       const anchor=riskSection.querySelector('.reportSplit'); anchor?.after(div); div.after(p);
     }
     setText('rbMortgageDebt',safeFmt(rn.mortgage.amount||0));
-    setText('rbFamilyExpenses',safeFmt(rn.expenses+rn.otherLoans)+' / měsíc');
+    setText('rbFamilyExpenses',safeFmt(rn.expenses*.8+rn.otherLoans)+' / měsíc');
     setText('rbFamilyBenefits',safeFmt(rn.familyPensions)+' / měsíc');
-    setText('riskNoteV24','U úmrtí model počítá se splacením hypotéky jednorázově a s měsíčním výpadkem rodiny po započtení vdovského/vdoveckého a sirotčího důchodu.');
+    setText('riskNoteV24','U úmrtí model počítá se splacením hypotéky a dalších závazků jednorázově, s poklesem výdajů domácnosti o 20 % a s orientačním vdovským/vdoveckým a sirotčím důchodem. U invalidity používá jednoduché pravidlo: každých chybějících 5 000 Kč měsíčně = 1 mil. Kč kapitálu.');
 
     const showInvest=byId('reportInvest')?.checked;
     const showMortgage=byId('reportMortgage')?.checked;
@@ -1756,25 +1892,25 @@ updateReport();
 // V25 – mazání údajů klienta
 (function(){
   const byId = id => document.getElementById(id);
-  const moneyIds = new Set(['rent1','rent2','legacy','current','rentalIncome','lump','riskIncome','riskExpenses','riskOtherLoans','riskInvalidPension','riskWidowPension','riskOrphanPension','riskCurrentInvalidCover','riskCurrentDeathCover','mortgageAmount','mortgageLumpInvest','mortgageMonthlyInvest']);
+  const moneyIds = new Set(['rent1','rent2','legacy','current','rentalIncome','lump','riskIncome','riskExpenses','riskOtherLoans','riskOtherDebt','riskInvalidPension','riskWidowPension','riskOrphanPension','riskFuneralReserve','riskDailyCompensation','riskCurrentInvalidCover','riskCurrentDeathCover','mortgageAmount','mortgageLumpInvest','mortgageMonthlyInvest']);
 
   const sections = {
     invest: {
       ids: ['clientName','age','rentAge','rent1','rent1Until','rent2From','rent2','endAge','pre','post','legacy','current','currentYield','rentalIncome','lump'],
       values: {
-        clientName:'', age:'35', rentAge:'50', rent1:'0', rent1Until:'75', rent2From:'75', rent2:'0', endAge:'90', pre:'8', post:'7', legacy:'0', current:'0', currentYield:'3', rentalIncome:'0', lump:'0'
+        clientName:'', age:'', rentAge:'', rent1:'', rent1Until:'', rent2From:'', rent2:'', endAge:'', pre:'', post:'', legacy:'', current:'', currentYield:'3', rentalIncome:'', lump:''
       }
     },
     risk: {
-      ids: ['riskIncomeType','riskIncome','riskExpenses','riskOtherLoans','riskInvalidPension','riskWidowPension','riskOrphanPension','riskChildren','riskCurrentInvalidCover','riskCurrentDeathCover','riskAutoPensions'],
+      ids: ['riskIncomeType','riskIncome','riskExpenses','riskOtherLoans','riskOtherDebt','riskInvalidPension','riskWidowPension','riskOrphanPension','riskChildren','riskFuneralReserve','riskDailyCompensation','riskCurrentInvalidCover','riskCurrentDeathCover','riskAutoPensions'],
       values: {
-        riskIncomeType:'employee', riskIncome:'0', riskExpenses:'0', riskOtherLoans:'0', riskInvalidPension:'0', riskWidowPension:'0', riskOrphanPension:'0', riskChildren:'0', riskCurrentInvalidCover:'0', riskCurrentDeathCover:'0', riskAutoPensions:true
+        riskIncomeType:'employee', riskIncome:'', riskExpenses:'', riskOtherLoans:'', riskOtherDebt:'', riskInvalidPension:'', riskWidowPension:'', riskOrphanPension:'', riskChildren:'', riskFuneralReserve:'', riskDailyCompensation:'', riskCurrentInvalidCover:'', riskCurrentDeathCover:'', riskAutoPensions:false
       }
     },
     mortgage: {
-      ids: ['mortgageAmount','mortgageRate','mortgageYears','mortgageLumpInvest','mortgageMonthlyInvest','mortgageInvestYield'],
+      ids: ['mortgageAmount','mortgageRate','mortgageYears','mortgageFixYears','mortgageTaxLimit','mortgageLumpInvest','mortgageMonthlyInvest','mortgageInvestYield'],
       values: {
-        mortgageAmount:'0', mortgageRate:'4.89', mortgageYears:'30', mortgageLumpInvest:'0', mortgageMonthlyInvest:'0', mortgageInvestYield:'7'
+        mortgageAmount:'', mortgageRate:'', mortgageYears:'', mortgageFixYears:'', mortgageTaxLimit:'150000', mortgageLumpInvest:'', mortgageMonthlyInvest:'', mortgageInvestYield:''
       }
     },
     report: {
@@ -1839,579 +1975,16 @@ updateReport();
 })();
 </script>
 
-
-<!-- V27 – klientský report -->
-<style>
-/* V27 report: klientský výstup, méně grafů, více srozumitelnosti */
-.v27Doc{background:#fff;border-radius:28px;padding:28px;border:1px solid var(--line);box-shadow:var(--shadow)}
-.v27Hero{display:grid;grid-template-columns:1.35fr .65fr;gap:18px;margin-bottom:18px}
-.v27Title{padding:26px;border-radius:26px;background:linear-gradient(135deg,#eef5ff,#ffffff);border:1px solid #d9e8ff}
-.v27Title h1{margin:0 0 8px;font-size:36px;letter-spacing:-.055em}
-.v27Title p{margin:0;color:#61708a;font-size:16px;line-height:1.45}
-.v27Badge{padding:26px;border-radius:26px;background:#101828;color:#fff}
-.v27Badge small{display:block;color:#cbd5e1;font-size:13px;font-weight:800;margin-bottom:8px}
-.v27Badge strong{display:block;font-size:26px;letter-spacing:-.04em;margin-bottom:14px}
-.v27Section{margin-top:18px;padding:24px;border-radius:26px;border:1px solid var(--line);background:#fbfdff;break-inside:avoid}
-.v27Section h2{font-size:26px;margin:0 0 10px;letter-spacing:-.045em}
-.v27Section h3{font-size:18px;margin:0 0 10px;letter-spacing:-.025em}
-.v27Intro{font-size:16px;color:#44546b;line-height:1.5;margin:0 0 16px}
-.v27Kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:12px}
-.v27Kpis.two{grid-template-columns:1fr 1fr}
-.v27Kpis.three{grid-template-columns:repeat(3,1fr)}
-.v27Kpi{border:1px solid var(--line);background:#fff;border-radius:20px;padding:16px;min-height:96px}
-.v27Kpi small{display:block;color:#667085;font-weight:850;font-size:12px;margin-bottom:8px;line-height:1.25}
-.v27Kpi strong{display:block;font-size:24px;letter-spacing:-.045em;line-height:1.08}
-.v27Kpi.green strong{color:#16a34a}.v27Kpi.red strong{color:#ef4444}.v27Kpi.blue strong{color:#2563eb}.v27Kpi.purple strong{color:#7c3aed}.v27Kpi.orange strong{color:#f59e0b}
-.v27Summary{margin-top:16px;padding:18px 20px;border-radius:20px;background:#eef5ff;border:1px solid #cfe2ff;color:#1d3d6d;font-size:16px;line-height:1.5}
-.v27GraphGrid{display:grid;grid-template-columns:minmax(420px,1fr) .85fr;gap:18px;align-items:stretch;margin-top:14px}
-.v27ChartBox{background:#fff;border:1px solid var(--line);border-radius:22px;padding:14px;min-height:300px}
-.v27Chart{width:100%;height:270px;display:block}
-.v27Explain{background:#fff;border:1px solid var(--line);border-radius:22px;padding:18px;color:#344054;font-size:15px;line-height:1.5}
-.v27Explain .line{display:flex;gap:10px;align-items:flex-start;margin:9px 0}.v27Swatch{width:24px;height:4px;border-radius:999px;margin-top:9px;flex:0 0 auto}.v27Swatch.green{background:#16a34a}.v27Swatch.blue{background:#2563eb}.v27Swatch.red{background:#ef4444}.v27Swatch.orange{background:#f59e0b}
-.v27Protection{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:12px}
-.v27Panel{background:#fff;border:1px solid var(--line);border-radius:22px;padding:20px}
-.v27Rows{display:grid;gap:10px;margin-top:12px}.v27Row{display:flex;justify-content:space-between;gap:14px;border-bottom:1px solid #eef2f7;padding-bottom:9px;color:#44546b}.v27Row:last-child{border-bottom:none}.v27Row strong{color:#101828;text-align:right}.v27Row.total{font-size:17px;font-weight:900;color:#101828}.v27Row.total strong{font-size:22px}.v27Row.blue strong{color:#2563eb}.v27Row.red strong{color:#ef4444}.v27Row.green strong{color:#16a34a}
-.v27Steps{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-top:12px}
-.v27Footer{margin-top:18px;color:#667085;font-size:12px;line-height:1.45}
-@media(max-width:1250px){.v27Hero,.v27GraphGrid,.v27Protection{grid-template-columns:1fr}.v27Kpis,.v27Kpis.three,.v27Kpis.two,.v27Steps{grid-template-columns:1fr 1fr}.v27ChartBox{min-height:260px}}
-@media print{.v27Doc{box-shadow:none;border:none;border-radius:0;padding:0}.v27Section{page-break-inside:avoid;break-inside:avoid}.v27GraphGrid{grid-template-columns:1fr .78fr}.v27Kpis{grid-template-columns:repeat(4,1fr)}.v27Steps{grid-template-columns:repeat(5,1fr)}.v27Protection{grid-template-columns:1fr 1fr}.v27Title h1{font-size:32px}.v27Kpi strong{font-size:22px}}
-</style>
 <script>
-(function(){
-  function byId(id){return document.getElementById(id)}
-  function rawMoney(id){return parseMoney(byId(id)?.value||0)}
-  function rawNum(id){return Number(String(byId(id)?.value||0).replace(',','.'))||0}
-  function f(n){return Math.round(Math.max(0,Number(n)||0)).toLocaleString('cs-CZ')+' Kč'}
-  function fm(n){return (Math.round((Number(n)||0)/100000)/10).toLocaleString('cs-CZ')+' mil.'}
-  function pct(v){return (Number(v)||0).toLocaleString('cs-CZ')+' %'}
-  function labelYear(month){return month ? Math.ceil(month/12)+'. rok' : 'nedosáhne'}
-  function maxRent(){return Math.max(rawMoney('rent1'),rawMoney('rent2'))}
-  function rentAt(age){return age < rawNum('rent1Until') ? rawMoney('rent1') : rawMoney('rent2')}
-  function currentAge(){return rawNum('age')||0}
-  function rentAge(){return rawNum('rentAge')||0}
-  function endAge(){return Math.max(currentAge()+1,rawNum('endAge')||90)}
-  function yearsToRent(){return Math.max(0,rentAge()-currentAge())}
-  function futureAsset(){return rawMoney('current')*Math.pow(1+(rawNum('currentYield')/100),yearsToRent())}
-  function futureLump(){
-    let cap=rawMoney('lump'); const r=(rawNum('pre')/100)/12; const months=Math.round(yearsToRent()*12);
-    for(let i=0;i<months;i++) cap*=1+r; return cap;
-  }
-  function requiredCapitalDepleteLocal(){try{return requiredCapitalDeplete()}catch(e){return 0}}
-  function requiredCapitalInterestLocal(){try{return requiredCapitalInterest()}catch(e){return 0}}
-  function capitalForSchedule(startAge,endAge, monthlyFn, annualYield){
-    const r=(annualYield||0)/12; const months=Math.max(1,Math.round((endAge-startAge)*12)); let pv=0;
-    for(let m=1;m<=months;m++){const age=startAge+m/12; pv += Math.max(0,monthlyFn(age))/Math.pow(1+r,m)}
-    return pv;
-  }
-  function mortgageModel(){
-    if(typeof buildMortgageSeries==='function'){try{return buildMortgageSeries()}catch(e){}}
-    return {amount:rawMoney('mortgageAmount'),payment:0,series:[],years:rawNum('mortgageYears')||30,cross:null,safePayoff:null,baseEndInvestment:0,payoffEndInvestment:null};
-  }
-  function riskNumbers(){
-    const ca=currentAge(), ea=endAge(), post=rawNum('post')/100;
-    const usable=rawMoney('current')+rawMoney('lump');
-    const invP=rawMoney('riskInvalidPension');
-    const widow=rawMoney('riskWidowPension');
-    const orphan=rawMoney('riskOrphanPension');
-    const children=Math.max(0,rawNum('riskChildren'));
-    const familyP=widow+orphan*children;
-    const expenses=rawMoney('riskExpenses');
-    const other=rawMoney('riskOtherLoans');
-    const mort=mortgageModel();
-    const invalidGap=Math.max(0,maxRent()-rawMoney('rentalIncome')-invP);
-    const invalidCapital=capitalForSchedule(ca,ea,(age)=>Math.max(0,rentAt(age)-rawMoney('rentalIncome')-invP),post);
-    const deathGap=Math.max(0,expenses+other-familyP);
-    const deathIncomeCapital=capitalForSchedule(ca,ea,()=>deathGap,post);
-    const deathCapital=(mort.amount||0)+deathIncomeCapital;
-    return {usable,invP,familyP,expenses,other,mort,invalidGap,invalidCapital,deathGap,deathIncomeCapital,deathCapital,invalidCover:Math.max(0,invalidCapital-usable-rawMoney('riskCurrentInvalidCover')),deathCover:Math.max(0,deathCapital-usable-rawMoney('riskCurrentDeathCover'))};
-  }
-  function drawAxes(ctx,W,H,pad,max,yLabelCount=4){
-    ctx.clearRect(0,0,W,H); ctx.fillStyle='#fff'; ctx.fillRect(0,0,W,H);
-    ctx.strokeStyle='#e4eaf3'; ctx.lineWidth=1; ctx.font='13px -apple-system'; ctx.fillStyle='#687891';
-    for(let i=0;i<=yLabelCount;i++){const y=pad+(H-pad*2)*i/yLabelCount;ctx.beginPath();ctx.moveTo(pad,y);ctx.lineTo(W-pad,y);ctx.stroke();ctx.fillText(fm(max-(max*i/yLabelCount)),8,y+5)}
-  }
-  function drawRentChart(canvas){
-    if(!canvas) return; const ctx=canvas.getContext('2d'),W=canvas.width,H=canvas.height,pad=48;
-    const capNeed=requiredCapitalDepleteLocal(); const created=futureAsset()+futureLump(); const start=rawMoney('current')+rawMoney('lump');
-    const max=Math.max(capNeed,created,start,1)*1.15; drawAxes(ctx,W,H,pad,max);
-    const age=currentAge(), ra=rentAge(), ea=endAge(); const span=Math.max(1,ea-age);
-    function x(a){return pad+(W-pad*2)*(a-age)/span} function y(v){return pad+(H-pad*2)*(1-v/max)}
-    // x grid + labels
-    const labels=[age,ra,Math.round((ra+ea)/2),ea].filter((v,i,a)=>i===0||v!==a[i-1]);
-    labels.forEach(a=>{const xx=x(a);ctx.strokeStyle='#eef2f7';ctx.beginPath();ctx.moveTo(xx,pad);ctx.lineTo(xx,H-pad);ctx.stroke();ctx.fillStyle='#687891';ctx.font='13px -apple-system';ctx.textAlign='center';ctx.fillText(String(Math.round(a)),xx,H-14)});ctx.textAlign='left';
-    // green created capital path
-    ctx.strokeStyle='#16a34a';ctx.lineWidth=4;ctx.beginPath();ctx.moveTo(x(age),y(start));ctx.lineTo(x(ra),y(created));ctx.stroke();
-    // blue target capital horizontal
-    ctx.strokeStyle='#2563eb';ctx.lineWidth=4;ctx.beginPath();ctx.moveTo(x(age),y(capNeed));ctx.lineTo(x(ea),y(capNeed));ctx.stroke();
-    // start rent vertical
-    ctx.strokeStyle='#94a3b8';ctx.setLineDash([6,6]);ctx.beginPath();ctx.moveTo(x(ra),pad);ctx.lineTo(x(ra),H-pad);ctx.stroke();ctx.setLineDash([]);ctx.fillStyle='#334155';ctx.font='13px -apple-system';ctx.fillText('start renty',x(ra)+8,pad+18);
-  }
-  function drawMortgageChartV27(canvas){
-    if(!canvas) return; const md=mortgageModel(); const ctx=canvas.getContext('2d'),W=canvas.width,H=canvas.height,pad=48;
-    const vals=[]; (md.series||[]).forEach(d=>['debt','investment','payoffInvestment'].forEach(k=>{if(d[k]!=null&&isFinite(d[k])) vals.push(d[k])}));
-    const max=Math.max(...vals,1)*1.15; drawAxes(ctx,W,H,pad,max); const years=md.years||rawNum('mortgageYears')||30;
-    function x(year){return pad+(W-pad*2)*(year/Math.max(1,years))} function y(v){return pad+(H-pad*2)*(1-v/max)}
-    for(let i=0;i<=6;i++){const yr=Math.round(years*i/6);const xx=x(yr);ctx.strokeStyle='#eef2f7';ctx.beginPath();ctx.moveTo(xx,pad);ctx.lineTo(xx,H-pad);ctx.stroke();ctx.fillStyle='#687891';ctx.font='13px -apple-system';ctx.textAlign='center';ctx.fillText(String(yr),xx,H-14)}ctx.textAlign='left';
-    function line(key,color){const pts=(md.series||[]).filter(d=>d[key]!=null&&isFinite(d[key])); if(!pts.length) return; ctx.strokeStyle=color;ctx.lineWidth=4;ctx.beginPath();pts.forEach((d,i)=>{const xx=x(d.year);const yy=y(d[key]);if(i===0)ctx.moveTo(xx,yy);else ctx.lineTo(xx,yy)});ctx.stroke()}
-    line('debt','#ef4444'); line('investment','#16a34a'); line('payoffInvestment','#2563eb');
-    if(md.cross){const xx=x(md.cross.year||md.cross.month/12);ctx.strokeStyle='#475569';ctx.setLineDash([6,6]);ctx.beginPath();ctx.moveTo(xx,pad);ctx.lineTo(xx,H-pad);ctx.stroke();ctx.setLineDash([]);ctx.fillStyle='#334155';ctx.font='13px -apple-system';ctx.fillText('bod zvratu',xx+8,pad+18)}
-  }
-  function htmlKpi(cls,label,value){return `<div class="v27Kpi ${cls||''}"><small>${label}</small><strong>${value}</strong></div>`}
-  function renderReport(){
-    const doc=byId('clientReport'); if(!doc) return;
-    const showInvest=byId('reportInvest')?.checked;
-    const showMortgage=byId('reportMortgage')?.checked;
-    const showRisk=byId('reportRisk')?.checked;
-    const capI=requiredCapitalInterestLocal(); const capD=requiredCapitalDepleteLocal(); const exit=futureAsset(); const created=exit+futureLump(); const gap=Math.max(0,capD-created);
-    const mort=mortgageModel(); const diff=mort.payoffEndInvestment==null?null:mort.payoffEndInvestment-mort.baseEndInvestment; const rn=riskNumbers();
-    const client=(byId('clientName')?.value||'Klient');
-    doc.className='v27Doc';
-    doc.innerHTML=`
-      <div class="v27Hero">
-        <div class="v27Title"><h1>Finanční plán klienta</h1><p>Srozumitelný výstup hlavních čísel: renta, majetek, hypotéka, investice a ochrana příjmu.</p></div>
-        <div class="v27Badge"><small>Klient</small><strong>${client}</strong><small>Model</small><strong>${currentAge()} let → renta od ${rentAge()} let</strong></div>
-      </div>
-      <section class="v27Section"><h2>Kde jste dnes a kam míříte</h2><p class="v27Intro">Přehled ukazuje současný stav a hlavní finanční cíl, se kterým model pracuje.</p>
-        <div class="v27Kpis">
-          ${htmlKpi('green','Aktuální investice',f(rawMoney('lump')))}
-          ${htmlKpi('blue','Majetek k budoucímu prodeji',f(rawMoney('current')))}
-          ${htmlKpi('red','Hypotéka',f(rawMoney('mortgageAmount')))}
-          ${htmlKpi('purple','Cílová renta',f(maxRent())+' / měsíc')}
-        </div>
-        <div class="v27Summary">Aktuálně máte vytvořeno přibližně <strong>${f(rawMoney('current')+rawMoney('lump'))}</strong>. Pro zvolený rentový plán je potřeba vytvořit přibližně <strong>${f(capD)}</strong>, chybějící kapitál vychází přibližně na <strong>${f(gap)}</strong>.</div>
-      </section>
-      ${showInvest?`<section class="v27Section"><h2>Cesta k rentě</h2><div class="v27GraphGrid"><div class="v27ChartBox"><canvas id="v27RentChart" class="v27Chart" width="760" height="330"></canvas></div><div class="v27Explain"><h3>Co graf ukazuje</h3><div class="line"><span class="v27Swatch green"></span><span>Vytvářený kapitál: současné investice, majetek k budoucímu prodeji a jejich zhodnocení do startu renty.</span></div><div class="line"><span class="v27Swatch blue"></span><span>Potřebný kapitál: orientační částka, která má financovat zvolenou rentu.</span></div><p>Smyslem je rychle vidět, jak velká část rentového cíle je už dnes pokrytá a kolik kapitálu je potřeba ještě vytvořit.</p></div></div><div class="v27Kpis three">${htmlKpi('blue','Potřebný kapitál',f(capD))}${htmlKpi('green','Vytvořený kapitál při startu renty',f(created))}${htmlKpi('red','Chybějící kapitál',f(gap))}</div></section>`:''}
-      ${showMortgage?`<section class="v27Section"><h2>Hypotéka a investice</h2><div class="v27GraphGrid"><div class="v27ChartBox"><canvas id="v27MortgageChart" class="v27Chart" width="760" height="330"></canvas></div><div class="v27Explain"><h3>Co graf ukazuje</h3><div class="line"><span class="v27Swatch red"></span><span>Zůstatek hypotéky v čase.</span></div><div class="line"><span class="v27Swatch green"></span><span>Investice, pokud klient hypotéku nedoplácí a pokračuje v investování.</span></div><div class="line"><span class="v27Swatch blue"></span><span>Varianta po doplacení hypotéky v bodě zvratu a následném investování uvolněné splátky.</span></div></div></div><div class="v27Kpis">${htmlKpi('red','Měsíční splátka',f(mort.payment||0))}${htmlKpi('green','Bod zvratu',mort.cross?labelYear(mort.cross.month):'neprotne se')}${htmlKpi('blue','Bezpečné doplacení',mort.safePayoff?labelYear(mort.safePayoff.month):'nedosáhne')}${htmlKpi('purple','Hodnota investic na konci',f(mort.baseEndInvestment||0))}</div></section>`:''}
-      ${showRisk?`<section class="v27Section"><h2>Ochrana příjmu a rodiny</h2><p class="v27Intro">Tato část neřeší cenu pojištění. Ukazuje, jaký finanční rozdíl by bylo potřeba ochránit při invaliditě nebo úmrtí.</p><div class="v27Protection"><div class="v27Panel"><h3>Invalidita</h3><div class="v27Rows"><div class="v27Row"><span>Požadovaná renta</span><strong>${f(maxRent())}</strong></div><div class="v27Row green"><span>Invalidní důchod</span><strong>− ${f(rn.invP)}</strong></div><div class="v27Row total blue"><span>Měsíčně chybí</span><strong>${f(rn.invalidGap)}</strong></div><div class="v27Row"><span>Potřebný kapitál</span><strong>${f(rn.invalidCapital)}</strong></div><div class="v27Row green"><span>Aktuální majetek + investice</span><strong>− ${f(rn.usable)}</strong></div><div class="v27Row"><span>Aktuální krytí invalidity</span><strong>− ${f(rawMoney('riskCurrentInvalidCover'))}</strong></div><div class="v27Row total red"><span>Doporučené dokrytí</span><strong>${f(rn.invalidCover)}</strong></div></div></div><div class="v27Panel"><h3>Smrt</h3><div class="v27Rows"><div class="v27Row"><span>Výdaje domácnosti + ostatní úvěry</span><strong>${f(rn.expenses+rn.other)}</strong></div><div class="v27Row green"><span>Státní dávky rodině</span><strong>− ${f(rn.familyP)}</strong></div><div class="v27Row total red"><span>Rodině měsíčně chybí</span><strong>${f(rn.deathGap)}</strong></div><div class="v27Row"><span>Hypotéka k doplacení</span><strong>${f(rn.mort.amount||0)}</strong></div><div class="v27Row"><span>Kapitál na měsíční výpadek</span><strong>${f(rn.deathIncomeCapital)}</strong></div><div class="v27Row"><span>Aktuální krytí smrti</span><strong>− ${f(rawMoney('riskCurrentDeathCover'))}</strong></div><div class="v27Row total red"><span>Doporučené krytí</span><strong>${f(rn.deathCover)}</strong></div></div></div></div></section>`:''}
-      <section class="v27Section"><h2>Shrnutí dalšího postupu</h2><div class="v27Steps">${htmlKpi('green','Investice','Budovat kapitál')}${htmlKpi('blue','Hypotéka','Sledovat bod zvratu')}${htmlKpi('red','Invalidita','Doplnit krytí')}${htmlKpi('orange','Rodina','Ochránit závazky')}${htmlKpi('purple','Revize','1× ročně')}</div><p class="v27Footer">Tento report je orientační model vycházející ze zadaných údajů. Skutečný vývoj investic, výnosů, státních dávek, sazeb a legislativy se může v budoucnu lišit.</p></section>`;
-    if(showInvest) setTimeout(()=>drawRentChart(byId('v27RentChart')),20);
-    if(showMortgage) setTimeout(()=>drawMortgageChartV27(byId('v27MortgageChart')),20);
-  }
-  window.updateReport=renderReport;
-  const oldSwitch=window.switchTab;
-  window.switchTab=function(tab){ if(typeof oldSwitch==='function') oldSwitch(tab); if(tab==='report') setTimeout(renderReport,80); };
-  ['reportInvest','reportMortgage','reportRisk'].forEach(id=>byId(id)?.addEventListener('change',renderReport));
-  document.querySelectorAll('input,select').forEach(el=>el.addEventListener('input',()=>setTimeout(renderReport,80)));
-  setTimeout(renderReport,250);
-})();
+window.addEventListener('load', function(){
+  const params = new URLSearchParams(window.location.search);
+  const requestedTab = params.get('tab') || 'invest';
+  const safeTab = ['invest','risk','mortgage','report'].includes(requestedTab) ? requestedTab : 'invest';
+  setTimeout(function(){
+    if(typeof window.switchTab === 'function') window.switchTab(safeTab);
+  }, 80);
+});
 </script>
-
-
-
-<style>
-/* V28 – portfolio style grafů */
-.chartCard canvas,
-.v27Chart,
-.reportChart{
-  background:#fff;
-  border:1px solid #e4eaf3;
-  border-radius:24px;
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.85);
-}
-.v28Legend{
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  gap:22px;
-  color:#475569;
-  font-size:13px;
-  margin-top:10px;
-}
-.v28Legend span{display:flex;align-items:center;gap:8px}
-.v28Legend i{width:11px;height:11px;border-radius:50%;display:inline-block}
-.v28Legend .green{background:#16a34a}.v28Legend .blue{background:#2563eb}.v28Legend .red{background:#ef4444}.v28Legend .orange{background:#f59e0b}
-.v28ChartCaption{margin-top:10px;text-align:center;color:#667085;font-size:13px;line-height:1.4}
-</style>
-<script>
-/* V28 – jednotný moderní styl grafů inspirovaný portfoliovým grafem */
-(function(){
-  function money(id){return Number(String(document.getElementById(id)?.value||'').replace(/\s/g,'').replace(/[^0-9]/g,''))||0}
-  function rawNum(id){return Number(String(document.getElementById(id)?.value||0).replace(',','.'))||0}
-  function fmil(n){return (Math.round((Number(n)||0)/100000)/10).toLocaleString('cs-CZ')+' mil.'}
-  function niceTicks(max){
-    max=Math.max(1,Number(max)||1);
-    const rough=max/5;
-    const pow=Math.pow(10,Math.floor(Math.log10(rough)));
-    const mult=[1,2,2.5,5,10].find(m=>rough<=m*pow)||10;
-    const step=mult*pow;
-    const top=Math.ceil(max/step)*step;
-    const ticks=[]; for(let v=0;v<=top+step*.1;v+=step) ticks.push(v);
-    return {top,ticks};
-  }
-  function roundRect(ctx,x,y,w,h,r){ if(ctx.roundRect){ctx.roundRect(x,y,w,h,r); return;} ctx.rect(x,y,w,h); }
-  function drawModernLine(canvas, cfg){
-    if(!canvas) return;
-    const ctx=canvas.getContext('2d');
-    const W=canvas.width, H=canvas.height;
-    const padL=72, padR=34, padT=38, padB=56;
-    ctx.clearRect(0,0,W,H);
-    ctx.fillStyle='#fff'; roundRect(ctx,0,0,W,H,24); ctx.fill();
-    const xs=[]; const vals=[];
-    (cfg.series||[]).forEach(s=>{(s.points||[]).forEach(p=>{xs.push(p.x); vals.push(Math.max(0,p.y||0));});});
-    const minX=cfg.minX ?? Math.min(...xs,0);
-    const maxX=cfg.maxX ?? Math.max(...xs,1);
-    const tickInfo=niceTicks(Math.max(...vals,1)*1.08);
-    const maxY=cfg.maxY || tickInfo.top;
-    const x=v=>padL+(W-padL-padR)*((v-minX)/Math.max(1e-9,maxX-minX));
-    const y=v=>padT+(H-padT-padB)*(1-(v/maxY));
-
-    ctx.strokeStyle='#e8eef7'; ctx.lineWidth=1;
-    ctx.fillStyle='#64748b'; ctx.font='13px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif';
-    ctx.textAlign='right'; ctx.textBaseline='middle';
-    tickInfo.ticks.forEach(t=>{
-      if(t>maxY+1) return;
-      const yy=y(t); ctx.beginPath(); ctx.moveTo(padL,yy); ctx.lineTo(W-padR,yy); ctx.stroke();
-      ctx.fillText(t===0?'0':fmil(t),padL-12,yy);
-    });
-    const xTicks=cfg.xTicks || [];
-    ctx.textAlign='center'; ctx.textBaseline='top';
-    xTicks.forEach(t=>{
-      const xx=x(t.value); ctx.strokeStyle='#eef2f7'; ctx.beginPath(); ctx.moveTo(xx,padT); ctx.lineTo(xx,H-padB); ctx.stroke();
-      ctx.fillStyle='#64748b'; ctx.font='13px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif'; ctx.fillText(t.label,xx,H-padB+18);
-    });
-    if(cfg.yLabel){
-      ctx.save(); ctx.translate(18,H/2); ctx.rotate(-Math.PI/2); ctx.fillStyle='#64748b'; ctx.textAlign='center'; ctx.font='13px -apple-system'; ctx.fillText(cfg.yLabel,0,0); ctx.restore();
-    }
-    if(cfg.xLabel){ctx.fillStyle='#64748b';ctx.textAlign='center';ctx.font='13px -apple-system';ctx.fillText(cfg.xLabel,(padL+W-padR)/2,H-20)}
-
-    const primary=(cfg.series||[]).find(s=>s.fill) || (cfg.series||[])[0];
-    if(primary && primary.fill && primary.points?.length){
-      const pts=primary.points;
-      const grad=ctx.createLinearGradient(0,padT,0,H-padB);
-      grad.addColorStop(0,primary.fillStrong||'rgba(22,163,74,.22)');
-      grad.addColorStop(1,primary.fillSoft||'rgba(22,163,74,.05)');
-      ctx.fillStyle=grad; ctx.beginPath();
-      pts.forEach((p,i)=>{const xx=x(p.x),yy=y(p.y); if(i===0)ctx.moveTo(xx,yy); else ctx.lineTo(xx,yy);});
-      ctx.lineTo(x(pts[pts.length-1].x),H-padB); ctx.lineTo(x(pts[0].x),H-padB); ctx.closePath(); ctx.fill();
-    }
-    (cfg.series||[]).forEach(s=>{
-      const pts=s.points||[]; if(!pts.length) return;
-      ctx.strokeStyle=s.color; ctx.lineWidth=s.width||4; ctx.lineCap='round'; ctx.lineJoin='round'; ctx.beginPath();
-      pts.forEach((p,i)=>{const xx=x(p.x),yy=y(p.y); if(i===0)ctx.moveTo(xx,yy); else ctx.lineTo(xx,yy);}); ctx.stroke();
-      pts.forEach((p,i)=>{ if(i!==0 && i!==pts.length-1 && !(cfg.showAllDots)) return; ctx.fillStyle='#fff'; ctx.beginPath(); ctx.arc(x(p.x),y(p.y),5,0,Math.PI*2); ctx.fill(); ctx.strokeStyle=s.color; ctx.lineWidth=3; ctx.stroke(); });
-    });
-    if(cfg.marker){
-      const xx=x(cfg.marker.x); ctx.strokeStyle=cfg.marker.color||'#475569'; ctx.setLineDash([6,6]); ctx.lineWidth=2; ctx.beginPath(); ctx.moveTo(xx,padT); ctx.lineTo(xx,H-padB); ctx.stroke(); ctx.setLineDash([]);
-      ctx.fillStyle='#101828'; ctx.font='13px -apple-system'; ctx.textAlign='left'; ctx.textBaseline='top'; ctx.fillText(cfg.marker.label||'',xx+8,padT+10);
-    }
-    if(cfg.tooltip){
-      const boxW=210, boxH=28+18*(cfg.tooltip.lines?.length||0); let bx=x(cfg.tooltip.x)+14, by=y(cfg.tooltip.y)-boxH-12;
-      if(bx+boxW>W-padR) bx=x(cfg.tooltip.x)-boxW-14; if(by<padT) by=padT+8;
-      ctx.fillStyle='rgba(255,255,255,.88)'; ctx.strokeStyle='#e2e8f0'; ctx.lineWidth=1; ctx.beginPath(); roundRect(ctx,bx,by,boxW,boxH,12); ctx.fill(); ctx.stroke();
-      ctx.fillStyle='#101828'; ctx.font='700 13px -apple-system'; ctx.textAlign='left'; ctx.textBaseline='top'; ctx.fillText(cfg.tooltip.title||'',bx+12,by+10);
-      (cfg.tooltip.lines||[]).forEach((l,i)=>{ctx.fillStyle=l.color||'#475569';ctx.font='700 12px -apple-system';ctx.fillText(l.text,bx+12,by+30+i*18);});
-    }
-  }
-  function ensureLegend(canvas, items){
-    const parent=canvas?.parentElement; if(!parent) return;
-    let old=parent.querySelector('.v28Legend'); if(old) old.remove();
-    const div=document.createElement('div'); div.className='v28Legend';
-    div.innerHTML=items.map(i=>`<span><i class="${i.cls}"></i>${i.label}</span>`).join('');
-    parent.appendChild(div);
-  }
-  function seriesFrom(data,key){return (data||[]).filter(d=>d[key]!=null&&isFinite(d[key])).map(d=>({x:d.age??d.year,y:d[key]}));}
-  function xTicksAge(age,end){
-    const ticks=[]; for(let a=age; a<=end; a+=Math.max(5,Math.round((end-age)/6/5)*5||5)) ticks.push({value:a,label:String(Math.round(a))});
-    if(!ticks.find(t=>t.value===end)) ticks.push({value:end,label:String(Math.round(end))}); return ticks;
-  }
-  function xTicksYears(years){const ticks=[]; const step=years<=20?5:Math.max(5,Math.round(years/6/5)*5); for(let y=0;y<=years;y+=step)ticks.push({value:y,label:String(y)}); if(!ticks.find(t=>t.value===years))ticks.push({value:years,label:String(years)}); return ticks;}
-
-  window.drawChart=function(capInterest,capDeplete){
-    const canvas=document.getElementById('chart'); if(!canvas) return;
-    const age=typeof num==='function'?num('age'):rawNum('age'), rentAge=typeof num==='function'?num('rentAge'):rawNum('rentAge'), endAge=typeof num==='function'?num('endAge'):rawNum('endAge');
-    let green=[], blue=[]; try{green=buildInterestSeries(capInterest); blue=buildDepleteSeries(capDeplete);}catch(e){}
-    const finalG=green[green.length-1]?.cap||capInterest, finalB=blue[blue.length-1]?.cap||capDeplete;
-    drawModernLine(canvas,{minX:age,maxX:endAge,xTicks:xTicksAge(age,endAge),xLabel:'Věk',yLabel:'Hodnota kapitálu (Kč)',showAllDots:true,
-      series:[{name:'Pouze výnosy',color:'#16a34a',fill:true,points:green.map(d=>({x:d.age,y:d.cap}))},{name:'Rozpouštění kapitálu',color:'#2563eb',points:blue.map(d=>({x:d.age,y:d.cap}))}],
-      marker:{x:rentAge,label:'Start renty'},
-      tooltip:{x:endAge,y:Math.max(finalG,finalB),title:'Věk '+endAge,lines:[{color:'#16a34a',text:'Pouze výnosy: '+(typeof fmt==='function'?fmt(finalG):finalG)},{color:'#2563eb',text:'Rozpouštění: '+(typeof fmt==='function'?fmt(finalB):finalB)}]}
-    });
-  };
-
-  window.drawMortgageChart=function(data){
-    const canvas=document.getElementById('mortgageChart'); if(!canvas) return;
-    const years=data?.years||rawNum('mortgageYears')||30;
-    const baseEnd=data?.baseEndInvestment||0; const payoffEnd=data?.payoffEndInvestment||0;
-    drawModernLine(canvas,{minX:0,maxX:years,xTicks:xTicksYears(years),xLabel:'Roky',yLabel:'Hodnota / dluh (Kč)',showAllDots:false,
-      series:[{name:'Hypotéka',color:'#ef4444',points:(data.series||[]).filter(d=>d.debt!=null).map(d=>({x:d.year,y:d.debt}))},{name:'Nedoplácet',color:'#16a34a',fill:true,points:(data.series||[]).filter(d=>d.investment!=null).map(d=>({x:d.year,y:d.investment}))},{name:'Doplatit',color:'#2563eb',points:(data.series||[]).filter(d=>d.payoffInvestment!=null).map(d=>({x:d.year,y:d.payoffInvestment}))}],
-      marker:data?.cross?{x:data.cross.year||data.cross.month/12,label:'Bod zvratu'}:null,
-      tooltip:{x:years,y:Math.max(baseEnd,payoffEnd),title:'Konec hypotéky',lines:[{color:'#16a34a',text:'Nedoplácet: '+(typeof fmt==='function'?fmt(baseEnd):baseEnd)},{color:'#2563eb',text:'Doplatit: '+(typeof fmt==='function'?fmt(payoffEnd):payoffEnd)}]}
-    });
-  };
-
-  // V27 report – přepíše staré grafy stejným stylem
-  const oldUpdate=window.updateReport;
-  window.updateReport=function(){
-    if(typeof oldUpdate==='function') oldUpdate();
-    setTimeout(()=>{
-      try{
-        const rentCanvas=document.getElementById('v27RentChart');
-        if(rentCanvas){
-          const age=rawNum('age'), ra=rawNum('rentAge'), ea=rawNum('endAge');
-          const capD=(typeof requiredCapitalDepleteLocal==='function'?requiredCapitalDepleteLocal():0);
-          const start=money('current')+money('lump');
-          const created=(typeof futureAsset==='function'?futureAsset():money('current'))+(typeof futureLump==='function'?futureLump():money('lump'));
-          drawModernLine(rentCanvas,{minX:age,maxX:ea,xTicks:xTicksAge(age,ea),xLabel:'Věk',yLabel:'Kapitál (Kč)',showAllDots:true,
-            series:[{color:'#16a34a',fill:true,points:[{x:age,y:start},{x:ra,y:created}]},{color:'#2563eb',points:[{x:age,y:capD},{x:ea,y:capD}]}],
-            marker:{x:ra,label:'Start renty'},
-            tooltip:{x:ra,y:Math.max(created,capD),title:'Věk '+ra,lines:[{color:'#16a34a',text:'Vytvořeno: '+(typeof fmt==='function'?fmt(created):created)},{color:'#2563eb',text:'Cíl: '+(typeof fmt==='function'?fmt(capD):capD)}]}
-          });
-          ensureLegend(rentCanvas,[{cls:'green',label:'Vytvářený kapitál'},{cls:'blue',label:'Potřebný kapitál'}]);
-        }
-        const mortCanvas=document.getElementById('v27MortgageChart');
-        if(mortCanvas){ const md=(typeof mortgageModel==='function'?mortgageModel():buildMortgageSeries()); drawModernLine(mortCanvas,{minX:0,maxX:md.years||rawNum('mortgageYears')||30,xTicks:xTicksYears(md.years||30),xLabel:'Roky',yLabel:'Hodnota / dluh (Kč)',series:[{color:'#ef4444',points:(md.series||[]).filter(d=>d.debt!=null).map(d=>({x:d.year,y:d.debt}))},{color:'#16a34a',fill:true,points:(md.series||[]).filter(d=>d.investment!=null).map(d=>({x:d.year,y:d.investment}))},{color:'#2563eb',points:(md.series||[]).filter(d=>d.payoffInvestment!=null).map(d=>({x:d.year,y:d.payoffInvestment}))}],marker:md.cross?{x:md.cross.year||md.cross.month/12,label:'Bod zvratu'}:null,tooltip:{x:md.years||30,y:Math.max(md.baseEndInvestment||0,md.payoffEndInvestment||0),title:'Konec horizontu',lines:[{color:'#16a34a',text:'Nedoplácet: '+(typeof fmt==='function'?fmt(md.baseEndInvestment||0):md.baseEndInvestment||0)},{color:'#2563eb',text:'Doplatit: '+(typeof fmt==='function'?fmt(md.payoffEndInvestment||0):md.payoffEndInvestment||0)}]}}); ensureLegend(mortCanvas,[{cls:'red',label:'Hypotéka'},{cls:'green',label:'Investice'},{cls:'blue',label:'Doplatit'}]); }
-      }catch(e){console.warn('V28 report chart refresh',e)}
-    },60);
-  };
-
-  const oldSwitch=window.switchTab;
-  window.switchTab=function(tab){ if(typeof oldSwitch==='function') oldSwitch(tab); setTimeout(()=>{try{ if(typeof calculate==='function') calculate(); if(typeof calculateMortgage==='function') calculateMortgage(); if(tab==='report'&&typeof window.updateReport==='function') window.updateReport(); }catch(e){}},80); };
-  setTimeout(()=>{try{ if(typeof calculate==='function') calculate(); if(typeof calculateMortgage==='function') calculateMortgage(); if(typeof window.updateReport==='function') window.updateReport(); }catch(e){}},300);
-})();
-</script>
-
-<style>
-/* V29 - svetly Apple Crystal sjednoceny vzhled */
-:root{
-  color-scheme:light;
-  --bg:#f5f7fa;
-  --card:rgba(255,255,255,.74);
-  --text:#172033;
-  --muted:#64748b;
-  --line:#dce4ee;
-  --blue:#2563eb;
-  --blue2:#eaf1ff;
-  --green:#15803d;
-  --green2:#eaf8ee;
-  --purple:#6d5bd0;
-  --orange:#b45309;
-  --red:#dc2626;
-  --shadow:0 18px 42px rgba(23,32,51,.08);
-  --radius:8px;
-}
-html{background:var(--bg)}
-body{
-  min-height:100vh;
-  background:
-    linear-gradient(135deg,rgba(15,118,110,.10),transparent 34rem),
-    linear-gradient(180deg,#fff 0,var(--bg) 18rem),
-    var(--bg);
-}
-.app{width:min(100% - 28px,1780px);padding:22px 0 36px}
-.topbar{
-  position:sticky;
-  top:0;
-  z-index:20;
-  grid-template-columns:minmax(220px,300px) minmax(0,1fr) minmax(230px,300px);
-  padding:12px;
-  margin:0 0 16px;
-  border:1px solid rgba(220,228,238,.84);
-  border-radius:8px;
-  background:rgba(255,255,255,.72);
-  box-shadow:0 10px 26px rgba(23,32,51,.06);
-  backdrop-filter:blur(22px) saturate(1.35);
-}
-.brand{min-width:0;color:#172033}
-.brand span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.mark{
-  width:38px;
-  height:24px;
-  border:1px solid rgba(15,118,110,.26);
-  border-radius:8px;
-  transform:none;
-  background:linear-gradient(135deg,#fff,rgba(15,118,110,.12));
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.9);
-}
-.tabs{
-  justify-content:center;
-  gap:6px;
-  padding:4px;
-  border:1px solid rgba(220,228,238,.78);
-  border-radius:8px;
-  background:rgba(245,247,250,.72);
-  overflow:auto;
-}
-.tab{
-  flex:0 0 auto;
-  border-radius:8px;
-  padding:10px 14px;
-  color:#475569;
-  font-weight:760;
-  letter-spacing:0;
-  transition:background 160ms ease,color 160ms ease,box-shadow 160ms ease;
-}
-.tab:hover{background:rgba(255,255,255,.82);color:#172033}
-.tab.active{
-  background:#fff;
-  color:#0f766e;
-  box-shadow:0 6px 18px rgba(23,32,51,.08);
-}
-.profile{min-width:0}
-.homeLink{
-  display:inline-flex;
-  align-items:center;
-  justify-content:center;
-  min-height:38px;
-  padding:0 12px;
-  border:1px solid rgba(15,118,110,.24);
-  border-radius:8px;
-  background:rgba(231,245,242,.72);
-  color:#0f766e;
-  font-size:13px;
-  font-weight:850;
-  text-decoration:none;
-  white-space:nowrap;
-}
-.avatar{border-radius:8px;background:#fff}
-.card,
-.variant,
-.clientPill,
-.resultBox,
-.compareItem,
-.recommend,
-.scenarioCard,
-.infoBox,
-.assetMini,
-.mortgageNote,
-.reportDoc,
-.reportSection,
-.reportTitle,
-.reportBadge,
-.reportKpi,
-.reportSection>.reportText,
-.v27Doc,
-.v27Title,
-.v27Badge,
-.v27Section,
-.v27Kpi,
-.v27Summary,
-.v27ChartBox,
-.v27Explain,
-.v27Panel{
-  border-radius:8px;
-}
-.card{
-  border:1px solid rgba(220,228,238,.82);
-  background:var(--card);
-  box-shadow:var(--shadow);
-}
-.layout,.mortgageLayout,.riskLayout{
-  grid-template-columns:minmax(300px,340px) minmax(0,1fr) minmax(300px,340px);
-}
-.reportWrap{grid-template-columns:minmax(300px,340px) minmax(0,1fr)}
-.section,.mainTop,.chartCard,.mortgageHero{padding:22px}
-h2,h3,.variant .big,.clientPill strong,.resultBox .value,.reportTitle h1,.reportBadge strong,.v27Title h1,.v27Badge strong,.v27Kpi strong{
-  letter-spacing:0;
-}
-h2{font-size:22px}
-h3{font-size:17px}
-.desc{color:var(--muted);line-height:1.5}
-input,select{
-  border-radius:8px;
-  background:rgba(255,255,255,.86);
-  border-color:#dce4ee;
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.9);
-}
-input:focus,select:focus{
-  border-color:rgba(15,118,110,.48);
-  box-shadow:0 0 0 4px rgba(15,118,110,.10),inset 0 1px 0 rgba(255,255,255,.9);
-}
-button,.linkButton,.printBtn,.clearBtn{
-  border-radius:8px;
-  letter-spacing:0;
-}
-button{
-  background:#0f766e;
-  box-shadow:0 12px 26px rgba(15,118,110,.18);
-}
-button:hover{filter:brightness(.98);transform:translateY(-1px)}
-.printBtn{background:#172033}
-.clearBtn{background:#b45309}
-.clearBtn.danger{background:#dc2626}
-.infoBox,.recommend,.v27Summary{
-  background:rgba(231,245,242,.66);
-  border-color:rgba(15,118,110,.22);
-  color:#164e48;
-}
-.mortgageNote{
-  background:#fff7ed;
-  border-color:#fed7aa;
-}
-.variant,.clientPill,.resultBox,.compareItem,.assetMini,.v27Kpi,.v27Panel,.v27Explain,.reportKpi{
-  background:rgba(255,255,255,.82);
-  border-color:rgba(220,228,238,.9);
-}
-.variant{
-  display:flex;
-  flex-direction:column;
-  min-height:230px;
-}
-.variant .big{font-size:clamp(28px,2.4vw,38px)}
-.variant .tag{margin-top:auto;border-radius:8px}
-.green .tag{background:#eaf8ee;color:#15803d}
-.blue .tag{background:#eaf1ff;color:#2563eb}
-.variant.green{border-color:rgba(21,128,61,.24)}
-.variant.blue{border-color:rgba(37,99,235,.24)}
-.variant.green .label,.variant.green .big,.resultBox.green .value{color:#15803d}
-.variant.blue .label,.variant.blue .big,.resultBox.blue .value{color:#2563eb}
-.resultBox.purple .value{color:#6d5bd0}
-.icon{
-  width:38px;
-  height:38px;
-  border-radius:8px;
-}
-.table th,.table td{padding:12px 8px}
-.chartCard canvas,
-.v27Chart,
-.reportChart{
-  border-radius:8px;
-  background:#fff;
-  border-color:#dce4ee;
-}
-.reportBadge,.v27Badge{
-  background:linear-gradient(180deg,#172033,#263449);
-}
-.reportTitle,.v27Title{
-  background:linear-gradient(180deg,#fff,rgba(231,245,242,.58));
-  border-color:rgba(15,118,110,.18);
-}
-.v27Doc,.reportDoc{
-  background:rgba(255,255,255,.86);
-  border-color:rgba(220,228,238,.9);
-}
-.v27Section,.reportSection{
-  background:rgba(251,253,255,.82);
-}
-.v27GraphGrid{grid-template-columns:minmax(360px,1fr) minmax(280px,.75fr)}
-.v27Row{border-color:#edf2f7}
-@media(max-width:1250px){
-  .app{width:min(100% - 20px,1780px);padding-top:12px}
-  .topbar{
-    position:relative;
-    grid-template-columns:1fr;
-    gap:12px;
-  }
-  .layout,.mortgageLayout,.riskLayout,.reportWrap{grid-template-columns:1fr}
-  .tabs{justify-content:flex-start}
-  .profile{justify-content:space-between}
-  .clientSummary,.cards2,.bottomGrid,.mortgageCards{grid-template-columns:1fr}
-  .section,.mainTop,.chartCard,.mortgageHero{padding:18px}
-}
-@media(max-width:700px){
-  .formgrid,.reportKpis,.v27Kpis,.v27Kpis.three,.v27Kpis.two,.v27Steps,.reportRiskBreakdown{grid-template-columns:1fr}
-  .variant{min-height:0}
-  .topbar{padding:10px}
-  .tab{padding:9px 11px}
-  .profile strong,.profile span{display:none}
-}
-@media print{
-  .topbar,.reportControls{display:none!important}
-  body{background:#fff}
-  .app{width:100%;padding:0}
-  .v27Doc,.reportDoc{box-shadow:none;border:none;background:#fff}
-  .v27Section,.reportSection{background:#fff}
-}
-</style>
 
 </body>
 </html>
