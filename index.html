@@ -42,15 +42,15 @@
     body::before {
       content: "";
       position: fixed;
-      inset: -8vh -8vw;
+      inset: 0;
       pointer-events: none;
       z-index: -2;
-      background-image: url("fairlife-logo.jpeg");
+      background-image: url("fairlife-lion-watermark.png");
       background-repeat: no-repeat;
-      background-size: auto min(72vh, 680px);
-      background-position: right 4vw center;
-      opacity: 0.055;
-      filter: saturate(0.85) contrast(1.08);
+      background-size: min(92vw, 980px) auto;
+      background-position: center 56%;
+      opacity: 0.105;
+      filter: saturate(0.92) contrast(1.06);
     }
 
     body::after {
@@ -72,14 +72,15 @@
 
     header {
       display: grid;
-      grid-template-columns: 78px 1fr;
-      gap: 22px;
+      grid-template-columns: 1fr;
+      gap: 14px;
       align-items: center;
       margin-bottom: 24px;
       position: relative;
     }
 
     .logo {
+      display: none;
       width: 78px;
       height: 78px;
       border-radius: 22px;
@@ -272,10 +273,6 @@
         padding: 32px 0;
       }
 
-      header {
-        grid-template-columns: 1fr;
-      }
-
       .hero-strip {
         align-items: flex-start;
         flex-direction: column;
@@ -290,7 +287,6 @@
 <body>
   <main>
     <header>
-      <img class="logo" src="fairlife-logo.jpeg" alt="Fairlife logo">
       <div>
         <h1>Filip prezentace</h1>
         <p class="lead">Osobní rozcestník pro moje prezentace, tabulky, investice, plánování a klientské smlouvy.</p>
