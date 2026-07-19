@@ -144,8 +144,19 @@ body:after{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;back
 .overlay{background:rgba(23,32,51,.38);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}.modal{background:rgba(255,255,255,.76);border:1px solid rgba(255,255,255,.88);border-radius:24px;box-shadow:0 30px 90px rgba(23,32,51,.22),inset 0 1px 0 rgba(255,255,255,.94);backdrop-filter:blur(28px) saturate(160%);-webkit-backdrop-filter:blur(28px) saturate(160%)}.modal h3{color:#172033}
 .stav-opt,.vp-typ{background:rgba(255,255,255,.56);border-color:rgba(205,218,232,.74);border-radius:12px}.stav-opt:hover,.vp-typ:hover{background:rgba(255,255,255,.78)}
 .sync-top-btn{background:rgba(255,255,255,.72);margin-left:8px}
+.transfer-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.transfer-opt{border:1px solid rgba(255,255,255,.8);background:rgba(255,255,255,.66);border-radius:16px;padding:14px;text-align:left;display:grid;grid-template-columns:28px 1fr;gap:2px 10px;align-items:start;cursor:pointer;color:#172033;box-shadow:inset 0 1px 0 rgba(255,255,255,.9),0 10px 26px rgba(23,32,51,.07)}.transfer-opt:hover{background:rgba(255,255,255,.86);transform:translateY(-1px)}.transfer-opt i{font-size:22px;color:#2563eb;grid-row:span 2}.transfer-opt b{font-size:14px}.transfer-opt span{font-size:12px;color:#64748b;line-height:1.35}
+.client.action-hot,.client.action-vypoved,.client.action-reseni,.client.action-nabidka,.client.action-domluveno,.client.action-kontakt{border-width:2px;box-shadow:0 24px 70px rgba(23,32,51,.14),inset 0 1px 0 rgba(255,255,255,.95)}
+.client.action-hot{border-color:rgba(185,28,28,.55);background:linear-gradient(90deg,rgba(254,226,226,.88),rgba(255,255,255,.66) 34%),rgba(255,255,255,.72)}
+.client.action-vypoved{border-color:rgba(124,58,237,.55);background:linear-gradient(90deg,rgba(237,233,254,.92),rgba(255,255,255,.66) 34%),rgba(255,255,255,.72)}
+.client.action-reseni{border-color:rgba(37,99,235,.58);background:linear-gradient(90deg,rgba(219,234,254,.92),rgba(255,255,255,.66) 34%),rgba(255,255,255,.72)}
+.client.action-nabidka{border-color:rgba(180,83,9,.55);background:linear-gradient(90deg,rgba(255,247,237,.94),rgba(255,255,255,.66) 34%),rgba(255,255,255,.72)}
+.client.action-domluveno{border-color:rgba(21,128,61,.52);background:linear-gradient(90deg,rgba(220,252,231,.88),rgba(255,255,255,.66) 34%),rgba(255,255,255,.72)}
+.client.action-kontakt{border-color:rgba(8,145,178,.52);background:linear-gradient(90deg,rgba(207,250,254,.86),rgba(255,255,255,.66) 34%),rgba(255,255,255,.72)}
+.client.action-hot:after,.client.action-vypoved:after,.client.action-reseni:after,.client.action-nabidka:after,.client.action-domluveno:after,.client.action-kontakt:after{position:absolute;top:10px;right:12px;border-radius:999px;padding:5px 10px;font-size:10px;font-weight:900;letter-spacing:.06em;text-transform:uppercase;color:#fff;box-shadow:0 10px 24px rgba(23,32,51,.12)}
+.client.action-hot:after{content:"K přepojištění";background:#b91c1c}.client.action-vypoved:after{content:"Výpověď";background:#7c3aed}.client.action-reseni:after{content:"V řešení";background:#2563eb}.client.action-nabidka:after{content:"Nabídka";background:#b45309}.client.action-domluveno:after{content:"Schůzka";background:#15803d}.client.action-kontakt:after{content:"Kontakt";background:#0891b2}
+.client.action-hot .bubble{background:#b91c1c!important;color:#fff!important}.client.action-vypoved .bubble{background:#7c3aed!important;color:#fff!important}.client.action-reseni .bubble{background:#2563eb!important;color:#fff!important}.client.action-nabidka .bubble{background:#b45309!important;color:#fff!important}.client.action-domluveno .bubble{background:#15803d!important;color:#fff!important}.client.action-kontakt .bubble{background:#0891b2!important;color:#fff!important}
 @media(max-width:900px){.metrics{grid-template-columns:repeat(2,minmax(0,1fr))}.client-body{padding-left:18px}}
-@media(max-width:640px){.app{padding:16px 12px 36px}.topin{padding:8px 12px}.brand{width:100%;border-right:0;padding:8px 0 4px}.tabs{gap:6px}.tab{padding:8px 10px}.metrics{grid-template-columns:1fr}.head h2{font-size:21px}.client-head{gap:10px}.contract{flex-direction:column}.contract-actions{width:100%}}
+@media(max-width:640px){.app{padding:16px 12px 36px}.topin{padding:8px 12px}.brand{width:100%;border-right:0;padding:8px 0 4px}.tabs{gap:6px}.tab{padding:8px 10px}.metrics{grid-template-columns:1fr}.head h2{font-size:21px}.client-head{gap:10px}.contract{flex-direction:column}.contract-actions{width:100%}.transfer-grid{grid-template-columns:1fr}.client.action-hot:after,.client.action-vypoved:after,.client.action-reseni:after,.client.action-nabidka:after,.client.action-domluveno:after,.client.action-kontakt:after{position:static;justify-self:start;margin:0 0 8px 80px;display:inline-block}}
 </style>
 </head>
 <body>
@@ -299,6 +310,22 @@ body:after{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;back
     <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin-bottom:8px">Volitelné vložení JSON / CSV textu</div>
     <textarea id="import-json" placeholder="Sem můžeš vložit JSON nebo CSV ručně…" style="height:120px;font-family:monospace;font-size:11px"></textarea>
     <div class="row"><button class="btn" onclick="closeModal('modal-import')">Zavřít</button><button class="btn primary" onclick="importAll()">Importovat</button></div>
+  </div>
+</div>
+
+<!-- TRANSFER MODAL -->
+<div class="overlay" id="modal-transfer">
+  <div class="modal" style="max-width:620px">
+    <h3>Převést / zařadit klienta</h3>
+    <div class="hint" id="transfer-hint">Vyber, kam má klient patřit. U potenciálu to z kontaktu udělá běžného klienta a zařadí ho do vybrané pracovní složky.</div>
+    <div class="transfer-grid">
+      <button class="transfer-opt" onclick="transferClientToSection('auta')"><i class="ti ti-car"></i><b>Auta + majetek</b><span>přidá nebo převede na auto/majetek</span></button>
+      <button class="transfer-opt" onclick="transferClientToSection('zivot')"><i class="ti ti-heart"></i><b>Životní</b><span>přidá nebo převede na životní smlouvu</span></button>
+      <button class="transfer-opt" onclick="transferClientToSection('uvery')"><i class="ti ti-building-bank"></i><b>Úvěry + hypotéky</b><span>přidá nebo převede na hypotéku/úvěr</span></button>
+      <button class="transfer-opt" onclick="transferClientToSection('adamek')"><i class="ti ti-user-plus"></i><b>Potenciál Adámek</b><span>zařadí zpět do potenciálu</span></button>
+      <button class="transfer-opt" onclick="transferClientToSection('linhart')"><i class="ti ti-user-plus"></i><b>Potenciál Linhart</b><span>zařadí zpět do potenciálu</span></button>
+    </div>
+    <div class="row"><button class="btn" onclick="closeModal('modal-transfer')">Zavřít</button></div>
   </div>
 </div>
 
@@ -481,7 +508,7 @@ function relevantMinDays(contracts){
 
 // ===== DATA MODEL =====
 let clients=[], templates=[], aktSazba=null, customTodos=[];
-let currentClientId=null, currentContractId=null, currentContractIndex=null;
+let currentClientId=null, currentContractId=null, currentContractIndex=null, currentTransferClientId=null;
 let currentClientSectionHint='';
 let editLog=[], editStav='', editStavy=[];
 
@@ -645,10 +672,43 @@ function sourceForType(type, fallback){
   return fallback||'';
 }
 
+function sectionForContract(s){
+  const type=s?.type||'',src=s?.source||'';
+  if(type==='auto'||type==='majetek')return 'auta';
+  if(type==='život')return 'zivot';
+  if(type==='hypotéka'||type==='úvěr')return 'uvery';
+  if(norm(src).includes('adamek')||src==='Adámek')return 'adamek';
+  if(norm(src).includes('linhart')||src==='Linhart')return 'linhart';
+  return '';
+}
+function sectionDefaultContract(section){
+  if(section==='auta')return{type:'auto',source:'auto',product:'Nová smlouva',company:'',number:'',anniv:'',amount:'',rate:'',eucs:'Ne',status:'reseni',statuses:[],note:'',log:[{d:today(),t:'Zařazeno do Auta + majetek'}],needsReview:true,createdAt:today()};
+  if(section==='zivot')return{type:'život',source:'životní',product:'Nová životní smlouva',company:'',number:'',anniv:'',amount:'',rate:'',eucs:'Ne',status:'reseni',statuses:[],note:'',log:[{d:today(),t:'Zařazeno do Životní'}],needsReview:true,createdAt:today()};
+  if(section==='uvery')return{type:'hypotéka',source:'úvěry',product:'Nová hypotéka / úvěr',company:'',number:'',anniv:'',amount:'',rate:'',eucs:'Ne',status:'reseni',statuses:[],note:'',log:[{d:today(),t:'Zařazeno do Úvěry + hypotéky'}],needsReview:true,createdAt:today()};
+  if(section==='adamek')return{type:'ostatní',source:'Adámek',product:'Potenciál',company:'',number:'',anniv:'',amount:'',rate:'',eucs:'Ne',status:'kontakt',statuses:[],note:'',log:[{d:today(),t:'Zařazeno do Potenciál Adámek'}],needsReview:true,createdAt:today()};
+  if(section==='linhart')return{type:'ostatní',source:'Linhart',product:'Potenciál',company:'',number:'',anniv:'',amount:'',rate:'',eucs:'Ne',status:'kontakt',statuses:[],note:'',log:[{d:today(),t:'Zařazeno do Potenciál Linhart'}],needsReview:true,createdAt:today()};
+  return null;
+}
+function sectionLabel(section){return{auta:'Auta + majetek',zivot:'Životní',uvery:'Úvěry + hypotéky',adamek:'Potenciál Adámek',linhart:'Potenciál Linhart'}[section]||section}
+function isPotentialContract(s){const src=s?.source||'';return norm(src).includes('adamek')||norm(src).includes('linhart')||src==='Adámek'||src==='Linhart'}
+function clientActionClass(contracts){
+  if(!contracts||!contracts.length)return '';
+  const statuses=[...new Set(contracts.flatMap(x=>getStatuses(x)))];
+  if(statuses.includes('prepojistit'))return 'action-hot';
+  if(statuses.includes('vypoved'))return 'action-vypoved';
+  if(statuses.includes('reseni'))return 'action-reseni';
+  if(statuses.includes('nabidka'))return 'action-nabidka';
+  if(statuses.includes('domluveno'))return 'action-domluveno';
+  if(statuses.some(x=>['kontakt','nedovolano','sms','email'].includes(x)))return 'action-kontakt';
+  return '';
+}
+
 function clientCard(client,contracts,section){
   const hasContracts=contracts&&contracts.length;
   const minD=hasContracts?relevantMinDays(contracts):null;
   let cls=hasContracts?clientCls(contracts):'ok';
+  const actionClass=clientActionClass(contracts);
+  if(actionClass)cls+=' '+actionClass;
   const needsReview=needsClientReview(client,contracts);
   if(needsReview)cls+=' review-b';
   if(hasContracts&&contracts.some(isBadMortgageRate))cls+=' rate-bad';
@@ -674,6 +734,7 @@ function clientCard(client,contracts,section){
       </div>
       <div class="client-actions">
         <button class="btn" onclick="event.stopPropagation();toggleClientCard(this)"><i class="ti ti-list-details"></i>Klient</button>
+        <button class="btn" onclick="event.stopPropagation();openTransferModal('${client.id}')"><i class="ti ti-arrows-exchange"></i>Převést</button>
         <button class="btn" onclick="event.stopPropagation();openContractModal('${client.id}',null,'${section||''}')"><i class="ti ti-plus"></i>Smlouva</button>
       </div>
     </div>
@@ -685,6 +746,47 @@ function clientCard(client,contracts,section){
       ${hasContracts?contracts.map(s=>contractCard(client,s)).join(''):`<div class="empty" style="padding:18px"><i class="ti ti-file-plus"></i>Klient je založený bez smlouvy. Klikněte na + Smlouva a přidejte produkt.</div>`}
     </div>
   </div>`;
+}
+
+function openTransferModal(clientId){
+  const c=clients.find(x=>x.id===clientId);if(!c)return;
+  currentTransferClientId=clientId;
+  const hint=document.getElementById('transfer-hint');
+  if(hint)hint.innerHTML=`<b>${esc(c.name||'Klient')}</b><br>Vyber cílovou složku. Když klient pochází z potenciálu, jeho potenciální záznam se převede do běžné klientské složky.`;
+  openModal('modal-transfer');
+}
+function transferClientToSection(section){
+  const c=clients.find(x=>x.id===currentTransferClientId);if(!c)return;
+  const target=normalizeSectionKey(section);
+  const def=sectionDefaultContract(target);
+  if(!def)return;
+  c.contracts=c.contracts||[];
+  const targetSource=def.source;
+  const targetType=def.type;
+  const potential=c.contracts.filter(isPotentialContract);
+  if(['auta','zivot','uvery'].includes(target)){
+    if(potential.length){
+      potential.forEach(s=>{
+        if(!s.type||s.type==='ostatní')s.type=targetType;
+        s.source=sourceForType(s.type,targetSource);
+        s.status=s.status||'reseni';
+        s.statuses=Array.isArray(s.statuses)?s.statuses:[];
+        s.log=s.log||[];
+        s.log.push({d:today(),t:'Převedeno z potenciálu do '+sectionLabel(target)});
+        s.needsReview=true;
+      });
+    }
+    if(!c.contracts.some(s=>sectionForContract(s)===target)){
+      c.contracts.push({...def,id:uid()});
+    }
+    c.sectionHint='';
+  }else{
+    if(!c.contracts.length)c.contracts.push({...def,id:uid()});
+    else c.contracts.forEach(s=>{s.source=target==='adamek'?'Adámek':'Linhart';s.status=s.status||'kontakt';s.log=s.log||[];s.log.push({d:today(),t:'Převedeno do '+sectionLabel(target)});});
+    c.sectionHint=target;
+  }
+  c.needsReview=true;
+  save();closeModal('modal-transfer');renderAll(true);show(target);
 }
 
 function contractCard(client,s){
