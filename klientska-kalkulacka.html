@@ -278,6 +278,77 @@ canvas{width:100%;height:330px}
 
 .hidden{display:none}
 
+/* V26 - klientsky cisty Apple Crystal report */
+.reportDoc{
+  background:linear-gradient(145deg,rgba(255,255,255,.88),rgba(244,249,255,.74));
+  border:1px solid rgba(214,228,247,.9);
+  box-shadow:0 24px 70px rgba(35,53,84,.12),inset 0 1px 0 rgba(255,255,255,.95);
+  backdrop-filter:blur(24px) saturate(150%);
+  -webkit-backdrop-filter:blur(24px) saturate(150%);
+}
+.reportTitle,.reportSection{
+  background:linear-gradient(145deg,rgba(255,255,255,.84),rgba(246,250,255,.72));
+  border-color:rgba(207,222,242,.9);
+  box-shadow:0 18px 42px rgba(35,53,84,.08),inset 0 1px 0 rgba(255,255,255,.95);
+}
+.reportBadge{
+  background:linear-gradient(145deg,#101828,#24334b);
+  box-shadow:0 18px 42px rgba(16,24,40,.18);
+}
+.reportKpi{
+  background:rgba(255,255,255,.72);
+  border-color:rgba(207,222,242,.92);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.92),0 10px 24px rgba(35,53,84,.055);
+}
+.reportChart,.reportSection>.reportText{
+  background:rgba(255,255,255,.72);
+  border-color:rgba(207,222,242,.92);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.92);
+}
+
+@media print{
+  @page{size:A4;margin:12mm}
+  html,body{width:auto;background:#eef6ff!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .topbar,.reportControls{display:none!important}
+  .app{max-width:none;padding:0!important}
+  .reportWrap{display:block!important}
+  .reportDoc{width:100%;padding:0!important;border:0!important;border-radius:0!important;background:transparent!important;box-shadow:none!important}
+  .reportHero,.reportSection{
+    width:100%;
+    margin:0!important;
+    padding:14mm!important;
+    border-radius:18px!important;
+    border:1px solid rgba(207,222,242,.95)!important;
+    background:linear-gradient(145deg,rgba(255,255,255,.94),rgba(246,250,255,.84))!important;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.96)!important;
+    page-break-inside:avoid;
+    break-inside:avoid;
+  }
+  .reportHero{display:grid!important;grid-template-columns:1.15fr .85fr;gap:10mm;min-height:86mm;align-items:stretch;page-break-after:auto;break-after:auto}
+  #reportOverviewSection{margin-top:8mm!important;min-height:76mm;page-break-after:always;break-after:page}
+  #reportInvestSection,#reportMortgageSection,#reportRiskSection,#reportNextSection{page-break-before:always;break-before:page;page-break-after:always;break-after:page;min-height:248mm}
+  #reportNextSection{min-height:120mm;page-break-after:auto;break-after:auto}
+  .reportTitle,.reportBadge{padding:10mm!important;border-radius:18px!important}
+  .reportTitle h1{font-size:28px!important;line-height:1.08!important}
+  .reportBadge strong{font-size:22px!important}
+  .reportSection h2{font-size:25px!important;margin:0 0 8mm!important}
+  .reportKpis{grid-template-columns:repeat(4,1fr)!important;gap:5mm!important;margin-top:6mm!important}
+  .reportKpi{border-radius:14px!important;padding:7mm!important;min-height:30mm}
+  .reportKpi small{font-size:11px!important;line-height:1.25!important}
+  .reportKpi strong{font-size:19px!important;line-height:1.15!important}
+  .reportSplit{grid-template-columns:1fr 1fr!important;gap:5mm!important;margin-top:6mm!important}
+  .reportChart{display:block!important;width:100%!important;max-width:none!important;height:62mm!important;margin:0 0 6mm!important;border-radius:16px!important}
+  .reportSection>.reportText{display:block!important;width:100%!important;margin:0 0 6mm!important;padding:6mm!important;border-radius:14px!important;font-size:13px!important;line-height:1.42!important}
+  .reportMiniGrid{grid-template-columns:repeat(3,1fr)!important;gap:5mm!important;margin-top:6mm!important}
+  .reportLineNote,.reportNote{font-size:12px!important;line-height:1.4!important;margin-top:5mm!important}
+  #reportRiskSection .reportChart{height:48mm!important}
+  #reportRiskSection .reportKpis{gap:4mm!important;margin-top:4mm!important}
+  #reportRiskSection .reportKpi{padding:5mm!important;min-height:24mm}
+  #reportRiskSection .reportSection>.reportText,#reportRiskSection>.reportText{font-size:12px!important;line-height:1.32!important;padding:5mm!important;margin-bottom:4mm!important}
+  #reportRiskSection .reportMiniGrid{gap:4mm!important;margin-top:4mm!important}
+  #reportRiskSection .reportLineNote{font-size:11px!important;line-height:1.3!important}
+}
+
 .reportWrap{display:grid;grid-template-columns:360px 1fr;gap:18px;align-items:start}
 .reportControls .check{display:flex;align-items:center;gap:10px;margin:10px 0;font-weight:800;color:#172033}
 .reportControls input[type=checkbox]{width:18px;height:18px;min-height:18px}
@@ -308,6 +379,39 @@ canvas{width:100%;height:330px}
 .printBtn{margin-top:16px;background:linear-gradient(135deg,#101828,#344054);box-shadow:none}
 @media(max-width:1250px){.reportWrap,.reportHero,.reportSplit{grid-template-columns:1fr}.reportKpis{grid-template-columns:1fr 1fr}}
 @media print{body{background:#fff}.topbar,.reportControls{display:none!important}.app{padding:0;max-width:none}.reportWrap{display:block}.card{box-shadow:none;border:none}.reportDoc{box-shadow:none;border:none;border-radius:0}.hidden{display:none!important}.reportKpis{grid-template-columns:repeat(4,1fr)}.reportSection{break-inside:avoid}}
+
+/* V26 final - Apple Crystal report a ciste PDF strankovani */
+.reportDoc{background:linear-gradient(145deg,rgba(255,255,255,.88),rgba(244,249,255,.74));border:1px solid rgba(214,228,247,.9);box-shadow:0 24px 70px rgba(35,53,84,.12),inset 0 1px 0 rgba(255,255,255,.95);backdrop-filter:blur(24px) saturate(150%);-webkit-backdrop-filter:blur(24px) saturate(150%)}
+.reportTitle,.reportSection{background:linear-gradient(145deg,rgba(255,255,255,.84),rgba(246,250,255,.72));border-color:rgba(207,222,242,.9);box-shadow:0 18px 42px rgba(35,53,84,.08),inset 0 1px 0 rgba(255,255,255,.95)}
+.reportBadge{background:linear-gradient(145deg,#101828,#24334b);box-shadow:0 18px 42px rgba(16,24,40,.18)}
+.reportKpi{background:rgba(255,255,255,.72);border-color:rgba(207,222,242,.92);box-shadow:inset 0 1px 0 rgba(255,255,255,.92),0 10px 24px rgba(35,53,84,.055)}
+.reportChart,.reportSection>.reportText{background:rgba(255,255,255,.72);border-color:rgba(207,222,242,.92);box-shadow:inset 0 1px 0 rgba(255,255,255,.92)}
+@media print{
+  @page{size:A4;margin:12mm}
+  html,body{width:auto;background:#eef6ff!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .topbar,.reportControls{display:none!important}
+  .app{max-width:none;padding:0!important}
+  .reportWrap{display:block!important}
+  .reportDoc{width:100%;padding:0!important;border:0!important;border-radius:0!important;background:transparent!important;box-shadow:none!important}
+  .reportHero,.reportSection{width:100%;margin:0!important;padding:14mm!important;border-radius:18px!important;border:1px solid rgba(207,222,242,.95)!important;background:linear-gradient(145deg,rgba(255,255,255,.94),rgba(246,250,255,.84))!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.96)!important;page-break-inside:avoid;break-inside:avoid}
+  .reportHero{display:grid!important;grid-template-columns:1.15fr .85fr;gap:10mm;min-height:86mm;align-items:stretch;page-break-after:auto;break-after:auto}
+  #reportOverviewSection{margin-top:8mm!important;min-height:76mm;page-break-after:always;break-after:page}
+  #reportInvestSection,#reportMortgageSection,#reportRiskSection,#reportNextSection{page-break-before:always;break-before:page;page-break-after:always;break-after:page;min-height:248mm}
+  #reportNextSection{min-height:120mm;page-break-after:auto;break-after:auto}
+  .reportTitle,.reportBadge{padding:10mm!important;border-radius:18px!important}
+  .reportTitle h1{font-size:28px!important;line-height:1.08!important}
+  .reportBadge strong{font-size:22px!important}
+  .reportSection h2{font-size:25px!important;margin:0 0 8mm!important}
+  .reportKpis{grid-template-columns:repeat(4,1fr)!important;gap:5mm!important;margin-top:6mm!important}
+  .reportKpi{border-radius:14px!important;padding:7mm!important;min-height:30mm}
+  .reportKpi small{font-size:11px!important;line-height:1.25!important}
+  .reportKpi strong{font-size:19px!important;line-height:1.15!important}
+  .reportSplit{grid-template-columns:1fr 1fr!important;gap:5mm!important;margin-top:6mm!important}
+  .reportChart{display:block!important;width:100%!important;max-width:none!important;height:62mm!important;margin:0 0 6mm!important;border-radius:16px!important}
+  .reportSection>.reportText{display:block!important;width:100%!important;margin:0 0 6mm!important;padding:6mm!important;border-radius:14px!important;font-size:13px!important;line-height:1.42!important}
+  .reportMiniGrid{grid-template-columns:repeat(3,1fr)!important;gap:5mm!important;margin-top:6mm!important}
+  .reportLineNote,.reportNote{font-size:12px!important;line-height:1.4!important;margin-top:5mm!important}
+}
 
 @media(max-width:1250px){
   .clientSummary{grid-template-columns:1fr}
@@ -368,6 +472,7 @@ canvas{width:100%;height:330px}
           <div class="field suffix"><label>Majetek určený k budoucímu prodeji (exit)</label><input id="current" type="text" inputmode="numeric" value="" placeholder="sem napiš hodnotu majetku"><small>Kč</small></div>
           <div class="field suffix"><label>Zhodnocení majetku do exitu</label><select id="currentYield"><option value="2">2 % p.a.</option><option value="3">3 % p.a.</option><option value="4" selected>4 % p.a.</option><option value="5">5 % p.a.</option></select></div>
           <div class="field suffix"><label>Příjem z pronájmu v rentě</label><input id="rentalIncome" type="text" inputmode="numeric" value="" placeholder="sem napiš měsíční nájem"><small>Kč</small></div>
+          <div class="field suffix"><label>Orientační státní důchod</label><input id="statePension" type="text" inputmode="numeric" value="" placeholder="sem napiš odhad z IDA ČSSZ"><small>Kč</small></div>
           <div class="assetMini">
             <small>Budoucí hodnota majetku při exitu</small><br>
             <strong id="assetInlineValue">—</strong>
@@ -383,7 +488,7 @@ canvas{width:100%;height:330px}
 
           <div class="infoBox">
             <strong>Státní důchod</strong><br>
-            Státní důchod zde nepočítáme. Klient si jej může orientačně ověřit přes IDA ČSSZ.
+            Státní důchod je orientační vstup. Kalkulačka ukáže, kolik z cílové renty pokryje stát a kolik musí doručit vlastní kapitál, pronájem a investice.
             <br><br>
             <a class="linkButton" href="https://www.cssz.gov.cz/informativni-duchodova-aplikace-ida-" target="_blank" rel="noopener noreferrer">Otevřít IDA ČSSZ</a>
           </div>
@@ -398,7 +503,7 @@ canvas{width:100%;height:330px}
             <div class="clientPill"><small>Klient</small><strong id="summaryClient">—</strong></div>
             <div class="clientPill"><small>Věk dnes</small><strong id="summaryAge">—</strong></div>
             <div class="clientPill"><small>Start renty</small><strong id="summaryRentAge">—</strong></div>
-            <div class="clientPill"><small>Majetek při exitu</small><strong id="summaryExitAsset">—</strong></div>
+            <div class="clientPill"><small>Vlastní renta po státu</small><strong id="summaryPrivateRent">—</strong></div>
           </div>
           <div class="cards2">
             <div class="variant green">
@@ -461,12 +566,14 @@ canvas{width:100%;height:330px}
           <div class="compareItem"><div class="icon i-blue">□</div><div><small>Aktuální majetek dnes</small><strong id="sideCurrent">—</strong></div></div>
           <div class="compareItem"><div class="icon i-blue">↗</div><div><small>Majetek při startu renty</small><strong id="sideExitAsset">—</strong></div></div>
           <div class="compareItem"><div class="icon i-green">+</div><div><small>Příjem z pronájmu</small><strong id="sideRentalIncome">—</strong></div></div>
+          <div class="compareItem"><div class="icon i-purple">◎</div><div><small>Orientační státní důchod</small><strong id="sideStatePension">—</strong></div></div>
+          <div class="compareItem"><div class="icon i-green">◎</div><div><small>Vlastní renta z kapitálu</small><strong id="sidePrivateRent">—</strong></div></div>
           <div class="compareItem"><div class="icon i-red">!</div><div><small>Mezera k cíli – pouze výnosy</small><strong id="gapInterest">—</strong></div></div>
           <div class="compareItem"><div class="icon i-red">!</div><div><small>Mezera k cíli – rozpouštění</small><strong id="gapDeplete">—</strong></div></div>
 
           <div class="recommend">
             <strong>Poznámka k exitu majetku</strong><br>
-            Aktuální majetek se do renty nezapočítává dnešní hodnotou, ale budoucí hodnotou ve věku startu renty. Díky tomu lze modelovat prodej nemovitosti, firmy nebo jiné větší investice. Státní důchod je řešen pouze proklikem na IDA ČSSZ, ne vstupem do výpočtu.
+            Aktuální majetek se do renty nezapočítává dnešní hodnotou, ale budoucí hodnotou ve věku startu renty. Státní důchod je orientační vstup podle IDA ČSSZ a snižuje částku, kterou musí doručit vlastní kapitál.
           </div>
         </div>
 
@@ -788,7 +895,13 @@ canvas{width:100%;height:330px}
         <section class="reportSection" id="reportInvestSection">
           <h2>Investiční plán</h2>
           <canvas id="reportInvestChart" class="reportChart" width="900" height="260"></canvas>
-          <p class="reportText">Graf zjednodušeně ukazuje cestu k rentě. Zelená křivka znázorňuje tvorbu kapitálu, který má klientovi pomoci financovat budoucí rentu.</p>
+          <p class="reportText">Graf zjednodušeně ukazuje cestu ke kapitálu, který má doručit vlastní část renty. Státní důchod a pronájem snižují částku, kterou musí klient vytvořit z vlastních investic.</p>
+          <div class="reportKpis">
+            <div class="reportKpi purple"><small>Cílová renta celkem</small><strong id="reportGrossRent">—</strong></div>
+            <div class="reportKpi green"><small>Orientačně dodá stát</small><strong id="reportStatePension">—</strong></div>
+            <div class="reportKpi blue"><small>Příjem z pronájmu</small><strong id="reportRentalIncome">—</strong></div>
+            <div class="reportKpi red"><small>Vlastní renta z kapitálu</small><strong id="reportPrivateRent">—</strong></div>
+          </div>
           <div class="reportKpis">
             <div class="reportKpi green"><small>Potřebný kapitál – pouze výnosy</small><strong id="reportCapitalInterest">—</strong></div>
             <div class="reportKpi blue"><small>Potřebný kapitál – výnosy i jistina</small><strong id="reportCapitalDeplete">—</strong></div>
@@ -812,7 +925,7 @@ canvas{width:100%;height:330px}
         <section class="reportSection" id="reportRiskSection">
           <h2>Ochrana příjmu a rodiny</h2>
           <canvas id="reportRiskChart" class="reportChart" width="900" height="260"></canvas>
-          <p class="reportText">Modrá část ukazuje cílovou rentu, zelená orientační pomoc státu a červená měsíční částku, kterou je potřeba chránit. U smrti se zvlášť počítá s doplacením hypotéky.</p>
+          <p class="reportText">Graf ukazuje orientační pojistné potřeby: invaliditu, smrt, státní invalidní důchod a roční dopad pracovní neschopnosti. U smrti se zvlášť počítá s doplacením hypotéky a dalších závazků.</p>
           <div class="reportSplit">
             <div class="reportKpi blue"><small>Invalidita – měsíčně chybí</small><strong id="reportInvalidGap">—</strong></div>
             <div class="reportKpi red"><small>Smrt – rodině měsíčně chybí</small><strong id="reportDeathGap">—</strong></div>
@@ -829,10 +942,10 @@ canvas{width:100%;height:330px}
             <div class="reportKpi green"><small>Trvalé následky úrazu</small><strong id="reportAccidentPermanent">—</strong></div>
             <div class="reportKpi red"><small>Denní odškodné</small><strong id="reportDailyCompensation">—</strong></div>
           </div>
-          <p class="reportText">Invalidita ukazuje, jaký kapitál je potřeba, pokud by klient musel okamžitě přejít do rentového režimu. Smrt ukazuje, kolik kapitálu by rodině pomohlo splatit hypotéku a dlouhodobě pokrýt měsíční rozdíl mezi výdaji a dávkami od státu.</p>
+          <p class="reportText">Invalidita vychází z výdajů domácnosti navýšených o 20 %, hypoteční splátky a ostatních splátek po odečtení invalidního důchodu. Smrt vychází z výdajů snížených o 20 %, pozůstalostních důchodů, hypotéky a dalších závazků.</p>
         </section>
 
-        <section class="reportSection">
+        <section class="reportSection" id="reportNextSection">
           <h2>Shrnutí dalšího postupu</h2>
           <div class="reportKpis">
             <div class="reportKpi green"><small>Investice</small><strong>Budovat kapitál</strong></div>
@@ -861,7 +974,7 @@ function formatMoneyValue(v){
 }
 
 function setupMoneyInputs(){
-  const ids = ["rent1","rent2","legacy","current","lump","rentalIncome","mortgageAmount","mortgageLumpInvest","mortgageMonthlyInvest","riskIncome","riskExpenses","riskOtherLoans","riskOtherDebt","riskInvalidPension","riskWidowPension","riskOrphanPension","riskFuneralReserve","riskDailyCompensation","riskCurrentInvalidCover","riskCurrentDeathCover","riskSocialPayment"];
+  const ids = ["rent1","rent2","legacy","current","lump","rentalIncome","statePension","mortgageAmount","mortgageLumpInvest","mortgageMonthlyInvest","riskIncome","riskExpenses","riskOtherLoans","riskOtherDebt","riskInvalidPension","riskWidowPension","riskOrphanPension","riskFuneralReserve","riskDailyCompensation","riskCurrentInvalidCover","riskCurrentDeathCover","riskSocialPayment"];
   ids.forEach(id=>{
     const el = document.getElementById(id);
     if(!el) return;
@@ -909,7 +1022,7 @@ function grossRentAtAge(age){
 }
 
 function rentAtAge(age){
-  return Math.max(0, grossRentAtAge(age) - num('rentalIncome'));
+  return Math.max(0, grossRentAtAge(age) - num('rentalIncome') - num('statePension'));
 }
 
 function requiredCapitalInterest(yld=num('post')/100){
@@ -1077,7 +1190,7 @@ function calculate(){
   const futureAsset=futureCurrentAsset();
   const futureExisting=futureExistingCapital();
   const maxGrossRent=Math.max(num('rent1'),num('rent2'));
-  const maxNetRent=Math.max(0,maxGrossRent-num('rentalIncome'));
+  const maxNetRent=Math.max(0,maxGrossRent-num('rentalIncome')-num('statePension'));
 
   capitalInterest.textContent=fmt(capI);
   capitalDeplete.textContent=fmt(capD);
@@ -1092,14 +1205,16 @@ function calculate(){
   summaryClient.textContent=document.getElementById('clientName').value || 'Klient';
   summaryAge.textContent=num('age') + ' let';
   summaryRentAge.textContent=num('rentAge') + ' let';
-  summaryExitAsset.textContent=fmt(futureAsset);
+  summaryPrivateRent.textContent=fmt(maxNetRent) + ' / měsíc';
 
-  sideRent.textContent=fmt(maxNetRent) + " / měsíc po pronájmu";
+  sideRent.textContent=fmt(maxGrossRent) + " / měsíc celkem";
   sideYears.textContent=(num('endAge')-num('rentAge'))+" let ("+num('rentAge')+"–"+num('endAge')+" let)";
   sideYield.textContent=num('pre').toLocaleString('cs-CZ')+" % p.a. investice / "+val('currentYield').toLocaleString('cs-CZ')+" % p.a. majetek";
   sideCurrent.textContent=fmt(currentTotal);
   sideExitAsset.textContent=fmt(futureAsset);
   sideRentalIncome.textContent=fmt(num('rentalIncome')) + " / měsíc";
+  sideStatePension.textContent=fmt(num('statePension')) + " / měsíc";
+  sidePrivateRent.textContent=fmt(maxNetRent) + " / měsíc";
   gapInterest.textContent=fmt(capI-futureExisting);
   gapDeplete.textContent=fmt(capD-futureExisting);
 
@@ -1334,7 +1449,7 @@ function calculateMortgage(){
 }
 
 function getNetRentNeed(){
-  return Math.max(0, Math.max(num('rent1'), num('rent2')) - num('rentalIncome'));
+  return Math.max(0, Math.max(num('rent1'), num('rent2')) - num('rentalIncome') - num('statePension'));
 }
 
 
@@ -1585,7 +1700,13 @@ function updateReport(){
   reportCurrentInvestments.textContent = fmt(num('lump'));
   reportCurrentAssets.textContent = fmt(num('current'));
   reportMortgageDebt.textContent = fmt(num('mortgageAmount'));
-  reportTargetRent.textContent = fmt(Math.max(num('rent1'), num('rent2'))) + ' / měsíc';
+  const grossRentForReport = Math.max(num('rent1'), num('rent2'));
+  const privateRentForReport = Math.max(0, grossRentForReport - num('rentalIncome') - num('statePension'));
+  reportTargetRent.textContent = fmt(grossRentForReport) + ' / měsíc';
+  if(typeof reportGrossRent !== 'undefined') reportGrossRent.textContent = fmt(grossRentForReport) + ' / měsíc';
+  if(typeof reportStatePension !== 'undefined') reportStatePension.textContent = fmt(num('statePension')) + ' / měsíc';
+  if(typeof reportRentalIncome !== 'undefined') reportRentalIncome.textContent = fmt(num('rentalIncome')) + ' / měsíc';
+  if(typeof reportPrivateRent !== 'undefined') reportPrivateRent.textContent = fmt(privateRentForReport) + ' / měsíc';
 
   const capI=requiredCapitalInterest();
   const capD=requiredCapitalDeplete();
@@ -1618,11 +1739,15 @@ function updateReport(){
   reportDeathCover.textContent = fmt(rn.deathCover);
   reportUsableAssets.textContent = fmt(rn.usableAssetsNow);
   reportStateBenefits.textContent = 'Inv. ' + fmt(rn.invalidPension) + ' / rodina ' + fmt(rn.familyPensions);
+  if(typeof reportSickPayGap !== 'undefined') reportSickPayGap.textContent = fmt(rn.sicknessGap) + ' / měsíc';
+  if(typeof reportCriticalIllness !== 'undefined') reportCriticalIllness.textContent = fmt(rn.criticalIllness);
+  if(typeof reportAccidentPermanent !== 'undefined') reportAccidentPermanent.textContent = fmt(rn.accidentPermanent);
+  if(typeof reportDailyCompensation !== 'undefined') reportDailyCompensation.textContent = rn.dailyCompensation > 0 ? fmt(rn.dailyCompensation) + ' / den' : 'volitelné';
   drawReportBar(document.getElementById('reportRiskChart'), [
-    {label:'Renta', value:Math.max(num('rent1'), num('rent2')), color:'#2563eb'},
-    {label:'Stát', value:rn.invalidPension, color:'#16a34a'},
-    {label:'Chybí', value:rn.invalidGap, color:'#ef4444'},
-    {label:'Rodina', value:rn.deathGap, color:'#f59e0b'}
+    {label:'Invalidita', value:rn.invalidCapital, color:'#2563eb'},
+    {label:'Smrt', value:rn.deathCapital, color:'#ef4444'},
+    {label:'Inv. důchod', value:rn.invalidPension, color:'#16a34a'},
+    {label:'PN', value:rn.sicknessGap * 12, color:'#f59e0b'}
   ]);
 
   const showInvest=document.getElementById('reportInvest')?.checked;
@@ -1640,7 +1765,7 @@ function updateReport(){
 
 
 document.querySelectorAll('input, select').forEach(i=>{
-  if(!["rent1","rent2","legacy","current","lump","rentalIncome","mortgageAmount","mortgageLumpInvest","mortgageMonthlyInvest","riskIncome","riskExpenses","riskOtherLoans","riskOtherDebt","riskInvalidPension","riskWidowPension","riskOrphanPension","riskFuneralReserve","riskDailyCompensation","riskCurrentInvalidCover","riskCurrentDeathCover","riskSocialPayment"].includes(i.id)){
+  if(!["rent1","rent2","legacy","current","lump","rentalIncome","statePension","mortgageAmount","mortgageLumpInvest","mortgageMonthlyInvest","riskIncome","riskExpenses","riskOtherLoans","riskOtherDebt","riskInvalidPension","riskWidowPension","riskOrphanPension","riskFuneralReserve","riskDailyCompensation","riskCurrentInvalidCover","riskCurrentDeathCover","riskSocialPayment"].includes(i.id)){
     const recalc=()=>{ calculate(); calculateMortgage(); calculateRisk(); };
     i.addEventListener('input',recalc);
     i.addEventListener('change',recalc);
@@ -1812,7 +1937,13 @@ updateReport();
     setText('reportCurrentAssets', safeFmt(money('current')));
     const mort=mortgageModel();
     setText('reportMortgageDebt', safeFmt(mort.amount||money('mortgageAmount')));
-    setText('reportTargetRent', safeFmt(Math.max(money('rent1'),money('rent2')))+' / měsíc');
+    const grossRent=Math.max(money('rent1'),money('rent2'));
+    const privateRent=Math.max(0,grossRent-money('rentalIncome')-money('statePension'));
+    setText('reportTargetRent', safeFmt(grossRent)+' / měsíc');
+    setText('reportGrossRent', safeFmt(grossRent)+' / měsíc');
+    setText('reportStatePension', safeFmt(money('statePension'))+' / měsíc');
+    setText('reportRentalIncome', safeFmt(money('rentalIncome'))+' / měsíc');
+    setText('reportPrivateRent', safeFmt(privateRent)+' / měsíc');
 
     let capI=0, capD=0, exitValue=0, investFV=0;
     try{capI=requiredCapitalInterest()}catch(e){}
@@ -1892,13 +2023,13 @@ updateReport();
 // V25 – mazání údajů klienta
 (function(){
   const byId = id => document.getElementById(id);
-  const moneyIds = new Set(['rent1','rent2','legacy','current','rentalIncome','lump','riskIncome','riskExpenses','riskOtherLoans','riskOtherDebt','riskInvalidPension','riskWidowPension','riskOrphanPension','riskFuneralReserve','riskDailyCompensation','riskCurrentInvalidCover','riskCurrentDeathCover','mortgageAmount','mortgageLumpInvest','mortgageMonthlyInvest']);
+  const moneyIds = new Set(['rent1','rent2','legacy','current','rentalIncome','statePension','lump','riskIncome','riskExpenses','riskOtherLoans','riskOtherDebt','riskInvalidPension','riskWidowPension','riskOrphanPension','riskFuneralReserve','riskDailyCompensation','riskCurrentInvalidCover','riskCurrentDeathCover','mortgageAmount','mortgageLumpInvest','mortgageMonthlyInvest']);
 
   const sections = {
     invest: {
-      ids: ['clientName','age','rentAge','rent1','rent1Until','rent2From','rent2','endAge','pre','post','legacy','current','currentYield','rentalIncome','lump'],
+      ids: ['clientName','age','rentAge','rent1','rent1Until','rent2From','rent2','endAge','pre','post','legacy','current','currentYield','rentalIncome','statePension','lump'],
       values: {
-        clientName:'', age:'', rentAge:'', rent1:'', rent1Until:'', rent2From:'', rent2:'', endAge:'', pre:'', post:'', legacy:'', current:'', currentYield:'3', rentalIncome:'', lump:''
+        clientName:'', age:'', rentAge:'', rent1:'', rent1Until:'', rent2From:'', rent2:'', endAge:'', pre:'', post:'', legacy:'', current:'', currentYield:'3', rentalIncome:'', statePension:'', lump:''
       }
     },
     risk: {
