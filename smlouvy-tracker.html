@@ -1426,8 +1426,9 @@ function refreshGoogleSyncStatus(){
   setGoogleSyncStatus('Kontroluji Google zálohu...');
   googleSyncJsonp('status',{},data=>{
     if(!data||!data.ok){setGoogleSyncStatus('Google záloha zatím nejde načíst. '+(data?.error||''));return}
-    if(!data.exists){setGoogleSyncStatus(`<b>Na Googlu zatím není záloha pro Smlouvy.</b><br>Lokálně teď vidím: ${googleSyncLocalInfo()}.`);return}
-    setGoogleSyncStatus(`<b>Na Googlu je záloha.</b><br>Uloženo: ${data.updatedAt||'-'} · Velikost: ${data.size||0} znaků<br>Lokálně teď vidím: ${googleSyncLocalInfo()}.`);
+    const meta=data.latest||data.meta||null;
+    if(!meta){setGoogleSyncStatus(`<b>Na Googlu zatím není záloha pro Smlouvy.</b><br>Lokálně teď vidím: ${googleSyncLocalInfo()}.`);return}
+    setGoogleSyncStatus(`<b>Na Googlu je záloha pro Smlouvy.</b><br>Uloženo: ${meta.createdAt||meta.updatedAt||'-'} · Velikost: ${meta.payloadLength||meta.size||0} znaků<br>Lokálně teď vidím: ${googleSyncLocalInfo()}.`);
   });
 }
 function saveGoogleBackup(){
@@ -1445,7 +1446,7 @@ function loadGoogleBackup(){
   googleSyncJsonp('load',{},data=>{
     try{
       if(!data||!data.ok)throw new Error(data?.error||'Google nevrátil zálohu.');
-      const payload=data.payload||{};
+      const payload=data.backup||data.payload||{};
       if(!Array.isArray(payload.clients))throw new Error('Záloha nemá správný formát pro Smlouvy.');
       const contracts=payload.clients.reduce((s,c)=>s+(c.contracts||[]).length,0);
       if(!confirm('Stáhnout Google zálohu a přepsat lokální Smlouvy? V záloze je '+payload.clients.length+' klientů a '+contracts+' smluv.')){refreshGoogleSyncStatus();return}
