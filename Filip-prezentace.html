@@ -1754,6 +1754,160 @@ body::after{
   .website-title{font-size:18px;margin-bottom:4px}
 }
 
+
+/* ═══════════════════════════════════════
+   V29 · PREZENTAČNÍ KLID + LEV JAKO TAPETA
+   - bez pohyblivých kruhů v pozadí
+   - lev je jemný podklad přes celou obrazovku
+   - středový kruh používá jen Filipovu fotku
+   - otevřené kroky jsou jednodušší, prokliky zůstávají
+═══════════════════════════════════════ */
+body::before{
+  content:"";
+  position:fixed;
+  inset:-8vh -6vw;
+  z-index:0;
+  pointer-events:none;
+  background-image:url("fairlife-lion-watermark.png");
+  background-repeat:no-repeat;
+  background-position:center center;
+  background-size:min(1180px,82vw) auto;
+  opacity:.115;
+  filter:saturate(.82) contrast(.92) brightness(1.04);
+}
+body::after{
+  animation:none!important;
+  opacity:.38!important;
+  filter:blur(30px)!important;
+}
+.orb,.hub-rings{display:none!important;animation:none!important}
+.stage::before{
+  background:
+    radial-gradient(850px 520px at 50% 50%,rgba(255,255,255,.34),transparent 68%),
+    linear-gradient(145deg,rgba(255,255,255,.18),transparent 40%,rgba(255,255,255,.08))!important;
+}
+.hub{
+  background:rgba(255,255,255,.42)!important;
+  border:1px solid rgba(255,255,255,.88)!important;
+}
+.hub-bg{
+  opacity:.84!important;
+  filter:saturate(.86) contrast(.96) brightness(1.04)!important;
+  transform:scale(1.02)!important;
+  background-size:cover!important;
+  background-position:center center!important;
+}
+.hub:hover .hub-bg{
+  opacity:.9!important;
+  transform:scale(1.055)!important;
+  filter:saturate(.9) contrast(.98) brightness(1.04)!important;
+}
+.hub::before{
+  background:
+    radial-gradient(circle at 34% 22%,rgba(255,255,255,.22),transparent 46%),
+    linear-gradient(145deg,rgba(255,255,255,.16),rgba(255,255,255,.03))!important;
+}
+.hub::after{
+  background:radial-gradient(circle at center, transparent 0 64%, rgba(255,255,255,.28) 82%, rgba(255,255,255,.52) 100%)!important;
+}
+
+.det{
+  grid-template-columns:.82fr 1.18fr!important;
+  gap:clamp(20px,2.3vw,34px)!important;
+  background:rgba(255,255,255,.28)!important;
+}
+.det .subs{
+  justify-content:center!important;
+  gap:clamp(12px,1.6vh,18px)!important;
+}
+.det .sub{
+  min-height:clamp(68px,8.4vh,92px)!important;
+  background:rgba(255,255,255,.38)!important;
+}
+.det .sub.on,.det .sub:hover{
+  background:rgba(255,255,255,.68)!important;
+}
+.dr.filled{
+  padding:clamp(24px,3vh,38px) clamp(28px,3vw,46px)!important;
+  justify-content:center!important;
+  background:rgba(255,255,255,.24)!important;
+}
+.dr.filled .v-eye{display:none!important}
+.dr.filled .v-ttl{
+  max-width:860px!important;
+  padding-right:0!important;
+  font-size:clamp(30px,2.7vw,48px)!important;
+  line-height:.98!important;
+  margin:0 0 18px!important;
+}
+.dr.filled .v-dsc{
+  max-width:880px!important;
+  padding-right:0!important;
+  font-size:clamp(16px,1.1vw,20px)!important;
+  line-height:1.48!important;
+  color:#183852!important;
+  margin:0 0 22px!important;
+}
+.bens{
+  max-width:880px!important;
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  gap:10px!important;
+  margin-bottom:18px!important;
+}
+.ben{
+  min-height:46px!important;
+  font-size:clamp(13px,.9vw,15px)!important;
+  border-radius:18px!important;
+  background:rgba(255,255,255,.50)!important;
+}
+.savs{
+  max-width:880px!important;
+  display:grid!important;
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  gap:12px!important;
+  margin:0 0 18px!important;
+}
+.sav{
+  min-height:74px!important;
+  display:flex!important;
+  align-items:center!important;
+  background:rgba(255,255,255,.44)!important;
+}
+.sav .time-mini{display:none!important}
+.sav-pill{position:static!important;margin-left:auto!important}
+.rel.compact{
+  display:none!important;
+}
+.tool-zone.show{
+  max-width:880px!important;
+  margin-top:clamp(12px,1.8vh,22px)!important;
+  display:grid!important;
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  gap:14px!important;
+}
+.tool-card{
+  min-height:92px!important;
+  border-radius:24px!important;
+  background:linear-gradient(145deg,rgba(255,255,255,.72),rgba(255,255,255,.34))!important;
+}
+.tool-card b{font-size:clamp(17px,1.15vw,21px)!important}
+.tool-card small{font-size:12.5px!important}
+@media(max-height:820px){
+  .det{grid-template-columns:.86fr 1.14fr!important;padding:16px 26px!important}
+  .dr.filled{padding:20px 28px!important}
+  .dr.filled .v-ttl{font-size:30px!important;margin-bottom:12px!important}
+  .dr.filled .v-dsc{font-size:14px!important;margin-bottom:14px!important}
+  .ben{min-height:38px!important;font-size:11.8px!important}
+  .sav{min-height:58px!important}
+  .tool-card{min-height:78px!important;padding:14px!important}
+}
+@media(max-width:1100px){
+  body::before{background-size:105vw auto;opacity:.09}
+  .det{grid-template-columns:1fr!important;overflow:auto!important}
+  .det .subs{height:auto!important;max-height:none!important}
+  .tool-zone.show{grid-template-columns:1fr!important}
+}
+
 </style>
 </head>
 <body>
@@ -3828,6 +3982,23 @@ updateReport();
 
   </main>
 </div>
+
+<script>
+(function(){
+  function useProfilePhotoInHub(){
+    var photo=document.querySelector('.fp-photo');
+    var hubBg=document.querySelector('.hub-bg');
+    if(photo && hubBg && photo.src){
+      hubBg.style.backgroundImage='url("'+photo.src+'")';
+    }
+  }
+  if(document.readyState==='loading'){
+    document.addEventListener('DOMContentLoaded',useProfilePhotoInHub);
+  }else{
+    useProfilePhotoInHub();
+  }
+})();
+</script>
 
 <script>
 /* ─── ICON SVGs (pro detail panel header) ─── */
