@@ -89,6 +89,22 @@ body{font-family:'Inter',sans-serif;background:#f1f5f9;color:#1e293b;font-size:1
 .drop-sub{font-size:11px;color:#94a3b8;margin-top:3px}
 .import-info{font-size:12px;color:#64748b;line-height:1.8;background:#f8fafc;border-radius:8px;padding:12px;border:1px solid #e2e8f0}
 .import-info strong{color:#1e293b}
+.sync-panel{background:#fff;border-bottom:1px solid #e2e8f0;padding:20px 28px;display:none}
+.sync-panel.open{display:block}
+.sync-panel h3{font-size:15px;font-weight:700;margin-bottom:14px;display:flex;align-items:center;justify-content:space-between}
+.sync-grid{display:grid;grid-template-columns:minmax(320px,.9fr) 1fr;gap:16px;align-items:start}
+.sync-card{background:#f8fafc;border:1px solid #e2e8f0;border-radius:12px;padding:14px}
+.sync-card h4{font-size:13px;margin-bottom:10px;color:#1e293b}
+.sync-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}
+.sync-status{font-size:12px;color:#64748b;line-height:1.6;background:#fff;border:1px solid #e2e8f0;border-radius:8px;padding:10px;margin-top:10px;min-height:42px}
+.sync-status.ok{border-color:#86efac;background:#f0fdf4;color:#15803d}
+.sync-status.err{border-color:#fca5a5;background:#fff7f7;color:#b91c1c}
+.sync-note{font-size:12px;color:#64748b;line-height:1.55}
+.sync-note strong{color:#1e293b}
+.sync-mini{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
+.sync-mini div{background:#fff;border:1px solid #e2e8f0;border-radius:8px;padding:10px}
+.sync-mini small{display:block;color:#94a3b8;text-transform:uppercase;font-size:10px;font-weight:800;letter-spacing:.35px}
+.sync-mini b{display:block;margin-top:4px;color:#1e293b;font-size:12px;word-break:break-word}
 
 /* ADD PANEL */
 .add-panel{background:#fff;border-bottom:1px solid #e2e8f0;padding:20px 28px;display:none}
@@ -365,8 +381,10 @@ body{font-family:'Inter',sans-serif;background:#f1f5f9;color:#1e293b;font-size:1
 
 /* LIGHT APPLE CRYSTAL REFRESH */
 body{background:radial-gradient(circle at 16% 0%,rgba(77,177,200,.18),transparent 30%),radial-gradient(circle at 86% 8%,rgba(37,99,235,.10),transparent 32%),linear-gradient(180deg,#f8fbff 0%,#edf4fb 100%)}
-.hdr{background:rgba(255,255,255,.78);border-bottom:1px solid rgba(219,227,237,.86);box-shadow:0 14px 40px rgba(15,23,42,.055);backdrop-filter:blur(18px) saturate(150%)}
+.hdr{height:auto;min-height:58px;flex-wrap:wrap;gap:10px;background:rgba(255,255,255,.78);border-bottom:1px solid rgba(219,227,237,.86);box-shadow:0 14px 40px rgba(15,23,42,.055);backdrop-filter:blur(18px) saturate(150%)}
 .hdr-icon{background:linear-gradient(135deg,#0b3558,#4DB1C8);box-shadow:0 10px 22px rgba(11,53,88,.18)}
+.hdr-btns{flex:1;justify-content:flex-end;flex-wrap:wrap}
+.layout{height:calc(100vh - 76px)}
 .sidebar,.import-panel,.add-panel,.fund-panel,.aum-panel{background:rgba(255,255,255,.68);backdrop-filter:blur(18px) saturate(145%)}
 .sidebar{border-right:1px solid rgba(219,227,237,.86)}.main{background:transparent}
 .sb-search,.sb-filters{border-bottom:1px solid rgba(226,232,240,.72)}.sb-stats{background:rgba(226,232,240,.62)}.sb-stat{background:rgba(255,255,255,.66)}
@@ -382,8 +400,8 @@ body{background:radial-gradient(circle at 16% 0%,rgba(77,177,200,.18),transparen
   .hdr-btns{width:100%;overflow-x:auto;padding-bottom:2px}.btn{white-space:nowrap}
   .layout{height:auto;min-height:calc(100vh - 58px);flex-direction:column}
   .sidebar{width:100%;min-width:0;max-height:45vh;border-right:none;border-bottom:1px solid #e2e8f0}
-  .main{min-height:55vh}.detail{padding:18px 14px}.import-panel,.add-panel{padding:16px 14px}
-  .import-grid,.form-grid{grid-template-columns:1fr}.fcard-hdr{grid-template-columns:1fr;gap:8px;align-items:flex-start}.fstat{text-align:left}
+  .main{min-height:55vh}.detail{padding:18px 14px}.import-panel,.add-panel,.sync-panel{padding:16px 14px}
+  .import-grid,.form-grid,.sync-grid,.sync-actions{grid-template-columns:1fr}.fcard-hdr{grid-template-columns:1fr;gap:8px;align-items:flex-start}.fstat{text-align:left}
   .det-hdr{align-items:flex-start}.stats{grid-template-columns:1fr 1fr}.tx-grid{grid-template-columns:1fr 1fr}
 }
 @media (max-width: 520px){.stats,.tx-grid{grid-template-columns:1fr}.det-actions,.form-footer{width:100%;justify-content:flex-start}.elig-row{align-items:flex-start;gap:8px;flex-direction:column}}
@@ -411,8 +429,40 @@ body{background:radial-gradient(circle at 16% 0%,rgba(77,177,200,.18),transparen
     <button class="btn btn-gray" onclick="dlBackupJSON()">💾 Záloha JSON</button>
     <button class="btn btn-gray" onclick="document.getElementById('backupFile').click()">↥ Obnovit JSON</button>
     <input type="file" id="backupFile" accept=".json" style="display:none" onchange="restoreBackupJSON(event)">
+    <button class="btn btn-gray" onclick="openGoogleSyncPanel()">☁ Google záloha</button>
     <button class="btn btn-gray" onclick="dlTemplate()">⬇ Vzor CSV</button>
   </div>
+</div>
+
+<!-- GOOGLE SYNC PANEL -->
+<div class="sync-panel" id="googleSyncPanel">
+  <h3>Google záloha <button class="btn btn-gray btn-sm" onclick="closeGoogleSyncPanel()">✕ Zavřít</button></h3>
+  <div class="sync-grid">
+    <div class="sync-card">
+      <h4>Nastavení tohoto zařízení</h4>
+      <div class="fg"><label>Apps Script Web App URL</label><input id="gsyncUrl" placeholder="https://script.google.com/macros/s/.../exec"></div>
+      <div class="fg" style="margin-top:10px"><label>Soukromý sync klíč</label><input id="gsyncKey" type="password" placeholder="Stejný klíč jako v Apps Scriptu"></div>
+      <div class="sync-actions">
+        <button class="btn btn-blue" onclick="saveGoogleSyncSettings()">Uložit nastavení</button>
+        <button class="btn btn-gray" onclick="clearGoogleSyncSettings()">Smazat z tohoto zařízení</button>
+      </div>
+      <div class="sync-status" id="gsyncStatus">Nastavení se ukládá jen do tohoto prohlížeče. Do GitHub souboru se klíč nezapisuje.</div>
+    </div>
+    <div class="sync-card">
+      <h4>Ruční přenos dat</h4>
+      <p class="sync-note"><strong>Záloha do Google</strong> uloží aktuální CRM data do Google Sheets. <strong>Načíst z Google</strong> stáhne poslední zálohu a po potvrzení přepíše lokální data na tomto zařízení.</p>
+      <div class="sync-mini">
+        <div><small>Lokální CRM</small><b id="gsyncLocalInfo">—</b></div>
+        <div><small>Poslední Google záloha</small><b id="gsyncRemoteInfo">—</b></div>
+      </div>
+      <div class="sync-actions">
+        <button class="btn btn-green" onclick="backupToGoogleSheets()">Záloha do Google</button>
+        <button class="btn btn-blue" onclick="restoreFromGoogleSheets()">Načíst z Google</button>
+      </div>
+      <button class="btn btn-gray" style="width:100%;justify-content:center;margin-top:8px" onclick="checkGoogleBackupStatus()">Zkontrolovat poslední zálohu</button>
+    </div>
+  </div>
+  <iframe id="gsyncFrame" name="gsyncFrame" style="display:none"></iframe>
 </div>
 
 <!-- IMPORT PANEL -->
@@ -3360,6 +3410,275 @@ function dlTemplate(){
   a.href=URL.createObjectURL(new Blob(['\uFEFF'+h+'\n'+e],{type:'text/csv;charset=utf-8'}));
   a.download='vzor_import.csv';a.click();
   toast('Vzor CSV stažen ✓','ok');
+}
+
+// ── GOOGLE SHEETS SYNC ─────────────────────────
+const GOOGLE_SYNC_APP = 'investment_crm';
+const GOOGLE_SYNC_URL_KEY = 'crm3_google_sync_url';
+const GOOGLE_SYNC_SECRET_KEY = 'crm3_google_sync_key';
+const GOOGLE_SYNC_LAST_LOCAL = 'crm3_google_sync_last_local';
+const GOOGLE_SYNC_TIMEOUT_MS = 45000;
+
+function openGoogleSyncPanel(){
+  const panel=document.getElementById('googleSyncPanel');
+  if(panel) panel.classList.add('open');
+  loadGoogleSyncSettingsToForm();
+  refreshGoogleSyncLocalInfo();
+  checkGoogleBackupStatus({silent:true});
+}
+
+function closeGoogleSyncPanel(){
+  const panel=document.getElementById('googleSyncPanel');
+  if(panel) panel.classList.remove('open');
+}
+
+function normalizeGoogleSyncUrl(url){
+  return String(url||'').trim().replace(/\?.*$/,'');
+}
+
+function googleSyncSettings(){
+  return {
+    url: normalizeGoogleSyncUrl(localStorage.getItem(GOOGLE_SYNC_URL_KEY)||''),
+    key: localStorage.getItem(GOOGLE_SYNC_SECRET_KEY)||''
+  };
+}
+
+function loadGoogleSyncSettingsToForm(){
+  const s=googleSyncSettings();
+  const url=document.getElementById('gsyncUrl');
+  const key=document.getElementById('gsyncKey');
+  if(url) url.value=s.url;
+  if(key) key.value=s.key;
+  googleSyncStatus(s.url?'Nastavení je uložené v tomto zařízení.':'Doplň Web App URL a sync klíč z Google Apps Scriptu.');
+}
+
+function saveGoogleSyncSettings(){
+  const url=normalizeGoogleSyncUrl(document.getElementById('gsyncUrl')?.value||'');
+  const key=String(document.getElementById('gsyncKey')?.value||'').trim();
+  if(!/^https:\/\/script\.google\.com\/macros\/s\/.+\/exec$/.test(url)){
+    googleSyncStatus('Zadej Web App URL z Apps Scriptu. Musí začínat https://script.google.com/macros/s/ a končit /exec.', 'err');
+    return;
+  }
+  if(key.length<12){
+    googleSyncStatus('Sync klíč dej raději delší, alespoň 12 znaků.', 'err');
+    return;
+  }
+  localStorage.setItem(GOOGLE_SYNC_URL_KEY,url);
+  localStorage.setItem(GOOGLE_SYNC_SECRET_KEY,key);
+  googleSyncStatus('Nastavení uloženo v tomto zařízení.', 'ok');
+  toast('Google sync nastavení uloženo ✓','ok');
+  checkGoogleBackupStatus({silent:true});
+}
+
+function clearGoogleSyncSettings(){
+  if(!confirm('Smazat Google sync URL a klíč pouze z tohoto zařízení? Data v CRM ani Google Sheets se nesmažou.')) return;
+  localStorage.removeItem(GOOGLE_SYNC_URL_KEY);
+  localStorage.removeItem(GOOGLE_SYNC_SECRET_KEY);
+  localStorage.removeItem(GOOGLE_SYNC_LAST_LOCAL);
+  loadGoogleSyncSettingsToForm();
+  refreshGoogleSyncLocalInfo();
+  googleSyncStatus('Nastavení smazáno z tohoto zařízení.', 'ok');
+}
+
+function requireGoogleSyncSettings(){
+  const s=googleSyncSettings();
+  if(!s.url || !s.key){
+    openGoogleSyncPanel();
+    googleSyncStatus('Nejdřív ulož Web App URL a sync klíč.', 'err');
+    return null;
+  }
+  return s;
+}
+
+function googleSyncStatus(message,type=''){
+  const box=document.getElementById('gsyncStatus');
+  if(!box) return;
+  box.textContent=message;
+  box.className='sync-status'+(type?' '+type:'');
+}
+
+function googleSyncBackupPayload(){
+  migrateDatabaseInPlace({silent:true});
+  return {
+    version:APP_VERSION,
+    schemaVersion:APP_SCHEMA_VERSION,
+    build:APP_BUILD,
+    exportDate:new Date().toISOString(),
+    source:'investment-crm.html',
+    records:recs,
+    fundValues:fundValues,
+    lockedFunds:lockedFunds,
+    trailSettings:trailSettings
+  };
+}
+
+function refreshGoogleSyncLocalInfo(){
+  const el=document.getElementById('gsyncLocalInfo');
+  if(!el) return;
+  const last=localStorage.getItem(GOOGLE_SYNC_LAST_LOCAL);
+  el.textContent = `${(recs||[]).length} záznamů · ${Object.keys(fundValues||{}).length} fondů${last?' · '+new Date(last).toLocaleString('cs-CZ'):''}`;
+}
+
+function setGoogleSyncRemoteInfo(meta){
+  const el=document.getElementById('gsyncRemoteInfo');
+  if(!el) return;
+  if(!meta){ el.textContent='Zatím nezjištěno'; return; }
+  const dtxt=meta.createdAt ? new Date(meta.createdAt).toLocaleString('cs-CZ') : 'bez data';
+  el.textContent = `${dtxt} · ${meta.recordCount||0} záznamů · ${meta.fundCount||0} fondů`;
+}
+
+function googleSyncJsonp(action, params={}, onDone){
+  const s=requireGoogleSyncSettings();
+  if(!s) return;
+  const cb='fairlifeSyncCallback_'+Date.now()+'_'+Math.floor(Math.random()*100000);
+  const script=document.createElement('script');
+  const timer=setTimeout(()=>{
+    cleanup();
+    googleSyncStatus('Google neodpověděl včas. Zkontroluj Web App URL a oprávnění Apps Scriptu.', 'err');
+    if(onDone) onDone({ok:false,error:'timeout'});
+  },GOOGLE_SYNC_TIMEOUT_MS);
+
+  function cleanup(){
+    clearTimeout(timer);
+    try{ delete window[cb]; }catch(e){ window[cb]=undefined; }
+    script.remove();
+  }
+
+  window[cb]=data=>{
+    cleanup();
+    if(onDone) onDone(data||{ok:false,error:'Prázdná odpověď'});
+  };
+
+  const url=new URL(s.url);
+  url.searchParams.set('action',action);
+  url.searchParams.set('app',GOOGLE_SYNC_APP);
+  url.searchParams.set('key',s.key);
+  url.searchParams.set('callback',cb);
+  Object.entries(params||{}).forEach(([k,v])=>url.searchParams.set(k,v));
+  script.onerror=()=>{
+    cleanup();
+    googleSyncStatus('Nepodařilo se načíst odpověď z Google Apps Scriptu.', 'err');
+    if(onDone) onDone({ok:false,error:'script error'});
+  };
+  script.src=url.toString();
+  document.body.appendChild(script);
+}
+
+function checkGoogleBackupStatus(opts={}){
+  const s=googleSyncSettings();
+  refreshGoogleSyncLocalInfo();
+  if(!s.url || !s.key){ setGoogleSyncRemoteInfo(null); return; }
+  if(!opts.silent) googleSyncStatus('Kontroluji poslední Google zálohu…');
+  googleSyncJsonp('status',{},data=>{
+    if(data && data.ok){
+      setGoogleSyncRemoteInfo(data.latest);
+      if(!opts.silent) googleSyncStatus(data.latest?'Poslední Google záloha načtena.':'Na Google zatím není žádná záloha.', 'ok');
+    }else{
+      setGoogleSyncRemoteInfo(null);
+      if(!opts.silent) googleSyncStatus((data&&data.error)||'Kontrola Google zálohy selhala.', 'err');
+    }
+  });
+}
+
+function backupToGoogleSheets(){
+  const s=requireGoogleSyncSettings();
+  if(!s) return;
+  const payload=googleSyncBackupPayload();
+  const json=JSON.stringify(payload);
+  const sizeKb=Math.round(json.length/1024);
+  if(!confirm(`Uložit aktuální CRM do Google Sheets?\n\nZáznamů: ${(recs||[]).length}\nFondů: ${Object.keys(fundValues||{}).length}\nVelikost: cca ${sizeKb} kB`)) return;
+
+  googleSyncStatus('Odesílám zálohu do Google Sheets… Nezavírej stránku.');
+  const iframe=document.getElementById('gsyncFrame');
+  let finished=false;
+  const done=()=>{
+    if(finished) return;
+    finished=true;
+    localStorage.setItem(GOOGLE_SYNC_LAST_LOCAL,new Date().toISOString());
+    refreshGoogleSyncLocalInfo();
+    googleSyncStatus('Záloha byla odeslaná do Google. Pro jistotu můžeš kliknout na kontrolu poslední zálohy.', 'ok');
+    toast('Google záloha odeslána ✓','ok');
+    setTimeout(()=>checkGoogleBackupStatus({silent:true}),1200);
+  };
+  iframe.onload=()=>done();
+
+  const old=document.getElementById('gsyncSubmitForm');
+  if(old) old.remove();
+  const form=document.createElement('form');
+  form.id='gsyncSubmitForm';
+  form.method='POST';
+  form.action=s.url;
+  form.target='gsyncFrame';
+  form.style.display='none';
+  [
+    ['action','save'],
+    ['app',GOOGLE_SYNC_APP],
+    ['key',s.key],
+    ['payload',json]
+  ].forEach(([name,value])=>{
+    const input=name==='payload'?document.createElement('textarea'):document.createElement('input');
+    input.name=name;
+    input.value=value;
+    form.appendChild(input);
+  });
+  document.body.appendChild(form);
+  form.submit();
+  setTimeout(()=>{
+    if(!finished) googleSyncStatus('Požadavek byl odeslaný. Pokud se stav nezmění, zkontroluj v Google Sheet záložku sync_log.', '');
+  },12000);
+}
+
+function restoreFromGoogleSheets(){
+  if(!requireGoogleSyncSettings()) return;
+  googleSyncStatus('Načítám poslední zálohu z Google…');
+  googleSyncJsonp('load',{},data=>{
+    if(!data || !data.ok){
+      googleSyncStatus((data&&data.error)||'Google zálohu se nepodařilo načíst.', 'err');
+      return;
+    }
+    const meta=data.meta||{};
+    const dtxt=meta.createdAt ? new Date(meta.createdAt).toLocaleString('cs-CZ') : 'bez data';
+    const count=Array.isArray(data.backup?.records) ? data.backup.records.length : (meta.recordCount||0);
+    if(!confirm(`Načíst poslední Google zálohu a přepsat data v tomto zařízení?\n\nDatum: ${dtxt}\nZáznamů: ${count}\n\nDoporučení: pokud si nejsi jistý, nejdřív dej Záloha JSON.`)) return;
+    try{
+      applyGoogleSyncBackup(data.backup);
+      setGoogleSyncRemoteInfo(meta);
+      googleSyncStatus(`Google záloha obnovena: ${count} záznamů.`, 'ok');
+      toast('Google záloha obnovena ✓','ok');
+    }catch(err){
+      console.error('Google restore error:',err);
+      googleSyncStatus('Google zálohu se nepodařilo obnovit: '+(err&&err.message?err.message:'neznámá chyba'), 'err');
+    }
+  });
+}
+
+function applyGoogleSyncBackup(data){
+  if(!data || typeof data!=='object') throw new Error('Záloha nemá správný formát.');
+  const records = Array.isArray(data.records) ? data.records
+    : Array.isArray(data.recs) ? data.recs
+    : Array.isArray(data.transactions) ? data.transactions
+    : Array.isArray(data.rawData) ? data.rawData
+    : [];
+  if(!records.length) throw new Error('V záloze nejsou žádné transakce.');
+
+  recs=records;
+  fundValues=(data.fundValues && typeof data.fundValues==='object' && !Array.isArray(data.fundValues)) ? data.fundValues : {};
+  lockedFunds=(data.lockedFunds && typeof data.lockedFunds==='object' && !Array.isArray(data.lockedFunds)) ? data.lockedFunds : {};
+  if(data.trailSettings && typeof data.trailSettings==='object' && !Array.isArray(data.trailSettings)) trailSettings=data.trailSettings;
+
+  if(typeof ensureCompanies==='function') ensureCompanies();
+  const res=migrateDatabaseInPlace({silent:true});
+  save();
+  if(typeof saveTrailSettings==='function') saveTrailSettings();
+  renderStats();
+  renderList();
+  renderFundPanel();
+  updateFundPickerOptions();
+  activeClient=null;
+  const detail=document.getElementById('detail'); if(detail) detail.classList.remove('open');
+  const welcome=document.getElementById('welcome'); if(welcome) welcome.style.display='flex';
+  refreshGoogleSyncLocalInfo();
+  return res;
 }
 
 // ── TOAST ──────────────────────────────────────
