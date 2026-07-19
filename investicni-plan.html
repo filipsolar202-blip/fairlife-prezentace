@@ -317,7 +317,7 @@ canvas{width:100%;height:330px}
       <div class="tab" onclick="switchTab('mortgage')">Hypotéka</div>
       <div class="tab" onclick="switchTab('report')">Report</div>
     </nav>
-    <div class="profile"><div class="avatar"></div><div><strong>Filip Solár</strong><span>Poradce</span></div></div>
+    <div class="profile"><a class="homeLink" href="index.html">Rozcestník</a><div class="avatar"></div><div><strong>Filip Solár</strong><span>Poradce</span></div></div>
   </div>
 
   <section id="investPage">
@@ -2169,6 +2169,249 @@ updateReport();
   setTimeout(()=>{try{ if(typeof calculate==='function') calculate(); if(typeof calculateMortgage==='function') calculateMortgage(); if(typeof window.updateReport==='function') window.updateReport(); }catch(e){}},300);
 })();
 </script>
+
+<style>
+/* V29 - svetly Apple Crystal sjednoceny vzhled */
+:root{
+  color-scheme:light;
+  --bg:#f5f7fa;
+  --card:rgba(255,255,255,.74);
+  --text:#172033;
+  --muted:#64748b;
+  --line:#dce4ee;
+  --blue:#2563eb;
+  --blue2:#eaf1ff;
+  --green:#15803d;
+  --green2:#eaf8ee;
+  --purple:#6d5bd0;
+  --orange:#b45309;
+  --red:#dc2626;
+  --shadow:0 18px 42px rgba(23,32,51,.08);
+  --radius:8px;
+}
+html{background:var(--bg)}
+body{
+  min-height:100vh;
+  background:
+    linear-gradient(135deg,rgba(15,118,110,.10),transparent 34rem),
+    linear-gradient(180deg,#fff 0,var(--bg) 18rem),
+    var(--bg);
+}
+.app{width:min(100% - 28px,1780px);padding:22px 0 36px}
+.topbar{
+  position:sticky;
+  top:0;
+  z-index:20;
+  grid-template-columns:minmax(220px,300px) minmax(0,1fr) minmax(230px,300px);
+  padding:12px;
+  margin:0 0 16px;
+  border:1px solid rgba(220,228,238,.84);
+  border-radius:8px;
+  background:rgba(255,255,255,.72);
+  box-shadow:0 10px 26px rgba(23,32,51,.06);
+  backdrop-filter:blur(22px) saturate(1.35);
+}
+.brand{min-width:0;color:#172033}
+.brand span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.mark{
+  width:38px;
+  height:24px;
+  border:1px solid rgba(15,118,110,.26);
+  border-radius:8px;
+  transform:none;
+  background:linear-gradient(135deg,#fff,rgba(15,118,110,.12));
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.9);
+}
+.tabs{
+  justify-content:center;
+  gap:6px;
+  padding:4px;
+  border:1px solid rgba(220,228,238,.78);
+  border-radius:8px;
+  background:rgba(245,247,250,.72);
+  overflow:auto;
+}
+.tab{
+  flex:0 0 auto;
+  border-radius:8px;
+  padding:10px 14px;
+  color:#475569;
+  font-weight:760;
+  letter-spacing:0;
+  transition:background 160ms ease,color 160ms ease,box-shadow 160ms ease;
+}
+.tab:hover{background:rgba(255,255,255,.82);color:#172033}
+.tab.active{
+  background:#fff;
+  color:#0f766e;
+  box-shadow:0 6px 18px rgba(23,32,51,.08);
+}
+.profile{min-width:0}
+.homeLink{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  min-height:38px;
+  padding:0 12px;
+  border:1px solid rgba(15,118,110,.24);
+  border-radius:8px;
+  background:rgba(231,245,242,.72);
+  color:#0f766e;
+  font-size:13px;
+  font-weight:850;
+  text-decoration:none;
+  white-space:nowrap;
+}
+.avatar{border-radius:8px;background:#fff}
+.card,
+.variant,
+.clientPill,
+.resultBox,
+.compareItem,
+.recommend,
+.scenarioCard,
+.infoBox,
+.assetMini,
+.mortgageNote,
+.reportDoc,
+.reportSection,
+.reportTitle,
+.reportBadge,
+.reportKpi,
+.reportSection>.reportText,
+.v27Doc,
+.v27Title,
+.v27Badge,
+.v27Section,
+.v27Kpi,
+.v27Summary,
+.v27ChartBox,
+.v27Explain,
+.v27Panel{
+  border-radius:8px;
+}
+.card{
+  border:1px solid rgba(220,228,238,.82);
+  background:var(--card);
+  box-shadow:var(--shadow);
+}
+.layout,.mortgageLayout,.riskLayout{
+  grid-template-columns:minmax(300px,340px) minmax(0,1fr) minmax(300px,340px);
+}
+.reportWrap{grid-template-columns:minmax(300px,340px) minmax(0,1fr)}
+.section,.mainTop,.chartCard,.mortgageHero{padding:22px}
+h2,h3,.variant .big,.clientPill strong,.resultBox .value,.reportTitle h1,.reportBadge strong,.v27Title h1,.v27Badge strong,.v27Kpi strong{
+  letter-spacing:0;
+}
+h2{font-size:22px}
+h3{font-size:17px}
+.desc{color:var(--muted);line-height:1.5}
+input,select{
+  border-radius:8px;
+  background:rgba(255,255,255,.86);
+  border-color:#dce4ee;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.9);
+}
+input:focus,select:focus{
+  border-color:rgba(15,118,110,.48);
+  box-shadow:0 0 0 4px rgba(15,118,110,.10),inset 0 1px 0 rgba(255,255,255,.9);
+}
+button,.linkButton,.printBtn,.clearBtn{
+  border-radius:8px;
+  letter-spacing:0;
+}
+button{
+  background:#0f766e;
+  box-shadow:0 12px 26px rgba(15,118,110,.18);
+}
+button:hover{filter:brightness(.98);transform:translateY(-1px)}
+.printBtn{background:#172033}
+.clearBtn{background:#b45309}
+.clearBtn.danger{background:#dc2626}
+.infoBox,.recommend,.v27Summary{
+  background:rgba(231,245,242,.66);
+  border-color:rgba(15,118,110,.22);
+  color:#164e48;
+}
+.mortgageNote{
+  background:#fff7ed;
+  border-color:#fed7aa;
+}
+.variant,.clientPill,.resultBox,.compareItem,.assetMini,.v27Kpi,.v27Panel,.v27Explain,.reportKpi{
+  background:rgba(255,255,255,.82);
+  border-color:rgba(220,228,238,.9);
+}
+.variant{
+  display:flex;
+  flex-direction:column;
+  min-height:230px;
+}
+.variant .big{font-size:clamp(28px,2.4vw,38px)}
+.variant .tag{margin-top:auto;border-radius:8px}
+.green .tag{background:#eaf8ee;color:#15803d}
+.blue .tag{background:#eaf1ff;color:#2563eb}
+.variant.green{border-color:rgba(21,128,61,.24)}
+.variant.blue{border-color:rgba(37,99,235,.24)}
+.variant.green .label,.variant.green .big,.resultBox.green .value{color:#15803d}
+.variant.blue .label,.variant.blue .big,.resultBox.blue .value{color:#2563eb}
+.resultBox.purple .value{color:#6d5bd0}
+.icon{
+  width:38px;
+  height:38px;
+  border-radius:8px;
+}
+.table th,.table td{padding:12px 8px}
+.chartCard canvas,
+.v27Chart,
+.reportChart{
+  border-radius:8px;
+  background:#fff;
+  border-color:#dce4ee;
+}
+.reportBadge,.v27Badge{
+  background:linear-gradient(180deg,#172033,#263449);
+}
+.reportTitle,.v27Title{
+  background:linear-gradient(180deg,#fff,rgba(231,245,242,.58));
+  border-color:rgba(15,118,110,.18);
+}
+.v27Doc,.reportDoc{
+  background:rgba(255,255,255,.86);
+  border-color:rgba(220,228,238,.9);
+}
+.v27Section,.reportSection{
+  background:rgba(251,253,255,.82);
+}
+.v27GraphGrid{grid-template-columns:minmax(360px,1fr) minmax(280px,.75fr)}
+.v27Row{border-color:#edf2f7}
+@media(max-width:1250px){
+  .app{width:min(100% - 20px,1780px);padding-top:12px}
+  .topbar{
+    position:relative;
+    grid-template-columns:1fr;
+    gap:12px;
+  }
+  .layout,.mortgageLayout,.riskLayout,.reportWrap{grid-template-columns:1fr}
+  .tabs{justify-content:flex-start}
+  .profile{justify-content:space-between}
+  .clientSummary,.cards2,.bottomGrid,.mortgageCards{grid-template-columns:1fr}
+  .section,.mainTop,.chartCard,.mortgageHero{padding:18px}
+}
+@media(max-width:700px){
+  .formgrid,.reportKpis,.v27Kpis,.v27Kpis.three,.v27Kpis.two,.v27Steps,.reportRiskBreakdown{grid-template-columns:1fr}
+  .variant{min-height:0}
+  .topbar{padding:10px}
+  .tab{padding:9px 11px}
+  .profile strong,.profile span{display:none}
+}
+@media print{
+  .topbar,.reportControls{display:none!important}
+  body{background:#fff}
+  .app{width:100%;padding:0}
+  .v27Doc,.reportDoc{box-shadow:none;border:none;background:#fff}
+  .v27Section,.reportSection{background:#fff}
+}
+</style>
 
 </body>
 </html>
