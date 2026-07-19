@@ -224,6 +224,18 @@ canvas{width:100%;height:330px}
 .mortgageCards{display:grid;grid-template-columns:1fr 1fr 1fr;gap:18px;margin-top:18px}
 .mortgageHero{padding:24px}
 .mortgageNote{background:#fff7ed;border:1px solid #fed7aa;color:#7c2d12;border-radius:18px;padding:16px;font-size:14px;line-height:1.45;margin-top:14px}
+.taxBenefit{margin-top:18px;padding:24px;border-radius:24px;background:linear-gradient(135deg,rgba(234,248,238,.92),rgba(255,255,255,.9));border:1px solid #b9e7c6;box-shadow:var(--shadow)}
+.taxBenefit h2{color:#14532d}
+.taxGrid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:14px}
+.taxPill{background:rgba(255,255,255,.78);border:1px solid rgba(185,231,198,.92);border-radius:18px;padding:15px 16px}
+.taxPill small{display:block;color:#527062;font-size:12px;font-weight:850;margin-bottom:6px}
+.taxPill strong{display:block;color:#14532d;font-size:20px;letter-spacing:-.035em}
+.taxNote{margin:14px 0 0;color:#416052;font-size:13px;line-height:1.45}
+.riskMiniGrid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:18px}
+.riskMini{background:#fff;border:1px solid var(--line);border-radius:20px;padding:16px}
+.riskMini small{display:block;color:#667085;font-weight:850;font-size:12px;margin-bottom:7px}
+.riskMini strong{display:block;font-size:21px;letter-spacing:-.035em}
+.riskMini.blue strong{color:#2563eb}.riskMini.green strong{color:#16a34a}.riskMini.purple strong{color:#7c3aed}.riskMini.orange strong{color:#f59e0b}
 .dot.r{background:#ef4444}.dot.inv{background:#16a34a}.dot.payoff{background:#2563eb}
 
 .reportWrap{display:grid;grid-template-columns:360px 1fr;gap:18px;align-items:start}
@@ -262,7 +274,7 @@ canvas{width:100%;height:330px}
 @media(max-width:1250px){.reportWrap,.reportHero,.reportSplit{grid-template-columns:1fr}.reportKpis{grid-template-columns:1fr 1fr}}
 @media print{body{background:#fff}.topbar,.reportControls{display:none!important}.app{padding:0;max-width:none}.reportWrap{display:block}.card{box-shadow:none;border:none}.reportDoc{box-shadow:none;border:none;border-radius:0}.hidden{display:none!important}.reportKpis{grid-template-columns:repeat(4,1fr)}.reportSection{break-inside:avoid}}
 
-@media(max-width:1250px){.mortgageLayout,.riskLayout{grid-template-columns:1fr}.mortgageCards{grid-template-columns:1fr}}
+@media(max-width:1250px){.mortgageLayout,.riskLayout{grid-template-columns:1fr}.mortgageCards,.taxGrid,.riskMiniGrid{grid-template-columns:1fr}}
 
 .hidden{display:none}
 
@@ -329,38 +341,38 @@ canvas{width:100%;height:330px}
 
           <div class="field">
             <label>Jméno klienta</label>
-            <input id="clientName" value="Novák Martin">
+            <input id="clientName" value="" placeholder="Jméno klienta">
           </div>
 
           <div class="formgrid">
-            <div class="field suffix"><label>Věk dnes</label><input id="age" type="number" value="35"><small>let</small></div>
-            <div class="field suffix"><label>Renta od věku</label><input id="rentAge" type="number" value="45"><small>let</small></div>
+            <div class="field suffix"><label>Věk dnes</label><input id="age" type="number" value="" placeholder="věk klienta"><small>let</small></div>
+            <div class="field suffix"><label>Renta od věku</label><input id="rentAge" type="number" value="" placeholder="od kdy chce rentu"><small>let</small></div>
           </div>
 
-          <div class="field suffix"><label>Renta 1 měsíčně</label><input id="rent1" type="text" inputmode="numeric" value="180000"><small>Kč</small></div>
+          <div class="field suffix"><label>Renta 1 měsíčně</label><input id="rent1" type="text" inputmode="numeric" value="" placeholder="sem napiš cílovou měsíční rentu"><small>Kč</small></div>
           <div class="formgrid">
-            <div class="field suffix"><label>Renta 1 do věku</label><input id="rent1Until" type="number" value="75"><small>let</small></div>
-            <div class="field suffix"><label>Renta 2 od věku</label><input id="rent2From" type="number" value="75"><small>let</small></div>
+            <div class="field suffix"><label>Renta 1 do věku</label><input id="rent1Until" type="number" value="" placeholder="do jakého věku"><small>let</small></div>
+            <div class="field suffix"><label>Renta 2 od věku</label><input id="rent2From" type="number" value="" placeholder="od jakého věku"><small>let</small></div>
           </div>
-          <div class="field suffix"><label>Renta 2 měsíčně</label><input id="rent2" type="text" inputmode="numeric" value="150000"><small>Kč</small></div>
+          <div class="field suffix"><label>Renta 2 měsíčně</label><input id="rent2" type="text" inputmode="numeric" value="" placeholder="sem napiš druhou fázi renty"><small>Kč</small></div>
 
           <div class="formgrid">
-            <div class="field suffix"><label>Renta má vydržet do věku</label><input id="endAge" type="number" value="90"><small>let</small></div>
-            <div class="field suffix"><label>Zhodnocení p.a.</label><input id="pre" type="number" step="0.1" value="8"><small>%</small></div>
+            <div class="field suffix"><label>Renta má vydržet do věku</label><input id="endAge" type="number" value="" placeholder="např. do 90 let"><small>let</small></div>
+            <div class="field suffix"><label>Zhodnocení p.a.</label><input id="pre" type="number" step="0.1" value="" placeholder="před rentou"><small>%</small></div>
           </div>
           <div class="formgrid">
-            <div class="field suffix"><label>Zhodnocení v rentě</label><input id="post" type="number" step="0.1" value="7"><small>%</small></div>
-            <div class="field suffix"><label>Odkaz dětem</label><input id="legacy" type="text" inputmode="numeric" value="0"><small>Kč</small></div>
+            <div class="field suffix"><label>Zhodnocení v rentě</label><input id="post" type="number" step="0.1" value="" placeholder="během renty"><small>%</small></div>
+            <div class="field suffix"><label>Odkaz dětem</label><input id="legacy" type="text" inputmode="numeric" value="" placeholder="pokud má zůstat kapitál"><small>Kč</small></div>
           </div>
 
-          <div class="field suffix"><label>Majetek určený k budoucímu prodeji (exit)</label><input id="current" type="text" inputmode="numeric" value="150000"><small>Kč</small></div>
+          <div class="field suffix"><label>Majetek určený k budoucímu prodeji (exit)</label><input id="current" type="text" inputmode="numeric" value="" placeholder="sem napiš hodnotu majetku"><small>Kč</small></div>
           <div class="field suffix"><label>Zhodnocení majetku do exitu</label><select id="currentYield"><option value="2">2 % p.a.</option><option value="3">3 % p.a.</option><option value="4" selected>4 % p.a.</option><option value="5">5 % p.a.</option></select></div>
-          <div class="field suffix"><label>Příjem z pronájmu v rentě</label><input id="rentalIncome" type="text" inputmode="numeric" value="0"><small>Kč</small></div>
+          <div class="field suffix"><label>Příjem z pronájmu v rentě</label><input id="rentalIncome" type="text" inputmode="numeric" value="" placeholder="sem napiš měsíční nájem"><small>Kč</small></div>
           <div class="assetMini">
             <small>Budoucí hodnota majetku při exitu</small><br>
             <strong id="assetInlineValue">—</strong>
           </div>
-          <div class="field suffix"><label>Jednorázová investice dnes</label><input id="lump" type="text" inputmode="numeric" value="3000000"><small>Kč</small></div>
+          <div class="field suffix"><label>Jednorázová investice dnes</label><input id="lump" type="text" inputmode="numeric" value="" placeholder="sem napiš aktuální investice"><small>Kč</small></div>
 
           <button onclick="calculate()">Přepočítat plán</button>
 
@@ -485,24 +497,29 @@ canvas{width:100%;height:330px}
             <input id="riskExtraSocial" type="checkbox" style="width:16px;min-height:16px;margin:0">
             OSVČ si platí vyšší sociální pojištění
           </label>
-          <div class="field suffix"><label>Měsíční sociální pojištění OSVČ</label><input id="riskSocialPayment" type="text" inputmode="numeric" value="0"><small>Kč</small></div>
-          <div class="field suffix"><label>Čistý měsíční příjem klienta</label><input id="riskIncome" type="text" inputmode="numeric" value="90000"><small>Kč</small></div>
-          <div class="field suffix"><label>Měsíční výdaje domácnosti bez hypotéky</label><input id="riskExpenses" type="text" inputmode="numeric" value="70000"><small>Kč</small></div>
-          <div class="field suffix"><label>Splátky ostatních úvěrů</label><input id="riskOtherLoans" type="text" inputmode="numeric" value="0"><small>Kč</small></div>
-          <div class="field suffix"><label>Invalidní důchod 3. stupně</label><input id="riskInvalidPension" type="text" inputmode="numeric" value="22000"><small>Kč</small></div>
+          <div class="field suffix"><label>Měsíční sociální pojištění OSVČ</label><input id="riskSocialPayment" type="text" inputmode="numeric" value="" placeholder="sem napiš platbu OSVČ"><small>Kč</small></div>
+          <div class="field suffix"><label>Čistý měsíční příjem klienta</label><input id="riskIncome" type="text" inputmode="numeric" value="" placeholder="sem napiš příjem klienta"><small>Kč</small></div>
+          <div class="field suffix"><label>Měsíční výdaje domácnosti bez hypotéky</label><input id="riskExpenses" type="text" inputmode="numeric" value="" placeholder="sem napiš výdaje domácnosti"><small>Kč</small></div>
+          <div class="field suffix"><label>Splátky ostatních úvěrů</label><input id="riskOtherLoans" type="text" inputmode="numeric" value="" placeholder="sem napiš měsíční splátky"><small>Kč</small></div>
+          <div class="field suffix"><label>Ostatní závazky k doplacení při smrti</label><input id="riskOtherDebt" type="text" inputmode="numeric" value="" placeholder="sem napiš zůstatek závazků"><small>Kč</small></div>
+          <div class="field suffix"><label>Invalidní důchod 3. stupně</label><input id="riskInvalidPension" type="text" inputmode="numeric" value="" placeholder="sem napiš odhad z IDA / ČSSZ"><small>Kč</small></div>
           <label style="display:flex;align-items:center;gap:8px;margin:-2px 0 12px;font-size:13px;font-weight:800;color:#40516b">
-            <input id="riskAutoPensions" type="checkbox" checked style="width:16px;min-height:16px;margin:0">
+            <input id="riskAutoPensions" type="checkbox" style="width:16px;min-height:16px;margin:0">
             Orientačně dopočítat státní důchody podle typu příjmu
           </label>
           <div class="formgrid">
-            <div class="field suffix"><label>Vdovský/vdovecký důchod</label><input id="riskWidowPension" type="text" inputmode="numeric" value="15000"><small>Kč</small></div>
-            <div class="field suffix"><label>Sirotčí důchod / dítě</label><input id="riskOrphanPension" type="text" inputmode="numeric" value="12000"><small>Kč</small></div>
+            <div class="field suffix"><label>Vdovský/vdovecký důchod</label><input id="riskWidowPension" type="text" inputmode="numeric" value="" placeholder="sem napiš odhad"><small>Kč</small></div>
+            <div class="field suffix"><label>Sirotčí důchod / dítě</label><input id="riskOrphanPension" type="text" inputmode="numeric" value="" placeholder="sem napiš odhad na dítě"><small>Kč</small></div>
           </div>
-          <div class="field suffix"><label>Počet nezaopatřených dětí</label><input id="riskChildren" type="number" value="1"><small>děti</small></div>
+          <div class="field suffix"><label>Počet nezaopatřených dětí</label><input id="riskChildren" type="number" value="" placeholder="počet dětí"><small>děti</small></div>
+          <div class="formgrid">
+            <div class="field suffix"><label>Rezerva na pohřeb / první náklady</label><input id="riskFuneralReserve" type="text" inputmode="numeric" value="" placeholder="např. 150 000"><small>Kč</small></div>
+            <div class="field suffix"><label>Denní odškodné úrazu</label><input id="riskDailyCompensation" type="text" inputmode="numeric" value="" placeholder="volitelné"><small>Kč/den</small></div>
+          </div>
 
           <h3 style="margin-top:18px">Navázání na plán</h3>
-          <div class="field suffix"><label>Aktuální krytí invalidity 3. stupně</label><input id="riskCurrentInvalidCover" type="text" inputmode="numeric" value="0"><small>Kč</small></div>
-          <div class="field suffix"><label>Aktuální krytí smrti</label><input id="riskCurrentDeathCover" type="text" inputmode="numeric" value="0"><small>Kč</small></div>
+          <div class="field suffix"><label>Aktuální krytí invalidity 3. stupně</label><input id="riskCurrentInvalidCover" type="text" inputmode="numeric" value="" placeholder="sem napiš stávající krytí"><small>Kč</small></div>
+          <div class="field suffix"><label>Aktuální krytí smrti</label><input id="riskCurrentDeathCover" type="text" inputmode="numeric" value="" placeholder="sem napiš stávající krytí"><small>Kč</small></div>
 
           <button onclick="calculateRisk()">Přepočítat pojištění</button>
 
@@ -543,15 +560,15 @@ canvas{width:100%;height:330px}
         <div class="bottomGrid">
           <div class="resultBox blue">
             <h3>Potřebný kapitál při invaliditě</h3>
-            <p>Kapitál potřebný dnes pro okamžitý přechod do rentového režimu</p>
+            <p>Kapitál podle pravidla: každých 5 000 Kč měsíčně = 1 mil. Kč</p>
             <div class="value" id="riskInvalidCapital">—</div>
-            <p>Počítá rentu od dnešního věku až do konce plánu, po odečtení invalidního důchodu.</p>
+            <p>Výdaje domácnosti jsou navýšené o 20 % a je odečten orientační invalidní důchod.</p>
           </div>
           <div class="resultBox green">
             <h3>Potřebný kapitál pro rodinu</h3>
-            <p>Splacení hypotéky + kapitál na měsíční výpadek rodiny</p>
+            <p>Splacení hypotéky, závazků a kapitál na měsíční výpadek rodiny</p>
             <div class="value" id="riskDeathCapital">—</div>
-            <p>Výdaje domácnosti po odečtení vdovského a sirotčích důchodů.</p>
+            <p>Výdaje domácnosti jsou snížené o 20 % a jsou odečteny pozůstalostní důchody.</p>
           </div>
           <div class="resultBox purple">
             <h3>Doporučené dokrytí</h3>
@@ -559,6 +576,13 @@ canvas{width:100%;height:330px}
             <div class="value" id="riskCoverGap">—</div>
             <p>Číslo má ukázat, kolik ještě chybí chránit pro udržení rentového plánu.</p>
           </div>
+        </div>
+
+        <div class="riskMiniGrid">
+          <div class="riskMini orange"><small>Pracovní neschopnost</small><strong id="riskSickPayGap">—</strong></div>
+          <div class="riskMini purple"><small>Závažné onemocnění</small><strong id="riskCriticalIllness">—</strong></div>
+          <div class="riskMini blue"><small>Trvalé následky úrazu</small><strong id="riskAccidentPermanent">—</strong></div>
+          <div class="riskMini green"><small>Denní odškodné</small><strong id="riskDailyCompensationOut">—</strong></div>
         </div>
       </main>
 
@@ -589,16 +613,20 @@ canvas{width:100%;height:330px}
           <p class="desc">Rychlý model pro klienta: kdy investice doroste na zbývající dluh a co se stane, pokud klient hypotéku v tomto bodě doplatí.</p>
 
           <h3>Současná hypotéka</h3>
-          <div class="field suffix"><label>Výše hypotéky</label><input id="mortgageAmount" type="text" inputmode="numeric" value="5000000"><small>Kč</small></div>
+          <div class="field suffix"><label>Výše hypotéky</label><input id="mortgageAmount" type="text" inputmode="numeric" value="" placeholder="sem napiš výši hypotéky"><small>Kč</small></div>
           <div class="formgrid">
-            <div class="field suffix"><label>Úroková sazba</label><input id="mortgageRate" type="number" step="0.01" value="4.89"><small>%</small></div>
-            <div class="field suffix"><label>Doba splácení</label><input id="mortgageYears" type="number" value="30"><small>let</small></div>
+            <div class="field suffix"><label>Úroková sazba</label><input id="mortgageRate" type="number" step="0.01" value="" placeholder="sem napiš sazbu"><small>%</small></div>
+            <div class="field suffix"><label>Doba splácení</label><input id="mortgageYears" type="number" value="" placeholder="počet let"><small>let</small></div>
+          </div>
+          <div class="formgrid">
+            <div class="field suffix"><label>Délka fixace pro ukázku</label><input id="mortgageFixYears" type="number" value="" min="1" max="30" placeholder="např. 3 roky"><small>let</small></div>
+            <div class="field suffix"><label>Roční limit odpočtu úroků</label><select id="mortgageTaxLimit"><option value="150000" selected>150 000 Kč</option><option value="300000">300 000 Kč</option><option value="0">bez limitu</option></select></div>
           </div>
 
           <h3 style="margin-top:18px">Investiční varianta</h3>
-          <div class="field suffix"><label>Jednorázová investice</label><input id="mortgageLumpInvest" type="text" inputmode="numeric" value="500000"><small>Kč</small></div>
-          <div class="field suffix"><label>Pravidelná investice měsíčně</label><input id="mortgageMonthlyInvest" type="text" inputmode="numeric" value="10000"><small>Kč</small></div>
-          <div class="field suffix"><label>Zhodnocení investice</label><input id="mortgageInvestYield" type="number" step="0.1" value="7"><small>%</small></div>
+          <div class="field suffix"><label>Jednorázová investice</label><input id="mortgageLumpInvest" type="text" inputmode="numeric" value="" placeholder="sem napiš startovní investici"><small>Kč</small></div>
+          <div class="field suffix"><label>Pravidelná investice měsíčně</label><input id="mortgageMonthlyInvest" type="text" inputmode="numeric" value="" placeholder="sem napiš měsíční investici"><small>Kč</small></div>
+          <div class="field suffix"><label>Zhodnocení investice</label><input id="mortgageInvestYield" type="number" step="0.1" value="" placeholder="očekávané p.a."><small>%</small></div>
 
           <button onclick="calculateMortgage()">Přepočítat hypotéku</button>
 
@@ -634,6 +662,18 @@ canvas{width:100%;height:330px}
             </div>
           </div>
           <canvas id="mortgageChart" width="1060" height="380"></canvas>
+        </div>
+
+        <div class="taxBenefit">
+          <h2>Daňová úspora z úroků</h2>
+          <p class="desc" style="margin-bottom:0">Orientační ukázka, kolik může klient získat zpět přes daňový odpočet úroků během zvolené fixace. Skutečný nárok závisí na splnění daňových podmínek.</p>
+          <div class="taxGrid">
+            <div class="taxPill"><small>Úroky za fixaci</small><strong id="mortgageTaxInterest">—</strong></div>
+            <div class="taxPill"><small>Možná vratka 15 %</small><strong id="mortgageTaxRefund">—</strong></div>
+            <div class="taxPill"><small>Efekt měsíčně</small><strong id="mortgageTaxMonthly">—</strong></div>
+            <div class="taxPill"><small>Kolik splátek pokryje</small><strong id="mortgageTaxPayments">—</strong></div>
+          </div>
+          <p class="taxNote" id="mortgageTaxNote">—</p>
         </div>
 
         <div class="mortgageCards">
@@ -783,6 +823,12 @@ canvas{width:100%;height:330px}
             <div class="reportKpi green"><small>Aktuální majetek + investice</small><strong id="reportUsableAssets">—</strong></div>
             <div class="reportKpi purple"><small>Státní dávky</small><strong id="reportStateBenefits">—</strong></div>
           </div>
+          <div class="reportKpis">
+            <div class="reportKpi blue"><small>Pracovní neschopnost</small><strong id="reportSickPayGap">—</strong></div>
+            <div class="reportKpi purple"><small>Závažné onemocnění</small><strong id="reportCriticalIllness">—</strong></div>
+            <div class="reportKpi green"><small>Trvalé následky úrazu</small><strong id="reportAccidentPermanent">—</strong></div>
+            <div class="reportKpi red"><small>Denní odškodné</small><strong id="reportDailyCompensation">—</strong></div>
+          </div>
           <p class="reportText">Invalidita ukazuje, jaký kapitál je potřeba, pokud by klient musel okamžitě přejít do rentového režimu. Smrt ukazuje, kolik kapitálu by rodině pomohlo splatit hypotéku a dlouhodobě pokrýt měsíční rozdíl mezi výdaji a dávkami od státu.</p>
         </section>
 
@@ -815,7 +861,7 @@ function formatMoneyValue(v){
 }
 
 function setupMoneyInputs(){
-  const ids = ["rent1","rent2","legacy","current","lump","rentalIncome","mortgageAmount","mortgageLumpInvest","mortgageMonthlyInvest","riskIncome","riskExpenses","riskOtherLoans","riskInvalidPension","riskWidowPension","riskOrphanPension","riskCurrentInvalidCover","riskCurrentDeathCover","riskSocialPayment"];
+  const ids = ["rent1","rent2","legacy","current","lump","rentalIncome","mortgageAmount","mortgageLumpInvest","mortgageMonthlyInvest","riskIncome","riskExpenses","riskOtherLoans","riskOtherDebt","riskInvalidPension","riskWidowPension","riskOrphanPension","riskFuneralReserve","riskDailyCompensation","riskCurrentInvalidCover","riskCurrentDeathCover","riskSocialPayment"];
   ids.forEach(id=>{
     const el = document.getElementById(id);
     if(!el) return;
@@ -1075,10 +1121,49 @@ function mortgageInputs(){
   const amount = num('mortgageAmount');
   const annualRate = val('mortgageRate')/100;
   const years = Math.max(1, val('mortgageYears'));
+  const fixYears = Math.min(years, Math.max(1, val('mortgageFixYears') || 3));
+  const taxLimit = Math.max(0, val('mortgageTaxLimit'));
   const monthlyRate = annualRate/12;
   const months = years*12;
   const payment = monthlyRate === 0 ? amount/months : amount * monthlyRate / (1 - Math.pow(1+monthlyRate, -months));
-  return {amount, annualRate, years, monthlyRate, months, payment};
+  return {amount, annualRate, years, fixYears, taxLimit, monthlyRate, months, payment};
+}
+
+function buildMortgageTaxBenefit(){
+  const m = mortgageInputs();
+  const fixMonths = Math.min(m.months, Math.round(m.fixYears * 12));
+  let debt = m.amount;
+  let interestInFix = 0;
+  const interestByYear = [];
+
+  for(let month=1; month<=fixMonths; month++){
+    const interest = debt * m.monthlyRate;
+    const principal = Math.max(0, m.payment - interest);
+    debt = Math.max(0, debt - principal);
+    interestInFix += interest;
+    const yearIndex = Math.ceil(month / 12) - 1;
+    interestByYear[yearIndex] = (interestByYear[yearIndex] || 0) + interest;
+  }
+
+  const deductibleInterest = interestByYear.reduce((sum, interest)=>{
+    const capped = m.taxLimit > 0 ? Math.min(interest, m.taxLimit) : interest;
+    return sum + capped;
+  }, 0);
+  const refund = deductibleInterest * 0.15;
+  const monthlyEffect = fixMonths > 0 ? refund / fixMonths : 0;
+  const paymentCount = m.payment > 0 ? refund / m.payment : 0;
+
+  return {
+    fixMonths,
+    interestInFix,
+    deductibleInterest,
+    refund,
+    monthlyEffect,
+    paymentCount,
+    finalDebt: debt,
+    limit: m.taxLimit,
+    fixYears: m.fixYears
+  };
 }
 
 function buildMortgageSeries(){
@@ -1205,6 +1290,7 @@ function drawMortgageChart(data){
 function calculateMortgage(){
   if(!document.getElementById('mortgageAmount')) return;
   const data=buildMortgageSeries();
+  const tax=buildMortgageTaxBenefit();
   const crossText=data.cross ? (Math.ceil(data.cross.month/12) + ". rok") : "neprotne se";
   const safePayoffText=data.safePayoff ? (Math.ceil(data.safePayoff.month/12) + ". rok") : "nedosáhne";
   const crossValue=data.cross ? fmt(data.cross.investment) : "—";
@@ -1224,6 +1310,15 @@ function calculateMortgage(){
   mortgageStrategyDiff.textContent=diff===null ? "—" : (diff>=0 ? "+" : "−") + fmt(Math.abs(diff));
   mortgageFreedPayment.textContent=data.cross ? fmt(data.payoffMonthlyAfter) + " / měsíc" : "—";
   if(typeof mortgageSafePayoffCard !== 'undefined') mortgageSafePayoffCard.textContent=safePayoffText;
+
+  if(typeof mortgageTaxInterest !== 'undefined') mortgageTaxInterest.textContent=fmt(tax.interestInFix);
+  if(typeof mortgageTaxRefund !== 'undefined') mortgageTaxRefund.textContent=fmt(tax.refund);
+  if(typeof mortgageTaxMonthly !== 'undefined') mortgageTaxMonthly.textContent=fmt(tax.monthlyEffect) + " / měsíc";
+  if(typeof mortgageTaxPayments !== 'undefined') mortgageTaxPayments.textContent=(Math.round(tax.paymentCount * 10) / 10).toLocaleString('cs-CZ') + " splátky";
+  if(typeof mortgageTaxNote !== 'undefined'){
+    const limitText = tax.limit > 0 ? "Počítám s ročním limitem odpočtu " + fmt(tax.limit) + "." : "Počítám bez ročního limitu odpočtu.";
+    mortgageTaxNote.textContent = "Za " + tax.fixYears.toLocaleString('cs-CZ') + " roky fixace klient orientačně zaplatí na úrocích " + fmt(tax.interestInFix) + ". Při sazbě 15 % může daňový efekt vycházet přibližně na " + fmt(tax.refund) + ", tedy asi " + fmt(tax.monthlyEffect) + " měsíčně. " + limitText;
+  }
 
 
   mortgageSideDebt.textContent=fmt(num('mortgageAmount'));
@@ -1298,6 +1393,7 @@ function setMoneyInputValue(id, value){
 function autoUpdateRiskPensions(){
   const auto = document.getElementById('riskAutoPensions');
   if(!auto || !auto.checked) return;
+  if(num('riskIncome') <= 0) return;
   const est = estimateStatePensionsFromIncome();
   setMoneyInputValue('riskInvalidPension', est.invalid);
   setMoneyInputValue('riskWidowPension', est.widow);
@@ -1326,6 +1422,16 @@ function requiredCapitalFromMonthlySchedule(startAge, endAge, monthlyGapFn, yld)
   return Math.ceil(capital);
 }
 
+function capitalByFiveThousandRule(monthlyGap){
+  if(monthlyGap <= 0) return 0;
+  return Math.ceil(monthlyGap / 5000) * 1000000;
+}
+
+function roundUpToHundredThousand(value){
+  if(value <= 0) return 0;
+  return Math.ceil(value / 100000) * 100000;
+}
+
 function calculateRisk(){
   if(!document.getElementById('riskIncome')) return;
   autoUpdateRiskPensions();
@@ -1340,24 +1446,30 @@ function calculateRisk(){
 
   const expenses = num('riskExpenses');
   const otherLoans = num('riskOtherLoans');
+  const otherDebt = num('riskOtherDebt');
+  const funeralReserve = Math.max(0, num('riskFuneralReserve') || 150000);
+  const incomeType = document.getElementById('riskIncomeType')?.value || 'employee';
+  const income = num('riskIncome');
   const invalidPension = num('riskInvalidPension');
   const widowPension = num('riskWidowPension');
   const orphanPension = num('riskOrphanPension');
   const children = Math.max(0, val('riskChildren'));
-  const currentAge = Math.max(0, num('age'));
-  const endAgeValue = Math.max(currentAge + 1, num('endAge'));
 
-  // Invalidita: klient se okamžitě přesouvá do rentového režimu.
-  // Potřebný kapitál dnes kryje rentu od aktuálního věku až do konce plánu.
-  const invalidGap = Math.max(0, Math.max(num('rent1'), num('rent2')) - num('rentalIncome') - invalidPension);
-  const invalidCapital = requiredCapitalFromMonthlySchedule(currentAge, endAgeValue, (age)=>Math.max(0, grossRentAtAge(age) - num('rentalIncome') - invalidPension), num('post')/100);
+  // Invalidita: výdaje domácnosti rostou o 20 %. Každých chybějících 5 000 Kč měsíčně = 1 mil. Kč kapitálu.
+  const invalidGap = Math.max(0, expenses * 1.2 + mortgagePaymentValue + otherLoans - invalidPension);
+  const invalidCapital = capitalByFiveThousandRule(invalidGap);
 
-  // Smrt: cílem je splacení hypotéky + kapitál, který rodině nahradí měsíční výpadek výdajů.
-  // Hypoteční splátka není v běžných výdajích, protože hypotéka se má při smrti umořit kapitálem.
+  // Smrt: výdaje domácnosti statisticky klesají o 20 %. Hypotéka a další závazky se řeší jednorázově.
   const familyPensions = widowPension + orphanPension * children;
-  const deathGap = Math.max(0, expenses + otherLoans - familyPensions);
-  const deathIncomeCapital = requiredCapitalFromMonthlySchedule(currentAge, endAgeValue, ()=>deathGap, num('post')/100);
-  const deathCapital = mortgageDebtValue + deathIncomeCapital;
+  const deathGap = Math.max(0, expenses * 0.8 + otherLoans - familyPensions);
+  const deathIncomeCapital = capitalByFiveThousandRule(deathGap);
+  const deathCapitalBase = mortgageDebtValue + otherDebt + deathIncomeCapital;
+  const deathCapital = deathCapitalBase > 0 ? Math.max(deathCapitalBase, funeralReserve) : funeralReserve;
+
+  const sicknessGap = incomeType === 'employee' ? income * 0.4 : income;
+  const criticalIllness = roundUpToHundredThousand(income * 12);
+  const accidentPermanent = 1000000;
+  const dailyCompensation = num('riskDailyCompensation');
 
   const householdGap = Math.max(0, expenses + mortgagePaymentValue + otherLoans - invalidPension);
   const invalidMissingAfterAssets = Math.max(0, invalidCapital - usableAssetsNow - num('riskCurrentInvalidCover'));
@@ -1373,6 +1485,10 @@ function calculateRisk(){
   riskInvalidCapital.textContent = fmt(invalidCapital);
   riskDeathCapital.textContent = fmt(deathCapital);
   riskCoverGap.textContent = fmt(invalidMissingAfterAssets + deathMissingAfterAssets);
+  if(typeof riskSickPayGap !== 'undefined') riskSickPayGap.textContent = fmt(sicknessGap) + ' / měsíc';
+  if(typeof riskCriticalIllness !== 'undefined') riskCriticalIllness.textContent = fmt(criticalIllness);
+  if(typeof riskAccidentPermanent !== 'undefined') riskAccidentPermanent.textContent = fmt(accidentPermanent);
+  if(typeof riskDailyCompensationOut !== 'undefined') riskDailyCompensationOut.textContent = dailyCompensation > 0 ? fmt(dailyCompensation) + ' / den' : 'volitelné';
 
   riskSideRent.textContent = fmt(rentNeed) + ' / měsíc';
   riskSideAsset.textContent = fmt(currentAssetNow);
@@ -1382,7 +1498,9 @@ function calculateRisk(){
   if(typeof riskSideExpenses !== 'undefined') riskSideExpenses.textContent = fmt(expenses) + ' + ' + fmt(otherLoans) + ' + hypo ' + fmt(mortgagePaymentValue) + ' = ' + fmt(expenses + otherLoans + mortgagePaymentValue) + ' / měsíc';
 
   const invalidCardText = document.querySelector('#riskInvalidGap')?.parentElement?.querySelector('p');
-  if(invalidCardText) invalidCardText.innerHTML = 'Chybějící částka k okamžité rentě po započtení invalidního důchodu. Dnešní měsíční rozdíl domácnosti: <strong>' + fmt(householdGap) + ' / měsíc</strong>.';
+  if(invalidCardText) invalidCardText.innerHTML = 'Výdaje domácnosti jsou navýšené o 20 %, započítá se hypotéka, ostatní splátky a orientační invalidní důchod. Dnešní měsíční rozdíl domácnosti: <strong>' + fmt(householdGap) + ' / měsíc</strong>.';
+  const deathCardText = document.querySelector('#riskDeathGap')?.parentElement?.querySelector('p');
+  if(deathCardText) deathCardText.innerHTML = 'Výdaje domácnosti jsou snížené o 20 %, započítá se vdovský/vdovecký a sirotčí důchod. Hypotéka a závazky se počítají zvlášť jednorázově.';
   if(typeof updateReport === 'function') updateReport();
 }
 
@@ -1426,29 +1544,36 @@ function drawReportBar(canvas, bars){
 }
 
 function getReportRiskNumbers(){
-  const currentAge = Math.max(0, num('age'));
-  const endAgeValue = Math.max(currentAge + 1, num('endAge'));
   const currentAssetNow = num('current');
   const currentInvestmentsNow = num('lump');
   const usableAssetsNow = currentAssetNow + currentInvestmentsNow;
   const m = document.getElementById('mortgageAmount') ? mortgageInputs() : {payment:0, amount:0};
+  const income = num('riskIncome');
+  const incomeType = document.getElementById('riskIncomeType')?.value || 'employee';
   const invalidPension = num('riskInvalidPension');
   const widowPension = num('riskWidowPension');
   const orphanPension = num('riskOrphanPension');
   const children = Math.max(0, val('riskChildren'));
   const expenses = num('riskExpenses');
   const otherLoans = num('riskOtherLoans');
-  const invalidGap = Math.max(0, Math.max(num('rent1'), num('rent2')) - num('rentalIncome') - invalidPension);
-  const invalidCapital = requiredCapitalFromMonthlySchedule(currentAge, endAgeValue, (age)=>Math.max(0, grossRentAtAge(age) - num('rentalIncome') - invalidPension), num('post')/100);
+  const otherDebt = num('riskOtherDebt');
+  const funeralReserve = Math.max(0, num('riskFuneralReserve') || 150000);
+  const invalidGap = Math.max(0, expenses * 1.2 + (m.payment || 0) + otherLoans - invalidPension);
+  const invalidCapital = capitalByFiveThousandRule(invalidGap);
   const familyPensions = widowPension + orphanPension * children;
-  const deathGap = Math.max(0, expenses + otherLoans - familyPensions);
-  const deathIncomeCapital = requiredCapitalFromMonthlySchedule(currentAge, endAgeValue, ()=>deathGap, num('post')/100);
-  const deathCapital = (m.amount || 0) + deathIncomeCapital;
+  const deathGap = Math.max(0, expenses * 0.8 + otherLoans - familyPensions);
+  const deathIncomeCapital = capitalByFiveThousandRule(deathGap);
+  const deathCapitalBase = (m.amount || 0) + otherDebt + deathIncomeCapital;
+  const deathCapital = deathCapitalBase > 0 ? Math.max(deathCapitalBase, funeralReserve) : funeralReserve;
+  const sicknessGap = incomeType === 'employee' ? income * 0.4 : income;
+  const criticalIllness = roundUpToHundredThousand(income * 12);
   return {
     invalidGap, deathGap, invalidCapital, deathCapital, usableAssetsNow,
     invalidCover: Math.max(0, invalidCapital - usableAssetsNow - num('riskCurrentInvalidCover')),
     deathCover: Math.max(0, deathCapital - usableAssetsNow - num('riskCurrentDeathCover')),
-    invalidPension, familyPensions
+    invalidPension, familyPensions, sicknessGap, criticalIllness,
+    accidentPermanent: 1000000,
+    dailyCompensation: num('riskDailyCompensation')
   };
 }
 
@@ -1515,8 +1640,10 @@ function updateReport(){
 
 
 document.querySelectorAll('input, select').forEach(i=>{
-  if(!["rent1","rent2","legacy","current","lump","rentalIncome","mortgageAmount","mortgageLumpInvest","mortgageMonthlyInvest","riskIncome","riskExpenses","riskOtherLoans","riskInvalidPension","riskWidowPension","riskOrphanPension","riskCurrentInvalidCover","riskCurrentDeathCover","riskSocialPayment"].includes(i.id)){
-    i.addEventListener('input',()=>{ calculate(); calculateMortgage(); calculateRisk(); });
+  if(!["rent1","rent2","legacy","current","lump","rentalIncome","mortgageAmount","mortgageLumpInvest","mortgageMonthlyInvest","riskIncome","riskExpenses","riskOtherLoans","riskOtherDebt","riskInvalidPension","riskWidowPension","riskOrphanPension","riskFuneralReserve","riskDailyCompensation","riskCurrentInvalidCover","riskCurrentDeathCover","riskSocialPayment"].includes(i.id)){
+    const recalc=()=>{ calculate(); calculateMortgage(); calculateRisk(); };
+    i.addEventListener('input',recalc);
+    i.addEventListener('change',recalc);
   }
 });
 
@@ -1614,9 +1741,9 @@ updateReport();
   }
 
   function reportRiskNumbers(){
-    const currentAge=numberVal('age');
-    const endAge=Math.max(currentAge+1,numberVal('endAge'));
     const currentAssets=money('current')+money('lump');
+    const income=money('riskIncome');
+    const incomeType=byId('riskIncomeType')?.value || 'employee';
     const invalidPension=money('riskInvalidPension');
     const widow=money('riskWidowPension');
     const orphan=money('riskOrphanPension');
@@ -1624,17 +1751,22 @@ updateReport();
     const familyPensions=widow+orphan*children;
     const expenses=money('riskExpenses');
     const otherLoans=money('riskOtherLoans');
+    const otherDebt=money('riskOtherDebt');
+    const funeralReserve=Math.max(0,money('riskFuneralReserve')||150000);
     const mortgage=mortgageModel();
-    const post=(numberVal('post')||0)/100;
-    const invalidGap=Math.max(0,Math.max(money('rent1'),money('rent2'))-money('rentalIncome')-invalidPension);
-    const invalidCapital=capitalForMonthlySchedule(currentAge,endAge,(age)=>Math.max(0,rentAt(age)-money('rentalIncome')-invalidPension),post);
-    // U smrti se počítá s doplacením jistiny hypotéky zvlášť. Měsíční výpadek rodiny proto pracuje s výdaji domácnosti a ostatními úvěry bez hypoteční splátky.
-    const deathGap=Math.max(0,expenses+otherLoans-familyPensions);
-    const deathIncomeCapital=capitalForMonthlySchedule(currentAge,endAge,()=>deathGap,post);
-    const deathCapital=(mortgage.amount||0)+deathIncomeCapital;
+    const invalidGap=Math.max(0,expenses*1.2+(mortgage.payment||0)+otherLoans-invalidPension);
+    const invalidCapital=capitalByFiveThousandRule(invalidGap);
+    const deathGap=Math.max(0,expenses*.8+otherLoans-familyPensions);
+    const deathIncomeCapital=capitalByFiveThousandRule(deathGap);
+    const deathCapitalBase=(mortgage.amount||0)+otherDebt+deathIncomeCapital;
+    const deathCapital=deathCapitalBase>0?Math.max(deathCapitalBase,funeralReserve):funeralReserve;
     const invalidCover=Math.max(0,invalidCapital-currentAssets-money('riskCurrentInvalidCover'));
     const deathCover=Math.max(0,deathCapital-currentAssets-money('riskCurrentDeathCover'));
-    return {currentAge,endAge,currentAssets,invalidPension,familyPensions,expenses,otherLoans,mortgage,invalidGap,invalidCapital,deathGap,deathIncomeCapital,deathCapital,invalidCover,deathCover};
+    const sicknessGap=incomeType==='employee'?income*.4:income;
+    const criticalIllness=roundUpToHundredThousand(income*12);
+    const accidentPermanent=1000000;
+    const dailyCompensation=money('riskDailyCompensation');
+    return {currentAssets,income,incomeType,invalidPension,familyPensions,expenses,otherLoans,otherDebt,funeralReserve,mortgage,invalidGap,invalidCapital,deathGap,deathIncomeCapital,deathCapital,invalidCover,deathCover,sicknessGap,criticalIllness,accidentPermanent,dailyCompensation};
   }
 
   function drawLine(canvas, series, keys){
@@ -1716,25 +1848,29 @@ updateReport();
     setText('reportDeathCover', safeFmt(rn.deathCover));
     setText('reportUsableAssets', safeFmt(rn.currentAssets));
     setText('reportStateBenefits', 'Inv. '+safeFmt(rn.invalidPension)+' / rodina '+safeFmt(rn.familyPensions));
+    setText('reportSickPayGap', safeFmt(rn.sicknessGap)+' / měsíc');
+    setText('reportCriticalIllness', safeFmt(rn.criticalIllness));
+    setText('reportAccidentPermanent', safeFmt(rn.accidentPermanent));
+    setText('reportDailyCompensation', rn.dailyCompensation>0?safeFmt(rn.dailyCompensation)+' / den':'volitelné');
     drawBars(byId('reportRiskChart'),[
-      {label:'Renta',value:Math.max(money('rent1'),money('rent2')),color:'#2563eb'},
+      {label:'Invalidita',value:rn.invalidCapital,color:'#2563eb'},
+      {label:'Smrt',value:rn.deathCapital,color:'#ef4444'},
       {label:'Inv. důchod',value:rn.invalidPension,color:'#16a34a'},
-      {label:'Invalidita chybí',value:rn.invalidGap,color:'#ef4444'},
-      {label:'Rodina chybí',value:rn.deathGap,color:'#f59e0b'}
+      {label:'PN',value:rn.sicknessGap*12,color:'#f59e0b'}
     ]);
 
     // klientsky čisté doplnění rozkladu pojištění
     const riskSection=byId('reportRiskSection');
     if(riskSection && !byId('riskBreakdownV24')){
       const div=document.createElement('div'); div.id='riskBreakdownV24'; div.className='reportMiniGrid';
-      div.innerHTML='<div class="reportKpi blue"><small>Smrt – hypotéka k doplacení</small><strong id="rbMortgageDebt">—</strong></div><div class="reportKpi red"><small>Výdaje + ostatní úvěry</small><strong id="rbFamilyExpenses">—</strong></div><div class="reportKpi green"><small>Státní dávky rodině</small><strong id="rbFamilyBenefits">—</strong></div>';
+      div.innerHTML='<div class="reportKpi blue"><small>Smrt – hypotéka k doplacení</small><strong id="rbMortgageDebt">—</strong></div><div class="reportKpi red"><small>Výdaje po snížení o 20 %</small><strong id="rbFamilyExpenses">—</strong></div><div class="reportKpi green"><small>Státní dávky rodině</small><strong id="rbFamilyBenefits">—</strong></div>';
       const p=document.createElement('p'); p.className='reportLineNote'; p.id='riskNoteV24';
       const anchor=riskSection.querySelector('.reportSplit'); anchor?.after(div); div.after(p);
     }
     setText('rbMortgageDebt',safeFmt(rn.mortgage.amount||0));
-    setText('rbFamilyExpenses',safeFmt(rn.expenses+rn.otherLoans)+' / měsíc');
+    setText('rbFamilyExpenses',safeFmt(rn.expenses*.8+rn.otherLoans)+' / měsíc');
     setText('rbFamilyBenefits',safeFmt(rn.familyPensions)+' / měsíc');
-    setText('riskNoteV24','U úmrtí model počítá se splacením hypotéky jednorázově a s měsíčním výpadkem rodiny po započtení vdovského/vdoveckého a sirotčího důchodu.');
+    setText('riskNoteV24','U úmrtí model počítá se splacením hypotéky a dalších závazků jednorázově, s poklesem výdajů domácnosti o 20 % a s orientačním vdovským/vdoveckým a sirotčím důchodem. U invalidity používá jednoduché pravidlo: každých chybějících 5 000 Kč měsíčně = 1 mil. Kč kapitálu.');
 
     const showInvest=byId('reportInvest')?.checked;
     const showMortgage=byId('reportMortgage')?.checked;
@@ -1756,25 +1892,25 @@ updateReport();
 // V25 – mazání údajů klienta
 (function(){
   const byId = id => document.getElementById(id);
-  const moneyIds = new Set(['rent1','rent2','legacy','current','rentalIncome','lump','riskIncome','riskExpenses','riskOtherLoans','riskInvalidPension','riskWidowPension','riskOrphanPension','riskCurrentInvalidCover','riskCurrentDeathCover','mortgageAmount','mortgageLumpInvest','mortgageMonthlyInvest']);
+  const moneyIds = new Set(['rent1','rent2','legacy','current','rentalIncome','lump','riskIncome','riskExpenses','riskOtherLoans','riskOtherDebt','riskInvalidPension','riskWidowPension','riskOrphanPension','riskFuneralReserve','riskDailyCompensation','riskCurrentInvalidCover','riskCurrentDeathCover','mortgageAmount','mortgageLumpInvest','mortgageMonthlyInvest']);
 
   const sections = {
     invest: {
       ids: ['clientName','age','rentAge','rent1','rent1Until','rent2From','rent2','endAge','pre','post','legacy','current','currentYield','rentalIncome','lump'],
       values: {
-        clientName:'', age:'35', rentAge:'50', rent1:'0', rent1Until:'75', rent2From:'75', rent2:'0', endAge:'90', pre:'8', post:'7', legacy:'0', current:'0', currentYield:'3', rentalIncome:'0', lump:'0'
+        clientName:'', age:'', rentAge:'', rent1:'', rent1Until:'', rent2From:'', rent2:'', endAge:'', pre:'', post:'', legacy:'', current:'', currentYield:'3', rentalIncome:'', lump:''
       }
     },
     risk: {
-      ids: ['riskIncomeType','riskIncome','riskExpenses','riskOtherLoans','riskInvalidPension','riskWidowPension','riskOrphanPension','riskChildren','riskCurrentInvalidCover','riskCurrentDeathCover','riskAutoPensions'],
+      ids: ['riskIncomeType','riskIncome','riskExpenses','riskOtherLoans','riskOtherDebt','riskInvalidPension','riskWidowPension','riskOrphanPension','riskChildren','riskFuneralReserve','riskDailyCompensation','riskCurrentInvalidCover','riskCurrentDeathCover','riskAutoPensions'],
       values: {
-        riskIncomeType:'employee', riskIncome:'0', riskExpenses:'0', riskOtherLoans:'0', riskInvalidPension:'0', riskWidowPension:'0', riskOrphanPension:'0', riskChildren:'0', riskCurrentInvalidCover:'0', riskCurrentDeathCover:'0', riskAutoPensions:true
+        riskIncomeType:'employee', riskIncome:'', riskExpenses:'', riskOtherLoans:'', riskOtherDebt:'', riskInvalidPension:'', riskWidowPension:'', riskOrphanPension:'', riskChildren:'', riskFuneralReserve:'', riskDailyCompensation:'', riskCurrentInvalidCover:'', riskCurrentDeathCover:'', riskAutoPensions:false
       }
     },
     mortgage: {
-      ids: ['mortgageAmount','mortgageRate','mortgageYears','mortgageLumpInvest','mortgageMonthlyInvest','mortgageInvestYield'],
+      ids: ['mortgageAmount','mortgageRate','mortgageYears','mortgageFixYears','mortgageTaxLimit','mortgageLumpInvest','mortgageMonthlyInvest','mortgageInvestYield'],
       values: {
-        mortgageAmount:'0', mortgageRate:'4.89', mortgageYears:'30', mortgageLumpInvest:'0', mortgageMonthlyInvest:'0', mortgageInvestYield:'7'
+        mortgageAmount:'', mortgageRate:'', mortgageYears:'', mortgageFixYears:'', mortgageTaxLimit:'150000', mortgageLumpInvest:'', mortgageMonthlyInvest:'', mortgageInvestYield:''
       }
     },
     report: {
