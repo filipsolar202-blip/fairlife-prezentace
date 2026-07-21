@@ -719,28 +719,42 @@ function openFkiInNewTab(){ openFkiPurchaseCalc(fkiContextClient); }
 function fkiClientPortfolio(clientName){
   const cl=clientName?findClientRef(clientName):null; if(!cl) return {items:[],invested:0,current:0,profit:0,pa:0,pending:[]};
   const map={};
-  cl.recs.filter(r=>!isWithdrawal(r) && r['Stav scénáře']!=='čeká').forEach(r=>{const k=fundKey(r); if(!map[k]) map[k]={name:cleanFundName(r['Fond'],companyOf(r)),company:companyOf(r),inv:0,cur:0,first:null,pending:false}; const o=map[k]; o.inv+=depositVal(r); o.cur+=curVal(r); const d=pD(r['Datum připsání platby'])||pD(r['Datum emise']); if(d&&(!o.first||d<o.first)) o.first=d;});
+  cl.recs.filter(r=>!isWithdrawal(r) && r['Stav scénáře']!=='čeká').forEach(r=>{const k=fundKey(r); if(!map[k]) map[k]={fundKey:k,name:cleanFundName(r['Fond'],companyOf(r)),company:companyOf(r),isin:r['rp.ISIN']||'',typ:r['Typ CP']||'',inv:0,cur:0,first:null,pending:false}; const o=map[k]; o.inv+=depositVal(r); o.cur+=curVal(r); if(!o.isin && r['rp.ISIN']) o.isin=r['rp.ISIN']; if(!o.typ && r['Typ CP']) o.typ=r['Typ CP']; const d=pD(r['Datum připsání platby'])||pD(r['Datum emise']); if(d&&(!o.first||d<o.first)) o.first=d;});
   const items=Object.values(map).map(o=>({...o,profit:o.cur-o.inv,pa:annualizedReturn(o.inv,0,o.cur,o.first)})).sort((a,b)=>b.cur-a.cur);
   const invested=items.reduce((s,x)=>s+x.inv,0), current=items.reduce((s,x)=>s+x.cur,0), first=cl.recs.map(r=>pD(r['Datum připsání platby'])||pD(r['Datum emise'])).filter(Boolean).sort((a,b)=>a-b)[0];
   const pending=cl.recs.filter(r=>r['Stav scénáře']==='čeká');
   return {items,invested,current,profit:current-invested,pa:annualizedReturn(invested,0,current,first),pending};
 }
+function fkiTopUpYear(row){ return Math.max(0,Math.round(n(row?.topUpYear))); }
+function fkiHasTopUp(row){ return Math.max(0,n(row?.topUpAmount))>0; }
+function fkiTopUpLabel(row){ const y=fkiTopUpYear(row); return y>0 ? `Dokup v ${y}. roce` : 'Dokup ihned'; }
+function fkiHoldingMap(calc){
+  const out={};
+  (calc?.current?.items||[]).forEach(item=>{ if(item?.fundKey) out[item.fundKey]=item; });
+  return out;
+}
+function fkiHoldingFuture(row, holding, year){
+  const cur=Math.max(0,n(holding?.cur));
+  if(!cur) return 0;
+  const rate=n(row?.rate)/100;
+  return cur*Math.pow(1+rate,Math.max(0,n(year)));
+}
 function fkiRowValueAt(row, year){
   const amount=n(row.amount), rate=n(row.rate)/100;
-  const topUpYear=Math.max(0,Math.round(n(row.topUpYear)));
+  const topUpYear=fkiTopUpYear(row);
   const topUpAmount=Math.max(0,n(row.topUpAmount));
   const crashYear=Math.max(0,Math.round(n(row.crashYear)));
   const crashPct=Math.max(0,Math.min(100,n(row.crashPct)))/100;
   const valueWithoutCrash=(t)=>{
     let v=amount>0 ? amount*Math.pow(1+rate,Math.max(0,t)) : 0;
-    if(topUpAmount>0 && topUpYear>0 && t>=topUpYear){
+    if(topUpAmount>0 && t>=topUpYear){
       v += topUpAmount*Math.pow(1+rate,Math.max(0,t-topUpYear));
     }
     return v;
   };
   const investedAt=(t)=>{
     let v=amount>0?amount:0;
-    if(topUpAmount>0 && topUpYear>0 && t>=topUpYear) v+=topUpAmount;
+    if(topUpAmount>0 && t>=topUpYear) v+=topUpAmount;
     return v;
   };
   if(crashYear>0 && year>=crashYear && crashPct>0){
@@ -757,9 +771,9 @@ function fkiRowValueAt(row, year){
 function fkiFundValueAt(row,year){ return fkiRowValueAt(row,year); }
 function fkiRowInvestedAt(row,year){
   let v=Math.max(0,n(row.amount));
-  const topUpYear=Math.max(0,Math.round(n(row.topUpYear)));
+  const topUpYear=fkiTopUpYear(row);
   const topUpAmount=Math.max(0,n(row.topUpAmount));
-  if(topUpAmount>0 && topUpYear>0 && year>=topUpYear) v+=topUpAmount;
+  if(topUpAmount>0 && year>=topUpYear) v+=topUpAmount;
   return v;
 }
 
@@ -771,7 +785,7 @@ function fkiTimelineDetailed(calc){
     ...r,
     amount: Math.max(0,n(r.amount)),
     rate: n(r.rate)/100,
-    topUpYear: Math.max(0,Math.round(n(r.topUpYear))),
+    topUpYear: fkiTopUpYear(r),
     topUpAmount: Math.max(0,n(r.topUpAmount)),
     crashYear: Math.max(0,Math.round(n(r.crashYear))),
     crashPct: Math.max(0,Math.min(100,n(r.crashPct)))/100
@@ -781,12 +795,12 @@ function fkiTimelineDetailed(calc){
   const rowVal = (r, y) => {
     const grow = (val, yrs) => val * Math.pow(1 + r.rate, Math.max(0, yrs));
     let v = grow(r.amount, y);
-    if(r.topUpAmount > 0 && r.topUpYear > 0 && y >= r.topUpYear){
+    if(r.topUpAmount > 0 && y >= r.topUpYear){
       v += grow(r.topUpAmount, y - r.topUpYear);
     }
     if(r.crashYear > 0 && r.crashPct > 0 && y >= r.crashYear){
       let frozen = grow(r.amount, r.crashYear);
-      if(r.topUpAmount > 0 && r.topUpYear > 0){
+      if(r.topUpAmount > 0){
         if(r.topUpYear <= r.crashYear) frozen += grow(r.topUpAmount, r.crashYear - r.topUpYear);
         else if(y >= r.topUpYear) frozen += r.topUpAmount;
       }
@@ -796,7 +810,7 @@ function fkiTimelineDetailed(calc){
   };
   const investedAt = (r,y) => {
     let v = r.amount;
-    if(r.topUpAmount > 0 && r.topUpYear > 0 && y >= r.topUpYear) v += r.topUpAmount;
+    if(r.topUpAmount > 0 && y >= r.topUpYear) v += r.topUpAmount;
     return v;
   };
   const addPoint = (year) => {
@@ -809,7 +823,7 @@ function fkiTimelineDetailed(calc){
   for(let i=0;i<=steps;i++) addPoint((i/steps)*(Number(fkiHorizon)||1));
   // přidej body těsně před a po propadu/dokupu, aby byl skok v grafu skutečně vidět
   rows.forEach(r=>{
-    if(r.topUpYear>0 && r.topUpYear<=fkiHorizon && r.topUpAmount>0){ addPoint(r.topUpYear-0.01); addPoint(r.topUpYear); addPoint(r.topUpYear+0.01); }
+    if(r.topUpAmount>0 && r.topUpYear<=fkiHorizon){ addPoint(r.topUpYear-0.01); addPoint(r.topUpYear); addPoint(r.topUpYear+0.01); }
     if(r.crashYear>0 && r.crashYear<=fkiHorizon && r.crashPct>0){ addPoint(r.crashYear-0.01); addPoint(r.crashYear); addPoint(r.crashYear+0.01); }
   });
   pts.sort((a,b)=>a.year-b.year);
@@ -865,7 +879,7 @@ function fkiUpdateRow(i,patch,soft=false){ fkiRows[i]={...fkiRows[i],...patch}; 
 function fkiAddRow(){ const st=fkiFundStats()[0]; fkiRows.push({fundKey:st?.fundKey||'',name:st?.name||'Nový fond',company:st?.company||'',isin:st?.isin||'',typ:st?.typ||'',amount:0,rate:Math.max(0,Number(st?.pa||7)).toFixed(1),topUpYear:0,topUpAmount:0,crashYear:0,crashPct:0,source:'CRM průměr'}); renderFkiModule(); }
 function fkiRemoveRow(i){ fkiRows.splice(i,1); renderFkiModule(); }
 function fkiUseFund(i,k){ const st=fkiFundStats().find(x=>x.fundKey===k); if(!st) return; fkiRows[i]={...fkiRows[i],fundKey:k,name:st.name,company:st.company,isin:st.isin,typ:st.typ,rate:Math.max(0,Number(st.pa||7)).toFixed(1),source:'CRM průměr'}; renderFkiModule(); }
-function fkiScenarioText(){ const c=fkiCalc(); const name=fkiMode==='existing'?(fkiContextClient||'stávající klient'):(fkiNewClientName||'nový klient'); return `Scénář pro ${name}: nový vklad ${czk(c.newInv)}, vážený předpoklad celého portfolia ${pct(c.weightedRate)} (samotný nový nákup ${pct(c.newWeightedRate)}), doba modelace ${fkiHorizon} let. Pokud je u fondu nastaven propad, fond se v roce propadu sníží a od té chvíle zůstává zamrazený na nové hodnotě. Modelová hodnota nové investice ${czk(c.projectedNew)}, celkem po započtení současného portfolia ${czk(c.totalFuture)}.`; }
+function fkiScenarioText(){ const c=fkiCalc(); const name=fkiMode==='existing'?(fkiContextClient||'stávající klient'):(fkiNewClientName||'nový klient'); return `Scénář pro ${name}: počítám současné portfolio ${czk(c.current.current)} a nové vklady nebo dokupy ${czk(c.newInv)} po dobu ${fkiHorizon} let. Vážený modelový předpoklad celého portfolia je ${pct(c.weightedRate)} (samotný nový nákup ${pct(c.newWeightedRate)}). Modelová hodnota nových vkladů a dokupů je ${czk(c.projectedNew)}, celkem po započtení současného portfolia ${czk(c.totalFuture)}. Pokud je u fondu nastaven propad, fond se v roce propadu sníží a od té chvíle zůstává zamrazený na nové hodnotě.`; }
 function fkiCopyScenario(){ navigator.clipboard?.writeText(fkiScenarioText()); toast('Scénář zkopírován ✓','ok'); }
 function fkiClientReportHtml(){
   const c=fkiCalc();
@@ -901,7 +915,19 @@ function fkiClientReportHtml(){
     const bullets=(fund.bullets||[]).map(b=>`<li>${esc(b)}</li>`).join('');
     return `<article class="fund-slide" style="--accent:${fund.accent||'#0d2c54'}"><div class="fund-slide-top"><div><h3>${esc(fund.title)}</h3><p>${esc(fund.subtitle||'')}</p></div><div class="lion-mark">♛</div></div><div class="slide-stats">${stats}</div><div class="fund-slide-body"><ul>${bullets}</ul><div class="fund-visual"><div class="fund-shape">${esc((fund.title||'?').slice(0,1))}</div></div></div><div class="fund-slide-foot"><span>${fund.url?`více o fondu: ${esc(fund.url)}`:''}</span><span>${fund.date?`data k: ${esc(fund.date)}`:''}</span></div></article>`;
   };
-  const htmlRows=rows.map(r=>`<article class="fund-card"><div><h3>${esc(r.name)}</h3><div class="muted">${esc(r.company||'FKI')} ${r.isin?` · ${esc(r.isin)}`:''}</div></div><div class="metrics"><div><small>Vklad</small><b>${czk(n(r.amount))}</b></div><div><small>Předpoklad p.a.</small><b>${pct(n(r.rate))}</b></div><div><small>Hodnota za ${fkiHorizon} let</small><b>${czk(fkiFundValueAt(r,fkiHorizon))}</b></div>${n(r.topUpAmount)>0?`<div><small>Dokup v ${n(r.topUpYear)}. roce</small><b>${czk(n(r.topUpAmount))}</b></div>`:''}${n(r.crashPct)>0?`<div><small>Modelovaný propad</small><b>-${n(r.crashPct)} % v ${n(r.crashYear)}. roce</b></div>`:''}</div></article>`).join('') || '<p>Nejsou zadané žádné nové fondy.</p>';
+  const holdingByKey=fkiHoldingMap(c);
+  const htmlRows=rows.map(r=>{
+    const holding=holdingByKey[r.fundKey]||null;
+    const plannedFuture=fkiFundValueAt(r,fkiHorizon);
+    const holdingFuture=fkiHoldingFuture(r,holding,fkiHorizon);
+    const fundFuture=plannedFuture+holdingFuture;
+    const currentMetric=holding?`<div><small>Aktuálně ve fondu</small><b>${czk(holding.cur)}</b></div>`:'';
+    const amountMetric=n(r.amount)>0?`<div><small>Nový vklad</small><b>${czk(n(r.amount))}</b></div>`:'';
+    const topUpMetric=n(r.topUpAmount)>0?`<div><small>${esc(fkiTopUpLabel(r))}</small><b>${czk(n(r.topUpAmount))}</b></div>`:'';
+    const plannedMetric=(holding&&plannedFuture>0)?`<div><small>Z toho nový/dokup</small><b>${czk(plannedFuture)}</b></div>`:'';
+    const crashMetric=n(r.crashPct)>0?`<div><small>Modelovaný propad</small><b>-${n(r.crashPct)} % v ${n(r.crashYear)}. roce</b></div>`:'';
+    return `<article class="fund-card"><div><h3>${esc(r.name)}</h3><div class="muted">${esc(r.company||'FKI')} ${r.isin?` · ${esc(r.isin)}`:''}</div></div><div class="metrics">${currentMetric}${amountMetric}${topUpMetric}<div><small>Předpoklad p.a.</small><b>${pct(n(r.rate))}</b></div><div><small>Hodnota fondu za ${fkiHorizon} let</small><b>${czk(fundFuture)}</b></div>${plannedMetric}${crashMetric}</div></article>`;
+  }).join('') || '<p>Nejsou zadané žádné nové fondy.</p>';
   const presentationCards=rows.map(r=>renderFundPresentation(fundPresentationFor(r.name), r)).join('') || '<p>Nejsou zadané žádné nové fondy.</p>';
   const portfolioHtml=currentItems.length?`<section class="card"><h2>Současné portfolio</h2><table><thead><tr><th>Fond</th><th>Aktuálně</th><th>Výnos</th><th>P.A.</th></tr></thead><tbody>${currentItems.map(x=>`<tr><td>${esc(x.name)}</td><td>${czk(x.cur)}</td><td>${czk(x.profit)}</td><td>${pct(x.pa||0)}</td></tr>`).join('')}</tbody></table></section>`:'';
   const chart=fkiScenarioChartHTML(c);
@@ -954,8 +980,8 @@ function fkiScenarioChartHTML(calc){
       const afterTotal=(pts.find(p=>Math.abs(p.year-afterYear)<.001)||pts.find(p=>Math.abs(p.year-cy)<.001)||{}).total||0;
       eventMarkers.push({type:'crash',year:cy,name:r.name,pct:n(r.crashPct),beforeTotal,afterTotal});
     }
-    const ty=Math.max(0,Math.round(n(r.topUpYear)));
-    if(ty>0 && ty<=fkiHorizon && n(r.topUpAmount)>0){
+    const ty=fkiTopUpYear(r);
+    if(n(r.topUpAmount)>0 && ty<=fkiHorizon){
       eventMarkers.push({type:'topup',year:ty,name:r.name,amount:n(r.topUpAmount)});
     }
   });
@@ -967,15 +993,15 @@ function fkiScenarioChartHTML(calc){
     const rec=pts.find(p=>p.year>first.year && p.total>=preMax);
     recoveryText=rec ? `Po propadu se model vrátí na předchozí maximum přibližně v ${rec.year.toFixed(1).replace('.',',')}. roce.` : `Do konce modelace se portfolio na předchozí maximum ještě nevrátí.`;
   } else {
-    recoveryText='Bez nastaveného propadu ukazuje graf základní průběh podle zadaných výnosů a dokupů.';
+    recoveryText='Bez nastaveného propadu ukazuje graf průběh současného portfolia, nových vkladů a dokupů podle zadaných výnosů.';
   }
-  return `<div class="fki-sim-chart"><div class="fki-sim-head"><div><h4>Vývoj hodnoty portfolia v čase</h4><div class="fki-muted">Graf ukazuje očekávaný vývoj investice podle zadaného vkladu a zhodnocení.</div></div><div class="fki-sim-legend"><span class="fki-leg"><i style="background:#2563eb"></i>Celkem</span><span class="fki-leg"><i style="background:#94a3b8"></i>Stávající</span><span class="fki-leg"><i style="background:#16a34a"></i>Vklady</span></div></div><div class="fki-chart-wrap"><svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMidYMid meet">${ticks.map(t=>`<line x1="${padL}" x2="${W-padR}" y1="${y(t)}" y2="${y(t)}" stroke="#e2e8f0" stroke-width="1"/><text class="fki-chart-label" x="8" y="${y(t)+4}">${esc(fkiShortMoney(t))}</text>`).join('')}<path d="${path('total')}" fill="none" stroke="#2563eb" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/><path d="${path('base')}" fill="none" stroke="#94a3b8" stroke-width="2" stroke-dasharray="6 5"/><path d="${path('invested')}" fill="none" stroke="#16a34a" stroke-width="2" stroke-dasharray="8 5"/>${integerPts.map(p=>p.year%2===0||p.year===fkiHorizon?`<text class="fki-chart-label" x="${x(p)-8}" y="${H-12}">${p.year}${p.year===0?'':'r'}</text>`:'').join('')}${eventMarkers.map(m=>{const p=pts.find(p=>Math.abs(p.year-m.year)<.001)||pts[0]; if(m.type==='topup') return `<g><line x1="${x(p)}" x2="${x(p)}" y1="${padT}" y2="${H-padB}" stroke="#f59e0b" stroke-width="1.4" stroke-dasharray="3 5"/><circle cx="${x(p)}" cy="${y(p.total)}" r="5" fill="#f59e0b"/><text class="fki-chart-label" x="${x(p)+8}" y="${y(p.total)-8}" fill="#b45309">dokup ${esc(fkiShortMoney(m.amount))}</text></g>`; return `<g><line x1="${x(p)}" x2="${x(p)}" y1="${y(m.beforeTotal)}" y2="${y(m.afterTotal)}" stroke="#dc2626" stroke-width="3.2"/><circle cx="${x(p)}" cy="${y(m.afterTotal)}" r="5" fill="#dc2626"/><text class="fki-chart-label" x="${x(p)+8}" y="${y(m.afterTotal)-8}" fill="#dc2626">-${m.pct}%</text></g>`;}).join('')}</svg></div><div class="fki-chart-note">Zjednodušená modelace počítá pouze se zadaným vkladem a očekávaným ročním zhodnocením.</div></div>`;
+  return `<div class="fki-sim-chart"><div class="fki-sim-head"><div><h4>Vývoj hodnoty portfolia v čase</h4><div class="fki-muted">Graf ukazuje očekávaný vývoj současného portfolia, nových vkladů a dokupů podle zadaného p.a.</div></div><div class="fki-sim-legend"><span class="fki-leg"><i style="background:#2563eb"></i>Celkem</span><span class="fki-leg"><i style="background:#94a3b8"></i>Stávající</span><span class="fki-leg"><i style="background:#16a34a"></i>Vklady a dokupy</span></div></div><div class="fki-chart-wrap"><svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMidYMid meet">${ticks.map(t=>`<line x1="${padL}" x2="${W-padR}" y1="${y(t)}" y2="${y(t)}" stroke="#e2e8f0" stroke-width="1"/><text class="fki-chart-label" x="8" y="${y(t)+4}">${esc(fkiShortMoney(t))}</text>`).join('')}<path d="${path('total')}" fill="none" stroke="#2563eb" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/><path d="${path('base')}" fill="none" stroke="#94a3b8" stroke-width="2" stroke-dasharray="6 5"/><path d="${path('invested')}" fill="none" stroke="#16a34a" stroke-width="2" stroke-dasharray="8 5"/>${integerPts.map(p=>p.year%2===0||p.year===fkiHorizon?`<text class="fki-chart-label" x="${x(p)-8}" y="${H-12}">${p.year}${p.year===0?'':'r'}</text>`:'').join('')}${eventMarkers.map(m=>{const p=pts.find(p=>Math.abs(p.year-m.year)<.001)||pts[0]; if(m.type==='topup') return `<g><line x1="${x(p)}" x2="${x(p)}" y1="${padT}" y2="${H-padB}" stroke="#f59e0b" stroke-width="1.4" stroke-dasharray="3 5"/><circle cx="${x(p)}" cy="${y(p.total)}" r="5" fill="#f59e0b"/><text class="fki-chart-label" x="${x(p)+8}" y="${y(p.total)-8}" fill="#b45309">dokup ${esc(fkiShortMoney(m.amount))}</text></g>`; return `<g><line x1="${x(p)}" x2="${x(p)}" y1="${y(m.beforeTotal)}" y2="${y(m.afterTotal)}" stroke="#dc2626" stroke-width="3.2"/><circle cx="${x(p)}" cy="${y(m.afterTotal)}" r="5" fill="#dc2626"/><text class="fki-chart-label" x="${x(p)+8}" y="${y(m.afterTotal)-8}" fill="#dc2626">-${m.pct}%</text></g>`;}).join('')}</svg></div><div class="fki-chart-note">Modelace počítá současné portfolio klienta a k tomu zadané nové vklady nebo dokupy. Výnosy jsou orientační scénář, ne garance.</div></div>`;
 }
 function fkiShortMoney(v){ v=n(v); if(Math.abs(v)>=1000000) return (v/1000000).toFixed(v>=10000000?0:1).replace('.',',')+' M Kč'; if(Math.abs(v)>=1000) return Math.round(v/1000)+' tis.'; return Math.round(v)+' Kč'; }
 function fkiSaveScenario(){
   const c=fkiCalc();
-  const rows=c.rows.filter(r=>r.amount>0);
-  if(!rows.length){ toast('Nejdřív zadej částku nákupu','err'); return; }
+  const rows=c.rows.filter(r=>r.amount>0 || r.topUpAmount>0);
+  if(!rows.length){ toast('Nejdřív zadej částku nákupu nebo dokupu','err'); return; }
   const clientName=(fkiMode==='existing'?fkiContextClient:fkiNewClientName).trim();
   if(!clientName){ toast('Doplň jméno klienta','err'); return; }
   const existing=findClientRef(clientName);
@@ -992,8 +1018,8 @@ function fkiSaveScenario(){
       'Typ CP': r.typ||'Investiční akcie',
       'rp.ISIN': r.isin||'',
       'Typ transakce':'Plánovaný nákup',
-      'Čistá investice': r.amount,
-      'Aktuální hodnota investice': r.amount,
+      'Čistá investice': r.amount || (fkiTopUpYear(r)===0 ? r.topUpAmount : 0),
+      'Aktuální hodnota investice': r.amount || (fkiTopUpYear(r)===0 ? r.topUpAmount : 0),
       'Měna':'CZK',
       'Datum připsání platby': '',
       'Datum emise': '',
@@ -1026,12 +1052,12 @@ function renderFkiModule(){
   el.innerHTML=`
   <div class="fki-tabs"><button class="fki-tab ${fkiMode==='new'?'active':''}" onclick="fkiSetMode('new')">Nový klient</button><button class="fki-tab ${fkiMode==='existing'?'active':''}" onclick="fkiSetMode('existing')">Stávající klient</button></div>
   <div class="fki-grid">
-    <div class="fki-card fki-client-card"><h3>1) Klient a vstupy scénáře</h3><div class="fki-form">
+  <div class="fki-card fki-client-card"><h3>1) Klient a vstupy scénáře</h3><div class="fki-form">
       <div class="fki-field"><label>${fkiMode==='existing'?'Vybrat klienta':'Jméno klienta'}</label>${fkiMode==='existing'?`<select onchange="fkiSetClient(this.value)"><option value="">Vyber klienta…</option>${clientOptions}</select>`:`<input value="${esc(fkiNewClientName)}" oninput="fkiNewClientName=this.value" placeholder="Nový klient">`}</div>
       <div class="fki-field"><label>Doba modelace (roky)</label><input type="number" value="${fkiHorizon}" min="1" max="40" oninput="fkiHorizon=Math.max(1,n(this.value));fkiSoftUpdate()" onblur="renderFkiModule()"></div>
       <div class="fki-field"><label>Požadovaná renta</label><input value="${fkiFmtMoneyInput(fkiMonthlyRent)}" oninput="fkiMonthlyRent=fkiParseMoney(this.value);fkiSoftUpdate()" onblur="this.value=fkiFmtMoneyInput(fkiMonthlyRent);fkiSoftUpdate()"></div>
     </div><div class="fki-kpis"><div class="fki-kpi"><small>Současné portfolio</small><b id="fkiKpiCurrent">${czk(calc.current.current)}</b></div><div class="fki-kpi"><small>Nový vklad</small><b id="fkiKpiNewInv" class="blue">${czk(calc.newInv)}</b></div><div class="fki-kpi"><small>Vážený výnos portfolia</small><b id="fkiKpiWeighted" class="green">${pct(calc.weightedRate)}</b><small>Nový nákup: <span id="fkiNewWeighted">${pct(calc.newWeightedRate)}</span></small></div><div class="fki-kpi"><small>Hodnota za dobu modelace</small><b id="fkiKpiTotalFuture">${czk(calc.totalFuture)}</b></div></div>${portfolioHtml}${pendingHtml}</div>
-    <div class="fki-card fki-funds-card"><div class="fki-glass-title"><h3>2) Jednoduchý nákup FKI</h3><button class="btn btn-blue btn-sm" onclick="fkiAddRow()">+ Přidat fond</button></div><div class="fki-buy-list"><div class="fki-buy-head"><div>Fond</div><div>Vklad</div><div>Zhodnocení p.a.</div><div>Dokup rok</div><div>Dokup</div><div>Propad rok</div><div>Propad %</div><div></div></div>${fkiRows.map((r,i)=>`<div class="fki-buy-card"><div class="fki-buy-main"><select class="fki-buy-select" onchange="fkiUseFund(${i},this.value)">${fundOptions(r.fundKey)}</select><div class="fki-buy-meta"><span>${esc(r.company||'')}</span><span class="fki-pill">${esc(r.source||'CRM průměr')}</span></div></div><input class="fki-buy-input" value="${esc(fkiFmtMoneyInput(r.amount))}" inputmode="numeric" oninput="fkiUpdateRow(${i},{amount:fkiParseMoney(this.value)},true)" onblur="fkiInputBlur(this,${i})"><input class="fki-buy-input" value="${esc(r.rate)}" inputmode="decimal" oninput="fkiUpdateRow(${i},{rate:this.value,source:'ručně'},true)"><select class="fki-buy-select" onchange="fkiUpdateRow(${i},{topUpYear:n(this.value)},true)">${[0,1,2,3,4,5,6,7,8,9,10].map(y=>`<option value="${y}" ${Number(r.topUpYear||0)===y?'selected':''}>${y?y+'. rok':'Bez'}</option>`).join('')}</select><input class="fki-buy-input" value="${esc(fkiFmtMoneyInput(r.topUpAmount))}" inputmode="numeric" oninput="fkiUpdateRow(${i},{topUpAmount:fkiParseMoney(this.value)},true)" onblur="this.value=fkiFmtMoneyInput(fkiRows[${i}]?.topUpAmount||0);fkiSoftUpdate()"><select class="fki-buy-select" onchange="fkiUpdateRow(${i},{crashYear:n(this.value)},true)">${[0,1,2,3,4,5,6,7,8,9,10].map(y=>`<option value="${y}" ${Number(r.crashYear||0)===y?'selected':''}>${y?y+'. rok':'Bez'}</option>`).join('')}</select><input class="fki-buy-input" value="${esc(r.crashPct||0)}" inputmode="decimal" placeholder="0" oninput="fkiUpdateRow(${i},{crashPct:n(this.value)},true)"><button class="fki-remove" onclick="fkiRemoveRow(${i})">🗑</button></div>`).join('')}</div><div class="fki-note">Zjednodušená FKI kalkulačka: nákup, očekávané zhodnocení, volitelný dokup a volitelný propad fondu. Pokud nastavíš propad, graf ukáže snížení hodnoty v daném roce a daný fond se od té chvíle v modelaci zmrazí.</div></div>
+    <div class="fki-card fki-funds-card"><div class="fki-glass-title"><h3>2) Jednoduchý nákup FKI</h3><button class="btn btn-blue btn-sm" onclick="fkiAddRow()">+ Přidat fond</button></div><div class="fki-buy-list"><div class="fki-buy-head"><div>Fond</div><div>Vklad</div><div>Zhodnocení p.a.</div><div>Dokup rok</div><div>Dokup</div><div>Propad rok</div><div>Propad %</div><div></div></div>${fkiRows.map((r,i)=>`<div class="fki-buy-card"><div class="fki-buy-main"><select class="fki-buy-select" onchange="fkiUseFund(${i},this.value)">${fundOptions(r.fundKey)}</select><div class="fki-buy-meta"><span>${esc(r.company||'')}</span><span class="fki-pill">${esc(r.source||'CRM průměr')}</span></div></div><input class="fki-buy-input" value="${esc(fkiFmtMoneyInput(r.amount))}" inputmode="numeric" oninput="fkiUpdateRow(${i},{amount:fkiParseMoney(this.value)},true)" onblur="fkiInputBlur(this,${i})"><input class="fki-buy-input" value="${esc(r.rate)}" inputmode="decimal" oninput="fkiUpdateRow(${i},{rate:this.value,source:'ručně'},true)"><select class="fki-buy-select" onchange="fkiUpdateRow(${i},{topUpYear:n(this.value)},true)">${[0,1,2,3,4,5,6,7,8,9,10].map(y=>`<option value="${y}" ${Number(r.topUpYear||0)===y?'selected':''}>${y?y+'. rok':'Ihned'}</option>`).join('')}</select><input class="fki-buy-input" value="${esc(fkiFmtMoneyInput(r.topUpAmount))}" inputmode="numeric" oninput="fkiUpdateRow(${i},{topUpAmount:fkiParseMoney(this.value)},true)" onblur="this.value=fkiFmtMoneyInput(fkiRows[${i}]?.topUpAmount||0);fkiSoftUpdate()"><select class="fki-buy-select" onchange="fkiUpdateRow(${i},{crashYear:n(this.value)},true)">${[0,1,2,3,4,5,6,7,8,9,10].map(y=>`<option value="${y}" ${Number(r.crashYear||0)===y?'selected':''}>${y?y+'. rok':'Bez'}</option>`).join('')}</select><input class="fki-buy-input" value="${esc(r.crashPct||0)}" inputmode="decimal" placeholder="0" oninput="fkiUpdateRow(${i},{crashPct:n(this.value)},true)"><button class="fki-remove" onclick="fkiRemoveRow(${i})">🗑</button></div>`).join('')}</div><div class="fki-note">Zjednodušená FKI kalkulačka: nákup, očekávané zhodnocení, volitelný dokup a volitelný propad fondu. Pokud nastavíš propad, graf ukáže snížení hodnoty v daném roce a daný fond se od té chvíle v modelaci zmrazí.</div></div>
     <div class="fki-bottom-grid"><div id="fkiScenarioChart">${fkiScenarioChartHTML(calc)}</div>${scenarioPanel}</div>
   </div>`;
 }
