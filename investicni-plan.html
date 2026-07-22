@@ -164,6 +164,7 @@ canvas{width:100%;height:330px}
 .resultBox.green .value{color:#159a35}
 .resultBox.blue .value{color:#2468ff}
 .resultBox.purple .value{color:#7c3aed}
+.resultBox.red .value{color:#ef4444}
 .resultBox p{margin:0;color:#667085;font-size:13px;line-height:1.4}
 
 .side .section{padding:24px}
@@ -221,7 +222,22 @@ canvas{width:100%;height:330px}
 .assetMini strong{font-size:18px;letter-spacing:-.02em}
 
 .mortgageLayout,.riskLayout{display:grid;grid-template-columns:420px minmax(760px,1fr) 420px;gap:18px;align-items:start}
+.mortgageCompareLayout{display:grid;grid-template-columns:420px minmax(760px,1fr) 420px;gap:18px;align-items:start}
 .mortgageCards{display:grid;grid-template-columns:1fr 1fr 1fr;gap:18px;margin-top:18px}
+.compareVariants{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:18px}
+.compareSummaryGrid{grid-template-columns:1fr 1fr 1fr 1fr}
+.compareMini{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:10px;padding:12px 14px;border-radius:14px;background:rgba(255,255,255,.7);border:1px solid var(--line);font-size:13px;color:#44546b}
+.compareMini strong{font-size:15px;color:#101828}
+.inlineBtn{background:linear-gradient(135deg,#101828,#344054);box-shadow:none;margin-top:8px}
+.compareFormBlock{margin-top:18px;padding-top:16px;border-top:1px solid var(--line)}
+.compareBreakdown{margin-top:18px;padding:20px;border-radius:24px;background:rgba(255,255,255,.74);border:1px solid var(--line);box-shadow:var(--shadow)}
+.compareBreakdown h3{margin-bottom:10px}
+.compareTable{width:100%;border-collapse:separate;border-spacing:0 10px;font-size:13px}
+.compareTable th{text-align:left;color:#667085;font-size:12px;text-transform:uppercase;letter-spacing:.03em;padding:0 10px}
+.compareTable td{background:#fff;border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:12px 10px;font-weight:800;color:#24334b}
+.compareTable td:first-child{border-left:1px solid var(--line);border-radius:14px 0 0 14px;color:#101828}
+.compareTable td:last-child{border-right:1px solid var(--line);border-radius:0 14px 14px 0}
+.compareTable .positive{color:#16a34a}.compareTable .negative{color:#ef4444}
 .mortgageHero{padding:24px}
 .mortgageNote{background:#fff7ed;border:1px solid #fed7aa;color:#7c2d12;border-radius:18px;padding:16px;font-size:14px;line-height:1.45;margin-top:14px}
 .taxBenefit{margin-top:18px;padding:24px;border-radius:24px;background:linear-gradient(135deg,rgba(234,248,238,.92),rgba(255,255,255,.9));border:1px solid #b9e7c6;box-shadow:var(--shadow)}
@@ -274,7 +290,7 @@ canvas{width:100%;height:330px}
 @media(max-width:1250px){.reportWrap,.reportHero,.reportSplit{grid-template-columns:1fr}.reportKpis{grid-template-columns:1fr 1fr}}
 @media print{body{background:#fff}.topbar,.reportControls{display:none!important}.app{padding:0;max-width:none}.reportWrap{display:block}.card{box-shadow:none;border:none}.reportDoc{box-shadow:none;border:none;border-radius:0}.hidden{display:none!important}.reportKpis{grid-template-columns:repeat(4,1fr)}.reportSection{break-inside:avoid}}
 
-@media(max-width:1250px){.mortgageLayout,.riskLayout{grid-template-columns:1fr}.mortgageCards,.taxGrid,.riskMiniGrid{grid-template-columns:1fr}}
+@media(max-width:1250px){.mortgageLayout,.riskLayout,.mortgageCompareLayout{grid-template-columns:1fr}.mortgageCards,.taxGrid,.riskMiniGrid,.compareVariants,.compareSummaryGrid{grid-template-columns:1fr}}
 
 .hidden{display:none}
 
@@ -326,7 +342,7 @@ canvas{width:100%;height:330px}
   }
   .reportHero{display:grid!important;grid-template-columns:1.15fr .85fr;gap:10mm;min-height:86mm;align-items:stretch;page-break-after:auto;break-after:auto}
   #reportOverviewSection{margin-top:8mm!important;min-height:76mm;page-break-after:always;break-after:page}
-  #reportInvestSection,#reportMortgageSection,#reportRiskSection,#reportNextSection{page-break-before:always;break-before:page;page-break-after:always;break-after:page;min-height:248mm}
+  #reportInvestSection,#reportMortgageSection,#reportMortgageCompareSection,#reportRiskSection,#reportNextSection{page-break-before:always;break-before:page;page-break-after:always;break-after:page;min-height:248mm}
   #reportNextSection{min-height:120mm;page-break-after:auto;break-after:auto}
   .reportTitle,.reportBadge{padding:10mm!important;border-radius:18px!important}
   .reportTitle h1{font-size:28px!important;line-height:1.08!important}
@@ -397,7 +413,7 @@ canvas{width:100%;height:330px}
   .reportHero,.reportSection{width:100%;margin:0!important;padding:14mm!important;border-radius:18px!important;border:1px solid rgba(207,222,242,.95)!important;background:linear-gradient(145deg,rgba(255,255,255,.94),rgba(246,250,255,.84))!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.96)!important;page-break-inside:avoid;break-inside:avoid}
   .reportHero{display:grid!important;grid-template-columns:1.15fr .85fr;gap:10mm;min-height:86mm;align-items:stretch;page-break-after:auto;break-after:auto}
   #reportOverviewSection{margin-top:8mm!important;min-height:76mm;page-break-after:always;break-after:page}
-  #reportInvestSection,#reportMortgageSection,#reportRiskSection,#reportNextSection{page-break-before:always;break-before:page;page-break-after:always;break-after:page;min-height:248mm}
+  #reportInvestSection,#reportMortgageSection,#reportMortgageCompareSection,#reportRiskSection,#reportNextSection{page-break-before:always;break-before:page;page-break-after:always;break-after:page;min-height:248mm}
   #reportNextSection{min-height:120mm;page-break-after:auto;break-after:auto}
   .reportTitle,.reportBadge{padding:10mm!important;border-radius:18px!important}
   .reportTitle h1{font-size:28px!important;line-height:1.08!important}
@@ -433,6 +449,7 @@ canvas{width:100%;height:330px}
       <div class="tab active" onclick="switchTab('invest')">Investice</div>
       <div class="tab" onclick="switchTab('risk')">Pojištění</div>
       <div class="tab" onclick="switchTab('mortgage')">Hypotéka</div>
+      <div class="tab" onclick="switchTab('mortgageCompare')">Hypotéka vs. hypotéka</div>
       <div class="tab" onclick="switchTab('report')">Report</div>
     </nav>
     <div class="profile"><div class="avatar"></div><div><strong>Filip Solár</strong><span>Poradce</span></div></div>
@@ -853,6 +870,175 @@ canvas{width:100%;height:330px}
     </div>
   </section>
 
+  <section id="mortgageComparePage" class="hidden">
+    <div class="mortgageCompareLayout">
+      <aside class="card">
+        <div class="section">
+          <h2>Hypotéka vs. hypotéka</h2>
+          <p class="desc">Porovnání dvou možností. Varianta B může být vyšší hypotéka, kde se rozdíl použije jako investice.</p>
+
+          <h3>Společné nastavení</h3>
+          <div class="field suffix"><label>Očekávané zhodnocení investice</label><input id="compareInvestYield" type="number" step="0.1" value="" placeholder="např. 7"><small>%</small></div>
+          <div class="field suffix"><label>Roční limit odpočtu úroků</label><select id="compareTaxLimit"><option value="150000" selected>150 000 Kč</option><option value="300000">300 000 Kč</option><option value="0">bez limitu</option></select></div>
+          <div class="field suffix"><label>Vlastní období srovnání</label><input id="compareYearsOverride" type="number" value="" min="1" max="40" placeholder="prázdné = kratší hypotéka"><small>let</small></div>
+
+          <h3 style="margin-top:18px">Dodatečné peníze během hypotéky</h3>
+          <div class="field"><label>Počítat na variantě</label><select id="extraCashVariant"><option value="A" selected>Varianta A</option><option value="B">Varianta B</option><option value="C">Varianta C</option><option value="D">Varianta D</option></select></div>
+          <div class="field suffix"><label>Jednorázová částka navíc</label><input id="extraCashLump" type="text" inputmode="numeric" value="" placeholder="např. 200 000"><small>Kč</small></div>
+          <div class="formgrid">
+            <div class="field suffix"><label>V roce</label><input id="extraCashYear" type="number" value="" min="0" max="40" placeholder="např. 10"><small>rok</small></div>
+            <div class="field suffix"><label>Pravidelně měsíčně</label><input id="extraCashMonthly" type="text" inputmode="numeric" value="" placeholder="volitelné"><small>Kč</small></div>
+          </div>
+          <div class="formgrid">
+            <div class="field suffix"><label>Pravidelně od roku</label><input id="extraCashMonthlyFrom" type="number" value="" min="0" max="40" placeholder="např. 5"><small>rok</small></div>
+            <div class="field suffix"><label>Pravidelně po dobu</label><input id="extraCashMonthlyYears" type="number" value="" min="1" max="40" placeholder="prázdné = do konce"><small>let</small></div>
+          </div>
+
+          <h3 style="margin-top:18px">Varianta A - nenavyšovat</h3>
+          <div class="field suffix"><label>Výše hypotéky A</label><input id="compareAAmount" type="text" inputmode="numeric" value="" placeholder="sem napiš výši hypotéky A"><small>Kč</small></div>
+          <div class="formgrid">
+            <div class="field suffix"><label>Sazba A</label><input id="compareARate" type="number" step="0.01" value="" placeholder="úrok"><small>%</small></div>
+            <div class="field suffix"><label>Splatnost A</label><input id="compareAYears" type="number" value="" placeholder="roky"><small>let</small></div>
+          </div>
+
+          <h3 style="margin-top:18px">Varianta B - navýšit a investovat</h3>
+          <div class="field suffix"><label>Výše hypotéky B</label><input id="compareBAmount" type="text" inputmode="numeric" value="" placeholder="sem napiš výši hypotéky B"><small>Kč</small></div>
+          <div class="formgrid">
+            <div class="field suffix"><label>Sazba B</label><input id="compareBRate" type="number" step="0.01" value="" placeholder="úrok"><small>%</small></div>
+            <div class="field suffix"><label>Splatnost B</label><input id="compareBYears" type="number" value="" placeholder="roky"><small>let</small></div>
+          </div>
+          <div class="field suffix"><label>Částka navíc do investice</label><input id="compareInvestLump" type="text" inputmode="numeric" value="" placeholder="prázdné = rozdíl hypoték"><small>Kč</small></div>
+
+          <div id="compareCBlock" class="compareFormBlock hidden">
+            <h3>Varianta C - další možnost</h3>
+            <div class="field suffix"><label>Výše hypotéky C</label><input id="compareCAmount" type="text" inputmode="numeric" value="" placeholder="sem napiš výši hypotéky C"><small>Kč</small></div>
+            <div class="formgrid">
+              <div class="field suffix"><label>Sazba C</label><input id="compareCRate" type="number" step="0.01" value="" placeholder="úrok"><small>%</small></div>
+              <div class="field suffix"><label>Splatnost C</label><input id="compareCYears" type="number" value="" placeholder="roky"><small>let</small></div>
+            </div>
+            <div class="field suffix"><label>Částka navíc do investice C</label><input id="compareCInvest" type="text" inputmode="numeric" value="" placeholder="prázdné = rozdíl proti A"><small>Kč</small></div>
+          </div>
+
+          <div id="compareDBlock" class="compareFormBlock hidden">
+            <h3>Varianta D - další možnost</h3>
+            <div class="field suffix"><label>Výše hypotéky D</label><input id="compareDAmount" type="text" inputmode="numeric" value="" placeholder="sem napiš výši hypotéky D"><small>Kč</small></div>
+            <div class="formgrid">
+              <div class="field suffix"><label>Sazba D</label><input id="compareDRate" type="number" step="0.01" value="" placeholder="úrok"><small>%</small></div>
+              <div class="field suffix"><label>Splatnost D</label><input id="compareDYears" type="number" value="" placeholder="roky"><small>let</small></div>
+            </div>
+            <div class="field suffix"><label>Částka navíc do investice D</label><input id="compareDInvest" type="text" inputmode="numeric" value="" placeholder="prázdné = rozdíl proti A"><small>Kč</small></div>
+          </div>
+
+          <button type="button" class="inlineBtn" onclick="showNextMortgageCompareVariant()">+ Přidat další variantu</button>
+          <button onclick="calculateMortgageCompare()">Porovnat varianty</button>
+          <div class="mortgageNote">
+            Srovnání používá kratší splatnost z obou hypoték. Klient tak vidí férově hlavně období, které skutečně řeší.
+          </div>
+        </div>
+      </aside>
+
+      <main>
+        <div class="card mortgageHero">
+          <h2>Co klient získá, když navýšení investuje?</h2>
+          <p class="desc">Kalkulačka neporovnává jen splátku. Ukáže náklad na vyšší úrok po daňové úspoře a proti tomu hodnotu investované částky.</p>
+          <div class="clientSummary compareSummaryGrid">
+            <div class="clientPill"><small>Období srovnání</small><strong id="comparePeriod">—</strong></div>
+            <div class="clientPill"><small>Rozdíl splátky</small><strong id="comparePaymentDiff">—</strong></div>
+            <div class="clientPill"><small>Investice navíc</small><strong id="compareExtraInvested">—</strong></div>
+            <div class="clientPill"><small>Výsledek pro klienta</small><strong id="compareNetBenefit">—</strong></div>
+          </div>
+        </div>
+
+        <div class="compareVariants" id="compareVariantsOutput"></div>
+
+        <div class="compareBreakdown">
+          <h3>Rozpad nákladů za celé období</h3>
+          <p class="desc" style="margin-bottom:10px">Daň je orientační součet za celé období srovnání. Každý rok se vezmou zaplacené úroky, použije se zvolený roční limit odpočtu a z toho 15 %.</p>
+          <div style="overflow:auto">
+            <table class="compareTable" id="compareBreakdownTable">
+              <thead><tr><th>Varianta</th><th>Původní úvěr</th><th>Splacená jistina</th><th>Zůstatek dluhu</th><th>Úroky</th><th>Daň</th><th>Čisté úroky</th><th>Investice vloženo</th><th>Investice hodnota</th><th>Celkem z kapsy</th><th>Čistá pozice proti A</th></tr></thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="compareBreakdown">
+          <h3>Co s penězi navíc během splácení</h3>
+          <p class="desc" style="margin-bottom:10px">Model porovnává stejnou částku dvěma způsoby: buď ji klient použije na mimořádnou splátku hypotéky, nebo ji nechá pracovat v investici.</p>
+          <div class="bottomGrid" style="grid-template-columns:1fr 1fr 1fr;">
+            <div class="resultBox blue">
+              <h3>Mimořádně umořit</h3>
+              <p>Zkrácení hypotéky při zachování stejné splátky</p>
+              <div class="value" id="extraCashShortening">—</div>
+              <p>Ušetřené úroky: <strong id="extraCashInterestSaved">—</strong></p>
+            </div>
+            <div class="resultBox green">
+              <h3>Investovat</h3>
+              <p>Hodnota stejných peněz na konci srovnání</p>
+              <div class="value" id="extraCashInvestFuture">—</div>
+              <p>Vloženo: <strong id="extraCashInvested">—</strong></p>
+            </div>
+            <div class="resultBox purple">
+              <h3>Rozdíl</h3>
+              <p>Investice proti ušetřeným úrokům z umoření</p>
+              <div class="value" id="extraCashDecisionDiff">—</div>
+              <p id="extraCashDecisionText">—</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="card chartCard">
+          <div class="chartHead">
+            <div>
+              <h2>Porovnání výsledku v čase</h2>
+              <p class="desc" style="margin-bottom:0">Zelená ukazuje hodnotu investice navíc. Červená ukazuje kumulovaný čistý náklad vyšších úroků po daňové úspoře.</p>
+            </div>
+            <div class="legend">
+              <span><i class="dot inv"></i>investice navíc</span>
+              <span><i class="dot r"></i>náklad úroků po dani</span>
+            </div>
+          </div>
+          <canvas id="mortgageCompareChart" width="1060" height="380"></canvas>
+        </div>
+
+        <div class="bottomGrid" style="grid-template-columns:1fr 1fr 1fr;">
+          <div class="resultBox green">
+            <h3>Hodnota investice navíc</h3>
+            <p>Budoucí hodnota částky vložené díky navýšení hypotéky</p>
+            <div class="value" id="compareInvestFutureCard">—</div>
+            <p>Počítáno po celé období srovnání.</p>
+          </div>
+          <div class="resultBox red">
+            <h3>Náklad vyšší hypotéky</h3>
+            <p>Rozdíl úroků po odečtení daňové úspory</p>
+            <div class="value" id="compareNetInterestCost">—</div>
+            <p>Jistina není ztráta, proto ji oddělujeme od úrokového nákladu.</p>
+          </div>
+          <div class="resultBox purple">
+            <h3>Čistý rozdíl</h3>
+            <p>Investice navíc minus čistý úrokový náklad</p>
+            <div class="value" id="compareBenefitCard">—</div>
+            <p>Kladné číslo ukazuje ekonomickou výhodu investiční varianty.</p>
+          </div>
+        </div>
+      </main>
+
+      <aside class="card side">
+        <div class="section">
+          <h2>Vysvětlení pro klienta</h2>
+          <div class="compareItem"><div class="icon i-blue">1</div><div><small>Nejdřív srovnáme splátku</small><strong id="compareSidePayments">—</strong></div></div>
+          <div class="compareItem"><div class="icon i-red">2</div><div><small>Potom oddělíme úrokový náklad</small><strong id="compareSideInterest">—</strong></div></div>
+          <div class="compareItem"><div class="icon i-green">3</div><div><small>Proti tomu dáme investici</small><strong id="compareSideInvest">—</strong></div></div>
+          <div class="compareItem"><div class="icon i-purple">4</div><div><small>Výsledek za období</small><strong id="compareSideResult">—</strong></div></div>
+          <div class="recommend">
+            <strong>Poradenská pointa</strong><br>
+            Vyšší hypotéka sama o sobě není výhoda. Výhoda vzniká pouze tehdy, když se navýšené peníze skutečně investují a jejich výnos dává smysl proti čistému nákladu úroků.
+          </div>
+        </div>
+      </aside>
+    </div>
+  </section>
+
   <section id="reportPage" class="hidden">
     <div class="reportWrap">
       <aside class="card reportControls">
@@ -861,6 +1047,7 @@ canvas{width:100%;height:330px}
           <p class="desc">Vyberte části, které chcete klientovi ukázat. Report je psaný jednoduše a bez interních poznámek.</p>
           <label class="check"><input type="checkbox" id="reportInvest" checked> Investiční plán</label>
           <label class="check"><input type="checkbox" id="reportMortgage" checked> Hypotéka a investice</label>
+          <label class="check"><input type="checkbox" id="reportMortgageCompare" checked> Hypotéka vs. hypotéka</label>
           <label class="check"><input type="checkbox" id="reportRisk" checked> Pojistná ochrana</label>
           <button onclick="window.print()" class="printBtn">Vytisknout / uložit jako PDF</button>
           <div class="clearTools">
@@ -929,6 +1116,36 @@ canvas{width:100%;height:330px}
           </div>
         </section>
 
+        <section class="reportSection" id="reportMortgageCompareSection">
+          <h2>Porovnání variant hypotéky</h2>
+          <canvas id="reportMortgageCompareChart" class="reportChart" width="900" height="260"></canvas>
+          <p class="reportText">Srovnání ukazuje, co klient zaplatí navíc na čistém úrokovém nákladu a co může získat, pokud navýšenou část hypotéky opravdu investuje. Jistina není náklad, proto je od úroku oddělená.</p>
+          <div class="reportKpis">
+            <div class="reportKpi blue"><small>Období srovnání</small><strong id="reportComparePeriod">—</strong></div>
+            <div class="reportKpi red"><small>Rozdíl splátky</small><strong id="reportComparePaymentDiff">—</strong></div>
+            <div class="reportKpi green"><small>Hodnota investice navíc</small><strong id="reportCompareInvestFuture">—</strong></div>
+            <div class="reportKpi purple"><small>Čistý rozdíl</small><strong id="reportCompareBenefit">—</strong></div>
+          </div>
+          <div class="reportKpis">
+            <div class="reportKpi blue"><small>Splátka varianta A</small><strong id="reportCompareAPayment">—</strong></div>
+            <div class="reportKpi green"><small>Nejlepší doplňková varianta</small><strong id="reportCompareBPayment">—</strong></div>
+            <div class="reportKpi red"><small>Úrokový náklad navíc po dani</small><strong id="reportCompareNetInterest">—</strong></div>
+            <div class="reportKpi purple"><small>Částka daná do investice</small><strong id="reportCompareExtraInvested">—</strong></div>
+          </div>
+          <div class="reportKpis">
+            <div class="reportKpi blue"><small>Zůstatek dluhu A</small><strong id="reportCompareBaseDebt">—</strong></div>
+            <div class="reportKpi red"><small>Zůstatek dluhu vybrané varianty</small><strong id="reportCompareBestDebt">—</strong></div>
+            <div class="reportKpi green"><small>Celkem z kapsy vybrané varianty</small><strong id="reportCompareBestOutlay">—</strong></div>
+            <div class="reportKpi purple"><small>Čisté úroky vybrané varianty</small><strong id="reportCompareBestCleanInterest">—</strong></div>
+          </div>
+          <div class="reportKpis">
+            <div class="reportKpi blue"><small>Mimořádné umoření zkrátí</small><strong id="reportExtraCashShortening">—</strong></div>
+            <div class="reportKpi red"><small>Ušetřené úroky</small><strong id="reportExtraCashInterestSaved">—</strong></div>
+            <div class="reportKpi green"><small>Investice ze stejné částky</small><strong id="reportExtraCashInvestFuture">—</strong></div>
+            <div class="reportKpi purple"><small>Rozdíl investice vs. umoření</small><strong id="reportExtraCashDiff">—</strong></div>
+          </div>
+        </section>
+
         <section class="reportSection" id="reportRiskSection">
           <h2>Ochrana příjmu a rodiny</h2>
           <canvas id="reportRiskChart" class="reportChart" width="900" height="260"></canvas>
@@ -981,7 +1198,7 @@ function formatMoneyValue(v){
 }
 
 function setupMoneyInputs(){
-  const ids = ["rent1","rent2","legacy","current","lump","rentalIncome","pensionGrossIncome","statePension","mortgageAmount","mortgageLumpInvest","mortgageMonthlyInvest","riskIncome","riskExpenses","riskOtherLoans","riskOtherDebt","riskInvalidPension","riskWidowPension","riskOrphanPension","riskFuneralReserve","riskDailyCompensation","riskCurrentInvalidCover","riskCurrentDeathCover","riskSocialPayment"];
+  const ids = ["rent1","rent2","legacy","current","lump","rentalIncome","pensionGrossIncome","statePension","mortgageAmount","mortgageLumpInvest","mortgageMonthlyInvest","compareAAmount","compareBAmount","compareInvestLump","compareCAmount","compareCInvest","compareDAmount","compareDInvest","extraCashLump","extraCashMonthly","riskIncome","riskExpenses","riskOtherLoans","riskOtherDebt","riskInvalidPension","riskWidowPension","riskOrphanPension","riskFuneralReserve","riskDailyCompensation","riskCurrentInvalidCover","riskCurrentDeathCover","riskSocialPayment"];
   ids.forEach(id=>{
     const el = document.getElementById(id);
     if(!el) return;
@@ -1002,6 +1219,7 @@ function setupMoneyInputs(){
       el.setSelectionRange(pos,pos);
       if(typeof calculate === "function") calculate();
       if(typeof calculateMortgage === "function") calculateMortgage();
+      if(typeof calculateMortgageCompare === "function") calculateMortgageCompare();
       if(typeof calculateRisk === "function") calculateRisk();
     });
 
@@ -1009,6 +1227,7 @@ function setupMoneyInputs(){
       el.value = formatMoneyValue(el.value);
       if(typeof calculate === "function") calculate();
       if(typeof calculateMortgage === "function") calculateMortgage();
+      if(typeof calculateMortgageCompare === "function") calculateMortgageCompare();
       if(typeof calculateRisk === "function") calculateRisk();
     });
   });
@@ -1016,11 +1235,12 @@ function setupMoneyInputs(){
 
 function switchTab(tab){
   document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
-  const map = {invest:'Investice', risk:'Pojištění', mortgage:'Hypotéka', report:'Report'};
+  const map = {invest:'Investice', risk:'Pojištění', mortgage:'Hypotéka', mortgageCompare:'Hypotéka vs. hypotéka', report:'Report'};
   [...document.querySelectorAll('.tab')].find(t=>t.textContent.includes(map[tab])).classList.add('active');
   investPage.classList.toggle('hidden',tab!=='invest');
   riskPage.classList.toggle('hidden',tab!=='risk');
   mortgagePage.classList.toggle('hidden',tab!=='mortgage');
+  mortgageComparePage.classList.toggle('hidden',tab!=='mortgageCompare');
   reportPage.classList.toggle('hidden',tab!=='report');
 }
 
@@ -1482,6 +1702,291 @@ function calculateMortgage(){
   drawMortgageChart(data);
 }
 
+function mortgageCompareVariant(prefix, baseAmount=0){
+  const amount = num('compare' + prefix + 'Amount');
+  const annualRate = val('compare' + prefix + 'Rate') / 100;
+  const years = Math.max(1, val('compare' + prefix + 'Years'));
+  const months = Math.round(years * 12);
+  const monthlyRate = annualRate / 12;
+  const payment = monthlyRate === 0 ? amount / months : amount * monthlyRate / (1 - Math.pow(1 + monthlyRate, -months));
+  const investId = prefix === 'B' ? 'compareInvestLump' : 'compare' + prefix + 'Invest';
+  const rawInvest = prefix === 'A' ? 0 : num(investId);
+  const extraInvested = prefix === 'A' ? 0 : (rawInvest > 0 ? rawInvest : Math.max(0, amount - baseAmount));
+  return {prefix, name:'Varianta ' + prefix, amount, annualRate, years, months, monthlyRate, payment, extraInvested};
+}
+
+function mortgageCompareAmortization(variant, compareYears, taxLimit){
+  const compareMonths = Math.min(variant.months, Math.max(1, Math.round(compareYears * 12)));
+  let debt = variant.amount;
+  let totalInterest = 0;
+  let totalPrincipal = 0;
+  const interestByYear = [];
+  const rows = [{month:0, year:0, debt, interest:0, taxRefund:0}];
+
+  for(let month=1; month<=compareMonths; month++){
+    const interest = debt * variant.monthlyRate;
+    const principal = Math.max(0, variant.payment - interest);
+    debt = Math.max(0, debt - principal);
+    totalInterest += interest;
+    totalPrincipal += principal;
+    const yearIndex = Math.ceil(month / 12) - 1;
+    interestByYear[yearIndex] = (interestByYear[yearIndex] || 0) + interest;
+
+    if(month % 12 === 0 || month === compareMonths){
+      const taxRefund = interestByYear.reduce((sum, yearInterest)=>{
+        const capped = taxLimit > 0 ? Math.min(yearInterest, taxLimit) : yearInterest;
+        return sum + capped * 0.15;
+      }, 0);
+      rows.push({month, year:month/12, debt, interest:totalInterest, taxRefund});
+    }
+  }
+
+  const taxRefund = interestByYear.reduce((sum, yearInterest)=>{
+    const capped = taxLimit > 0 ? Math.min(yearInterest, taxLimit) : yearInterest;
+    return sum + capped * 0.15;
+  }, 0);
+
+  return {compareMonths, debt, totalInterest, totalPrincipal, taxRefund, rows};
+}
+
+function mortgageComparePrepayment(variant, taxLimit){
+  const lump = num('extraCashLump');
+  const lumpMonth = Math.max(1, Math.round((val('extraCashYear') || 0) * 12));
+  const monthlyExtra = num('extraCashMonthly');
+  const monthlyFrom = Math.max(0, Math.round(val('extraCashMonthlyFrom') * 12));
+  const monthlyYears = val('extraCashMonthlyYears');
+  const monthlyTo = monthlyExtra > 0 ? monthlyFrom + Math.round((monthlyYears || variant.years) * 12) : 0;
+  let debt = variant.amount;
+  let totalInterest = 0;
+  let totalPrincipal = 0;
+  let extraPrincipal = 0;
+  let paidOffMonth = variant.months;
+  const interestByYear = [];
+
+  for(let month=1; month<=variant.months; month++){
+    const interest = debt * variant.monthlyRate;
+    let principal = Math.max(0, variant.payment - interest);
+    let extra = 0;
+    if(lump > 0 && month === lumpMonth) extra += lump;
+    if(monthlyExtra > 0 && month >= monthlyFrom && month < monthlyTo) extra += monthlyExtra;
+    principal = Math.min(debt, principal + extra);
+    debt = Math.max(0, debt - principal);
+    totalInterest += interest;
+    totalPrincipal += principal;
+    extraPrincipal += extra;
+    const yearIndex = Math.ceil(month / 12) - 1;
+    interestByYear[yearIndex] = (interestByYear[yearIndex] || 0) + interest;
+    if(debt <= 0){
+      paidOffMonth = month;
+      break;
+    }
+  }
+
+  const taxRefund = interestByYear.reduce((sum, yearInterest)=>{
+    const capped = taxLimit > 0 ? Math.min(yearInterest, taxLimit) : yearInterest;
+    return sum + capped * 0.15;
+  }, 0);
+  return {debt, totalInterest, totalPrincipal, taxRefund, paidOffMonth, extraPrincipal};
+}
+
+function mortgageCompareExtraInvestment(horizonYears, investYield){
+  const lump = num('extraCashLump');
+  const lumpYear = Math.max(0, val('extraCashYear'));
+  const monthly = num('extraCashMonthly');
+  const monthlyFromYear = Math.max(0, val('extraCashMonthlyFrom'));
+  const monthlyYears = val('extraCashMonthlyYears') || Math.max(0, horizonYears - monthlyFromYear);
+  const monthlyToYear = Math.min(horizonYears, monthlyFromYear + monthlyYears);
+  const r = investYield / 12;
+  let totalInvested = 0;
+  let future = 0;
+
+  if(lump > 0 && lumpYear <= horizonYears){
+    totalInvested += lump;
+    future += lump * Math.pow(1 + investYield, Math.max(0, horizonYears - lumpYear));
+  }
+  if(monthly > 0 && monthlyFromYear < horizonYears){
+    const startMonth = Math.round(monthlyFromYear * 12);
+    const endMonth = Math.round(monthlyToYear * 12);
+    const horizonMonths = Math.round(horizonYears * 12);
+    for(let month=startMonth; month<endMonth && month<horizonMonths; month++){
+      totalInvested += monthly;
+      future += monthly * Math.pow(1 + r, Math.max(0, horizonMonths - month));
+    }
+  }
+  return {totalInvested, future, gain:future - totalInvested};
+}
+
+function futureValueLump(lump, annualYield, years){
+  return Math.max(0, lump) * Math.pow(1 + annualYield, Math.max(0, years));
+}
+
+function mortgageCompareModel(){
+  const base = mortgageCompareVariant('A');
+  const variants = ['A','B','C','D']
+    .map(prefix => mortgageCompareVariant(prefix, base.amount))
+    .filter(v => v.prefix === 'A' || v.amount > 0 || v.extraInvested > 0);
+  const overrideYears = val('compareYearsOverride');
+  const filledYears = variants.filter(v=>v.amount>0).map(v=>v.years);
+  const shortestYears = filledYears.length ? Math.min(...filledYears) : (base.years || 1);
+  const compareYears = Math.max(1, overrideYears || shortestYears);
+  const taxLimit = Math.max(0, val('compareTaxLimit'));
+  const investYield = val('compareInvestYield') / 100;
+  const baseAm = mortgageCompareAmortization(base, compareYears, taxLimit);
+  const modeled = variants.map(v=>{
+    const am = mortgageCompareAmortization(v, compareYears, taxLimit);
+    const investmentFuture = futureValueLump(v.extraInvested, investYield, compareYears);
+    const totalMortgagePaid = v.payment * am.compareMonths;
+    const totalInvested = v.extraInvested;
+    const totalOutlay = totalMortgagePaid + totalInvested;
+    const netOutlay = Math.max(0, totalOutlay - am.taxRefund);
+    const extraInterest = am.totalInterest - baseAm.totalInterest;
+    const extraTaxRefund = am.taxRefund - baseAm.taxRefund;
+    const netInterestCost = extraInterest - extraTaxRefund;
+    const cleanInterest = Math.max(0, am.totalInterest - am.taxRefund);
+    const paymentDiff = v.payment - base.payment;
+    const netPosition = investmentFuture - am.debt - netOutlay;
+    const benefit = investmentFuture - Math.max(0, netInterestCost) - Math.max(0, am.debt - baseAm.debt);
+    return {...v, am, investmentFuture, totalMortgagePaid, totalInvested, totalOutlay, netOutlay, extraInterest, extraTaxRefund, netInterestCost, cleanInterest, paymentDiff, benefit, netPosition};
+  });
+  const best = modeled.filter(v=>v.prefix!=='A').sort((a,b)=>b.benefit-a.benefit)[0] || modeled[0];
+  const rows = [];
+  const maxRows = Math.max(...modeled.map(v=>v.am.rows.length));
+  for(let i=0; i<maxRows; i++){
+    const year = Math.max(...modeled.map(v=>(v.am.rows[i] || v.am.rows[v.am.rows.length - 1])?.year || 0));
+    const bestRow = best?.am.rows[i] || best?.am.rows[best.am.rows.length - 1];
+    const baseRow = baseAm.rows[i] || baseAm.rows[baseAm.rows.length - 1];
+    const grossExtraInterest = (bestRow?.interest || 0) - (baseRow?.interest || 0);
+    const taxExtra = (bestRow?.taxRefund || 0) - (baseRow?.taxRefund || 0);
+    rows.push({
+      year,
+      investment: futureValueLump(best?.extraInvested || 0, investYield, year),
+      netCost: Math.max(0, grossExtraInterest - taxExtra)
+    });
+  }
+  const selectedExtra = modeled.find(v=>v.prefix === (document.getElementById('extraCashVariant')?.value || 'A')) || modeled[0];
+  const selectedFullBase = mortgageCompareAmortization(selectedExtra, selectedExtra.years, taxLimit);
+  const prepay = mortgageComparePrepayment(selectedExtra, taxLimit);
+  const extraInvestment = mortgageCompareExtraInvestment(compareYears, investYield);
+  const monthsShortened = Math.max(0, selectedExtra.months - prepay.paidOffMonth);
+  const interestSaved = Math.max(0, selectedFullBase.totalInterest - prepay.totalInterest);
+  const extraDecisionDiff = extraInvestment.future - interestSaved;
+  const extraCash = {variant:selectedExtra, prepay, extraInvestment, monthsShortened, interestSaved, extraDecisionDiff};
+  return {base, variants:modeled, best, compareYears, taxLimit, investYield, rows, extraCash};
+}
+
+function drawMortgageCompareChart(model){
+  const c = document.getElementById('mortgageCompareChart');
+  if(!c) return;
+  const ctx = c.getContext('2d');
+  ctx.clearRect(0,0,c.width,c.height);
+  const W=c.width,H=c.height,pad=58;
+  const max=Math.max(...model.rows.flatMap(d=>[d.investment,d.netCost]),1)*1.15;
+  ctx.strokeStyle="#e4eaf3";ctx.lineWidth=1;
+  for(let i=0;i<=4;i++){
+    const y=pad+(H-pad*2)*i/4;
+    ctx.beginPath();ctx.moveTo(pad,y);ctx.lineTo(W-pad,y);ctx.stroke();
+    ctx.fillStyle="#687891";ctx.font="17px -apple-system";
+    ctx.fillText(fmtMil(max-(max*i/4)),10,y+6);
+  }
+  for(let i=0;i<=8;i++){
+    const x=pad+(W-pad*2)*i/8;
+    ctx.beginPath();ctx.moveTo(x,pad);ctx.lineTo(x,H-pad);ctx.stroke();
+  }
+  function line(key,color){
+    ctx.strokeStyle=color;ctx.lineWidth=4;ctx.beginPath();
+    model.rows.forEach((d,i)=>{
+      const x=pad+(W-pad*2)*(d.year/model.compareYears);
+      const y=pad+(H-pad*2)*(1-d[key]/max);
+      if(i===0)ctx.moveTo(x,y);else ctx.lineTo(x,y);
+    });
+    ctx.stroke();
+  }
+  line('investment','#16a34a');
+  line('netCost','#ef4444');
+  ctx.fillStyle="#3f4f66";ctx.font="16px -apple-system";
+  ctx.fillText("0",pad,H-16);
+  ctx.fillText(Math.round(model.compareYears) + " let",W-pad-45,H-16);
+}
+
+function calculateMortgageCompare(){
+  if(!document.getElementById('compareAAmount')) return;
+  const m = mortgageCompareModel();
+  const best = m.best || m.variants[0];
+  const benefitText = best ? (best.benefit >= 0 ? "+" : "−") + fmt(Math.abs(best.benefit)) : "—";
+  comparePeriod.textContent = m.compareYears.toLocaleString('cs-CZ') + " let";
+  comparePaymentDiff.textContent = best ? (best.paymentDiff >= 0 ? "+" : "−") + fmt(Math.abs(best.paymentDiff)) + " / měsíc" : "—";
+  compareExtraInvested.textContent = best ? fmt(best.extraInvested) : "—";
+  compareNetBenefit.textContent = benefitText;
+  compareInvestFutureCard.textContent = best ? fmt(best.investmentFuture) : "—";
+  compareNetInterestCost.textContent = best ? fmt(Math.max(0,best.netInterestCost)) : "—";
+  compareBenefitCard.textContent = benefitText;
+  compareSidePayments.textContent = best ? fmt(m.base.payment) + " vs. " + fmt(best.payment) : "—";
+  compareSideInterest.textContent = best ? fmt(Math.max(0,best.extraInterest)) + " - daň " + fmt(Math.max(0,best.extraTaxRefund)) : "—";
+  compareSideInvest.textContent = best ? fmt(best.extraInvested) + " → " + fmt(best.investmentFuture) : "—";
+  compareSideResult.textContent = benefitText;
+
+  const output = document.getElementById('compareVariantsOutput');
+  if(output){
+    output.innerHTML = m.variants.map(v=>{
+      const color = v.prefix === 'A' ? 'blue' : 'green';
+      const diffText = v.prefix === 'A' ? 'základ' : ((v.benefit>=0?'+':'−') + fmt(Math.abs(v.benefit)));
+      return `<div class="variant ${color}">
+        <div class="label">${v.name}<br>${v.prefix === 'A' ? 'základní varianta' : 'srovnání proti A'}</div>
+        <div class="big">${fmt(v.payment)} / měsíc</div>
+        <p>${v.prefix === 'A' ? 'Výchozí varianta pro porovnání.' : 'Rozdíl proti variantě A: <strong>' + diffText + '</strong>.'}</p>
+        <div class="compareMini"><span>Původní úvěr</span><strong>${fmt(v.amount)}</strong></div>
+        <div class="compareMini"><span>Jistina v období</span><strong>${fmt(v.am.totalPrincipal)}</strong></div>
+        <div class="compareMini"><span>Zůstatek dluhu</span><strong>${fmt(v.am.debt)}</strong></div>
+        <div class="compareMini"><span>Úroky v období</span><strong>${fmt(v.am.totalInterest)}</strong></div>
+        <div class="compareMini"><span>Investice vloženo / hodnota</span><strong>${fmt(v.totalInvested)} / ${fmt(v.investmentFuture)}</strong></div>
+      </div>`;
+    }).join('');
+  }
+
+  const tbody = document.querySelector('#compareBreakdownTable tbody');
+  if(tbody){
+    const base = m.variants[0];
+    tbody.innerHTML = m.variants.map(v=>{
+      const basePosition = base ? base.netPosition : 0;
+      const diff = v.prefix === 'A' ? 0 : v.netPosition - basePosition;
+      const diffText = v.prefix === 'A' ? 'základ' : ((diff >= 0 ? '+' : '−') + fmt(Math.abs(diff)));
+      const diffClass = v.prefix === 'A' ? '' : (diff >= 0 ? 'positive' : 'negative');
+      return `<tr>
+        <td>${v.name}</td>
+        <td>${fmt(v.amount)}</td>
+        <td>${fmt(v.am.totalPrincipal)}</td>
+        <td>${fmt(v.am.debt)}</td>
+        <td>${fmt(v.am.totalInterest)}</td>
+        <td>${fmt(v.am.taxRefund)}</td>
+        <td>${fmt(v.cleanInterest)}</td>
+        <td>${fmt(v.totalInvested)}</td>
+        <td>${fmt(v.investmentFuture)}</td>
+        <td>${fmt(v.netOutlay)}</td>
+        <td class="${diffClass}">${diffText}</td>
+      </tr>`;
+    }).join('');
+  }
+  if(m.extraCash){
+    const shortYears = Math.floor(m.extraCash.monthsShortened / 12);
+    const shortMonths = m.extraCash.monthsShortened % 12;
+    extraCashShortening.textContent = m.extraCash.monthsShortened > 0 ? shortYears + ' let ' + shortMonths + ' měs.' : 'nezkrátí';
+    extraCashInterestSaved.textContent = fmt(m.extraCash.interestSaved);
+    extraCashInvestFuture.textContent = fmt(m.extraCash.extraInvestment.future);
+    extraCashInvested.textContent = fmt(m.extraCash.extraInvestment.totalInvested);
+    extraCashDecisionDiff.textContent = (m.extraCash.extraDecisionDiff >= 0 ? '+' : '−') + fmt(Math.abs(m.extraCash.extraDecisionDiff));
+    extraCashDecisionText.textContent = m.extraCash.extraDecisionDiff >= 0 ? 'Investice vychází lépe než úspora úroků.' : 'Mimořádné umoření vychází lépe než investice.';
+  }
+  drawMortgageCompareChart(m);
+}
+
+function showNextMortgageCompareVariant(){
+  const c = document.getElementById('compareCBlock');
+  const d = document.getElementById('compareDBlock');
+  if(c && c.classList.contains('hidden')) c.classList.remove('hidden');
+  else if(d && d.classList.contains('hidden')) d.classList.remove('hidden');
+  calculateMortgageCompare();
+}
+
 function getNetRentNeed(){
   return Math.max(0, Math.max(num('rent1'), num('rent2')) - num('rentalIncome') - num('statePension'));
 }
@@ -1754,8 +2259,8 @@ function updateReport(){
 
   const capI=requiredCapitalInterest();
   const capD=requiredCapitalDeplete();
-  const exitValue = currentFutureValue();
-  const investFV = lumpFutureValue();
+  const exitValue = typeof futureCurrentAsset === 'function' ? futureCurrentAsset() : num('current');
+  const investFV = typeof futureLumpInvestment === 'function' ? futureLumpInvestment() : num('lump');
   reportCapitalInterest.textContent = fmt(capI);
   reportCapitalDeplete.textContent = fmt(capD);
   reportExitValue.textContent = fmt(exitValue);
@@ -1774,6 +2279,37 @@ function updateReport(){
     {key:'investment',color:'#16a34a'},
     {key:'payoffInvestment',color:'#2563eb'}
   ]);
+
+  if(typeof mortgageCompareModel === 'function'){
+    const cm = mortgageCompareModel();
+    const best = cm.best || cm.variants?.[0];
+    const base = cm.base || cm.variants?.[0];
+    const cmBenefit = best ? (best.benefit >= 0 ? '+' : '−') + fmt(Math.abs(best.benefit)) : '—';
+    if(typeof reportComparePeriod !== 'undefined') reportComparePeriod.textContent = cm.compareYears.toLocaleString('cs-CZ') + ' let';
+    if(typeof reportComparePaymentDiff !== 'undefined') reportComparePaymentDiff.textContent = best ? (best.paymentDiff >= 0 ? '+' : '−') + fmt(Math.abs(best.paymentDiff)) + ' / měsíc' : '—';
+    if(typeof reportCompareInvestFuture !== 'undefined') reportCompareInvestFuture.textContent = best ? fmt(best.investmentFuture) : '—';
+    if(typeof reportCompareBenefit !== 'undefined') reportCompareBenefit.textContent = cmBenefit;
+    if(typeof reportCompareAPayment !== 'undefined') reportCompareAPayment.textContent = base ? fmt(base.payment) + ' / měsíc' : '—';
+    if(typeof reportCompareBPayment !== 'undefined') reportCompareBPayment.textContent = best ? best.name + ' · ' + fmt(best.payment) + ' / měsíc' : '—';
+    if(typeof reportCompareNetInterest !== 'undefined') reportCompareNetInterest.textContent = best ? fmt(Math.max(0,best.netInterestCost)) : '—';
+    if(typeof reportCompareExtraInvested !== 'undefined') reportCompareExtraInvested.textContent = best ? fmt(best.extraInvested) : '—';
+    if(typeof reportCompareBaseDebt !== 'undefined') reportCompareBaseDebt.textContent = base?.am ? fmt(base.am.debt) : '—';
+    if(typeof reportCompareBestDebt !== 'undefined') reportCompareBestDebt.textContent = best?.am ? fmt(best.am.debt) : '—';
+    if(typeof reportCompareBestOutlay !== 'undefined') reportCompareBestOutlay.textContent = best ? fmt(best.netOutlay) : '—';
+    if(typeof reportCompareBestCleanInterest !== 'undefined') reportCompareBestCleanInterest.textContent = best ? fmt(best.cleanInterest) : '—';
+    if(cm.extraCash){
+      const y = Math.floor(cm.extraCash.monthsShortened / 12);
+      const mo = cm.extraCash.monthsShortened % 12;
+      if(typeof reportExtraCashShortening !== 'undefined') reportExtraCashShortening.textContent = cm.extraCash.monthsShortened > 0 ? y + ' let ' + mo + ' měs.' : 'nezkrátí';
+      if(typeof reportExtraCashInterestSaved !== 'undefined') reportExtraCashInterestSaved.textContent = fmt(cm.extraCash.interestSaved);
+      if(typeof reportExtraCashInvestFuture !== 'undefined') reportExtraCashInvestFuture.textContent = fmt(cm.extraCash.extraInvestment.future);
+      if(typeof reportExtraCashDiff !== 'undefined') reportExtraCashDiff.textContent = (cm.extraCash.extraDecisionDiff >= 0 ? '+' : '−') + fmt(Math.abs(cm.extraCash.extraDecisionDiff));
+    }
+    drawSimpleReportLine(document.getElementById('reportMortgageCompareChart'), cm.rows.map(d=>({x:d.year,investment:d.investment,netCost:d.netCost})), [
+      {key:'investment',color:'#16a34a'},
+      {key:'netCost',color:'#ef4444'}
+    ]);
+  }
 
   const rn=getReportRiskNumbers();
   reportInvalidGap.textContent = fmt(rn.invalidGap) + ' / měsíc';
@@ -1795,21 +2331,23 @@ function updateReport(){
 
   const showInvest=document.getElementById('reportInvest')?.checked;
   const showMortgage=document.getElementById('reportMortgage')?.checked;
+  const showMortgageCompare=document.getElementById('reportMortgageCompare')?.checked;
   const showRisk=document.getElementById('reportRisk')?.checked;
   reportInvestSection.classList.toggle('hidden',!showInvest);
   reportMortgageSection.classList.toggle('hidden',!showMortgage);
+  reportMortgageCompareSection.classList.toggle('hidden',!showMortgageCompare);
   reportRiskSection.classList.toggle('hidden',!showRisk);
 }
 
-['reportInvest','reportMortgage','reportRisk'].forEach(id=>{
+['reportInvest','reportMortgage','reportMortgageCompare','reportRisk'].forEach(id=>{
   const el=document.getElementById(id);
   if(el) el.addEventListener('change',updateReport);
 });
 
 
 document.querySelectorAll('input, select').forEach(i=>{
-  if(!["rent1","rent2","legacy","current","lump","rentalIncome","pensionGrossIncome","statePension","mortgageAmount","mortgageLumpInvest","mortgageMonthlyInvest","riskIncome","riskExpenses","riskOtherLoans","riskOtherDebt","riskInvalidPension","riskWidowPension","riskOrphanPension","riskFuneralReserve","riskDailyCompensation","riskCurrentInvalidCover","riskCurrentDeathCover","riskSocialPayment"].includes(i.id)){
-    const recalc=()=>{ calculate(); calculateMortgage(); calculateRisk(); };
+  if(!["rent1","rent2","legacy","current","lump","rentalIncome","pensionGrossIncome","statePension","mortgageAmount","mortgageLumpInvest","mortgageMonthlyInvest","compareAAmount","compareBAmount","compareInvestLump","compareCAmount","compareCInvest","compareDAmount","compareDInvest","extraCashLump","extraCashMonthly","riskIncome","riskExpenses","riskOtherLoans","riskOtherDebt","riskInvalidPension","riskWidowPension","riskOrphanPension","riskFuneralReserve","riskDailyCompensation","riskCurrentInvalidCover","riskCurrentDeathCover","riskSocialPayment"].includes(i.id)){
+    const recalc=()=>{ calculate(); calculateMortgage(); calculateMortgageCompare(); calculateRisk(); };
     i.addEventListener('input',recalc);
     i.addEventListener('change',recalc);
   }
@@ -1831,6 +2369,7 @@ setupMoneyInputs();
 updateIncomeTypeFields();
 calculate();
 calculateMortgage();
+calculateMortgageCompare();
 calculateRisk();
 updateReport();
 </script>
@@ -2019,6 +2558,36 @@ updateReport();
       {key:'debt',color:'#ef4444'}, {key:'investment',color:'#16a34a'}, {key:'payoffInvestment',color:'#2563eb'}
     ]);
 
+    if(typeof mortgageCompareModel === 'function'){
+      const cm = mortgageCompareModel();
+      const best = cm.best || cm.variants?.[0];
+      const base = cm.base || cm.variants?.[0];
+      const cmBenefit = best ? (best.benefit >= 0 ? '+' : '−') + safeFmt(Math.abs(best.benefit)) : '—';
+      setText('reportComparePeriod', cm.compareYears.toLocaleString('cs-CZ') + ' let');
+      setText('reportComparePaymentDiff', best ? (best.paymentDiff >= 0 ? '+' : '−') + safeFmt(Math.abs(best.paymentDiff)) + ' / měsíc' : '—');
+      setText('reportCompareInvestFuture', best ? safeFmt(best.investmentFuture) : '—');
+      setText('reportCompareBenefit', cmBenefit);
+      setText('reportCompareAPayment', base ? safeFmt(base.payment) + ' / měsíc' : '—');
+      setText('reportCompareBPayment', best ? best.name + ' · ' + safeFmt(best.payment) + ' / měsíc' : '—');
+      setText('reportCompareNetInterest', best ? safeFmt(Math.max(0,best.netInterestCost)) : '—');
+      setText('reportCompareExtraInvested', best ? safeFmt(best.extraInvested) : '—');
+      setText('reportCompareBaseDebt', base?.am ? safeFmt(base.am.debt) : '—');
+      setText('reportCompareBestDebt', best?.am ? safeFmt(best.am.debt) : '—');
+      setText('reportCompareBestOutlay', best ? safeFmt(best.netOutlay) : '—');
+      setText('reportCompareBestCleanInterest', best ? safeFmt(best.cleanInterest) : '—');
+      if(cm.extraCash){
+        const y = Math.floor(cm.extraCash.monthsShortened / 12);
+        const mo = cm.extraCash.monthsShortened % 12;
+        setText('reportExtraCashShortening', cm.extraCash.monthsShortened > 0 ? y + ' let ' + mo + ' měs.' : 'nezkrátí');
+        setText('reportExtraCashInterestSaved', safeFmt(cm.extraCash.interestSaved));
+        setText('reportExtraCashInvestFuture', safeFmt(cm.extraCash.extraInvestment.future));
+        setText('reportExtraCashDiff', (cm.extraCash.extraDecisionDiff >= 0 ? '+' : '−') + safeFmt(Math.abs(cm.extraCash.extraDecisionDiff)));
+      }
+      drawLine(byId('reportMortgageCompareChart'), cm.rows.map(d=>({x:d.year,investment:d.investment,netCost:d.netCost})),[
+        {key:'investment',color:'#16a34a'}, {key:'netCost',color:'#ef4444'}
+      ]);
+    }
+
     const rn=reportRiskNumbers();
     setText('reportInvalidGap', safeFmt(rn.invalidGap)+' / měsíc');
     setText('reportDeathGap', safeFmt(rn.deathGap)+' / měsíc');
@@ -2052,16 +2621,18 @@ updateReport();
 
     const showInvest=byId('reportInvest')?.checked;
     const showMortgage=byId('reportMortgage')?.checked;
+    const showMortgageCompare=byId('reportMortgageCompare')?.checked;
     const showRisk=byId('reportRisk')?.checked;
     byId('reportInvestSection')?.classList.toggle('hidden',!showInvest);
     byId('reportMortgageSection')?.classList.toggle('hidden',!showMortgage);
+    byId('reportMortgageCompareSection')?.classList.toggle('hidden',!showMortgageCompare);
     byId('reportRiskSection')?.classList.toggle('hidden',!showRisk);
   }
 
   window.updateReport = updateReportV24;
   const oldSwitch=window.switchTab;
   window.switchTab=function(tab){ if(typeof oldSwitch==='function') oldSwitch(tab); if(tab==='report') setTimeout(updateReportV24,60); };
-  ['reportInvest','reportMortgage','reportRisk'].forEach(id=>byId(id)?.addEventListener('change',updateReportV24));
+  ['reportInvest','reportMortgage','reportMortgageCompare','reportRisk'].forEach(id=>byId(id)?.addEventListener('change',updateReportV24));
   document.querySelectorAll('input,select').forEach(el=>el.addEventListener('input',()=>setTimeout(updateReportV24,50)));
   setTimeout(updateReportV24,150);
 })();
@@ -2070,7 +2641,7 @@ updateReport();
 // V25 – mazání údajů klienta
 (function(){
   const byId = id => document.getElementById(id);
-  const moneyIds = new Set(['rent1','rent2','legacy','current','rentalIncome','pensionGrossIncome','statePension','lump','riskIncome','riskExpenses','riskOtherLoans','riskOtherDebt','riskInvalidPension','riskWidowPension','riskOrphanPension','riskFuneralReserve','riskDailyCompensation','riskCurrentInvalidCover','riskCurrentDeathCover','mortgageAmount','mortgageLumpInvest','mortgageMonthlyInvest']);
+  const moneyIds = new Set(['rent1','rent2','legacy','current','rentalIncome','pensionGrossIncome','statePension','lump','riskIncome','riskExpenses','riskOtherLoans','riskOtherDebt','riskInvalidPension','riskWidowPension','riskOrphanPension','riskFuneralReserve','riskDailyCompensation','riskCurrentInvalidCover','riskCurrentDeathCover','mortgageAmount','mortgageLumpInvest','mortgageMonthlyInvest','compareAAmount','compareBAmount','compareInvestLump','compareCAmount','compareCInvest','compareDAmount','compareDInvest','extraCashLump','extraCashMonthly']);
 
   const sections = {
     invest: {
@@ -2091,9 +2662,15 @@ updateReport();
         mortgageAmount:'', mortgageRate:'', mortgageYears:'', mortgageFixYears:'', mortgageTaxLimit:'150000', mortgageLumpInvest:'', mortgageMonthlyInvest:'', mortgageInvestYield:''
       }
     },
+    mortgageCompare: {
+      ids: ['compareInvestYield','compareTaxLimit','compareYearsOverride','extraCashVariant','extraCashLump','extraCashYear','extraCashMonthly','extraCashMonthlyFrom','extraCashMonthlyYears','compareAAmount','compareARate','compareAYears','compareBAmount','compareBRate','compareBYears','compareInvestLump','compareCAmount','compareCRate','compareCYears','compareCInvest','compareDAmount','compareDRate','compareDYears','compareDInvest'],
+      values: {
+        compareInvestYield:'', compareTaxLimit:'150000', compareYearsOverride:'', extraCashVariant:'A', extraCashLump:'', extraCashYear:'', extraCashMonthly:'', extraCashMonthlyFrom:'', extraCashMonthlyYears:'', compareAAmount:'', compareARate:'', compareAYears:'', compareBAmount:'', compareBRate:'', compareBYears:'', compareInvestLump:'', compareCAmount:'', compareCRate:'', compareCYears:'', compareCInvest:'', compareDAmount:'', compareDRate:'', compareDYears:'', compareDInvest:''
+      }
+    },
     report: {
-      ids: ['reportInvest','reportMortgage','reportRisk'],
-      values: {reportInvest:true, reportMortgage:true, reportRisk:true}
+      ids: ['reportInvest','reportMortgage','reportMortgageCompare','reportRisk'],
+      values: {reportInvest:true, reportMortgage:true, reportMortgageCompare:true, reportRisk:true}
     }
   };
 
@@ -2118,6 +2695,7 @@ updateReport();
   function recalcAll(){
     try{ if(typeof calculate === 'function') calculate(); }catch(e){}
     try{ if(typeof calculateMortgage === 'function') calculateMortgage(); }catch(e){}
+    try{ if(typeof calculateMortgageCompare === 'function') calculateMortgageCompare(); }catch(e){}
     try{ if(typeof calculateRisk === 'function') calculateRisk(); }catch(e){}
     try{ if(typeof updateReport === 'function') updateReport(); }catch(e){}
     try{ if(typeof updateReportV24 === 'function') updateReportV24(); }catch(e){}
@@ -2134,20 +2712,21 @@ updateReport();
     if(!byId('investPage')?.classList.contains('hidden')) return 'invest';
     if(!byId('riskPage')?.classList.contains('hidden')) return 'risk';
     if(!byId('mortgagePage')?.classList.contains('hidden')) return 'mortgage';
+    if(!byId('mortgageComparePage')?.classList.contains('hidden')) return 'mortgageCompare';
     if(!byId('reportPage')?.classList.contains('hidden')) return 'report';
     return 'invest';
   }
 
   window.clearCurrentClientPage = function(){
     const sectionName = activeSection();
-    const label = {invest:'Investice', risk:'Pojištění', mortgage:'Hypotéka', report:'Report'}[sectionName] || 'aktuální karta';
+    const label = {invest:'Investice', risk:'Pojištění', mortgage:'Hypotéka', mortgageCompare:'Hypotéka vs. hypotéka', report:'Report'}[sectionName] || 'aktuální karta';
     if(!confirm('Vymazat údaje z aktuální karty: '+label+'?')) return;
     clearSection(sectionName);
   };
 
   window.clearAllClientData = function(){
     if(!confirm('Vymazat všechna aktuálně vyplněná klientská data ve všech kartách?')) return;
-    ['invest','risk','mortgage','report'].forEach(clearSection);
+    ['invest','risk','mortgage','mortgageCompare','report'].forEach(clearSection);
     recalcAll();
   };
 })();
@@ -2157,7 +2736,7 @@ updateReport();
 window.addEventListener('load', function(){
   const params = new URLSearchParams(window.location.search);
   const requestedTab = params.get('tab') || 'invest';
-  const safeTab = ['invest','risk','mortgage','report'].includes(requestedTab) ? requestedTab : 'invest';
+  const safeTab = ['invest','risk','mortgage','mortgageCompare','report'].includes(requestedTab) ? requestedTab : 'invest';
   setTimeout(function(){
     if(typeof window.switchTab === 'function') window.switchTab(safeTab);
   }, 80);
