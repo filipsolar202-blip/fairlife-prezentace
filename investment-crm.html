@@ -804,33 +804,37 @@ function fkiTimelineDetailed(calc){
     crashYear: Math.max(0,Math.round(n(r.crashYear))),
     crashPct: Math.max(0,Math.min(100,n(r.crashPct)))/100
   }));
-  const baseCurrent = Math.max(0, n(calc.current?.current));
-  const baseRate = Math.max(0, n(calc.current?.pa)) / 100;
-  const rowVal = (r, y) => {
+  const rowParts = (r, y) => {
     const grow = (val, yrs) => val * Math.pow(1 + r.rate, Math.max(0, yrs));
-    let v = grow(r.amount, y);
+    const existingStart = r.existingFund ? r.amount : 0;
+    const newStart = r.existingFund ? 0 : r.amount;
+    let existingValue = grow(existingStart, y);
+    let newValue = grow(newStart, y);
     if(r.topUpAmount > 0 && y >= r.topUpYear){
-      v += grow(r.topUpAmount, y - r.topUpYear);
+      newValue += grow(r.topUpAmount, y - r.topUpYear);
     }
     if(r.crashYear > 0 && r.crashPct > 0 && y >= r.crashYear){
-      let frozen = grow(r.amount, r.crashYear);
+      let frozenExisting = grow(existingStart, r.crashYear) * (1 - r.crashPct);
+      let frozenNew = grow(newStart, r.crashYear) * (1 - r.crashPct);
       if(r.topUpAmount > 0){
-        if(r.topUpYear <= r.crashYear) frozen += grow(r.topUpAmount, r.crashYear - r.topUpYear);
-        else if(y >= r.topUpYear) frozen += r.topUpAmount;
+        if(r.topUpYear <= r.crashYear) frozenNew += grow(r.topUpAmount, r.crashYear - r.topUpYear) * (1 - r.crashPct);
+        else if(y >= r.topUpYear) frozenNew += r.topUpAmount;
       }
-      v = frozen * (1 - r.crashPct);
+      existingValue = frozenExisting;
+      newValue = frozenNew;
     }
-    return Math.max(0, v);
+    return {existingValue:Math.max(0,existingValue), newValue:Math.max(0,newValue)};
   };
   const investedAt = (r,y) => {
-    let v = r.amount;
+    let v = r.existingFund ? 0 : r.amount;
     if(r.topUpAmount > 0 && y >= r.topUpYear) v += r.topUpAmount;
     return v;
   };
   const addPoint = (year) => {
     year = Math.max(0, Math.min(Number(fkiHorizon)||1, Number(year)||0));
-    const base = baseCurrent > 0 ? baseCurrent * Math.pow(1 + baseRate, year) : 0;
-    const newValue = rows.reduce((sum,r)=>sum+rowVal(r, year),0);
+    const parts = rows.map(r=>rowParts(r,year));
+    const base = parts.reduce((sum,p)=>sum+p.existingValue,0);
+    const newValue = parts.reduce((sum,p)=>sum+p.newValue,0);
     const invested = rows.reduce((sum,r)=>sum+investedAt(r, year),0);
     pts.push({ year, base, newValue, invested, total: base + newValue });
   };
@@ -856,6 +860,7 @@ function fkiTimeline(calc){
 function fkiCalc(){
   const current=fkiMode==='existing'?fkiClientPortfolio(fkiContextClient):{invested:0,current:0,profit:0,pa:0,items:[],pending:[]};
   const rows=fkiRows.map(r=>({ ...r, amount:n(r.amount), rate:n(r.rate), topUpYear:Math.max(0,Math.round(n(r.topUpYear))), topUpAmount:Math.max(0,n(r.topUpAmount)), crashYear:Math.max(0,Math.round(n(r.crashYear))), crashPct:Math.max(0,Math.min(100,n(r.crashPct))) })).filter(r=>r.amount>0 || r.topUpAmount>0);
+  const existingStart=rows.reduce((s,r)=>s+(r.existingFund?Math.max(0,r.amount):0),0);
   const newInv=rows.reduce((s,r)=>s+(r.existingFund?0:Math.max(0,r.amount))+Math.max(0,r.topUpAmount),0);
   const projectedNew=rows.reduce((s,r)=>s+fkiFundValueAt(r,fkiHorizon),0);
   const activeWeightedBase=rows.reduce((s,r)=>{
@@ -876,7 +881,7 @@ function fkiCalc(){
   const totalFuture=baseFuture+projectedNew;
   const rentNow=(portfolioBase*(weightedRate/100))/12;
   const rentFuture=(totalFuture*(weightedRate/100))/12;
-  return {current,rows,newInv,projectedNew,newWeightedRate,weightedRate,baseFuture,totalFuture,rentNow,rentFuture,modeledBase};
+  return {current,rows,existingStart,newInv,projectedNew,newWeightedRate,weightedRate,baseFuture,totalFuture,rentNow,rentFuture,modeledBase};
 }
 function fkiSetMode(m){ fkiMode=m; if(m==='new'){ fkiContextClient=''; fkiRows=[]; } else { fkiRows=fkiDefaultRows(fkiContextClient); } renderFkiModule(); }
 function fkiSetClient(v){ fkiContextClient=v; fkiNewClientName=v; fkiRows=fkiDefaultRows(v); renderFkiModule(); }
@@ -899,7 +904,7 @@ function fkiUpdateRow(i,patch,soft=false){ fkiRows[i]={...fkiRows[i],...patch}; 
 function fkiAddRow(){ const st=fkiFundStats()[0]; fkiRows.push({fundKey:st?.fundKey||'',name:st?.name||'Nový fond',company:st?.company||'',isin:st?.isin||'',typ:st?.typ||'',amount:0,rate:Math.max(0,Number(st?.pa||7)).toFixed(1),topUpYear:0,topUpAmount:0,crashYear:0,crashPct:0,source:'CRM průměr',existingFund:false}); renderFkiModule(); }
 function fkiRemoveRow(i){ fkiRows.splice(i,1); renderFkiModule(); }
 function fkiUseFund(i,k){ const st=fkiFundStats().find(x=>x.fundKey===k); if(!st) return; fkiRows[i]={...fkiRows[i],fundKey:k,name:st.name,company:st.company,isin:st.isin,typ:st.typ,rate:Math.max(0,Number(st.pa||7)).toFixed(1),source:'CRM průměr',existingFund:false,existingCurrent:0,existingInvested:0}; renderFkiModule(); }
-function fkiScenarioText(){ const c=fkiCalc(); const name=fkiMode==='existing'?(fkiContextClient||'stávající klient'):(fkiNewClientName||'nový klient'); return `Scénář pro ${name}: počítám modelované fondy ${czk(c.modeledBase||c.current.current)} a nové vklady nebo dokupy ${czk(c.newInv)} po dobu ${fkiHorizon} let. Vážený modelový předpoklad portfolia je ${pct(c.weightedRate)}${c.newInv>0?` (samotný nový nákup ${pct(c.newWeightedRate)})`:''}. Modelová hodnota po ${fkiHorizon} letech je ${czk(c.totalFuture)}. Pokud je u fondu nastaven propad, fond se v roce propadu sníží a od té chvíle zůstává zamrazený na nové hodnotě.`; }
+function fkiScenarioText(){ const c=fkiCalc(); const name=fkiMode==='existing'?(fkiContextClient||'stávající klient'):(fkiNewClientName||'nový klient'); const start=c.existingStart+c.newInv; return `Scénář pro ${name}: výchozí portfolio ${czk(c.existingStart||c.current.current)}, nové vklady nebo dokupy ${czk(c.newInv)}, modelovaný start ${czk(start||c.modeledBase)} a doba modelace ${fkiHorizon} let. Vážený modelový předpoklad portfolia je ${pct(c.weightedRate)}${c.newInv>0?` (nové peníze samostatně ${pct(c.newWeightedRate)})`:''}. Modelová hodnota po ${fkiHorizon} letech je ${czk(c.totalFuture)}.`; }
 function fkiCopyScenario(){ navigator.clipboard?.writeText(fkiScenarioText()); toast('Scénář zkopírován ✓','ok'); }
 function fkiClientReportHtml(){
   const c=fkiCalc();
@@ -936,12 +941,14 @@ function fkiClientReportHtml(){
     return `<article class="fund-slide" style="--accent:${fund.accent||'#0d2c54'}"><div class="fund-slide-top"><div><h3>${esc(fund.title)}</h3><p>${esc(fund.subtitle||'')}</p></div><div class="lion-mark">♛</div></div><div class="slide-stats">${stats}</div><div class="fund-slide-body"><ul>${bullets}</ul><div class="fund-visual"><div class="fund-shape">${esc((fund.title||'?').slice(0,1))}</div></div></div><div class="fund-slide-foot"><span>${fund.url?`více o fondu: ${esc(fund.url)}`:''}</span><span>${fund.date?`data k: ${esc(fund.date)}`:''}</span></div></article>`;
   };
   const holdingByKey=fkiHoldingMap(c);
+  const rowByKey={};
+  rows.forEach(r=>{ if(r.fundKey) rowByKey[r.fundKey]=r; });
   const htmlRows=rows.map(r=>{
     const holding=holdingByKey[r.fundKey]||null;
     const plannedFuture=fkiFundValueAt(r,fkiHorizon);
     const holdingFuture=r.existingFund?0:fkiHoldingFuture(r,holding,fkiHorizon);
     const fundFuture=plannedFuture+holdingFuture;
-    const currentMetric=holding?`<div><small>Aktuálně ve fondu</small><b>${czk(holding.cur)}</b></div>`:'';
+    const currentMetric=(holding&&!r.existingFund)?`<div><small>Aktuálně ve fondu</small><b>${czk(holding.cur)}</b></div>`:'';
     const amountMetric=n(r.amount)>0?`<div><small>${r.existingFund?'Výchozí hodnota':'Nový vklad'}</small><b>${czk(n(r.amount))}</b></div>`:'';
     const topUpMetric=n(r.topUpAmount)>0?`<div><small>${esc(fkiTopUpLabel(r))}</small><b>${czk(n(r.topUpAmount))}</b></div>`:'';
     const plannedMetric=(holding&&!r.existingFund&&plannedFuture>0)?`<div><small>Z toho nový/dokup</small><b>${czk(plannedFuture)}</b></div>`:'';
@@ -949,11 +956,12 @@ function fkiClientReportHtml(){
     return `<article class="fund-card"><div><h3>${esc(r.name)}</h3><div class="muted">${esc(r.company||'FKI')} ${r.isin?` · ${esc(r.isin)}`:''}</div></div><div class="metrics">${currentMetric}${amountMetric}${topUpMetric}<div><small>Předpoklad p.a.</small><b>${pct(n(r.rate))}</b></div><div><small>Hodnota fondu za ${fkiHorizon} let</small><b>${czk(fundFuture)}</b></div>${plannedMetric}${crashMetric}</div></article>`;
   }).join('') || '<p>Nejsou zadané žádné nové fondy.</p>';
   const presentationCards=rows.map(r=>renderFundPresentation(fundPresentationFor(r.name), r)).join('') || '<p>Nejsou zadané žádné nové fondy.</p>';
-  const portfolioHtml=currentItems.length?`<section class="card"><h2>Současné portfolio</h2><table><thead><tr><th>Fond</th><th>Aktuálně</th><th>Výnos</th><th>P.A.</th></tr></thead><tbody>${currentItems.map(x=>`<tr><td>${esc(x.name)}</td><td>${czk(x.cur)}</td><td>${czk(x.profit)}</td><td>${pct(x.pa||0)}</td></tr>`).join('')}</tbody></table></section>`:'';
+  const portfolioHtml=currentItems.length?`<section class="card"><h2>Současné portfolio</h2><table><thead><tr><th>Fond</th><th>Aktuálně</th><th>Aktuální výnos v CRM</th><th>Model p.a.</th></tr></thead><tbody>${currentItems.map(x=>{const mr=rowByKey[x.fundKey]; return `<tr><td>${esc(x.name)}</td><td>${czk(x.cur)}</td><td>${czk(x.profit)}</td><td>${mr?pct(n(mr.rate)):pct(x.pa||0)}</td></tr>`}).join('')}</tbody></table><p class="muted" style="margin:12px 0 0;font-size:13px">Model p.a. je předpoklad použitý pro tento scénář. Aktuální výnos v CRM vychází z dostupných historických hodnot.</p></section>`:'';
   const chart=fkiScenarioChartHTML(c);
+  const modeledStart=(c.existingStart||0)+(c.newInv||0);
   return `<!doctype html><html lang="cs"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>FKI scénář – ${esc(name)}</title><style>
   :root{--ink:#0f2744;--muted:#64748b;--line:#dbe7f3;--blue:#2563eb;--cyan:#44b5c6;--green:#16a34a;--red:#dc2626;--bg:#eef6ff}*{box-sizing:border-box}body{margin:0;font-family:Inter,Arial,sans-serif;background:linear-gradient(135deg,#f8fcff,#eef6ff);color:var(--ink)}.wrap{max-width:1120px;margin:0 auto;padding:32px}.hero,.card,.fund-card{background:rgba(255,255,255,.78);border:1px solid var(--line);border-radius:24px;box-shadow:0 18px 50px rgba(15,39,68,.08);backdrop-filter:blur(14px)}.hero{padding:32px;margin-bottom:22px}.eyebrow{font-size:12px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--cyan)}h1{font-size:38px;margin:8px 0 10px}h2{font-size:22px;margin:0 0 14px}.lead{font-size:16px;line-height:1.6;color:var(--muted)}.kpis,.metrics{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px}.kpi,.metrics>div{background:rgba(255,255,255,.9);border:1px solid var(--line);border-radius:18px;padding:14px}.kpi small,.metrics small{display:block;color:#8aa0b8;text-transform:uppercase;font-weight:800;font-size:11px}.kpi b,.metrics b{font-size:21px}.card{padding:24px;margin:18px 0}.fund-card{padding:20px;margin:12px 0}.fund-card h3{margin:0 0 4px}.muted{color:var(--muted)}table{width:100%;border-collapse:collapse}th,td{padding:10px;border-bottom:1px solid var(--line);text-align:left}th{font-size:12px;text-transform:uppercase;color:#8aa0b8}.fki-sim-chart{border:1px solid var(--line);border-radius:22px;padding:18px;background:rgba(255,255,255,.82)}.fki-sim-head{display:flex;justify-content:space-between;gap:16px}.fki-sim-head h4{margin:0 0 4px}.fki-muted,.fki-chart-note{color:var(--muted);font-size:13px}.fki-sim-legend{display:flex;gap:10px;flex-wrap:wrap}.fki-leg{font-size:12px;color:var(--muted)}.fki-leg i{display:inline-block;width:18px;height:3px;margin-right:5px;vertical-align:middle}.fki-chart-wrap svg{width:100%;height:auto}.fki-chart-label{font-size:12px;fill:#64748b}.fund-slide{position:relative;overflow:hidden;background:#fff;border:1px solid #dbe7f3;border-radius:0;min-height:590px;margin:22px 0;box-shadow:0 18px 50px rgba(15,39,68,.08);break-inside:avoid}.fund-slide:after{content:'';position:absolute;top:0;bottom:0;right:210px;width:10px;background:var(--accent,#0d2c54)}.fund-slide-top{display:flex;justify-content:space-between;gap:24px;align-items:flex-start;padding:54px 62px 26px}.fund-slide-top h3{font-size:48px;line-height:1.03;margin:0;color:#0d416a;text-transform:uppercase;letter-spacing:.02em}.fund-slide-top p{font-size:26px;line-height:1.25;margin:14px 0 0;color:#0d416a}.lion-mark{font-size:46px;color:#0d416a}.slide-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:0;background:#f4f5f6;padding:28px 62px;margin:0}.slide-stat b{display:block;font-size:44px;line-height:1;color:#0d416a}.slide-stat span{display:block;font-size:18px;color:#0d416a;margin-top:10px;line-height:1.25}.fund-slide-body{display:grid;grid-template-columns:minmax(0,1fr) 330px;gap:30px;padding:42px 62px 34px}.fund-slide-body ul{margin:0;padding-left:22px;font-size:20px;line-height:1.45;color:#0d416a}.fund-visual{display:flex;align-items:center;justify-content:center}.fund-shape{width:240px;height:190px;border-radius:55% 45% 50% 50%;background:linear-gradient(135deg,var(--accent,#0d2c54),#111827);color:white;display:flex;align-items:center;justify-content:center;font-size:82px;font-weight:900;opacity:.86}.fund-slide-foot{display:flex;justify-content:space-between;gap:18px;padding:0 62px 34px;color:#139db0;font-size:18px}.fund-slide.missing{min-height:auto;border-radius:22px;padding:22px}.fund-slide.missing:after{display:none}.fund-slide.missing h3{margin:0 0 8px;color:#0d416a}@media(max-width:760px){.fund-slide{min-height:auto}.fund-slide:after{right:22px}.fund-slide-top,.slide-stats,.fund-slide-body,.fund-slide-foot{padding-left:24px;padding-right:44px}.fund-slide-top h3{font-size:30px}.fund-slide-top p{font-size:18px}.slide-stats{grid-template-columns:1fr;gap:16px}.slide-stat b{font-size:32px}.fund-slide-body{grid-template-columns:1fr}.fund-visual{display:none}}@media print{body{background:white}.wrap{padding:0}.hero,.card,.fund-card{box-shadow:none;break-inside:avoid}.no-print{display:none}.fund-slide{page-break-inside:avoid;break-inside:avoid;box-shadow:none;margin:0 0 12mm}}
-  </style></head><body><div class="wrap"><section class="hero"><div class="eyebrow">FairLife · FKI scénář investice</div><h1>${esc(name)}</h1><p class="lead">${esc(fkiScenarioText())}</p><div class="kpis"><div class="kpi"><small>Nové vklady / dokupy</small><b>${czk(c.newInv)}</b></div><div class="kpi"><small>Modelovaná hodnota za ${fkiHorizon} let</small><b>${czk(c.projectedNew)}</b></div><div class="kpi"><small>Celkem portfolio</small><b>${czk(c.totalFuture)}</b></div><div class="kpi"><small>Modelová renta za ${fkiHorizon} let</small><b>${czk(c.rentFuture)}</b></div></div></section>${portfolioHtml}<section class="card"><h2>Model vývoje portfolia</h2>${chart}</section><section class="card"><h2>Modelované fondy</h2>${htmlRows}</section><p class="muted">Výstup je modelový scénář. Nejedná se o investiční doporučení ani garanci budoucího výnosu.</p></div></body></html>`;
+  </style></head><body><div class="wrap"><section class="hero"><div class="eyebrow">FairLife · FKI scénář investice</div><h1>${esc(name)}</h1><p class="lead">${esc(fkiScenarioText())}</p><div class="kpis"><div class="kpi"><small>Výchozí portfolio</small><b>${czk(c.existingStart||c.current.current)}</b></div><div class="kpi"><small>Nové vklady / dokupy</small><b>${czk(c.newInv)}</b></div><div class="kpi"><small>Modelovaný start</small><b>${czk(modeledStart||c.modeledBase)}</b></div><div class="kpi"><small>Hodnota za ${fkiHorizon} let</small><b>${czk(c.totalFuture)}</b></div><div class="kpi"><small>Modelová renta za ${fkiHorizon} let</small><b>${czk(c.rentFuture)}</b></div></div></section>${portfolioHtml}<section class="card"><h2>Model vývoje portfolia</h2>${chart}</section><section class="card"><h2>Modelované fondy</h2>${htmlRows}</section><p class="muted">Výstup je modelový scénář. Nejedná se o investiční doporučení ani garanci budoucího výnosu.</p></div></body></html>`;
 }
 function fkiExportClientHtml(){
   const name=(fkiMode==='existing'?(fkiContextClient||'klient'):(fkiNewClientName||'novy-klient')).trim()||'klient';
@@ -984,7 +992,7 @@ function fkiScenarioChartHTML(calc){
   const pts=fkiTimelineDetailed(calc);
   if(!pts.length) return '';
   const W=820,H=320,padL=66,padR=28,padT=24,padB=42;
-  const vals=pts.flatMap(p=>[p.total,p.base,p.invested]).filter(v=>isFinite(v));
+  const vals=pts.flatMap(p=>[p.total,p.base,p.newValue]).filter(v=>isFinite(v));
   const max=Math.max(1,...vals)*1.10;
   const x=p=>padL+(p.year/Math.max(1,fkiHorizon))*(W-padL-padR);
   const y=v=>padT+(1-(v/max))*(H-padT-padB);
@@ -992,6 +1000,7 @@ function fkiScenarioChartHTML(calc){
   const ticks=[0,Math.round(max/4),Math.round(max/2),Math.round(max*3/4),Math.round(max)];
   const integerPts=pts.filter(p=>Math.abs(p.year-Math.round(p.year))<0.001);
   const eventMarkers=[];
+  const topupsByYear={};
   calc.rows.forEach(r=>{
     const cy=Math.max(0,Math.round(n(r.crashYear)));
     if(cy>0 && cy<=fkiHorizon && n(r.crashPct)>0){
@@ -1002,9 +1011,12 @@ function fkiScenarioChartHTML(calc){
     }
     const ty=fkiTopUpYear(r);
     if(n(r.topUpAmount)>0 && ty<=fkiHorizon){
-      eventMarkers.push({type:'topup',year:ty,name:r.name,amount:n(r.topUpAmount)});
+      if(!topupsByYear[ty]) topupsByYear[ty]={type:'topup',year:ty,amount:0,count:0};
+      topupsByYear[ty].amount+=n(r.topUpAmount);
+      topupsByYear[ty].count++;
     }
   });
+  Object.values(topupsByYear).forEach(x=>eventMarkers.push(x));
   let recoveryText='';
   const crashes=eventMarkers.filter(e=>e.type==='crash').sort((a,b)=>a.year-b.year);
   if(crashes.length){
@@ -1015,7 +1027,7 @@ function fkiScenarioChartHTML(calc){
   } else {
     recoveryText='Bez nastaveného propadu ukazuje graf průběh současného portfolia, nových vkladů a dokupů podle zadaných výnosů.';
   }
-  return `<div class="fki-sim-chart"><div class="fki-sim-head"><div><h4>Vývoj hodnoty portfolia v čase</h4><div class="fki-muted">Graf ukazuje očekávaný vývoj současného portfolia, nových vkladů a dokupů podle zadaného p.a.</div></div><div class="fki-sim-legend"><span class="fki-leg"><i style="background:#2563eb"></i>Celkem</span><span class="fki-leg"><i style="background:#94a3b8"></i>Stávající</span><span class="fki-leg"><i style="background:#16a34a"></i>Vklady a dokupy</span></div></div><div class="fki-chart-wrap"><svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMidYMid meet">${ticks.map(t=>`<line x1="${padL}" x2="${W-padR}" y1="${y(t)}" y2="${y(t)}" stroke="#e2e8f0" stroke-width="1"/><text class="fki-chart-label" x="8" y="${y(t)+4}">${esc(fkiShortMoney(t))}</text>`).join('')}<path d="${path('total')}" fill="none" stroke="#2563eb" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/><path d="${path('base')}" fill="none" stroke="#94a3b8" stroke-width="2" stroke-dasharray="6 5"/><path d="${path('invested')}" fill="none" stroke="#16a34a" stroke-width="2" stroke-dasharray="8 5"/>${integerPts.map(p=>p.year%2===0||p.year===fkiHorizon?`<text class="fki-chart-label" x="${x(p)-8}" y="${H-12}">${p.year}${p.year===0?'':'r'}</text>`:'').join('')}${eventMarkers.map(m=>{const p=pts.find(p=>Math.abs(p.year-m.year)<.001)||pts[0]; if(m.type==='topup') return `<g><line x1="${x(p)}" x2="${x(p)}" y1="${padT}" y2="${H-padB}" stroke="#f59e0b" stroke-width="1.4" stroke-dasharray="3 5"/><circle cx="${x(p)}" cy="${y(p.total)}" r="5" fill="#f59e0b"/><text class="fki-chart-label" x="${x(p)+8}" y="${y(p.total)-8}" fill="#b45309">dokup ${esc(fkiShortMoney(m.amount))}</text></g>`; return `<g><line x1="${x(p)}" x2="${x(p)}" y1="${y(m.beforeTotal)}" y2="${y(m.afterTotal)}" stroke="#dc2626" stroke-width="3.2"/><circle cx="${x(p)}" cy="${y(m.afterTotal)}" r="5" fill="#dc2626"/><text class="fki-chart-label" x="${x(p)+8}" y="${y(m.afterTotal)-8}" fill="#dc2626">-${m.pct}%</text></g>`;}).join('')}</svg></div><div class="fki-chart-note">Modelace počítá současné portfolio klienta a k tomu zadané nové vklady nebo dokupy. Výnosy jsou orientační scénář, ne garance.</div></div>`;
+  return `<div class="fki-sim-chart"><div class="fki-sim-head"><div><h4>Vývoj hodnoty portfolia v čase</h4><div class="fki-muted">Modrá ukazuje celkovou hodnotu, šedá výchozí portfolio a zelená pouze nové vklady/dokupy.</div></div><div class="fki-sim-legend"><span class="fki-leg"><i style="background:#2563eb"></i>Celkem</span><span class="fki-leg"><i style="background:#94a3b8"></i>Výchozí portfolio</span><span class="fki-leg"><i style="background:#16a34a"></i>Nové peníze</span></div></div><div class="fki-chart-wrap"><svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMidYMid meet">${ticks.map(t=>`<line x1="${padL}" x2="${W-padR}" y1="${y(t)}" y2="${y(t)}" stroke="#e2e8f0" stroke-width="1"/><text class="fki-chart-label" x="8" y="${y(t)+4}">${esc(fkiShortMoney(t))}</text>`).join('')}<path d="${path('total')}" fill="none" stroke="#2563eb" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/><path d="${path('base')}" fill="none" stroke="#94a3b8" stroke-width="2.4" stroke-dasharray="6 5"/><path d="${path('newValue')}" fill="none" stroke="#16a34a" stroke-width="2.4" stroke-dasharray="8 5"/>${integerPts.map(p=>p.year%2===0||p.year===fkiHorizon?`<text class="fki-chart-label" x="${x(p)-8}" y="${H-12}">${p.year}${p.year===0?'':'r'}</text>`:'').join('')}${eventMarkers.map(m=>{const p=pts.find(p=>Math.abs(p.year-m.year)<.001)||pts[0]; if(m.type==='topup') return `<g><line x1="${x(p)}" x2="${x(p)}" y1="${padT}" y2="${H-padB}" stroke="#f59e0b" stroke-width="1.4" stroke-dasharray="3 5"/><circle cx="${x(p)}" cy="${y(p.total)}" r="5" fill="#f59e0b"/><text class="fki-chart-label" x="${x(p)+8}" y="${y(p.total)-8}" fill="#b45309">${m.year?`${m.year}. rok: `:'ihned: '}dokupy ${esc(fkiShortMoney(m.amount))}</text></g>`; return `<g><line x1="${x(p)}" x2="${x(p)}" y1="${y(m.beforeTotal)}" y2="${y(m.afterTotal)}" stroke="#dc2626" stroke-width="3.2"/><circle cx="${x(p)}" cy="${y(m.afterTotal)}" r="5" fill="#dc2626"/><text class="fki-chart-label" x="${x(p)+8}" y="${y(m.afterTotal)-8}" fill="#dc2626">-${m.pct}%</text></g>`;}).join('')}</svg></div><div class="fki-chart-note">Graf rozděluje původní portfolio a nové peníze, aby bylo jasné, co už klient má a co přinese dokup. Výnosy jsou orientační scénář, ne garance.</div></div>`;
 }
 function fkiShortMoney(v){ v=n(v); if(Math.abs(v)>=1000000) return (v/1000000).toFixed(v>=10000000?0:1).replace('.',',')+' M Kč'; if(Math.abs(v)>=1000) return Math.round(v/1000)+' tis.'; return Math.round(v)+' Kč'; }
 function fkiSaveScenario(){
