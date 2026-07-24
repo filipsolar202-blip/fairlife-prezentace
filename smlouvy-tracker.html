@@ -101,7 +101,7 @@ input:focus,select:focus,textarea:focus{border-color:var(--blue);box-shadow:0 0 
 .stav-opt.sel-nechce{background:var(--bg2);color:var(--text);border-color:var(--line2);border-width:2px}
 .stav-opt.sel-domluveno{background:#e8f4e0;color:var(--green);border-color:#97c870;border-width:2px}
 .stav-opt.sel-nedovolano{background:#fde8e8;color:var(--red);border-color:#f5a5a5;border-width:2px}
-.stav-opt.sel-sms,.stav-opt.sel-email{background:#e5f0fb;color:var(--blue);border-color:#85b7eb;border-width:2px}
+.stav-opt.sel-sms,.stav-opt.sel-email,.stav-opt.sel-telefon,.stav-opt.sel-whatsapp{background:#e5f0fb;color:var(--blue);border-color:#85b7eb;border-width:2px}
 /* VYPOVED */
 .vp-typy{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:1rem}
 .vp-typ{padding:8px;border:1px solid var(--line2);border-radius:9px;cursor:pointer;font-size:11px;text-align:center;color:var(--muted);transition:all .12s}
@@ -152,8 +152,7 @@ body:after{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;back
 .client.action-nabidka{border-color:rgba(180,83,9,.55);background:linear-gradient(90deg,rgba(255,247,237,.94),rgba(255,255,255,.66) 34%),rgba(255,255,255,.72)}
 .client.action-domluveno{border-color:rgba(21,128,61,.52);background:linear-gradient(90deg,rgba(220,252,231,.88),rgba(255,255,255,.66) 34%),rgba(255,255,255,.72)}
 .client.action-kontakt{border-color:rgba(8,145,178,.52);background:linear-gradient(90deg,rgba(207,250,254,.86),rgba(255,255,255,.66) 34%),rgba(255,255,255,.72)}
-.client.action-hot:after,.client.action-vypoved:after,.client.action-reseni:after,.client.action-nabidka:after,.client.action-domluveno:after,.client.action-kontakt:after{position:absolute;top:10px;right:12px;border-radius:999px;padding:5px 10px;font-size:10px;font-weight:900;letter-spacing:.06em;text-transform:uppercase;color:#fff;box-shadow:0 10px 24px rgba(23,32,51,.12)}
-.client.action-hot:after{content:"K přepojištění";background:#b91c1c}.client.action-vypoved:after{content:"Výpověď";background:#7c3aed}.client.action-reseni:after{content:"V řešení";background:#2563eb}.client.action-nabidka:after{content:"Nabídka";background:#b45309}.client.action-domluveno:after{content:"Schůzka";background:#15803d}.client.action-kontakt:after{content:"Kontakt";background:#0891b2}
+.client.action-hot:after,.client.action-vypoved:after,.client.action-reseni:after,.client.action-nabidka:after,.client.action-domluveno:after,.client.action-kontakt:after{display:none!important;content:none!important}
 .client.action-hot .bubble{background:#b91c1c!important;color:#fff!important}.client.action-vypoved .bubble{background:#7c3aed!important;color:#fff!important}.client.action-reseni .bubble{background:#2563eb!important;color:#fff!important}.client.action-nabidka .bubble{background:#b45309!important;color:#fff!important}.client.action-domluveno .bubble{background:#15803d!important;color:#fff!important}.client.action-kontakt .bubble{background:#0891b2!important;color:#fff!important}
 @media(max-width:900px){.metrics{grid-template-columns:repeat(2,minmax(0,1fr))}.client-body{padding-left:18px}}
 @media(max-width:640px){.app{padding:16px 12px 36px}.topin{padding:8px 12px}.brand{width:100%;border-right:0;padding:8px 0 4px}.tabs{gap:6px}.tab{padding:8px 10px}.metrics{grid-template-columns:1fr}.head h2{font-size:21px}.client-head{gap:10px}.contract{flex-direction:column}.contract-actions{width:100%}.transfer-grid{grid-template-columns:1fr}.client.action-hot:after,.client.action-vypoved:after,.client.action-reseni:after,.client.action-nabidka:after,.client.action-domluveno:after,.client.action-kontakt:after{position:static;justify-self:start;margin:0 0 8px 80px;display:inline-block}}
@@ -188,6 +187,7 @@ body:after{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;back
       <div class="field full"><label>Jméno *</label><input id="c-name" placeholder="Jan Novák"></div>
       <div class="field"><label>Telefon</label><input id="c-phone"></div>
       <div class="field"><label>Email</label><input type="email" id="c-email"></div>
+      <div class="field"><label>Preferovaný kontakt</label><select id="c-contactPref"><option value="email">Email</option><option value="telefon">Telefon / SMS</option><option value="whatsapp">WhatsApp</option></select></div>
       <div class="field"><label>Rodné číslo / IČO</label><input id="c-birthId" placeholder="pro odlišení shodných jmen"></div>
       <div class="field"><label>Adresa</label><input id="c-address" placeholder="ulice, město, PSČ"></div>
       <div class="field full"><label>Poznámka</label><textarea id="c-note" style="min-height:70px"></textarea></div>
@@ -440,9 +440,9 @@ function nextAnnualDateString(ds){
 const STATUS_LABELS={
   '':'Bez stavu','kontakt':'Ke kontaktu','reseni':'V řešení','prepojistit':'K přepojištění',
   'vypoved':'Odeslána výpověď','nabidka':'Odeslána nabídka','vyrizeno':'Vyřízeno','nechce':'Nechce',
-  'domluveno':'Domluvena schůzka','nedovolano':'Nedovoláno','sms':'SMS','email':'Email',
+  'domluveno':'Domluvena schůzka','nedovolano':'Nedovoláno','sms':'SMS','email':'Email','telefon':'Telefon','whatsapp':'WhatsApp',
 };
-const ACTIVE_STATUS_IDS=['reseni','prepojistit','vypoved','nabidka','domluveno','kontakt','nedovolano','sms','email'];
+const ACTIVE_STATUS_IDS=['reseni','prepojistit','vypoved','nabidka','domluveno','kontakt','nedovolano','sms','email','telefon','whatsapp'];
 function getStatuses(s){
   const arr=[];
   if(s&&Array.isArray(s.statuses))arr.push(...s.statuses);
@@ -454,10 +454,26 @@ function isActiveContract(s){return getStatuses(s).some(x=>ACTIVE_STATUS_IDS.inc
 function statusLabel(s){return STATUS_LABELS[s]||s||'Bez stavu'}
 function statusBadge(s){
   if(!s)return'';
-  const cls=s==='prepojistit'||s==='nedovolano'?'red':s==='vypoved'?'purple':s==='nabidka'?'orange':s==='vyrizeno'||s==='domluveno'?'green':s==='reseni'||s==='kontakt'||s==='sms'||s==='email'?'blue':'';
+  const cls=s==='prepojistit'||s==='nedovolano'?'red':s==='vypoved'?'purple':s==='nabidka'?'orange':s==='vyrizeno'||s==='domluveno'?'green':s==='reseni'||s==='kontakt'||s==='sms'||s==='email'||s==='telefon'||s==='whatsapp'?'blue':'';
   return`<span class="badge ${cls}">${esc(statusLabel(s))}</span>`;
 }
 function statusBadgesFor(s){return getStatuses(s).map(x=>statusBadge(x)).join('')}
+const CONTACT_PREFS={
+  email:{label:'Email',short:'Email',icon:'ti-mail',status:'email'},
+  telefon:{label:'Telefon / SMS',short:'Telefon',icon:'ti-phone',status:'telefon'},
+  whatsapp:{label:'WhatsApp',short:'WhatsApp',icon:'ti-brand-whatsapp',status:'whatsapp'}
+};
+function contactPrefKey(client){
+  const pref=norm(client?.contactPref||client?.preferredContact||'email');
+  if(pref.includes('whats'))return 'whatsapp';
+  if(pref.includes('tel')||pref.includes('sms')||pref.includes('mobil'))return 'telefon';
+  return 'email';
+}
+function contactPrefInfo(client){return CONTACT_PREFS[contactPrefKey(client)]}
+function contactPrefBadge(client){
+  const info=contactPrefInfo(client);
+  return`<span class="badge blue">Kontakt: ${esc(info.short)}</span>`;
+}
 function needsClientReview(client, contracts){
   return !!(client?.needsReview || (contracts||client?.contracts||[]).some(x=>x&&x.needsReview));
 }
@@ -527,7 +543,7 @@ function mergeClientsByBirthId(keepClient){
   if(!duplicates.length)return keepClient;
   duplicates.forEach(d=>{
     // doplnit prázdná pole z druhého záznamu
-    ['name','phone','email','address','note','sectionHint'].forEach(k=>{
+    ['name','phone','email','contactPref','address','note','sectionHint'].forEach(k=>{
       if(!(keepClient[k]||'') && (d[k]||''))keepClient[k]=d[k];
     });
     // sloučit smlouvy bez mazání duplicit se stejným autem/smlouvou násilně
@@ -578,7 +594,7 @@ function findMatchingClient(data){
 }
 function addClientObj(name, extra={}){
   let c=findMatchingClient({name, ...extra});
-  if(!c){c={id:uid(),name:name,phone:extra.phone||'',email:extra.email||'',address:extra.address||'',birthId:extra.birthId||'',note:'',contracts:[],needsReview:true,createdAt:today()};clients.push(c);}
+  if(!c){c={id:uid(),name:name,phone:extra.phone||'',email:extra.email||'',contactPref:extra.contactPref||'email',address:extra.address||'',birthId:extra.birthId||'',note:'',contracts:[],needsReview:true,createdAt:today()};clients.push(c);}
   return c;
 }
 function addContract(clientName, contract){
@@ -609,6 +625,8 @@ function mapStatus(s){
   if(n.includes('doml'))return'domluveno';
   if(n.includes('nechc')||n.includes('nezaj'))return'nechce';
   if(n.includes('volano'))return'volano';
+  if(n.includes('telefon'))return'telefon';
+  if(n.includes('whatsapp'))return'whatsapp';
   if(n.includes('sms'))return'sms';
   if(n.includes('email'))return'email';
   return'';
@@ -728,6 +746,7 @@ function clientCard(client,contracts,section){
         <div class="meta">${esc(client.phone||'—')}${client.birthId?' · RČ/IČO: '+esc(client.birthId):''}${typesArr.length?' · '+esc(typesArr.join(', ')):''}</div>
         <div class="badges">
           ${needsReview?reviewBadge():''}
+          ${contactPrefBadge(client)}
           ${statusesArr.map(s=>statusBadge(s)).join('')}
           ${minD!==null&&minD<99999?daysBadge(minD):''}
         </div>
@@ -794,6 +813,7 @@ function contractCard(client,s){
   const d=contractDays(s);
   let cls=contractCls(s);
   if(isBadMortgageRate(s))cls+=' rate-bad';
+  const contactInfo=contactPrefInfo(client);
   const logs=(s.log||[]).slice(-2);
   const logHtml=logs.length?`<div style="margin-top:6px;border-top:1px solid var(--line);padding-top:5px">${logs.map(l=>`<div style="font-size:11px;display:flex;gap:6px"><span style="color:var(--muted2);white-space:nowrap">${esc(l.d)}</span><span>${esc(l.t)}</span></div>`).join('')}</div>`:'';
   const noteHtml=s.note?`<div class="contract-note">${esc(s.note)}</div>`:'';
@@ -813,7 +833,7 @@ function contractCard(client,s){
       ${logHtml}
     </div>
     <div class="contract-actions">
-      <button class="btn" onclick="openEmailFor('${client.id}','${s.id}',${contractIndex})"><i class="ti ti-mail"></i>Email</button>
+      <button class="btn" onclick="openPreferredContactFor('${client.id}','${s.id}',${contractIndex})"><i class="ti ${contactInfo.icon}"></i>${esc(contactInfo.short)}</button>
       <button class="btn" onclick="openVypovedFor('${client.id}','${s.id}',${contractIndex})"><i class="ti ti-file-text"></i>Výpověď</button>
       <button class="btn" onclick="openContractModal('${client.id}','${s.id}','${s.source||''}',${contractIndex})"><i class="ti ti-edit"></i>Správa</button>
     </div>
@@ -859,14 +879,14 @@ function filterRows(rows,section){
   const q=norm(document.getElementById('q-'+section)?.value||'');
   const st=document.getElementById('st-'+section)?.value||'';
   const prod=document.getElementById('prod-'+section)?.value||'';
-  if(q)rows=rows.filter(r=>norm(r.client.name+' '+r.client.phone+' '+(r.client.email||'')+' '+(r.client.address||'')+' '+(r.client.birthId||'')+' '+(r.contract.product||'')+' '+(r.contract.number||'')).includes(q));
+  if(q)rows=rows.filter(r=>norm(r.client.name+' '+r.client.phone+' '+(r.client.email||'')+' '+(r.client.contactPref||'')+' '+contactPrefInfo(r.client).label+' '+(r.client.address||'')+' '+(r.client.birthId||'')+' '+(r.contract.product||'')+' '+(r.contract.number||'')).includes(q));
   if(st==='__active')rows=rows.filter(r=>isActiveContract(r.contract));
   else if(st)rows=rows.filter(r=>getStatuses(r.contract).includes(st));
   if(prod)rows=rows.filter(r=>(r.contract.type||'').includes(prod));
   return rows;
 }
 
-const STATUS_PRIO={prepojistit:7,vypoved:6,nabidka:5,reseni:4,domluveno:3,kontakt:2,'':1,nedovolano:1,sms:1,email:1,vyrizeno:0,nechce:0};
+const STATUS_PRIO={prepojistit:7,vypoved:6,nabidka:5,reseni:4,domluveno:3,kontakt:2,'':1,nedovolano:1,sms:1,email:1,telefon:1,whatsapp:1,vyrizeno:0,nechce:0};
 function contractPrio(x){const ss=getStatuses(x);return ss.length?Math.max(...ss.map(st=>STATUS_PRIO[st]||0)):1}
 function sortGroups(groups){
   return groups.sort((a,b)=>{
@@ -893,7 +913,7 @@ function renderSection(section,title,icon,color){
   const st=document.getElementById('st-'+section)?.value||'';
   const prod=document.getElementById('prod-'+section)?.value||'';
   const visibleEmptyClients=(!st&&!prod)
-    ? emptyClients.filter(c=>!q||norm((c.name||'')+' '+(c.phone||'')+' '+(c.email||'')+' '+(c.address||'')+' '+(c.birthId||'')).includes(q))
+    ? emptyClients.filter(c=>!q||norm((c.name||'')+' '+(c.phone||'')+' '+(c.email||'')+' '+(c.contactPref||'')+' '+contactPrefInfo(c).label+' '+(c.address||'')+' '+(c.birthId||'')).includes(q))
     : [];
   const total=raw.length;
   const clientsCount=groupedRows(raw).length+emptyClients.length;
@@ -930,7 +950,7 @@ function renderSection(section,title,icon,color){
           <option value="prepojistit">K přepojištění</option><option value="vypoved">Odeslaná výpověď</option><option value="nabidka">Odeslaná nabídka</option>
           <option value="vyrizeno">Vyřízeno</option><option value="domluveno">Domluvená schůzka</option>
           <option value="nedovolano">Nedovoláno</option><option value="nechce">Nechce</option>
-          <option value="sms">SMS</option><option value="email">Email</option>
+          <option value="sms">SMS</option><option value="email">Email</option><option value="telefon">Telefon</option><option value="whatsapp">WhatsApp</option>
         </select>
       </div>
       <div id="list-${section}"></div>`;
@@ -1002,9 +1022,10 @@ function show(id){
 function openClientModal(id, sectionHint){
   currentClientId=id||null;
   currentClientSectionHint=normalizeSectionKey(sectionHint||'')||'';
-  const c=id?clients.find(x=>x.id===id):{name:'',phone:'',email:'',birthId:'',address:'',note:'',sectionHint:currentClientSectionHint};
+  const c=id?clients.find(x=>x.id===id):{name:'',phone:'',email:'',contactPref:'email',birthId:'',address:'',note:'',sectionHint:currentClientSectionHint};
   document.getElementById('client-title').textContent=id?'Upravit klienta':'Přidat klienta';
   ['name','phone','email','birthId','address','note'].forEach(k=>{const el=document.getElementById('c-'+k);if(el)el.value=c?c[k]||'':''});
+  const pref=document.getElementById('c-contactPref');if(pref)pref.value=contactPrefKey(c);
   const del=document.getElementById('delete-client');if(del)del.style.display=id?'inline-flex':'none';
   openModal('modal-client');
 }
@@ -1015,6 +1036,7 @@ function saveClient(){
   if(!c){c={id:uid(),contracts:[],sectionHint:currentClientSectionHint,needsReview:true,createdAt:today()};clients.push(c);}
   if(currentClientSectionHint&&!c.sectionHint)c.sectionHint=currentClientSectionHint;
   ['name','phone','email','birthId','address','note'].forEach(k=>{const el=document.getElementById('c-'+k);if(el)c[k]=el.value;});
+  const pref=document.getElementById('c-contactPref');if(pref)c.contactPref=contactPrefKey({contactPref:pref.value});
   const beforeCount=clients.length;
   c=mergeClientsByBirthId(c);
   const merged=beforeCount-clients.length;
@@ -1043,6 +1065,8 @@ const STAV_VSECHNY=[
   {id:'nedovolano',label:'Nedovoláno',cls:'sel-nedovolano'},
   {id:'sms',label:'SMS',cls:'sel-sms'},
   {id:'email',label:'Email',cls:'sel-email'},
+  {id:'telefon',label:'Telefon',cls:'sel-telefon'},
+  {id:'whatsapp',label:'WhatsApp',cls:'sel-whatsapp'},
 ];
 
 function openContractModal(clientId, contractId, section, contractIndex){
@@ -1143,6 +1167,44 @@ const EMAIL_TMPL={
   zivotni5:{predmet:'Revize životního pojištění č. {cislo}',text:'Vážený/á {klient},\n\nVaše životní pojištění č. {cislo} je již 5 let aktivní — ideální čas pro revizi.\n\nRád bych s Vámi probral, zda pojištění stále odpovídá Vašim potřebám.\n\nProsím, kontaktujte mě nebo mi dejte vědět, kdy by Vám hovor vyhovoval.\n\nS pozdravem,\nFilip Solár'},
   kontakt:{predmet:'Finanční poradenství',text:'Vážený/á {klient},\n\nkontaktuji Vás v rámci možnosti optimalizace Vašeho finančního portfolia.\n\nRád bych Vám představil dostupné možnosti.\n\nProsím, kontaktujte mě nebo mi dejte vědět, kdy by Vám hovor vyhovoval.\n\nS pozdravem,\nFilip Solár'},
 };
+
+function preferredContactText(client,s){
+  const product=s?.product||'smlouvě';
+  const number=s?.number?' č. '+s.number:'';
+  return `Dobrý den, ${client.name||''}, rád bych se s Vámi krátce spojil ohledně ${product}${number}. Filip Solár`;
+}
+function phoneDigits(phone){
+  let digits=(phone||'').replace(/\D/g,'');
+  if(digits.length===9)digits='420'+digits;
+  return digits;
+}
+function logPreferredContact(clientId,contractId,contractIndex,status,label,target){
+  const c=clients.find(x=>x.id===clientId);if(!c)return;
+  const s=(Number.isInteger(contractIndex)?c.contracts[contractIndex]:c.contracts.find(x=>x.id===contractId));
+  if(!s)return;
+  if(!s.log)s.log=[];
+  s.log.push({d:today(),t:'Kontakt přes '+label+(target?' → '+target:'')});
+  const st=getStatuses(s).filter(x=>x!=='vyrizeno'&&x!=='nechce');
+  if(!st.includes(status))st.push(status);
+  s.status=st[0]||status;s.statuses=st.slice(1);
+  s.statusDates={...(s.statusDates||{}),[status]:today()};
+  save();renderAll();
+}
+function openPreferredContactFor(clientId, contractId, contractIndex){
+  const c=clients.find(x=>x.id===clientId);if(!c)return;
+  const pref=contactPrefKey(c);
+  if(pref==='email')return openEmailFor(clientId,contractId,contractIndex);
+  const s=(Number.isInteger(contractIndex)?c.contracts[contractIndex]:c.contracts.find(x=>x.id===contractId))||{};
+  const digits=phoneDigits(c.phone||'');
+  if(!digits)return alert('Klient nemá vyplněný telefon. Otevři „Upravit klienta“ a doplň číslo.');
+  if(pref==='whatsapp'){
+    logPreferredContact(clientId,contractId,contractIndex,'whatsapp','WhatsApp',c.phone||'');
+    window.open('https://wa.me/'+digits+'?text='+encodeURIComponent(preferredContactText(c,s)),'_blank');
+    return;
+  }
+  logPreferredContact(clientId,contractId,contractIndex,'telefon','telefon',c.phone||'');
+  window.location.href='tel:+'+digits;
+}
 
 function openEmailFor(clientId, contractId, contractIndex){
   const c=clients.find(x=>x.id===clientId);if(!c)return;
@@ -1420,6 +1482,7 @@ function normalizeImportedRow(o,sourceHint){
     klient,
     tel:pick(o,['tel','telefon','phone','mobil']),
     email:pick(o,['email','mail']),
+    contactPref:pick(o,['preferovanykontakt','preferovaný kontakt','kontakt','contactpref','preferredcontact','komunikace']),
     birthId:pick(o,['rodnecislo','rodné číslo','rc','rč','ico','ičo','ic','iČo']),
     adresa:pick(o,['adresa','address']),
     contract:{
@@ -1454,8 +1517,8 @@ function mergeImportedRows(rows,sourceHint){
   rows.forEach(o=>{
     const r=normalizeImportedRow(o,sourceHint);if(!r){skipped++;return;}
     let c=findMatchingClient({name:r.klient,phone:r.tel||'',email:r.email||'',address:r.adresa||'',birthId:r.birthId||''});
-    if(!c){c={id:uid(),name:r.klient,phone:r.tel||'',email:r.email||'',birthId:r.birthId||'',address:r.adresa||'',note:'',contracts:[],needsReview:true,createdAt:today()};clients.push(c);}
-    else{if(r.tel&&!c.phone)c.phone=r.tel;if(r.email&&!c.email)c.email=r.email;if(r.birthId&&!c.birthId)c.birthId=r.birthId;if(r.adresa&&!c.address)c.address=r.adresa;}
+    if(!c){c={id:uid(),name:r.klient,phone:r.tel||'',email:r.email||'',contactPref:contactPrefKey({contactPref:r.contactPref}),birthId:r.birthId||'',address:r.adresa||'',note:'',contracts:[],needsReview:true,createdAt:today()};clients.push(c);}
+    else{if(r.tel&&!c.phone)c.phone=r.tel;if(r.email&&!c.email)c.email=r.email;if(r.contactPref)c.contactPref=contactPrefKey({contactPref:r.contactPref});if(r.birthId&&!c.birthId)c.birthId=r.birthId;if(r.adresa&&!c.address)c.address=r.adresa;}
     const s=r.contract;
     if(!s.source)s.source=s.type==='život'?'životní':(s.type==='hypotéka'||s.type==='úvěr')?'úvěry':s.type;
     const exists=c.contracts.some(x=>x.number&&s.number&&x.number===s.number&&x.type===s.type);
@@ -1500,7 +1563,7 @@ function importJsonData(data){
     const incoming=data.clients||data;
     incoming.forEach(ic=>{
       let c=findMatchingClient({name:ic.name||'',phone:ic.phone||'',email:ic.email||'',address:ic.address||ic.adresa||'',birthId:ic.birthId||ic.rc||ic.rodneCislo||''});
-      if(!c){c={id:uid(),name:ic.name||'',phone:ic.phone||'',email:ic.email||'',birthId:ic.birthId||ic.rc||ic.rodneCislo||'',address:ic.address||ic.adresa||'',note:ic.note||'',contracts:[],needsReview:true,createdAt:today()};clients.push(c);} else {['phone','email','address','birthId','note'].forEach(k=>c[k]=c[k]||ic[k]||'');}
+      if(!c){c={id:uid(),name:ic.name||'',phone:ic.phone||'',email:ic.email||'',contactPref:contactPrefKey({contactPref:ic.contactPref||ic.preferredContact}),birthId:ic.birthId||ic.rc||ic.rodneCislo||'',address:ic.address||ic.adresa||'',note:ic.note||'',contracts:[],needsReview:true,createdAt:today()};clients.push(c);} else {['phone','email','address','birthId','note'].forEach(k=>c[k]=c[k]||ic[k]||'');if(ic.contactPref||ic.preferredContact)c.contactPref=contactPrefKey({contactPref:ic.contactPref||ic.preferredContact});}
       (ic.contracts||[]).forEach(s=>{if(!c.contracts.some(x=>x.number&&s.number&&x.number===s.number&&x.type===s.type)){c.contracts.push({...s,id:s.id||uid(),log:s.log||[],status:s.status||'',needsReview:true,createdAt:today()});c.needsReview=true;imported++;}else skipped++;});
     });
     if(data.templates)templates=data.templates;
