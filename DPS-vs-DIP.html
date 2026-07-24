@@ -103,6 +103,31 @@
   .recommend p{font-size:6.4px!important;line-height:1.16!important;margin:0!important}
 }
 
+/* v2 - sjednoceni do Fairlife light glass stylu */
+:root{color-scheme:light;--bg:#eef4f8;--card:rgba(255,255,255,.66);--ink:#172033;--muted:#64748b;--line:rgba(205,218,232,.68);--blue:#2563eb;--blueBg:rgba(219,234,254,.78);--green:#15803d;--greenBg:rgba(220,252,231,.76);--orange:#b45309;--orangeBg:rgba(255,247,237,.86);--purple:#7c3aed;--purpleBg:rgba(237,233,254,.78);--red:#b91c1c;--redBg:rgba(254,226,226,.78);--shadow:0 24px 70px rgba(23,32,51,.12);--radius:22px;--glass-shadow:0 20px 60px rgba(23,32,51,.10),inset 0 1px 0 rgba(255,255,255,.92)}
+body{min-height:100vh;background:linear-gradient(120deg,rgba(255,255,255,.95),rgba(255,255,255,.66) 42%,rgba(235,244,249,.82)),linear-gradient(180deg,#fff 0,var(--bg) 24rem),var(--bg);overflow-x:hidden}
+body:before{content:"";position:fixed;inset:0;z-index:-2;pointer-events:none;background:url("fairlife-lion-watermark.png") center 50%/min(88vw,900px) auto no-repeat;opacity:.07;filter:saturate(.9) contrast(1.06)}
+body:after{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;background:linear-gradient(90deg,rgba(255,255,255,.94),rgba(255,255,255,.56) 56%,rgba(255,255,255,.78)),repeating-linear-gradient(135deg,rgba(15,118,110,.035) 0 1px,transparent 1px 18px)}
+.wrapper{max-width:1280px;padding:28px 18px 56px}
+.card{background:rgba(255,255,255,.62);border:1px solid rgba(255,255,255,.82);box-shadow:var(--glass-shadow);backdrop-filter:blur(24px) saturate(155%);-webkit-backdrop-filter:blur(24px) saturate(155%)}
+.topbar{background:rgba(255,255,255,.54);border:1px solid rgba(255,255,255,.78);border-radius:28px;padding:22px 24px;box-shadow:0 18px 52px rgba(23,32,51,.08),inset 0 1px 0 rgba(255,255,255,.92)}
+.kicker{color:#61738b;letter-spacing:.08em}.topbar h1{color:#172033;font-size:36px;letter-spacing:0}.lead{color:#475569}
+.btn{min-height:40px;border:1px solid rgba(255,255,255,.76);background:rgba(255,255,255,.68);border-radius:13px;color:#172033;font-weight:850;box-shadow:inset 0 1px 0 rgba(255,255,255,.86),0 8px 22px rgba(23,32,51,.06);backdrop-filter:blur(18px) saturate(150%);-webkit-backdrop-filter:blur(18px) saturate(150%);transition:transform .14s,box-shadow .14s,background .14s}
+.btn:hover{background:rgba(255,255,255,.86);transform:translateY(-1px);box-shadow:0 14px 34px rgba(23,32,51,.10),inset 0 1px 0 rgba(255,255,255,.92)}
+.btn.primary{background:linear-gradient(135deg,#2563eb,#0891b2);border-color:rgba(255,255,255,.76);color:#fff}
+.setup{gap:14px}.clientGrid,.field,.investBox,.toggleRow,table,.warn,.goodnote,.chartSwitch{background:rgba(255,255,255,.72);border-color:rgba(205,218,232,.74);box-shadow:inset 0 1px 0 rgba(255,255,255,.82)}
+.cell{border-color:rgba(205,218,232,.64)}.field input,.field select,.cell input,.strategySelect,.strategyStat input{color:#172033;letter-spacing:0}
+.strategyCard.dps{border-color:rgba(251,146,60,.44);background:linear-gradient(135deg,rgba(255,255,255,.76),rgba(255,247,237,.72))}
+.strategyCard.dip{border-color:rgba(124,58,237,.34);background:linear-gradient(135deg,rgba(255,255,255,.76),rgba(245,243,255,.72))}
+.strategyCard.dps .strategyLabel,.strategyCard.dps .strategySelect,.strategyCard.dps .strategyStat input,.strategyCard.dps .fixedFee{color:#b45309}
+.strategyCard.dip .strategyLabel,.strategyCard.dip .strategySelect,.strategyCard.dip .strategyStat input{color:#5b21b6}
+.metric{background:rgba(255,255,255,.70);border-color:rgba(255,255,255,.78);box-shadow:0 8px 22px rgba(23,32,51,.055),inset 0 1px 0 rgba(255,255,255,.88)}
+.comparison{grid-template-columns:repeat(3,minmax(0,1fr))}.product h3,.sectionHead h2,.tableCard h2,.recommend h2{color:#172033;letter-spacing:0}.badge{letter-spacing:.02em}
+th{background:rgba(248,251,255,.82);color:#334155}td,th{border-color:rgba(205,218,232,.72)}
+.recommend{background:linear-gradient(135deg,rgba(255,255,255,.74),rgba(239,246,255,.66));box-shadow:var(--glass-shadow)}
+.client-export .actions,.client-export .productDiff{display:none!important}.client-export .wrapper{max-width:1180px}.client-export .topbar{margin-bottom:18px}
+@media(max-width:1100px){.comparison{grid-template-columns:1fr}.topbar{display:grid;grid-template-columns:1fr}.actions{justify-content:flex-start}}
+
 </style>
 </head>
 <body>
@@ -113,7 +138,7 @@
       <h1>DPS vs DIP – model podle pravidel 2027</h1>
       <p class="lead">Objektivní porovnání penzijního spoření, dlouhodobého investičního produktu a jejich optimální kombinace.</p>
     </div>
-    <div class="actions"><button class="btn" onclick="resetModel()">↻ Vrátit do výchozího</button><button class="btn primary" onclick="window.print()">🖨 Tisk / Uložit PDF</button></div>
+    <div class="actions"><button class="btn" onclick="resetModel()">↻ Vrátit do výchozího</button><button class="btn primary" onclick="exportClientHTML()">HTML pro klienta</button><button class="btn" onclick="window.print()">🖨 Tisk / Uložit PDF</button></div>
   </header>
 
   <section class="setup">
@@ -223,7 +248,7 @@ function taxDps(own){return Math.min(Math.max((own-DPS_LIMIT)*12,0),TAX_LIMIT)*T
 function getAllocation(){const mode=$('allocationMode').value;const totalOwn=inputVal('own'),totalEmp=inputVal('employer');if(mode==='manual'){return{mode,dpsOwn:inputVal('manualDpsOwn'),dipOwn:inputVal('manualDipOwn'),dpsEmp:inputVal('manualDpsEmp'),dipEmp:inputVal('manualDipEmp'),totalOwn:inputVal('manualDpsOwn')+inputVal('manualDipOwn'),totalEmp:inputVal('manualDpsEmp')+inputVal('manualDipEmp')}}const dpsOwn=Math.min(totalOwn,DPS_LIMIT),dipOwn=Math.max(totalOwn-DPS_LIMIT,0);return{mode,dpsOwn,dipOwn,dpsEmp:$('comboEmployer').value==='dps'?totalEmp:0,dipEmp:$('comboEmployer').value==='dip'?totalEmp:0,totalOwn,totalEmp}}
 function syncManualFields(){const mode=$('allocationMode').value;const box=$('manualAllocationBox');if(mode==='auto'){box.classList.add('hiddenBox');const totalOwn=inputVal('own'),totalEmp=inputVal('employer');$('manualDpsOwn').value=Math.min(totalOwn,DPS_LIMIT);$('manualDipOwn').value=Math.max(totalOwn-DPS_LIMIT,0);$('manualDpsEmp').value=$('comboEmployer').value==='dps'?totalEmp:0;$('manualDipEmp').value=$('comboEmployer').value==='dip'?totalEmp:0;}else{box.classList.remove('hiddenBox');}}
 function annualStateForCurrentAge(own, age){let sum=0;for(let m=0;m<12;m++)sum+=stateContributionForAge(own,age+m/12);return sum}
-function calcProduct({product,own,emp,yearsOverride=null}){const age=inputVal('age'),target=inputVal('targetAge'),years=yearsOverride??Math.max(0,target-age),reinvest=$('reinvestTax').checked;const dpsAnnual=inputVal('dpsGross')/100-DPS_FEE;const dipAnnual=inputVal('dipGross')/100-inputVal('dipFee')/100;const mdps=monthlyRate(dpsAnnual),mdip=monthlyRate(dipAnnual);let ownEmp=0,state=0,statePrincipal=0,taxBucket=0,taxPrincipal=0,series=[];for(let y=0;y<years;y++){for(let m=0;m<12;m++){const exactAge=age+y+m/12;if(product==='dps'){const sc=stateContributionForAge(own,exactAge);statePrincipal+=sc;ownEmp=(ownEmp+own+emp)*(1+mdps);state=(state+sc)*(1+mdps)}else{ownEmp=(ownEmp+own+emp)*(1+mdip);taxBucket*=1+mdip}if(product==='dip'&&reinvest&&m===11){const td=taxDip(own);taxBucket+=td;taxPrincipal+=td}}series.push({year:Math.floor(age+y+1),total:ownEmp+state+taxBucket,ownEmp,state,statePrincipal,taxBucket,taxPrincipal})}return{product,age,years,own,emp,annual:product==='dps'?dpsAnnual:dipAnnual,ownEmp,state,statePrincipal,taxBucket,taxPrincipal,total:ownEmp+state+taxBucket,series,taxYear:product==='dip'?taxDip(own):taxDps(own),stateYear:product==='dps'?annualStateForCurrentAge(own,age):0}}
+function calcProduct({product,own,emp,yearsOverride=null}){const age=inputVal('age'),target=inputVal('targetAge'),years=yearsOverride??Math.max(0,target-age),reinvest=$('reinvestTax').checked;const dpsAnnual=inputVal('dpsGross')/100-DPS_FEE;const dipAnnual=inputVal('dipGross')/100-inputVal('dipFee')/100;const mdps=monthlyRate(dpsAnnual),mdip=monthlyRate(dipAnnual);let ownEmp=0,state=0,statePrincipal=0,taxBucket=0,taxPrincipal=0,series=[];for(let y=0;y<years;y++){for(let m=0;m<12;m++){const exactAge=age+y+m/12;if(product==='dps'){const sc=stateContributionForAge(own,exactAge);statePrincipal+=sc;ownEmp=(ownEmp+own+emp)*(1+mdps);state=(state+sc)*(1+mdps)}else{ownEmp=(ownEmp+own+emp)*(1+mdip);taxBucket*=1+mdip}if(product==='dip'&&m===11){const td=taxDip(own);taxPrincipal+=td;if(reinvest)taxBucket+=td}}series.push({year:Math.floor(age+y+1),total:ownEmp+state+taxBucket,ownEmp,state,statePrincipal,taxBucket,taxPrincipal})}return{product,age,years,own,emp,annual:product==='dps'?dpsAnnual:dipAnnual,ownEmp,state,statePrincipal,taxBucket,taxPrincipal,total:ownEmp+state+taxBucket,series,taxYear:product==='dip'?taxDip(own):taxDps(own),stateYear:product==='dps'?annualStateForCurrentAge(own,age):0}}
 function calcCombo(yearsOverride=null){const a=getAllocation();const dps=calcProduct({product:'dps',own:a.dpsOwn,emp:a.dpsEmp,yearsOverride});const dip=calcProduct({product:'dip',own:a.dipOwn,emp:a.dipEmp,yearsOverride});const series=dps.series.map((s,i)=>({year:s.year,total:s.total+(dip.series[i]?.total||0),dps:s.total,dip:dip.series[i]?.total||0}));return{...a,dps,dip,total:dps.total+dip.total,series,taxYear:taxDip(a.dipOwn),stateYear:annualStateForCurrentAge(a.dpsOwn,inputVal('age'))}}
 function getAll(yearsOverride=null){const a=getAllocation();return{dps:calcProduct({product:'dps',own:a.totalOwn,emp:a.totalEmp,yearsOverride}),dip:calcProduct({product:'dip',own:a.totalOwn,emp:a.totalEmp,yearsOverride}),combo:calcCombo(yearsOverride)}}
 function barRows(el,rows){const max=Math.max(...rows.map(r=>Math.abs(r.v)),1);el.innerHTML=rows.map((r,i)=>`<div class="barrow"><span>${r.n}</span><div class="bar"><div class="fill f${i+1}" style="width:${Math.max(2,Math.abs(r.v)/max*100)}%"></div></div><b>${fmt(r.v)}</b></div>`).join('')}
@@ -237,6 +262,29 @@ function early(){const wa=inputVal('withdrawAge'),age=inputVal('age'),yrs=Math.m
 function params(){const age=inputVal('age'),rate=age<30?40:20,max=age<30?680:340; if($('horizonView')) $('horizonView').value=Math.max(0,inputVal('targetAge')-age);$('supportPill').textContent=age<30?`Klient má do 30 let: státní podpora ${rate} %, max. ${fmt(max)}/měs.`:`Klient má 30+ let: státní podpora ${rate} %, max. ${fmt(max)}/měs.`;$('ownYear').textContent=`${fmt(inputVal('own')*12)} / rok`;$('empYear').textContent=`${fmt(inputVal('employer')*12)} / rok`;$('taxInfo').textContent=`Daňová úspora DIP při celé vlastní platbě do DIP: ${fmt(taxDip(inputVal('own')))} ročně. Čisté zhodnocení DPS: ${pct((inputVal('dpsGross')/100-DPS_FEE)*100)}, DIP: ${pct((inputVal('dipGross')/100-inputVal('dipFee')/100)*100)}.`}
 function allocationView(){const a=getAllocation();$('comboNote').innerHTML=`<strong>Kombinace:</strong> ${a.mode==='auto'?'automaticky':'ručně'} nastaveno ${fmt(a.dpsOwn)}/měs. vlastního vkladu do DPS a ${fmt(a.dipOwn)}/měs. do DIP. Zaměstnavatel: ${fmt(a.dpsEmp)}/měs. DPS, ${fmt(a.dipEmp)}/měs. DIP.`}
 function recommend(all,win){const a=getAllocation(),own=a.totalOwn;let text;if(own<=DPS_LIMIT){text=`Při vlastním příspěvku ${fmt(own)}/měs. je hlavní otázka DPS vs. DIP. U částek do ${fmt(DPS_LIMIT)} je DPS silné díky státní podpoře, zvlášť u klientů do 30 let. Nejvyšší modelová hodnota nyní vychází: ${productLabel(win.best)}.`}else{text=`Protože vlastní příspěvek přesahuje ${fmt(DPS_LIMIT)}/měs., dává smysl ukázat kombinaci: prvních ${fmt(DPS_LIMIT)} do DPS kvůli plné státní podpoře a zbytek ${fmt(Math.max(own-DPS_LIMIT,0))} do DIP kvůli širším investičním možnostem a daňové úspoře. Nejvyšší modelová hodnota nyní vychází: ${productLabel(win.best)}.`}if(!$('reinvestTax').checked)text+=' Daňová úspora DIP není v tomto scénáři reinvestována.';$('recommendText').textContent=text}
+function escapeHTML(value){return String(value??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]))}
+function clientFileName(){const raw=($('clientName')?.value||'klient').trim();const safe=raw.normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-zA-Z0-9]+/g,'-').replace(/^-|-$/g,'').toLowerCase();return 'dps-vs-dip-'+(safe||'klient')+'.html'}
+function freezeFormState(clone){clone.querySelectorAll('input,select,textarea').forEach(el=>{const src=el.id?$(el.id):null;if(!src)return;if(el.tagName==='SELECT'){Array.from(el.options).forEach((opt,i)=>{if(i===src.selectedIndex)opt.setAttribute('selected','selected');else opt.removeAttribute('selected')})}else if(el.type==='checkbox'||el.type==='radio'){if(src.checked)el.setAttribute('checked','checked');else el.removeAttribute('checked')}else{el.setAttribute('value',src.value)}})}
+function exportClientHTML(){update();const source=document.querySelector('.wrapper');if(!source)return;const clone=source.cloneNode(true);freezeFormState(clone);clone.querySelectorAll('canvas').forEach(canvasClone=>{const original=canvasClone.id?$(canvasClone.id):null;if(!original||typeof original.toDataURL!=='function')return;const img=document.createElement('img');img.src=original.toDataURL('image/png');img.alt='Graf DPS vs DIP';img.style.width='100%';img.style.height='auto';img.style.display='block';canvasClone.replaceWith(img)});const styles=Array.from(document.querySelectorAll('style')).map(s=>s.textContent).join('\n');const client=$('clientName')?.value||'Klient';const html=`<!doctype html>
+<html lang="cs">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>DPS vs DIP - ${escapeHTML(client)}</title>
+<style>
+${styles}
+body{margin:0;padding:18px}
+.client-export-shell{max-width:1180px;margin:0 auto}
+.client-export-shell .wrapper{padding:0!important;max-width:1180px!important}
+.actions,.productDiff{display:none!important}
+img{object-fit:contain;background:rgba(255,255,255,.72);border:1px solid rgba(205,218,232,.72);border-radius:18px}
+@media(max-width:760px){body{padding:10px}.topbar,.setup,.mainGrid,.tablesGrid,.comparison{grid-template-columns:1fr!important}.topbar h1{font-size:30px!important}}
+</style>
+</head>
+<body class="client-export">
+<div class="client-export-shell">${clone.outerHTML}</div>
+</body>
+</html>`;const blob=new Blob([html],{type:'text/html;charset=utf-8'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=clientFileName();document.body.appendChild(a);a.click();a.remove();URL.revokeObjectURL(url)}
 function resetModel(){$('clientName').value='Bhardwaj';$('age').value=30;$('targetAge').value=65;$('dpsStrategy').value='dynamic';$('dipStrategy').value='dynamic';$('dpsGross').value=7.0;$('dipGross').value=9.0;$('dipFee').value=.8;$('own').value=1500;$('employer').value=2500;$('allocationMode').value='auto';$('comboEmployer').value='dps';$('manualDpsOwn').value=1700;$('manualDipOwn').value=0;$('manualDpsEmp').value=2500;$('manualDipEmp').value=0;$('reinvestTax').checked=true;$('showCombo').checked=true;$('withdrawAge').value=59;update()}
 $('dpsStrategy').addEventListener('change',()=>{$('dpsGross').value=strategyReturns[$('dpsStrategy').value];update()});$('dipStrategy').addEventListener('change',()=>{$('dipGross').value=strategyReturns[$('dipStrategy').value];update()});document.querySelectorAll('input,select').forEach(el=>{el.addEventListener('input',update);el.addEventListener('change',update)});update();
 </script>
