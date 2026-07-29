@@ -104,24 +104,25 @@
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      min-height: 44px;
-      padding: 0 16px;
+      min-height: 38px;
+      padding: 0 13px;
       border-radius: 999px;
       border: 1px solid rgba(255,255,255,.88);
       background: rgba(255,255,255,.64);
       color: #17405f;
       text-decoration: none;
-      font-weight: 850;
+      font-size: 0.86rem;
+      font-weight: 820;
       box-shadow: var(--shadow);
       white-space: nowrap;
     }
 
     .tabs {
       display: flex;
-      gap: 9px;
+      gap: 6px;
       flex-wrap: wrap;
       margin: 18px 0;
-      padding: 8px;
+      padding: 6px;
       border: 1px solid rgba(255,255,255,.82);
       border-radius: 999px;
       background: rgba(255,255,255,.46);
@@ -132,13 +133,14 @@
 
     .tab {
       width: auto;
-      min-height: 42px;
-      padding: 0 14px;
+      min-height: 36px;
+      padding: 0 11px;
       border: 0;
       border-radius: 999px;
       background: transparent;
       color: #42526b;
-      font-weight: 850;
+      font-size: 0.84rem;
+      font-weight: 820;
       cursor: pointer;
       box-shadow: none;
     }
@@ -232,27 +234,28 @@
 
     .btn {
       width: auto;
-      min-height: 45px;
+      min-height: 38px;
       border: 0;
-      border-radius: 14px;
-      padding: 0 14px;
+      border-radius: 12px;
+      padding: 0 12px;
       color: #fff;
       background: linear-gradient(135deg, #2563eb, #5b8cff);
-      font-weight: 900;
+      font-size: 0.86rem;
+      font-weight: 820;
       cursor: pointer;
-      box-shadow: 0 14px 30px rgba(37, 99, 235, 0.2);
+      box-shadow: 0 10px 22px rgba(37, 99, 235, 0.16);
     }
 
     .btn.secondary {
       color: #17405f;
       background: rgba(255,255,255,.82);
       border: 1px solid var(--line);
-      box-shadow: 0 12px 30px rgba(23,32,51,.07);
+      box-shadow: 0 8px 20px rgba(23,32,51,.06);
     }
 
     .btn.danger {
       background: linear-gradient(135deg, #dc2626, #fb7185);
-      box-shadow: 0 14px 30px rgba(220, 38, 38, 0.18);
+      box-shadow: 0 10px 22px rgba(220, 38, 38, 0.15);
     }
 
     .module {
@@ -443,7 +446,7 @@
       display: flex;
       gap: 9px;
       align-items: center;
-      padding: 11px 12px;
+      padding: 9px 11px;
       border-radius: 14px;
       border: 1px solid var(--line);
       background: rgba(255,255,255,.76);
@@ -454,6 +457,26 @@
     .check input {
       width: 18px;
       min-height: 18px;
+      padding: 0;
+    }
+
+    .inline-check {
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+      min-height: 40px;
+      padding: 9px 11px;
+      border-radius: 14px;
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,.78);
+      color: #26354d;
+      font-size: 0.86rem;
+      font-weight: 820;
+    }
+
+    .inline-check input {
+      width: 17px;
+      min-height: 17px;
       padding: 0;
     }
 
@@ -645,6 +668,7 @@
             <div class="field"><label>Společná jednorázová investice</label><input id="sharedLump" type="number" value="0"></div>
             <div class="field"><label>Společná pravidelná investice</label><input id="sharedMonthlyInvestment" type="number" value="0"></div>
           </div>
+          <label class="inline-check"><input id="useSharedInvestments" type="checkbox" checked> Započítat společné investice do plánu celé domácnosti</label>
           <div id="investmentWrap"></div>
         </div>
 
@@ -787,9 +811,10 @@
       householdName: "Rodina Novákových",
       householdType: "Manželé",
       adultCount: 2,
+      useSharedInvestments: true,
       members: [
-        { name: "Martin Novák", age: 35, gender: "Muž", incomeType: "Zaměstnanec", netIncome: 150000, grossIncome: 210000, assessmentBase: 210000, socialExtra: false, socialPayment: 0, pensionAge: 65, personalInvestments: 3000000, monthlyInvestment: 15000, lumpInvestment: 0, investmentYield: 8 },
-        { name: "Jana Nováková", age: 34, gender: "Žena", incomeType: "Zaměstnanec", netIncome: 90000, grossIncome: 125000, assessmentBase: 125000, socialExtra: false, socialPayment: 0, pensionAge: 65, personalInvestments: 0, monthlyInvestment: 5000, lumpInvestment: 0, investmentYield: 8 }
+        { name: "Martin Novák", age: 35, birthDate: "", birthNumber: "", gender: "Muž", incomeType: "Zaměstnanec", netIncome: 150000, grossIncome: 210000, assessmentBase: 210000, socialExtra: false, socialPayment: 0, pensionAge: 65, personalInvestments: 3000000, monthlyInvestment: 15000, lumpInvestment: 0, investmentYield: 8 },
+        { name: "Jana Nováková", age: 34, birthDate: "", birthNumber: "", gender: "Žena", incomeType: "Zaměstnanec", netIncome: 90000, grossIncome: 125000, assessmentBase: 125000, socialExtra: false, socialPayment: 0, pensionAge: 65, personalInvestments: 0, monthlyInvestment: 5000, lumpInvestment: 0, investmentYield: 8 }
       ]
     };
 
@@ -798,6 +823,7 @@
         householdName: "",
         householdType: "Manželé",
         adultCount: 2,
+        useSharedInvestments: true,
         sharedAssets: 0,
         exitAsset: 0,
         exitYield: 0,
@@ -829,15 +855,15 @@
         insuranceMonthly: 0,
         reserveMonthly: 0,
         members: [
-          { name: "", age: 0, gender: "Muž", incomeType: "Zaměstnanec", netIncome: 0, grossIncome: 0, assessmentBase: 0, socialExtra: false, socialPayment: 0, pensionAge: 0, personalInvestments: 0, monthlyInvestment: 0, lumpInvestment: 0, investmentYield: 0 },
-          { name: "", age: 0, gender: "Žena", incomeType: "Zaměstnanec", netIncome: 0, grossIncome: 0, assessmentBase: 0, socialExtra: false, socialPayment: 0, pensionAge: 0, personalInvestments: 0, monthlyInvestment: 0, lumpInvestment: 0, investmentYield: 0 }
+          { name: "", age: 0, birthDate: "", birthNumber: "", gender: "Muž", incomeType: "Zaměstnanec", netIncome: 0, grossIncome: 0, assessmentBase: 0, socialExtra: false, socialPayment: 0, pensionAge: 0, personalInvestments: 0, monthlyInvestment: 0, lumpInvestment: 0, investmentYield: 0 },
+          { name: "", age: 0, birthDate: "", birthNumber: "", gender: "Žena", incomeType: "Zaměstnanec", netIncome: 0, grossIncome: 0, assessmentBase: 0, socialExtra: false, socialPayment: 0, pensionAge: 0, personalInvestments: 0, monthlyInvestment: 0, lumpInvestment: 0, investmentYield: 0 }
         ]
       };
     }
 
     const fieldIds = [
       "householdName","householdType","adultCount","sharedAssets","exitAsset","exitYield","rentIncome",
-      "sharedLump","sharedMonthlyInvestment","rentStartAge","rent1","rent1Until","rent2","planEndAge",
+      "sharedLump","sharedMonthlyInvestment","useSharedInvestments","rentStartAge","rent1","rent1Until","rent2","planEndAge",
       "legacyCapital","growthBefore","growthDuring","inflation","mortgageAmount","mortgageRate",
       "mortgageYears","mortgageLump","mortgageMonthlyInvest","mortgageInvestYield","childrenCount",
       "widowPension","orphanPension","otherLoansPayment","currentDeathCover","currentDisabilityCover",
@@ -870,6 +896,43 @@
       return n(value) / 100;
     }
 
+    function ageFromDate(dateValue) {
+      if (!dateValue) return null;
+      const birth = new Date(dateValue);
+      if (Number.isNaN(birth.getTime())) return null;
+      const today = new Date();
+      let age = today.getFullYear() - birth.getFullYear();
+      const beforeBirthday = today.getMonth() < birth.getMonth() || today.getMonth() === birth.getMonth() && today.getDate() < birth.getDate();
+      if (beforeBirthday) age -= 1;
+      return age >= 0 && age < 120 ? age : null;
+    }
+
+    function dateFromBirthNumber(rawValue) {
+      const digits = String(rawValue || "").replace(/\D/g, "");
+      if (digits.length < 6) return "";
+      const yy = n(digits.slice(0, 2));
+      let mm = n(digits.slice(2, 4));
+      const dd = n(digits.slice(4, 6));
+      if (mm > 70) mm -= 70;
+      else if (mm > 50) mm -= 50;
+      else if (mm > 20) mm -= 20;
+      const currentYY = new Date().getFullYear() % 100;
+      const year = yy <= currentYY ? 2000 + yy : 1900 + yy;
+      const iso = `${year}-${String(mm).padStart(2, "0")}-${String(dd).padStart(2, "0")}`;
+      return ageFromDate(iso) === null ? "" : iso;
+    }
+
+    function syncMemberAge(member, changedKey) {
+      if (changedKey === "birthNumber") {
+        const parsedDate = dateFromBirthNumber(member.birthNumber);
+        if (parsedDate) member.birthDate = parsedDate;
+      }
+      if (changedKey === "birthDate" || changedKey === "birthNumber") {
+        const parsedAge = ageFromDate(member.birthDate);
+        if (parsedAge !== null) member.age = parsedAge;
+      }
+    }
+
     function loadState() {
       try {
         const saved = JSON.parse(localStorage.getItem(STORAGE_KEY));
@@ -891,7 +954,7 @@
     function renderMembers() {
       const count = Math.max(1, Math.min(2, n($("adultCount").value || state.adultCount)));
       while (state.members.length < count) {
-        state.members.push({ name: "Další člen", age: 35, gender: "Žena", incomeType: "Zaměstnanec", netIncome: 0, grossIncome: 0, assessmentBase: 0, socialExtra: false, socialPayment: 0, pensionAge: 65, personalInvestments: 0, monthlyInvestment: 0, lumpInvestment: 0, investmentYield: 8 });
+        state.members.push({ name: "Další člen", age: 35, birthDate: "", birthNumber: "", gender: "Žena", incomeType: "Zaměstnanec", netIncome: 0, grossIncome: 0, assessmentBase: 0, socialExtra: false, socialPayment: 0, pensionAge: 65, personalInvestments: 0, monthlyInvestment: 0, lumpInvestment: 0, investmentYield: 8 });
       }
       state.members = state.members.slice(0, count);
 
@@ -904,8 +967,10 @@
           <div class="grid3">
             <div class="field"><label>Jméno</label><input data-member="${index}" data-key="name" value="${escapeHtml(member.name)}"></div>
             <div class="field"><label>Věk</label><input type="number" data-member="${index}" data-key="age" value="${member.age}"></div>
+            <div class="field"><label>Datum narození</label><input type="date" data-member="${index}" data-key="birthDate" value="${escapeHtml(member.birthDate || "")}"></div>
+            <div class="field"><label>Rodné číslo</label><input inputmode="numeric" data-member="${index}" data-key="birthNumber" value="${escapeHtml(member.birthNumber || "")}" placeholder="např. 850101/1234"></div>
             <div class="field"><label>Pohlaví</label><select data-member="${index}" data-key="gender"><option ${member.gender === "Muž" ? "selected" : ""}>Muž</option><option ${member.gender === "Žena" ? "selected" : ""}>Žena</option></select></div>
-            <div class="field"><label>Typ příjmu</label><select data-member="${index}" data-key="incomeType"><option ${member.incomeType === "Zaměstnanec" ? "selected" : ""}>Zaměstnanec</option><option ${member.incomeType === "OSVČ" ? "selected" : ""}>OSVČ</option><option ${member.incomeType === "OSVČ paušál" ? "selected" : ""}>OSVČ paušál</option><option ${member.incomeType === "Bez příjmu" ? "selected" : ""}>Bez příjmu</option></select></div>
+            <div class="field"><label>Typ příjmu</label><select data-member="${index}" data-key="incomeType"><option ${member.incomeType === "Zaměstnanec" ? "selected" : ""}>Zaměstnanec</option><option ${member.incomeType === "OSVČ" ? "selected" : ""}>OSVČ</option><option ${member.incomeType === "OSVČ paušál" ? "selected" : ""}>OSVČ paušál</option><option ${member.incomeType === "Zaměstnanec + OSVČ" ? "selected" : ""}>Zaměstnanec + OSVČ</option><option ${member.incomeType === "Bez příjmu" ? "selected" : ""}>Bez příjmu</option></select></div>
             <div class="field"><label>Čistý příjem</label><input type="number" data-member="${index}" data-key="netIncome" value="${member.netIncome}"></div>
             <div class="field"><label>Hrubý příjem / základ</label><input type="number" data-member="${index}" data-key="grossIncome" value="${member.grossIncome}"></div>
             <div class="field"><label>Vyměřovací základ</label><input type="number" data-member="${index}" data-key="assessmentBase" value="${member.assessmentBase}"></div>
@@ -935,6 +1000,13 @@
           const member = state.members[n(input.dataset.member)];
           const key = input.dataset.key;
           member[key] = input.type === "number" ? n(input.value) : input.value;
+          syncMemberAge(member, key);
+          if (key === "birthDate" || key === "birthNumber") {
+            const ageInput = document.querySelector(`[data-member="${input.dataset.member}"][data-key="age"]`);
+            const birthDateInput = document.querySelector(`[data-member="${input.dataset.member}"][data-key="birthDate"]`);
+            if (ageInput) ageInput.value = member.age;
+            if (birthDateInput) birthDateInput.value = member.birthDate || "";
+          }
           if (key === "incomeType") renderMembers();
           calculateAll();
         });
@@ -949,7 +1021,10 @@
       fieldIds.forEach(id => {
         const el = $(id);
         if (!el) return;
-        if (state[id] !== undefined) el.value = state[id];
+        if (state[id] !== undefined) {
+          if (el.type === "checkbox") el.checked = Boolean(state[id]);
+          else el.value = state[id];
+        }
         el.addEventListener("input", () => {
           if (id === "adultCount") {
             state.adultCount = n(el.value);
@@ -964,7 +1039,8 @@
       fieldIds.forEach(id => {
         const el = $(id);
         if (!el) return;
-        state[id] = el.type === "number" || el.tagName === "SELECT" && id === "adultCount" ? n(el.value) || el.value : el.value;
+        if (el.type === "checkbox") state[id] = el.checked;
+        else state[id] = el.type === "number" || el.tagName === "SELECT" && id === "adultCount" ? n(el.value) || el.value : el.value;
       });
       state.householdName = $("householdName").value;
       state.householdType = $("householdType").value;
@@ -977,6 +1053,7 @@
       let rate = 0.38;
       if (member.incomeType === "OSVČ") rate = 0.28;
       if (member.incomeType === "OSVČ paušál") rate = 0.24;
+      if (member.incomeType === "Zaměstnanec + OSVČ") rate = 0.34;
       if (member.incomeType === "Bez příjmu") rate = 0;
       const pension = Math.max(0, base * rate + socialBonus);
       return Math.min(pension, Math.max(0, base * 0.62));
@@ -985,7 +1062,10 @@
     function estimateDisability(member) {
       const pension = estimatePension(member);
       if (member.incomeType === "Bez příjmu") return 0;
-      const factor = member.incomeType === "Zaměstnanec" ? 0.78 : member.incomeType === "OSVČ" ? 0.62 : 0.54;
+      let factor = 0.54;
+      if (member.incomeType === "Zaměstnanec") factor = 0.78;
+      if (member.incomeType === "OSVČ") factor = 0.62;
+      if (member.incomeType === "Zaměstnanec + OSVČ") factor = 0.7;
       return Math.max(0, pension * factor);
     }
 
@@ -1045,9 +1125,10 @@
       const neededLine = [];
       const startWealth = results.currentWealth || 0;
       const monthly = results.monthlyInvestments || 0;
+      const sharedLump = $("useSharedInvestments").checked ? n($("sharedLump").value) : 0;
       for (let age = primaryAge; age <= planEnd; age++) {
         const yearsFromNow = Math.max(0, age - primaryAge);
-        let value = fvSeries(startWealth + n($("sharedLump").value), monthly, growthBefore, yearsFromNow);
+        let value = fvSeries(startWealth + sharedLump, monthly, growthBefore, yearsFromNow);
         if (age >= rentStart) value = Math.max(0, results.capitalAtRent - (age - rentStart) * 12 * n($("rent2").value) * 0.55);
         years.push(age);
         values.push(value);
@@ -1151,10 +1232,13 @@
       const personalInvestments = state.members.reduce((sum, member) => sum + n(member.personalInvestments), 0);
       const personalMonthly = state.members.reduce((sum, member) => sum + n(member.monthlyInvestment), 0);
       const personalLumps = state.members.reduce((sum, member) => sum + n(member.lumpInvestment), 0);
+      const useSharedInvestments = $("useSharedInvestments").checked;
+      const sharedLump = useSharedInvestments ? n($("sharedLump").value) : 0;
+      const sharedMonthly = useSharedInvestments ? n($("sharedMonthlyInvestment").value) : 0;
       const currentWealth = personalInvestments + n($("sharedAssets").value) + n($("exitAsset").value);
-      const monthlyInvestments = personalMonthly + n($("sharedMonthlyInvestment").value);
+      const monthlyInvestments = personalMonthly + sharedMonthly;
       const weightedYield = state.members.length ? state.members.reduce((sum, member) => sum + pct(member.investmentYield), 0) / state.members.length : growthBefore;
-      const futurePersonal = fvSeries(personalInvestments + personalLumps + n($("sharedLump").value), monthlyInvestments, weightedYield || growthBefore, yearsToRent);
+      const futurePersonal = fvSeries(personalInvestments + personalLumps + sharedLump, monthlyInvestments, weightedYield || growthBefore, yearsToRent);
       const exitFuture = n($("exitAsset").value) * Math.pow(1 + pct($("exitYield").value), yearsToRent);
       const capitalAtRent = futurePersonal + n($("sharedAssets").value) + exitFuture;
       const rentNeeded = neededCapitalFromAge(rentStart, growthDuring, false);
@@ -1491,7 +1575,10 @@
 
     function applyState() {
       fieldIds.forEach(id => {
-        if ($(id)) $(id).value = state[id] ?? "";
+        if ($(id)) {
+          if ($(id).type === "checkbox") $(id).checked = Boolean(state[id]);
+          else $(id).value = state[id] ?? "";
+        }
       });
       $("householdName").value = state.householdName ?? "";
       $("householdType").value = state.householdType || defaults.householdType;
