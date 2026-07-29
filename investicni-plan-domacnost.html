@@ -793,6 +793,48 @@
       ]
     };
 
+    function createBlankState() {
+      return {
+        householdName: "",
+        householdType: "Manželé",
+        adultCount: 2,
+        sharedAssets: 0,
+        exitAsset: 0,
+        exitYield: 0,
+        rentIncome: 0,
+        sharedLump: 0,
+        sharedMonthlyInvestment: 0,
+        rentStartAge: 0,
+        rent1: 0,
+        rent1Until: 0,
+        rent2: 0,
+        planEndAge: 0,
+        legacyCapital: 0,
+        growthBefore: 0,
+        growthDuring: 0,
+        inflation: 0,
+        mortgageAmount: 0,
+        mortgageRate: 0,
+        mortgageYears: 0,
+        mortgageLump: 0,
+        mortgageMonthlyInvest: 0,
+        mortgageInvestYield: 0,
+        childrenCount: 0,
+        widowPension: 0,
+        orphanPension: 0,
+        otherLoansPayment: 0,
+        currentDeathCover: 0,
+        currentDisabilityCover: 0,
+        householdExpenses: 0,
+        insuranceMonthly: 0,
+        reserveMonthly: 0,
+        members: [
+          { name: "", age: 0, gender: "Muž", incomeType: "Zaměstnanec", netIncome: 0, grossIncome: 0, assessmentBase: 0, socialExtra: false, socialPayment: 0, pensionAge: 0, personalInvestments: 0, monthlyInvestment: 0, lumpInvestment: 0, investmentYield: 0 },
+          { name: "", age: 0, gender: "Žena", incomeType: "Zaměstnanec", netIncome: 0, grossIncome: 0, assessmentBase: 0, socialExtra: false, socialPayment: 0, pensionAge: 0, personalInvestments: 0, monthlyInvestment: 0, lumpInvestment: 0, investmentYield: 0 }
+        ]
+      };
+    }
+
     const fieldIds = [
       "householdName","householdType","adultCount","sharedAssets","exitAsset","exitYield","rentIncome",
       "sharedLump","sharedMonthlyInvestment","rentStartAge","rent1","rent1Until","rent2","planEndAge",
@@ -1429,14 +1471,16 @@
       });
       $("clearCurrent").addEventListener("click", () => {
         if (!confirm("Vymazat aktuálně vyplněnou domácnost?")) return;
-        state = structuredClone(defaults);
+        state = createBlankState();
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
         applyState();
         setStatus("Aktuální domácnost je vymazaná.");
       });
       $("clearAll").addEventListener("click", () => {
         if (!confirm("Vymazat všechna uložená data této aplikace?")) return;
         localStorage.removeItem(STORAGE_KEY);
-        state = structuredClone(defaults);
+        state = createBlankState();
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
         applyState();
         setStatus("Všechna uložená data jsou vymazaná.");
       });
@@ -1447,9 +1491,9 @@
 
     function applyState() {
       fieldIds.forEach(id => {
-        if ($(id) && state[id] !== undefined) $(id).value = state[id];
+        if ($(id)) $(id).value = state[id] ?? "";
       });
-      $("householdName").value = state.householdName || defaults.householdName;
+      $("householdName").value = state.householdName ?? "";
       $("householdType").value = state.householdType || defaults.householdType;
       $("adultCount").value = state.adultCount || defaults.adultCount;
       renderMembers();
