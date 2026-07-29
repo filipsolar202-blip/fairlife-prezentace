@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="cs">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Investice - samostatná kalkulačka</title>
+  <style>
+    :root{--bg:#eef4f8;--panel:rgba(255,255,255,.72);--text:#172033;--muted:#64748b;--line:rgba(205,218,232,.75);--blue:#2563eb;--green:#15803d;--rose:#be185d;--shadow:0 20px 58px rgba(23,32,51,.11),inset 0 1px 0 rgba(255,255,255,.9)}
+    *{box-sizing:border-box} body{margin:0;min-height:100vh;font:95% Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:var(--text);background:linear-gradient(120deg,rgba(255,255,255,.94),rgba(255,255,255,.58)),linear-gradient(180deg,#fff 0,var(--bg) 22rem)}
+    body:before{content:"";position:fixed;inset:0;z-index:-1;background:url("fairlife-lion-watermark.png") center 56%/min(90vw,900px) auto no-repeat;opacity:.08}
+    main{width:min(1220px,calc(100% - 28px));margin:auto;padding:28px 0 38px}.top{display:flex;justify-content:space-between;gap:16px;align-items:center;margin-bottom:18px}
+    h1{margin:0;font-size:clamp(2rem,4vw,3.4rem);letter-spacing:0;line-height:1}.lead{margin:8px 0 0;color:var(--muted);line-height:1.5}
+    a.home{color:#1556d8;text-decoration:none;font-weight:820;background:#fff;border:1px solid var(--line);border-radius:999px;padding:9px 13px;box-shadow:var(--shadow);white-space:nowrap}
+    .layout{display:grid;grid-template-columns:360px 1fr;gap:16px}.card{background:var(--panel);border:1px solid rgba(255,255,255,.86);border-radius:22px;box-shadow:var(--shadow);backdrop-filter:blur(24px);padding:20px}
+    .grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.field{display:grid;gap:6px;margin-bottom:10px}label{font-size:.78rem;font-weight:820;color:#203047}input{min-height:42px;border:1px solid var(--line);border-radius:13px;background:#fff;padding:9px 11px;font:inherit}
+    .kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:16px}.kpi{background:#fff;border:1px solid var(--line);border-radius:18px;padding:15px;min-height:104px}.kpi small{display:block;color:var(--muted);font-weight:820;margin-bottom:10px}.kpi strong{font-size:1.55rem}.green strong{color:var(--green)}.blue strong{color:var(--blue)}.rose strong{color:var(--rose)}
+    canvas{width:100%;height:300px;background:#fff;border:1px solid var(--line);border-radius:18px;padding:10px}.note{margin-top:14px;background:#eef6ff;border:1px solid #cfe2ff;color:#1d3d6d;border-radius:16px;padding:13px;line-height:1.45}
+    @media(max-width:900px){.layout,.kpis{grid-template-columns:1fr}.top{align-items:flex-start;flex-direction:column}}
+  </style>
+</head>
+<body>
+<main>
+  <div class="top"><div><h1>Investice</h1><p class="lead">Samostatná kalkulačka pro rychlé ukázání tvorby kapitálu.</p></div><a class="home" href="index.html">Zpět</a></div>
+  <div class="layout">
+    <section class="card">
+      <h2>Vstupy</h2>
+      <div class="field"><label>Aktuální investice</label><input id="current" type="number" value="3000000"></div>
+      <div class="field"><label>Jednorázová investice</label><input id="lump" type="number" value="0"></div>
+      <div class="field"><label>Pravidelná investice měsíčně</label><input id="monthly" type="number" value="15000"></div>
+      <div class="field"><label>Zhodnocení p.a. (%)</label><input id="yield" type="number" step="0.1" value="8"></div>
+      <div class="field"><label>Horizont (let)</label><input id="years" type="number" value="20"></div>
+      <div class="field"><label>Cílový kapitál</label><input id="target" type="number" value="30000000"></div>
+    </section>
+    <section>
+      <div class="kpis">
+        <div class="kpi green"><small>Budoucí hodnota</small><strong id="future">0 Kč</strong></div>
+        <div class="kpi blue"><small>Celkem vloženo</small><strong id="invested">0 Kč</strong></div>
+        <div class="kpi rose"><small>Rozdíl k cíli</small><strong id="gap">0 Kč</strong></div>
+      </div>
+      <canvas id="chart"></canvas>
+      <div class="note">Graf ukazuje růst portfolia proti cílovému kapitálu. Je určený jako jednoduchý klientský obrázek bez složitých tabulek.</div>
+    </section>
+  </div>
+</main>
+<script>
+const $=id=>document.getElementById(id), n=id=>Number($(id).value)||0, fmt=v=>Math.round(v).toLocaleString('cs-CZ')+' Kč';
+function calc(){
+  const r=n('yield')/100/12, months=Math.max(0,n('years')*12); let val=n('current')+n('lump'), invested=n('current')+n('lump');
+  const rows=[{x:0,v:val,t:n('target')}];
+  for(let m=1;m<=months;m++){val=val*(1+r)+n('monthly'); invested+=n('monthly'); if(m%12===0||m===months)rows.push({x:m/12,v:val,t:n('target')});}
+  $('future').textContent=fmt(val); $('invested').textContent=fmt(invested); $('gap').textContent=fmt(Math.max(0,n('target')-val)); draw(rows);
+}
+function draw(rows){const c=$('chart'),ctx=c.getContext('2d'),d=devicePixelRatio||1,w=c.clientWidth,h=c.clientHeight;c.width=w*d;c.height=h*d;ctx.setTransform(d,0,0,d,0,0);ctx.clearRect(0,0,w,h);const p={l:58,r:18,t:18,b:38},max=Math.max(...rows.flatMap(r=>[r.v,r.t]),1)*1.12,x=i=>p.l+i/(rows.length-1)*(w-p.l-p.r),y=v=>p.t+(1-v/max)*(h-p.t-p.b);ctx.font='12px system-ui';ctx.strokeStyle='#dbe5f1';ctx.fillStyle='#64748b';for(let i=0;i<=4;i++){let yy=p.t+i/4*(h-p.t-p.b);ctx.beginPath();ctx.moveTo(p.l,yy);ctx.lineTo(w-p.r,yy);ctx.stroke();ctx.fillText((max*(1-i/4)/1e6).toFixed(1).replace('.',',')+' mil.',6,yy+4)};[['t','#2563eb'],['v','#15803d']].forEach(([k,col])=>{ctx.beginPath();rows.forEach((r,i)=>i?ctx.lineTo(x(i),y(r[k])):ctx.moveTo(x(i),y(r[k])));ctx.strokeStyle=col;ctx.lineWidth=3;ctx.stroke()});rows.forEach((r,i)=>{if(i%5===0||i===rows.length-1)ctx.fillText(r.x+' let',x(i)-10,h-12)})}
+document.querySelectorAll('input').forEach(i=>i.addEventListener('input',calc));calc();
+</script>
+</body>
+</html>
