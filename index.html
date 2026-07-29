@@ -125,13 +125,21 @@
       font-weight: 720;
     }
 
-    .hero-strip span:last-child {
+    .hero-strip a {
       color: var(--accent);
       background: rgba(255, 255, 255, 0.72);
       border: 1px solid rgba(15, 118, 110, 0.14);
       border-radius: 999px;
       padding: 6px 10px;
       white-space: nowrap;
+      text-decoration: none;
+      transition: background 180ms ease, border-color 180ms ease, transform 180ms ease;
+    }
+
+    .hero-strip a:hover {
+      background: rgba(255, 255, 255, 0.9);
+      border-color: rgba(15, 118, 110, 0.28);
+      transform: translateY(-1px);
     }
 
     .grid {
@@ -289,13 +297,13 @@
     <header>
       <div>
         <h1>Filip prezentace</h1>
-        <p class="lead">Osobní rozcestník pro moje prezentace, tabulky, investice, plánování a klientské smlouvy.</p>
+        <p class="lead">Všechny pracovní nástroje na jednom místě.</p>
       </div>
     </header>
 
     <div class="hero-strip">
-      <span>Všechny pracovní nástroje na jednom místě.</span>
-      <span>Fairlife workspace</span>
+      <span>Klientské podklady a kalkulačky na jednom místě.</span>
+      <a href="https://filipsolar.cz" target="_blank" rel="noopener">filipsolar.cz</a>
     </div>
 
     <section class="grid" aria-label="Filipovy podklady">
@@ -305,45 +313,33 @@
         <span class="path">Filip-prezentace.html</span>
       </a>
 
-      <a class="card accent-orange" href="Obchody-tabulka.html">
-        <span class="topline"><span class="number">2</span><span class="type">Tabulka</span></span>
-        <span class="title">Obchody tabulka</span>
-        <span class="path">Obchody-tabulka.html</span>
-      </a>
-
       <a class="card accent-green" href="investment-crm.html">
-        <span class="topline"><span class="number">3</span><span class="type">Investice</span></span>
+        <span class="topline"><span class="number">2</span><span class="type">Investice</span></span>
         <span class="title">Investice FKI</span>
         <span class="path">investment-crm.html</span>
       </a>
 
       <a class="card accent-cyan" href="DPS-vs-DIP.html">
-        <span class="topline"><span class="number">4</span><span class="type">DIP a DPS</span></span>
+        <span class="topline"><span class="number">3</span><span class="type">DIP a DPS</span></span>
         <span class="title">DIP a DPS</span>
         <span class="path">DPS-vs-DIP.html</span>
       </a>
 
       <a class="card accent-rose" href="investicni-plan.html">
-        <span class="topline"><span class="number">5</span><span class="type">Plán</span></span>
+        <span class="topline"><span class="number">4</span><span class="type">Plán</span></span>
         <span class="title">Investiční plán</span>
         <span class="path">investicni-plan.html</span>
       </a>
 
-      <a class="card accent-blue" href="smlouvy-tracker.html">
-        <span class="topline"><span class="number">6</span><span class="type">Smlouvy</span></span>
-        <span class="title">Smlouvy klienti Filip</span>
-        <span class="path">smlouvy-tracker.html</span>
-      </a>
-
       <a class="card accent-green" href="investicni-plan-domacnost.html">
-        <span class="topline"><span class="number">7</span><span class="type">Domácnost</span></span>
+        <span class="topline"><span class="number">5</span><span class="type">Domácnost</span></span>
         <span class="title">Investiční plán domácnosti</span>
         <span class="path">investicni-plan-domacnost.html</span>
       </a>
     </section>
 
     <footer>
-      Hlavní adresa vede na tento osobní rozcestník.
+      Připraveno pro klientské schůzky a finanční plánování.
     </footer>
   </main>
 </body>
