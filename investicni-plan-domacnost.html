@@ -1,0 +1,1465 @@
+<!doctype html>
+<html lang="cs">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Investiční plán domácnosti</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #eef4f8;
+      --panel: rgba(255, 255, 255, 0.72);
+      --panel-strong: rgba(255, 255, 255, 0.92);
+      --text: #172033;
+      --muted: #64748b;
+      --line: rgba(205, 218, 232, 0.78);
+      --blue: #2563eb;
+      --green: #15803d;
+      --teal: #0f766e;
+      --orange: #b45309;
+      --rose: #be185d;
+      --violet: #7c3aed;
+      --red: #dc2626;
+      --shadow: 0 22px 70px rgba(23, 32, 51, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.92);
+      --radius: 22px;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: var(--text);
+      background:
+        linear-gradient(120deg, rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.58) 42%, rgba(235, 244, 249, 0.8)),
+        linear-gradient(180deg, #ffffff 0, var(--bg) 24rem),
+        var(--bg);
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: -2;
+      background-image: url("fairlife-lion-watermark.png");
+      background-repeat: no-repeat;
+      background-size: min(92vw, 980px) auto;
+      background-position: center 56%;
+      opacity: 0.08;
+    }
+
+    button, input, select {
+      font: inherit;
+    }
+
+    .app {
+      width: min(1540px, calc(100% - 28px));
+      margin: 0 auto;
+      padding: 24px 0 42px;
+    }
+
+    .topbar {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 18px;
+      align-items: center;
+      margin-bottom: 18px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 13px;
+      min-width: 0;
+    }
+
+    .mark {
+      width: 42px;
+      height: 24px;
+      flex: 0 0 auto;
+      border-radius: 999px;
+      border: 5px solid #5b8cff;
+      transform: skewX(-20deg);
+      background: rgba(255,255,255,.78);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.9), 0 10px 26px rgba(37,99,235,.14);
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(1.75rem, 3.4vw, 3.4rem);
+      line-height: 1;
+      letter-spacing: 0;
+    }
+
+    .subtitle {
+      margin: 7px 0 0;
+      color: var(--muted);
+      font-size: 0.98rem;
+      line-height: 1.45;
+    }
+
+    .home-link {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 44px;
+      padding: 0 16px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,.88);
+      background: rgba(255,255,255,.64);
+      color: #17405f;
+      text-decoration: none;
+      font-weight: 850;
+      box-shadow: var(--shadow);
+      white-space: nowrap;
+    }
+
+    .tabs {
+      display: flex;
+      gap: 9px;
+      flex-wrap: wrap;
+      margin: 18px 0;
+      padding: 8px;
+      border: 1px solid rgba(255,255,255,.82);
+      border-radius: 999px;
+      background: rgba(255,255,255,.46);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.92), 0 14px 44px rgba(23,32,51,.07);
+      backdrop-filter: blur(22px) saturate(150%);
+      -webkit-backdrop-filter: blur(22px) saturate(150%);
+    }
+
+    .tab {
+      width: auto;
+      min-height: 42px;
+      padding: 0 14px;
+      border: 0;
+      border-radius: 999px;
+      background: transparent;
+      color: #42526b;
+      font-weight: 850;
+      cursor: pointer;
+      box-shadow: none;
+    }
+
+    .tab.active {
+      background: #ffffff;
+      color: var(--blue);
+      box-shadow: 0 10px 26px rgba(37, 99, 235, 0.12);
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: minmax(320px, 420px) 1fr;
+      gap: 18px;
+      align-items: start;
+    }
+
+    .panel {
+      border: 1px solid rgba(255,255,255,.86);
+      border-radius: var(--radius);
+      background: var(--panel);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(26px) saturate(155%);
+      -webkit-backdrop-filter: blur(26px) saturate(155%);
+    }
+
+    .section {
+      padding: 22px;
+    }
+
+    .panel h2, .panel h3 {
+      margin: 0 0 8px;
+      letter-spacing: 0;
+    }
+
+    .panel h2 { font-size: 1.32rem; }
+    .panel h3 { font-size: 1.04rem; }
+
+    .desc {
+      margin: 0 0 18px;
+      color: var(--muted);
+      line-height: 1.45;
+      font-size: 0.94rem;
+    }
+
+    .grid2 {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .grid3 {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .field {
+      display: grid;
+      gap: 7px;
+      margin-bottom: 12px;
+    }
+
+    label {
+      font-size: 0.78rem;
+      font-weight: 850;
+      color: #203047;
+    }
+
+    input, select {
+      width: 100%;
+      min-height: 45px;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: rgba(255,255,255,.94);
+      color: var(--text);
+      padding: 10px 12px;
+      outline: none;
+    }
+
+    input:focus, select:focus {
+      border-color: #8bb5ff;
+      box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
+    }
+
+    .button-row {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      width: auto;
+      min-height: 45px;
+      border: 0;
+      border-radius: 14px;
+      padding: 0 14px;
+      color: #fff;
+      background: linear-gradient(135deg, #2563eb, #5b8cff);
+      font-weight: 900;
+      cursor: pointer;
+      box-shadow: 0 14px 30px rgba(37, 99, 235, 0.2);
+    }
+
+    .btn.secondary {
+      color: #17405f;
+      background: rgba(255,255,255,.82);
+      border: 1px solid var(--line);
+      box-shadow: 0 12px 30px rgba(23,32,51,.07);
+    }
+
+    .btn.danger {
+      background: linear-gradient(135deg, #dc2626, #fb7185);
+      box-shadow: 0 14px 30px rgba(220, 38, 38, 0.18);
+    }
+
+    .module {
+      display: none;
+    }
+
+    .module.active {
+      display: block;
+    }
+
+    .dashboard {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+
+    .metric {
+      min-height: 116px;
+      padding: 17px;
+      border-radius: 20px;
+      background: var(--panel-strong);
+      border: 1px solid rgba(255,255,255,.88);
+      box-shadow: 0 14px 38px rgba(23,32,51,.08);
+    }
+
+    .metric small {
+      display: block;
+      color: var(--muted);
+      font-weight: 850;
+      font-size: 0.78rem;
+      margin-bottom: 12px;
+    }
+
+    .metric strong {
+      display: block;
+      font-size: clamp(1.25rem, 1.7vw, 1.9rem);
+      line-height: 1.05;
+      letter-spacing: 0;
+    }
+
+    .metric.blue strong { color: var(--blue); }
+    .metric.green strong { color: var(--green); }
+    .metric.orange strong { color: var(--orange); }
+    .metric.rose strong { color: var(--rose); }
+    .metric.violet strong { color: var(--violet); }
+    .metric.red strong { color: var(--red); }
+
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .mini-card {
+      padding: 17px;
+      border-radius: 18px;
+      background: var(--panel-strong);
+      border: 1px solid rgba(255,255,255,.9);
+      box-shadow: 0 12px 32px rgba(23,32,51,.07);
+    }
+
+    .mini-card .value {
+      margin-top: 10px;
+      font-size: 1.55rem;
+      font-weight: 950;
+      color: var(--blue);
+    }
+
+    .mini-card p {
+      color: var(--muted);
+      line-height: 1.45;
+      margin: 8px 0 0;
+      font-size: 0.9rem;
+    }
+
+    .member-card {
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,.72);
+      border-radius: 18px;
+      padding: 16px;
+      margin-bottom: 14px;
+    }
+
+    .member-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    .member-head strong {
+      font-size: 1rem;
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      min-height: 30px;
+      padding: 0 10px;
+      border-radius: 999px;
+      background: #e7f5f2;
+      color: var(--teal);
+      font-weight: 850;
+      font-size: 0.78rem;
+      white-space: nowrap;
+    }
+
+    .chart-wrap {
+      display: grid;
+      grid-template-columns: minmax(280px, 0.58fr) minmax(260px, 0.42fr);
+      gap: 18px;
+      align-items: stretch;
+      margin-top: 14px;
+    }
+
+    .chart-box {
+      min-height: 330px;
+      padding: 16px;
+      border-radius: 18px;
+      background: rgba(255,255,255,.84);
+      border: 1px solid rgba(255,255,255,.9);
+      box-shadow: 0 12px 34px rgba(23,32,51,.07);
+    }
+
+    canvas {
+      display: block;
+      width: 100%;
+      height: 270px;
+    }
+
+    .legend {
+      display: flex;
+      gap: 14px;
+      flex-wrap: wrap;
+      margin-top: 10px;
+      color: #42526b;
+      font-size: 0.82rem;
+      font-weight: 760;
+    }
+
+    .legend span {
+      display: inline-flex;
+      gap: 7px;
+      align-items: center;
+    }
+
+    .line-dot {
+      width: 24px;
+      height: 4px;
+      border-radius: 999px;
+      background: var(--blue);
+    }
+
+    .line-dot.green { background: var(--green); }
+    .line-dot.red { background: var(--red); }
+    .line-dot.violet { background: var(--violet); }
+
+    .explain {
+      padding: 18px;
+      border-radius: 18px;
+      background: rgba(255,255,255,.84);
+      border: 1px solid rgba(255,255,255,.9);
+      box-shadow: 0 12px 34px rgba(23,32,51,.07);
+    }
+
+    .explain-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 11px 0;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .explain-row:last-child { border-bottom: 0; }
+    .explain-row span { color: var(--muted); }
+    .explain-row strong { text-align: right; }
+
+    .check-list {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+      margin: 12px 0 18px;
+    }
+
+    .check {
+      display: flex;
+      gap: 9px;
+      align-items: center;
+      padding: 11px 12px;
+      border-radius: 14px;
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,.76);
+      color: #26354d;
+      font-weight: 800;
+    }
+
+    .check input {
+      width: 18px;
+      min-height: 18px;
+      padding: 0;
+    }
+
+    .report {
+      display: grid;
+      gap: 18px;
+    }
+
+    .report-page {
+      padding: 24px;
+      border-radius: 18px;
+      background: #fff;
+      border: 1px solid var(--line);
+      box-shadow: 0 12px 28px rgba(23,32,51,.06);
+      break-inside: avoid;
+    }
+
+    .report-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 14px;
+    }
+
+    .note {
+      margin-top: 14px;
+      padding: 14px;
+      border-radius: 16px;
+      background: #eef6ff;
+      border: 1px solid #cfe2ff;
+      color: #1d3d6d;
+      line-height: 1.45;
+      font-size: 0.92rem;
+    }
+
+    .ida {
+      display: inline-flex;
+      margin-top: 10px;
+      color: #1556d8;
+      font-weight: 850;
+      text-decoration: none;
+    }
+
+    @media (max-width: 1100px) {
+      .layout, .chart-wrap {
+        grid-template-columns: 1fr;
+      }
+
+      .dashboard {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 720px) {
+      .topbar {
+        grid-template-columns: 1fr;
+      }
+
+      .dashboard, .cards, .grid2, .grid3, .report-grid, .check-list {
+        grid-template-columns: 1fr;
+      }
+
+      .tabs {
+        border-radius: 18px;
+      }
+
+      .tab {
+        width: 100%;
+      }
+    }
+
+    @media print {
+      body { background: #fff; }
+      body::before, body::after, .topbar, .tabs, .layout > .panel:first-child, .no-print { display: none !important; }
+      .app { width: 100%; padding: 0; }
+      .layout { display: block; }
+      .panel { box-shadow: none; border: 0; background: #fff; }
+      .module { display: block; }
+      .module:not(#report) { display: none; }
+      .report-page { page-break-inside: avoid; box-shadow: none; }
+    }
+  </style>
+</head>
+<body>
+  <main class="app">
+    <header class="topbar">
+      <div class="brand">
+        <div class="mark" aria-hidden="true"></div>
+        <div>
+          <h1>Investiční plán domácnosti</h1>
+          <p class="subtitle">Samostatná kalkulačka pro páry, rodiny a vícečlenné domácnosti.</p>
+        </div>
+      </div>
+      <a class="home-link" href="index.html">Zpět na rozcestník</a>
+    </header>
+
+    <nav class="tabs" aria-label="Sekce aplikace">
+      <button class="tab active" data-tab="dashboard">Přehled</button>
+      <button class="tab" data-tab="household">Domácnost</button>
+      <button class="tab" data-tab="assets">Majetek a investice</button>
+      <button class="tab" data-tab="rent">Renta</button>
+      <button class="tab" data-tab="mortgage">Hypotéka</button>
+      <button class="tab" data-tab="risk">Pojištění</button>
+      <button class="tab" data-tab="cashflow">Cashflow</button>
+      <button class="tab" data-tab="scenarios">Scénáře</button>
+      <button class="tab" data-tab="report">Report</button>
+    </nav>
+
+    <div class="layout">
+      <aside class="panel">
+        <section class="section">
+          <h2>Rychlé ovládání</h2>
+          <p class="desc">Údaje se ukládají jen v tomto prohlížeči. Původní kalkulačka pro jednotlivce zůstává oddělená.</p>
+          <div class="button-row">
+            <button class="btn" id="saveData">Uložit data</button>
+            <button class="btn secondary" id="exportData">Export JSON</button>
+            <button class="btn secondary" id="importData">Import JSON</button>
+            <button class="btn danger" id="clearCurrent">Vymazat domácnost</button>
+            <button class="btn danger" id="clearAll">Vymazat vše</button>
+          </div>
+          <input id="importFile" type="file" accept="application/json" hidden>
+          <div class="note" id="statusBox">Připraveno k vyplnění.</div>
+        </section>
+
+        <section class="section">
+          <h2>Načtené hodnoty</h2>
+          <div class="explain-row"><span>Členové domácnosti</span><strong id="sideMembers">2</strong></div>
+          <div class="explain-row"><span>Aktuální majetek</span><strong id="sideWealth">0 Kč</strong></div>
+          <div class="explain-row"><span>Měsíční investice</span><strong id="sideMonthlyInvest">0 Kč</strong></div>
+          <div class="explain-row"><span>Hypotéka</span><strong id="sideMortgage">0 Kč</strong></div>
+          <div class="explain-row"><span>Splátka hypotéky</span><strong id="sideMortgagePayment">0 Kč</strong></div>
+          <div class="explain-row"><span>Výdaje domácnosti</span><strong id="sideExpenses">0 Kč</strong></div>
+        </section>
+      </aside>
+
+      <section class="panel">
+        <div class="section module active" id="dashboard">
+          <h2>Přehled domácnosti</h2>
+          <p class="desc">První obrazovka ukazuje, kde domácnost stojí dnes, jaký je cíl a co je potřeba doplnit.</p>
+          <div class="dashboard">
+            <div class="metric green"><small>Aktuální majetek a investice</small><strong id="dashWealth">0 Kč</strong></div>
+            <div class="metric blue"><small>Potřebný kapitál pro rentu</small><strong id="dashNeeded">0 Kč</strong></div>
+            <div class="metric rose"><small>Chybějící kapitál</small><strong id="dashGap">0 Kč</strong></div>
+            <div class="metric orange"><small>Měsíční cashflow</small><strong id="dashCashflow">0 Kč</strong></div>
+            <div class="metric violet"><small>Odhad státních důchodů</small><strong id="dashPensions">0 Kč</strong></div>
+            <div class="metric red"><small>Doporučené krytí invalidity</small><strong id="dashDisability">0 Kč</strong></div>
+            <div class="metric red"><small>Doporučené krytí smrti</small><strong id="dashDeath">0 Kč</strong></div>
+            <div class="metric green"><small>Hodnota investic na konci</small><strong id="dashFuture">0 Kč</strong></div>
+          </div>
+          <div class="chart-wrap">
+            <div class="chart-box">
+              <h3>Cesta k rentě</h3>
+              <canvas id="wealthChart"></canvas>
+              <div class="legend">
+                <span><i class="line-dot green"></i> Vytvářený kapitál</span>
+                <span><i class="line-dot"></i> Potřebný kapitál</span>
+              </div>
+            </div>
+            <div class="explain">
+              <h3>Co klient vidí</h3>
+              <div class="explain-row"><span>Domácnost má dnes</span><strong id="exCurrentWealth">0 Kč</strong></div>
+              <div class="explain-row"><span>Při startu renty může mít</span><strong id="exAtRent">0 Kč</strong></div>
+              <div class="explain-row"><span>Pro plánovanou rentu potřebuje</span><strong id="exNeeded">0 Kč</strong></div>
+              <div class="explain-row"><span>Rozdíl k dořešení</span><strong id="exGap">0 Kč</strong></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="section module" id="household">
+          <h2>Domácnost</h2>
+          <p class="desc">Zadejte osoby, typ příjmu a orientační údaje pro výpočet státních dávek. Hodnoty ČSSZ jsou orientační a lze je ručně upravit.</p>
+          <div class="grid3">
+            <div class="field"><label>Název domácnosti</label><input id="householdName" value="Rodina Novákových"></div>
+            <div class="field"><label>Typ domácnosti</label><select id="householdType"><option>Manželé</option><option>Partneři</option><option>Jednotlivec</option><option>Jiná domácnost</option></select></div>
+            <div class="field"><label>Počet dospělých</label><select id="adultCount"><option value="1">1</option><option value="2" selected>2</option></select></div>
+          </div>
+          <div id="membersWrap"></div>
+          <a class="ida" href="https://www.cssz.gov.cz/informativni-duchodova-aplikace-ida-" target="_blank" rel="noopener">Otevřít IDA ČSSZ pro přesnější údaje</a>
+        </div>
+
+        <div class="section module" id="assets">
+          <h2>Majetek a investice</h2>
+          <p class="desc">Majetek je rozdělený na osobní investice členů domácnosti a společný majetek. Pro pojištění se používá aktuální hodnota dnes.</p>
+          <div class="grid3">
+            <div class="field"><label>Společný majetek dnes</label><input id="sharedAssets" type="number" value="3000000"></div>
+            <div class="field"><label>Majetek k budoucímu prodeji</label><input id="exitAsset" type="number" value="3000000"></div>
+            <div class="field"><label>Zhodnocení majetku do exitu (%)</label><input id="exitYield" type="number" step="0.1" value="3"></div>
+            <div class="field"><label>Příjem z pronájmu měsíčně</label><input id="rentIncome" type="number" value="0"></div>
+            <div class="field"><label>Společná jednorázová investice</label><input id="sharedLump" type="number" value="0"></div>
+            <div class="field"><label>Společná pravidelná investice</label><input id="sharedMonthlyInvestment" type="number" value="0"></div>
+          </div>
+          <div id="investmentWrap"></div>
+        </div>
+
+        <div class="section module" id="rent">
+          <h2>Rentový plán</h2>
+          <p class="desc">Renta je společný cíl domácnosti. Státní důchody jednotlivých osob se započítávají až od jejich nároku.</p>
+          <div class="grid3">
+            <div class="field"><label>Renta od věku</label><input id="rentStartAge" type="number" value="50"></div>
+            <div class="field"><label>Renta 1 měsíčně</label><input id="rent1" type="number" value="180000"></div>
+            <div class="field"><label>Renta 1 do věku</label><input id="rent1Until" type="number" value="75"></div>
+            <div class="field"><label>Renta 2 měsíčně</label><input id="rent2" type="number" value="150000"></div>
+            <div class="field"><label>Konec plánu ve věku</label><input id="planEndAge" type="number" value="90"></div>
+            <div class="field"><label>Zůstatek pro rodinu</label><input id="legacyCapital" type="number" value="0"></div>
+            <div class="field"><label>Zhodnocení před rentou (%)</label><input id="growthBefore" type="number" step="0.1" value="8"></div>
+            <div class="field"><label>Zhodnocení v rentě (%)</label><input id="growthDuring" type="number" step="0.1" value="7"></div>
+            <div class="field"><label>Inflace renty (%)</label><input id="inflation" type="number" step="0.1" value="0"></div>
+          </div>
+          <div class="cards">
+            <div class="mini-card"><h3>Potřebný kapitál</h3><div class="value" id="rentNeededCard">0 Kč</div><p>Kapitál potřebný při startu renty po započtení důchodů a pronájmů.</p></div>
+            <div class="mini-card"><h3>Chybějící kapitál</h3><div class="value" id="rentGapCard">0 Kč</div><p>Rozdíl mezi plánem a tím, co domácnost podle zadání vytvoří.</p></div>
+          </div>
+        </div>
+
+        <div class="section module" id="mortgage">
+          <h2>Hypotéka a investice</h2>
+          <p class="desc">Ukazuje zbývající dluh, růst investic a okamžik, kdy je možné hypotéku doplatit z investic.</p>
+          <div class="grid3">
+            <div class="field"><label>Výše hypotéky</label><input id="mortgageAmount" type="number" value="7000000"></div>
+            <div class="field"><label>Úroková sazba (%)</label><input id="mortgageRate" type="number" step="0.1" value="4.8"></div>
+            <div class="field"><label>Doba splácení (roky)</label><input id="mortgageYears" type="number" value="30"></div>
+            <div class="field"><label>Jednorázová investice proti hypotéce</label><input id="mortgageLump" type="number" value="0"></div>
+            <div class="field"><label>Pravidelná investice měsíčně</label><input id="mortgageMonthlyInvest" type="number" value="10000"></div>
+            <div class="field"><label>Zhodnocení investice (%)</label><input id="mortgageInvestYield" type="number" step="0.1" value="8"></div>
+          </div>
+          <div class="chart-wrap">
+            <div class="chart-box">
+              <h3>Dluh vs. investice</h3>
+              <canvas id="mortgageChart"></canvas>
+              <div class="legend">
+                <span><i class="line-dot red"></i> Hypotéka</span>
+                <span><i class="line-dot green"></i> Investice</span>
+                <span><i class="line-dot"></i> Po doplacení</span>
+              </div>
+            </div>
+            <div class="explain">
+              <h3>Výsledek</h3>
+              <div class="explain-row"><span>Měsíční splátka</span><strong id="mortgagePaymentCard">0 Kč</strong></div>
+              <div class="explain-row"><span>Bod zvratu</span><strong id="breakEvenCard">Nenastane</strong></div>
+              <div class="explain-row"><span>Bezpečné doplacení</span><strong id="safePayoffCard">Nenastane</strong></div>
+              <div class="explain-row"><span>Investice na konci</span><strong id="mortgageEndInvestCard">0 Kč</strong></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="section module" id="risk">
+          <h2>Pojištění</h2>
+          <p class="desc">Invalidita chrání rentový plán. Smrt chrání rodinu, výdaje a závazky. Výpočty používají aktuální majetek dnes.</p>
+          <div class="grid3">
+            <div class="field"><label>Počet dětí</label><input id="childrenCount" type="number" value="2"></div>
+            <div class="field"><label>Vdovský/vdovecký důchod</label><input id="widowPension" type="number" value="30000"></div>
+            <div class="field"><label>Sirotčí důchod na dítě</label><input id="orphanPension" type="number" value="15000"></div>
+            <div class="field"><label>Ostatní úvěry měsíčně</label><input id="otherLoansPayment" type="number" value="0"></div>
+            <div class="field"><label>Stávající krytí smrti</label><input id="currentDeathCover" type="number" value="0"></div>
+            <div class="field"><label>Stávající krytí invalidity</label><input id="currentDisabilityCover" type="number" value="0"></div>
+          </div>
+          <div class="cards">
+            <div class="mini-card"><h3>Invalidita</h3><div class="value" id="riskDisabilityNeed">0 Kč</div><p>Doporučené dokrytí pro okamžitý přechod do rentového režimu.</p></div>
+            <div class="mini-card"><h3>Smrt živitele</h3><div class="value" id="riskDeathNeed">0 Kč</div><p>Doporučené krytí pro doplacení hypotéky a ochranu rodiny.</p></div>
+          </div>
+          <div class="explain" style="margin-top:14px">
+            <h3>Rozpad výdajů rodiny</h3>
+            <div class="explain-row"><span>Výdaje domácnosti bez hypotéky</span><strong id="riskBaseExpenses">0 Kč</strong></div>
+            <div class="explain-row"><span>Splátka hypotéky</span><strong id="riskMortgagePayment">0 Kč</strong></div>
+            <div class="explain-row"><span>Ostatní úvěry</span><strong id="riskOtherLoans">0 Kč</strong></div>
+            <div class="explain-row"><span>Celkové měsíční výdaje</span><strong id="riskTotalExpenses">0 Kč</strong></div>
+            <div class="explain-row"><span>Státní dávky rodiny</span><strong id="riskFamilyBenefits">0 Kč</strong></div>
+            <div class="explain-row"><span>Měsíční výpadek rodiny</span><strong id="riskFamilyGap">0 Kč</strong></div>
+          </div>
+        </div>
+
+        <div class="section module" id="cashflow">
+          <h2>Cashflow domácnosti</h2>
+          <p class="desc">Přehled měsíčních příjmů, výdajů, splátek a investic.</p>
+          <div class="grid3">
+            <div class="field"><label>Výdaje domácnosti bez hypotéky</label><input id="householdExpenses" type="number" value="70000"></div>
+            <div class="field"><label>Pojištění měsíčně</label><input id="insuranceMonthly" type="number" value="0"></div>
+            <div class="field"><label>Rezerva měsíčně</label><input id="reserveMonthly" type="number" value="0"></div>
+          </div>
+          <div class="dashboard">
+            <div class="metric green"><small>Příjmy</small><strong id="cashIncome">0 Kč</strong></div>
+            <div class="metric red"><small>Výdaje</small><strong id="cashExpenses">0 Kč</strong></div>
+            <div class="metric blue"><small>Investice</small><strong id="cashInvestments">0 Kč</strong></div>
+            <div class="metric orange"><small>Přebytek / deficit</small><strong id="cashBalance">0 Kč</strong></div>
+          </div>
+        </div>
+
+        <div class="section module" id="scenarios">
+          <h2>Scénáře</h2>
+          <p class="desc">První verze připravuje porovnání současného stavu a doporučeného plánu. Další scénáře půjdou doplnit nad stejným datovým modelem.</p>
+          <div class="grid2">
+            <div class="mini-card">
+              <h3>Současný stav</h3>
+              <div class="value" id="scenarioCurrentGap">0 Kč</div>
+              <p>Chybějící kapitál při aktuálních vstupech.</p>
+            </div>
+            <div class="mini-card">
+              <h3>Doporučený plán</h3>
+              <div class="value" id="scenarioRecommended">0 Kč</div>
+              <p>Orientační měsíční investice potřebná k doplnění kapitálu.</p>
+            </div>
+          </div>
+          <div class="note">Scénáře jsou navržené jako rozšiřitelný modul. V další verzi lze přidat uložení více variant a jejich přepínání.</div>
+        </div>
+
+        <div class="section module" id="report">
+          <h2>Report pro domácnost</h2>
+          <p class="desc">Zvolte části, které chcete klientovi ukázat. Report drží klientský jazyk a netahá dovnitř interní poznámky.</p>
+          <div class="check-list no-print">
+            <label class="check"><input type="checkbox" id="repIntro" checked> Úvod</label>
+            <label class="check"><input type="checkbox" id="repInvest" checked> Investice a renta</label>
+            <label class="check"><input type="checkbox" id="repMortgage" checked> Hypotéka</label>
+            <label class="check"><input type="checkbox" id="repRisk" checked> Pojištění</label>
+            <label class="check"><input type="checkbox" id="repCashflow" checked> Cashflow</label>
+            <label class="check"><input type="checkbox" id="repScenarios" checked> Doporučení</label>
+          </div>
+          <div class="button-row no-print">
+            <button class="btn" id="buildReport">Aktualizovat report</button>
+            <button class="btn secondary" id="printReport">Vytisknout / uložit PDF</button>
+          </div>
+          <div class="report" id="reportOutput"></div>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <script>
+    const STORAGE_KEY = "fairlife_household_plan_v1";
+
+    const defaults = {
+      householdName: "Rodina Novákových",
+      householdType: "Manželé",
+      adultCount: 2,
+      members: [
+        { name: "Martin Novák", age: 35, gender: "Muž", incomeType: "Zaměstnanec", netIncome: 150000, grossIncome: 210000, assessmentBase: 210000, socialExtra: false, socialPayment: 0, pensionAge: 65, personalInvestments: 3000000, monthlyInvestment: 15000, lumpInvestment: 0, investmentYield: 8 },
+        { name: "Jana Nováková", age: 34, gender: "Žena", incomeType: "Zaměstnanec", netIncome: 90000, grossIncome: 125000, assessmentBase: 125000, socialExtra: false, socialPayment: 0, pensionAge: 65, personalInvestments: 0, monthlyInvestment: 5000, lumpInvestment: 0, investmentYield: 8 }
+      ]
+    };
+
+    const fieldIds = [
+      "householdName","householdType","adultCount","sharedAssets","exitAsset","exitYield","rentIncome",
+      "sharedLump","sharedMonthlyInvestment","rentStartAge","rent1","rent1Until","rent2","planEndAge",
+      "legacyCapital","growthBefore","growthDuring","inflation","mortgageAmount","mortgageRate",
+      "mortgageYears","mortgageLump","mortgageMonthlyInvest","mortgageInvestYield","childrenCount",
+      "widowPension","orphanPension","otherLoansPayment","currentDeathCover","currentDisabilityCover",
+      "householdExpenses","insuranceMonthly","reserveMonthly"
+    ];
+
+    let state = loadState();
+    let results = {};
+
+    function $(id) {
+      return document.getElementById(id);
+    }
+
+    function n(value) {
+      const parsed = Number(value);
+      return Number.isFinite(parsed) ? parsed : 0;
+    }
+
+    function money(value) {
+      return Math.round(n(value)).toLocaleString("cs-CZ") + " Kč";
+    }
+
+    function shortMoney(value) {
+      const amount = n(value);
+      if (Math.abs(amount) >= 1000000) return (amount / 1000000).toLocaleString("cs-CZ", { maximumFractionDigits: 1 }) + " mil. Kč";
+      return money(amount);
+    }
+
+    function pct(value) {
+      return n(value) / 100;
+    }
+
+    function loadState() {
+      try {
+        const saved = JSON.parse(localStorage.getItem(STORAGE_KEY));
+        if (saved && saved.members) return saved;
+      } catch (error) {}
+      return structuredClone(defaults);
+    }
+
+    function saveState() {
+      collectState();
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+      setStatus("Data domácnosti jsou uložená v tomto prohlížeči.");
+    }
+
+    function setStatus(text) {
+      $("statusBox").textContent = text;
+    }
+
+    function renderMembers() {
+      const count = Math.max(1, Math.min(2, n($("adultCount").value || state.adultCount)));
+      while (state.members.length < count) {
+        state.members.push({ name: "Další člen", age: 35, gender: "Žena", incomeType: "Zaměstnanec", netIncome: 0, grossIncome: 0, assessmentBase: 0, socialExtra: false, socialPayment: 0, pensionAge: 65, personalInvestments: 0, monthlyInvestment: 0, lumpInvestment: 0, investmentYield: 8 });
+      }
+      state.members = state.members.slice(0, count);
+
+      $("membersWrap").innerHTML = state.members.map((member, index) => `
+        <article class="member-card">
+          <div class="member-head">
+            <strong>Osoba ${index + 1}</strong>
+            <span class="pill">${member.incomeType || "Příjem"}</span>
+          </div>
+          <div class="grid3">
+            <div class="field"><label>Jméno</label><input data-member="${index}" data-key="name" value="${escapeHtml(member.name)}"></div>
+            <div class="field"><label>Věk</label><input type="number" data-member="${index}" data-key="age" value="${member.age}"></div>
+            <div class="field"><label>Pohlaví</label><select data-member="${index}" data-key="gender"><option ${member.gender === "Muž" ? "selected" : ""}>Muž</option><option ${member.gender === "Žena" ? "selected" : ""}>Žena</option></select></div>
+            <div class="field"><label>Typ příjmu</label><select data-member="${index}" data-key="incomeType"><option ${member.incomeType === "Zaměstnanec" ? "selected" : ""}>Zaměstnanec</option><option ${member.incomeType === "OSVČ" ? "selected" : ""}>OSVČ</option><option ${member.incomeType === "OSVČ paušál" ? "selected" : ""}>OSVČ paušál</option><option ${member.incomeType === "Bez příjmu" ? "selected" : ""}>Bez příjmu</option></select></div>
+            <div class="field"><label>Čistý příjem</label><input type="number" data-member="${index}" data-key="netIncome" value="${member.netIncome}"></div>
+            <div class="field"><label>Hrubý příjem / základ</label><input type="number" data-member="${index}" data-key="grossIncome" value="${member.grossIncome}"></div>
+            <div class="field"><label>Vyměřovací základ</label><input type="number" data-member="${index}" data-key="assessmentBase" value="${member.assessmentBase}"></div>
+            <div class="field"><label>Vyšší sociální pojistné měsíčně</label><input type="number" data-member="${index}" data-key="socialPayment" value="${member.socialPayment}"></div>
+            <div class="field"><label>Důchodový věk</label><input type="number" data-member="${index}" data-key="pensionAge" value="${member.pensionAge}"></div>
+          </div>
+        </article>
+      `).join("");
+
+      $("investmentWrap").innerHTML = state.members.map((member, index) => `
+        <article class="member-card">
+          <div class="member-head">
+            <strong>Investice: ${escapeHtml(member.name || "Osoba " + (index + 1))}</strong>
+            <span class="pill">Osobní</span>
+          </div>
+          <div class="grid2">
+            <div class="field"><label>Aktuální osobní investice</label><input type="number" data-member="${index}" data-key="personalInvestments" value="${member.personalInvestments}"></div>
+            <div class="field"><label>Jednorázová investice</label><input type="number" data-member="${index}" data-key="lumpInvestment" value="${member.lumpInvestment}"></div>
+            <div class="field"><label>Pravidelná investice měsíčně</label><input type="number" data-member="${index}" data-key="monthlyInvestment" value="${member.monthlyInvestment}"></div>
+            <div class="field"><label>Zhodnocení ročně (%)</label><input type="number" step="0.1" data-member="${index}" data-key="investmentYield" value="${member.investmentYield}"></div>
+          </div>
+        </article>
+      `).join("");
+
+      document.querySelectorAll("[data-member]").forEach(input => {
+        input.addEventListener("input", () => {
+          const member = state.members[n(input.dataset.member)];
+          const key = input.dataset.key;
+          member[key] = input.type === "number" ? n(input.value) : input.value;
+          if (key === "incomeType") renderMembers();
+          calculateAll();
+        });
+      });
+    }
+
+    function escapeHtml(text) {
+      return String(text ?? "").replace(/[&<>"']/g, char => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#039;" }[char]));
+    }
+
+    function bindBaseFields() {
+      fieldIds.forEach(id => {
+        const el = $(id);
+        if (!el) return;
+        if (state[id] !== undefined) el.value = state[id];
+        el.addEventListener("input", () => {
+          if (id === "adultCount") {
+            state.adultCount = n(el.value);
+            renderMembers();
+          }
+          calculateAll();
+        });
+      });
+    }
+
+    function collectState() {
+      fieldIds.forEach(id => {
+        const el = $(id);
+        if (!el) return;
+        state[id] = el.type === "number" || el.tagName === "SELECT" && id === "adultCount" ? n(el.value) || el.value : el.value;
+      });
+      state.householdName = $("householdName").value;
+      state.householdType = $("householdType").value;
+      state.adultCount = n($("adultCount").value);
+    }
+
+    function estimatePension(member) {
+      const base = Math.max(n(member.assessmentBase), n(member.grossIncome), n(member.netIncome) * 1.35);
+      const socialBonus = n(member.socialPayment) > 0 ? n(member.socialPayment) * 3.1 : 0;
+      let rate = 0.38;
+      if (member.incomeType === "OSVČ") rate = 0.28;
+      if (member.incomeType === "OSVČ paušál") rate = 0.24;
+      if (member.incomeType === "Bez příjmu") rate = 0;
+      const pension = Math.max(0, base * rate + socialBonus);
+      return Math.min(pension, Math.max(0, base * 0.62));
+    }
+
+    function estimateDisability(member) {
+      const pension = estimatePension(member);
+      if (member.incomeType === "Bez příjmu") return 0;
+      const factor = member.incomeType === "Zaměstnanec" ? 0.78 : member.incomeType === "OSVČ" ? 0.62 : 0.54;
+      return Math.max(0, pension * factor);
+    }
+
+    function annuityPayment(principal, annualRate, years) {
+      const months = Math.max(1, years * 12);
+      const monthlyRate = annualRate / 12;
+      if (monthlyRate === 0) return principal / months;
+      return principal * monthlyRate / (1 - Math.pow(1 + monthlyRate, -months));
+    }
+
+    function fvSeries(start, monthly, annualRate, years) {
+      let value = n(start);
+      const monthlyRate = annualRate / 12;
+      for (let i = 0; i < Math.max(0, years * 12); i++) {
+        value = value * (1 + monthlyRate) + n(monthly);
+      }
+      return value;
+    }
+
+    function capitalForMonthlyNeed(monthlyNeed, years, annualRate) {
+      const months = Math.max(0, Math.round(years * 12));
+      const monthlyRate = annualRate / 12;
+      if (months <= 0 || monthlyNeed <= 0) return 0;
+      if (monthlyRate === 0) return monthlyNeed * months;
+      return monthlyNeed * (1 - Math.pow(1 + monthlyRate, -months)) / monthlyRate;
+    }
+
+    function neededCapitalFromAge(startAge, rateDuring, useDisabilityOffset) {
+      const rent1 = n($("rent1").value);
+      const rent2 = n($("rent2").value);
+      const rent1Until = n($("rent1Until").value);
+      const planEnd = n($("planEndAge").value);
+      const rentIncome = n($("rentIncome").value);
+      let capital = n($("legacyCapital").value) / Math.pow(1 + rateDuring, Math.max(0, planEnd - startAge));
+
+      for (let age = Math.floor(startAge); age < planEnd; age++) {
+        const targetRent = age < rent1Until ? rent1 : rent2;
+        const statePensions = state.members.reduce((sum, member) => {
+          if (useDisabilityOffset) return sum;
+          return sum + (age >= n(member.pensionAge) ? estimatePension(member) : 0);
+        }, 0);
+        const monthlyNeed = Math.max(0, targetRent - statePensions - rentIncome);
+        const yearsFromStart = age - startAge;
+        capital += (monthlyNeed * 12) / Math.pow(1 + rateDuring, yearsFromStart + 0.5);
+      }
+      return capital;
+    }
+
+    function buildWealthTimeline() {
+      const primaryAge = n(state.members[0]?.age || 35);
+      const rentStart = n($("rentStartAge").value);
+      const planEnd = n($("planEndAge").value);
+      const growthBefore = pct($("growthBefore").value);
+      const needed = results.rentNeeded || 0;
+      const years = [];
+      const values = [];
+      const neededLine = [];
+      const startWealth = results.currentWealth || 0;
+      const monthly = results.monthlyInvestments || 0;
+      for (let age = primaryAge; age <= planEnd; age++) {
+        const yearsFromNow = Math.max(0, age - primaryAge);
+        let value = fvSeries(startWealth + n($("sharedLump").value), monthly, growthBefore, yearsFromNow);
+        if (age >= rentStart) value = Math.max(0, results.capitalAtRent - (age - rentStart) * 12 * n($("rent2").value) * 0.55);
+        years.push(age);
+        values.push(value);
+        neededLine.push(age < rentStart ? needed : Math.max(0, needed * Math.pow(0.94, age - rentStart)));
+      }
+      return { labels: years, values, neededLine };
+    }
+
+    function calculateMortgage() {
+      const principal = n($("mortgageAmount").value);
+      const annualRate = pct($("mortgageRate").value);
+      const years = n($("mortgageYears").value);
+      const payment = annuityPayment(principal, annualRate, years);
+      const monthlyRate = annualRate / 12;
+      const investRate = pct($("mortgageInvestYield").value);
+      const monthlyInvest = n($("mortgageMonthlyInvest").value);
+      let balance = principal;
+      let invest = n($("mortgageLump").value);
+      let payoffInvest = 0;
+      let payoffMode = false;
+      let breakEven = null;
+      let safePayoff = null;
+      const labels = [];
+      const debtValues = [];
+      const investValues = [];
+      const payoffValues = [];
+      const rentNeed = n($("rent1").value);
+
+      for (let year = 0; year <= years; year++) {
+        if (year > 0) {
+          for (let month = 0; month < 12; month++) {
+            balance = Math.max(0, balance * (1 + monthlyRate) - payment);
+            invest = invest * (1 + investRate / 12) + monthlyInvest;
+            if (!payoffMode && invest >= balance && balance > 0) {
+              breakEven = year;
+              payoffMode = true;
+              payoffInvest = Math.max(0, invest - balance);
+            } else if (payoffMode) {
+              payoffInvest = payoffInvest * (1 + investRate / 12) + monthlyInvest + payment;
+            }
+          }
+        } else {
+          payoffInvest = 0;
+        }
+        if (!safePayoff && invest - balance >= rentNeed) safePayoff = year;
+        labels.push(year);
+        debtValues.push(balance);
+        investValues.push(invest);
+        payoffValues.push(payoffMode ? payoffInvest : null);
+      }
+
+      return { payment, breakEven, safePayoff, endInvest: investValues[investValues.length - 1], labels, debtValues, investValues, payoffValues, balance };
+    }
+
+    function calculateInsurance(rateDuring) {
+      const currentWealth = results.currentWealth || 0;
+      const currentInvalidityCover = n($("currentDisabilityCover").value);
+      const currentDeathCover = n($("currentDeathCover").value);
+      const planEnd = n($("planEndAge").value);
+      const rent1Until = n($("rent1Until").value);
+      const rent1 = n($("rent1").value);
+      const rent2 = n($("rent2").value);
+      const primaryAge = n(state.members[0]?.age || 35);
+
+      const disabilityNeeds = state.members.map(member => {
+        let capital = 0;
+        const disabilityPension = estimateDisability(member);
+        for (let age = n(member.age); age < planEnd; age++) {
+          const monthlyRent = age < rent1Until ? rent1 : rent2;
+          const monthlyGap = Math.max(0, monthlyRent - disabilityPension);
+          capital += (monthlyGap * 12) / Math.pow(1 + rateDuring, age - n(member.age) + 0.5);
+        }
+        return Math.max(0, capital - currentWealth - currentInvalidityCover);
+      });
+
+      const householdExpenses = n($("householdExpenses").value);
+      const otherLoans = n($("otherLoansPayment").value);
+      const children = n($("childrenCount").value);
+      const familyBenefits = n($("widowPension").value) + n($("orphanPension").value) * children;
+      const monthlyFamilyGap = Math.max(0, householdExpenses + otherLoans - familyBenefits);
+      const familyCapital = capitalForMonthlyNeed(monthlyFamilyGap, Math.max(1, planEnd - primaryAge), rateDuring);
+      const deathNeed = Math.max(0, n($("mortgageAmount").value) + familyCapital - currentWealth - currentDeathCover);
+
+      return {
+        disabilityNeeds,
+        disabilityNeed: Math.max(...disabilityNeeds, 0),
+        deathNeed,
+        familyBenefits,
+        monthlyFamilyGap,
+        familyCapital
+      };
+    }
+
+    function calculateAll() {
+      collectState();
+      const primaryAge = n(state.members[0]?.age || 35);
+      const rentStart = n($("rentStartAge").value);
+      const yearsToRent = Math.max(0, rentStart - primaryAge);
+      const growthBefore = pct($("growthBefore").value);
+      const growthDuring = pct($("growthDuring").value);
+      const personalInvestments = state.members.reduce((sum, member) => sum + n(member.personalInvestments), 0);
+      const personalMonthly = state.members.reduce((sum, member) => sum + n(member.monthlyInvestment), 0);
+      const personalLumps = state.members.reduce((sum, member) => sum + n(member.lumpInvestment), 0);
+      const currentWealth = personalInvestments + n($("sharedAssets").value) + n($("exitAsset").value);
+      const monthlyInvestments = personalMonthly + n($("sharedMonthlyInvestment").value);
+      const weightedYield = state.members.length ? state.members.reduce((sum, member) => sum + pct(member.investmentYield), 0) / state.members.length : growthBefore;
+      const futurePersonal = fvSeries(personalInvestments + personalLumps + n($("sharedLump").value), monthlyInvestments, weightedYield || growthBefore, yearsToRent);
+      const exitFuture = n($("exitAsset").value) * Math.pow(1 + pct($("exitYield").value), yearsToRent);
+      const capitalAtRent = futurePersonal + n($("sharedAssets").value) + exitFuture;
+      const rentNeeded = neededCapitalFromAge(rentStart, growthDuring, false);
+      const rentGap = Math.max(0, rentNeeded - capitalAtRent);
+      const mortgage = calculateMortgage();
+      const totalIncome = state.members.reduce((sum, member) => sum + n(member.netIncome), 0) + n($("rentIncome").value);
+      const totalExpenses = n($("householdExpenses").value) + mortgage.payment + n($("otherLoansPayment").value) + n($("insuranceMonthly").value) + n($("reserveMonthly").value) + monthlyInvestments;
+      const cashBalance = totalIncome - totalExpenses;
+      const pensions = state.members.reduce((sum, member) => sum + estimatePension(member), 0);
+
+      results = {
+        currentWealth,
+        monthlyInvestments,
+        capitalAtRent,
+        rentNeeded,
+        rentGap,
+        mortgage,
+        totalIncome,
+        totalExpenses,
+        cashBalance,
+        pensions,
+        risk: {}
+      };
+      results.risk = calculateInsurance(growthDuring);
+      renderResults();
+      drawCharts();
+      buildReport();
+    }
+
+    function setText(id, value) {
+      const el = $(id);
+      if (el) el.textContent = value;
+    }
+
+    function renderResults() {
+      setText("sideMembers", String(state.members.length));
+      setText("sideWealth", shortMoney(results.currentWealth));
+      setText("sideMonthlyInvest", money(results.monthlyInvestments));
+      setText("sideMortgage", shortMoney(n($("mortgageAmount").value)));
+      setText("sideMortgagePayment", money(results.mortgage.payment));
+      setText("sideExpenses", money(n($("householdExpenses").value) + n($("otherLoansPayment").value) + results.mortgage.payment));
+
+      setText("dashWealth", shortMoney(results.currentWealth));
+      setText("dashNeeded", shortMoney(results.rentNeeded));
+      setText("dashGap", shortMoney(results.rentGap));
+      setText("dashCashflow", money(results.cashBalance));
+      setText("dashPensions", money(results.pensions));
+      setText("dashDisability", shortMoney(results.risk.disabilityNeed));
+      setText("dashDeath", shortMoney(results.risk.deathNeed));
+      setText("dashFuture", shortMoney(results.capitalAtRent));
+
+      setText("exCurrentWealth", shortMoney(results.currentWealth));
+      setText("exAtRent", shortMoney(results.capitalAtRent));
+      setText("exNeeded", shortMoney(results.rentNeeded));
+      setText("exGap", shortMoney(results.rentGap));
+
+      setText("rentNeededCard", shortMoney(results.rentNeeded));
+      setText("rentGapCard", shortMoney(results.rentGap));
+
+      setText("mortgagePaymentCard", money(results.mortgage.payment));
+      setText("breakEvenCard", results.mortgage.breakEven ? results.mortgage.breakEven + ". rok" : "Nenastane");
+      setText("safePayoffCard", results.mortgage.safePayoff ? results.mortgage.safePayoff + ". rok" : "Nenastane");
+      setText("mortgageEndInvestCard", shortMoney(results.mortgage.endInvest));
+
+      setText("riskDisabilityNeed", shortMoney(results.risk.disabilityNeed));
+      setText("riskDeathNeed", shortMoney(results.risk.deathNeed));
+      setText("riskBaseExpenses", money(n($("householdExpenses").value)));
+      setText("riskMortgagePayment", money(results.mortgage.payment));
+      setText("riskOtherLoans", money(n($("otherLoansPayment").value)));
+      setText("riskTotalExpenses", money(n($("householdExpenses").value) + results.mortgage.payment + n($("otherLoansPayment").value)));
+      setText("riskFamilyBenefits", money(results.risk.familyBenefits));
+      setText("riskFamilyGap", money(results.risk.monthlyFamilyGap));
+
+      setText("cashIncome", money(results.totalIncome));
+      setText("cashExpenses", money(results.totalExpenses));
+      setText("cashInvestments", money(results.monthlyInvestments));
+      setText("cashBalance", money(results.cashBalance));
+
+      setText("scenarioCurrentGap", shortMoney(results.rentGap));
+      const monthlyNeeded = capitalForMonthlyNeed(results.rentGap / Math.max(1, n($("rentStartAge").value) - n(state.members[0]?.age || 35)) / 12, 1, 0);
+      setText("scenarioRecommended", money(Math.max(0, monthlyNeeded)));
+    }
+
+    function drawLineChart(canvasId, labels, series, options = {}) {
+      const canvas = $(canvasId);
+      if (!canvas) return;
+      const rect = canvas.getBoundingClientRect();
+      const dpr = window.devicePixelRatio || 1;
+      canvas.width = Math.max(320, rect.width * dpr);
+      canvas.height = Math.max(220, rect.height * dpr);
+      const ctx = canvas.getContext("2d");
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      const w = rect.width;
+      const h = rect.height;
+      const pad = { left: 58, right: 18, top: 18, bottom: 42 };
+      ctx.clearRect(0, 0, w, h);
+      const allValues = series.flatMap(item => item.values.filter(value => value !== null && Number.isFinite(value)));
+      const max = Math.max(...allValues, 1);
+      const min = 0;
+      const plotW = w - pad.left - pad.right;
+      const plotH = h - pad.top - pad.bottom;
+      const x = index => pad.left + (labels.length <= 1 ? 0 : index / (labels.length - 1)) * plotW;
+      const y = value => pad.top + (1 - (value - min) / (max - min)) * plotH;
+
+      ctx.strokeStyle = "rgba(100,116,139,.22)";
+      ctx.lineWidth = 1;
+      ctx.fillStyle = "#64748b";
+      ctx.font = "12px -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif";
+      for (let i = 0; i <= 4; i++) {
+        const gy = pad.top + i / 4 * plotH;
+        ctx.beginPath();
+        ctx.moveTo(pad.left, gy);
+        ctx.lineTo(w - pad.right, gy);
+        ctx.stroke();
+        const val = max * (1 - i / 4);
+        ctx.fillText((val / 1000000).toLocaleString("cs-CZ", { maximumFractionDigits: 1 }) + " mil.", 6, gy + 4);
+      }
+
+      const step = Math.max(1, Math.ceil(labels.length / 6));
+      labels.forEach((label, index) => {
+        if (index % step !== 0 && index !== labels.length - 1) return;
+        ctx.fillText(String(label), x(index) - 8, h - 14);
+      });
+
+      series.forEach(item => {
+        const points = item.values.map((value, index) => value === null ? null : [x(index), y(value)]);
+        const fillPoints = points.filter(Boolean);
+        if (item.fill && fillPoints.length) {
+          ctx.beginPath();
+          fillPoints.forEach((point, index) => index ? ctx.lineTo(point[0], point[1]) : ctx.moveTo(point[0], point[1]));
+          ctx.lineTo(fillPoints[fillPoints.length - 1][0], pad.top + plotH);
+          ctx.lineTo(fillPoints[0][0], pad.top + plotH);
+          ctx.closePath();
+          ctx.fillStyle = item.fill;
+          ctx.fill();
+        }
+        ctx.beginPath();
+        points.forEach(point => {
+          if (!point) return;
+          if (ctx.currentX === undefined) {
+            ctx.moveTo(point[0], point[1]);
+            ctx.currentX = point[0];
+          } else {
+            ctx.lineTo(point[0], point[1]);
+          }
+        });
+        ctx.currentX = undefined;
+        ctx.strokeStyle = item.color;
+        ctx.lineWidth = item.width || 3;
+        ctx.lineCap = "round";
+        ctx.lineJoin = "round";
+        ctx.stroke();
+        fillPoints.forEach((point, index) => {
+          if (index % Math.max(1, Math.ceil(fillPoints.length / 8)) !== 0 && index !== fillPoints.length - 1) return;
+          ctx.beginPath();
+          ctx.arc(point[0], point[1], 3.5, 0, Math.PI * 2);
+          ctx.fillStyle = "#fff";
+          ctx.fill();
+          ctx.strokeStyle = item.color;
+          ctx.lineWidth = 2;
+          ctx.stroke();
+        });
+      });
+
+      if (options.markerIndex !== undefined && options.markerIndex !== null) {
+        const mx = x(options.markerIndex);
+        ctx.strokeStyle = "rgba(23,32,51,.32)";
+        ctx.setLineDash([5, 5]);
+        ctx.beginPath();
+        ctx.moveTo(mx, pad.top);
+        ctx.lineTo(mx, pad.top + plotH);
+        ctx.stroke();
+        ctx.setLineDash([]);
+      }
+    }
+
+    function drawCharts() {
+      const wealth = buildWealthTimeline();
+      drawLineChart("wealthChart", wealth.labels, [
+        { values: wealth.values, color: "#15803d", fill: "rgba(21,128,61,.11)" },
+        { values: wealth.neededLine, color: "#2563eb" }
+      ]);
+      drawLineChart("mortgageChart", results.mortgage.labels, [
+        { values: results.mortgage.debtValues, color: "#dc2626" },
+        { values: results.mortgage.investValues, color: "#15803d", fill: "rgba(21,128,61,.09)" },
+        { values: results.mortgage.payoffValues, color: "#2563eb" }
+      ], { markerIndex: results.mortgage.breakEven });
+    }
+
+    function buildReport() {
+      const sections = [];
+      if ($("repIntro")?.checked) {
+        sections.push(`
+          <article class="report-page">
+            <h2>${escapeHtml(state.householdName || "Investiční plán domácnosti")}</h2>
+            <p class="desc">Orientační finanční plán domácnosti podle aktuálně zadaných údajů.</p>
+            <div class="report-grid">
+              <div class="metric green"><small>Majetek dnes</small><strong>${shortMoney(results.currentWealth)}</strong></div>
+              <div class="metric blue"><small>Cílová renta</small><strong>${money(n($("rent1").value))}</strong></div>
+              <div class="metric rose"><small>Chybějící kapitál</small><strong>${shortMoney(results.rentGap)}</strong></div>
+            </div>
+            <div class="note">Tento report je orientační model. Skutečný vývoj investic, sazeb, státních dávek a legislativy se může v čase lišit.</div>
+          </article>
+        `);
+      }
+      if ($("repInvest")?.checked) {
+        sections.push(`
+          <article class="report-page">
+            <h2>Cesta k rentě</h2>
+            <div class="report-grid">
+              <div class="metric blue"><small>Potřebný kapitál</small><strong>${shortMoney(results.rentNeeded)}</strong></div>
+              <div class="metric green"><small>Vytvořený kapitál při rentě</small><strong>${shortMoney(results.capitalAtRent)}</strong></div>
+              <div class="metric rose"><small>Rozdíl k dořešení</small><strong>${shortMoney(results.rentGap)}</strong></div>
+            </div>
+            <p class="note">Domácnost míří na rentu ${money(n($("rent1").value))} měsíčně do ${n($("rent1Until").value)} let a následně ${money(n($("rent2").value))} měsíčně do ${n($("planEndAge").value)} let.</p>
+          </article>
+        `);
+      }
+      if ($("repMortgage")?.checked) {
+        sections.push(`
+          <article class="report-page">
+            <h2>Hypotéka a investice</h2>
+            <div class="report-grid">
+              <div class="metric red"><small>Hypotéka</small><strong>${shortMoney(n($("mortgageAmount").value))}</strong></div>
+              <div class="metric orange"><small>Měsíční splátka</small><strong>${money(results.mortgage.payment)}</strong></div>
+              <div class="metric green"><small>Bod zvratu</small><strong>${results.mortgage.breakEven ? results.mortgage.breakEven + ". rok" : "Nenastane"}</strong></div>
+            </div>
+            <p class="note">Bezpečné doplacení nastává v okamžiku, kdy po odečtení zbývající hypotéky z investic zůstane alespoň jedna cílová měsíční renta.</p>
+          </article>
+        `);
+      }
+      if ($("repRisk")?.checked) {
+        sections.push(`
+          <article class="report-page">
+            <h2>Ochrana příjmu a rodiny</h2>
+            <div class="report-grid">
+              <div class="metric red"><small>Invalidita</small><strong>${shortMoney(results.risk.disabilityNeed)}</strong></div>
+              <div class="metric red"><small>Smrt živitele</small><strong>${shortMoney(results.risk.deathNeed)}</strong></div>
+              <div class="metric orange"><small>Měsíční výpadek rodiny</small><strong>${money(results.risk.monthlyFamilyGap)}</strong></div>
+            </div>
+            <p class="note">Invalidita chrání okamžitý přechod do rentového režimu. Smrt chrání rodinu, výdaje domácnosti a doplacení závazků.</p>
+          </article>
+        `);
+      }
+      if ($("repCashflow")?.checked) {
+        sections.push(`
+          <article class="report-page">
+            <h2>Cashflow</h2>
+            <div class="report-grid">
+              <div class="metric green"><small>Příjmy</small><strong>${money(results.totalIncome)}</strong></div>
+              <div class="metric red"><small>Výdaje včetně investic</small><strong>${money(results.totalExpenses)}</strong></div>
+              <div class="metric blue"><small>Výsledek měsíčně</small><strong>${money(results.cashBalance)}</strong></div>
+            </div>
+          </article>
+        `);
+      }
+      if ($("repScenarios")?.checked) {
+        sections.push(`
+          <article class="report-page">
+            <h2>Doporučení</h2>
+            <div class="cards">
+              <div class="mini-card"><h3>Investice</h3><p>Pokračovat v budování kapitálu a průběžně hlídat rozdíl vůči požadované rentě.</p></div>
+              <div class="mini-card"><h3>Hypotéka</h3><p>Sledovat bod zvratu a bezpečné doplacení podle vývoje investic.</p></div>
+              <div class="mini-card"><h3>Invalidita</h3><p>Doplnit krytí na úroveň, která chrání rentový plán domácnosti.</p></div>
+              <div class="mini-card"><h3>Rodina</h3><p>Nastavit krytí smrti podle výdajů, státních dávek a závazků.</p></div>
+            </div>
+          </article>
+        `);
+      }
+      $("reportOutput").innerHTML = sections.join("");
+    }
+
+    function setupEvents() {
+      document.querySelectorAll(".tab").forEach(tab => {
+        tab.addEventListener("click", () => {
+          document.querySelectorAll(".tab").forEach(item => item.classList.remove("active"));
+          document.querySelectorAll(".module").forEach(item => item.classList.remove("active"));
+          tab.classList.add("active");
+          $(tab.dataset.tab).classList.add("active");
+          setTimeout(drawCharts, 20);
+        });
+      });
+
+      document.querySelectorAll("input, select").forEach(el => {
+        if (!el.dataset.member) el.addEventListener("input", calculateAll);
+      });
+
+      $("saveData").addEventListener("click", saveState);
+      $("exportData").addEventListener("click", () => {
+        collectState();
+        const blob = new Blob([JSON.stringify(state, null, 2)], { type: "application/json" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "investicni-plan-domacnosti.json";
+        a.click();
+        URL.revokeObjectURL(url);
+      });
+      $("importData").addEventListener("click", () => $("importFile").click());
+      $("importFile").addEventListener("change", event => {
+        const file = event.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = () => {
+          try {
+            state = JSON.parse(reader.result);
+            applyState();
+            setStatus("Data byla načtena z importu.");
+          } catch (error) {
+            setStatus("Import se nepodařil. Soubor nemá správný formát.");
+          }
+        };
+        reader.readAsText(file);
+      });
+      $("clearCurrent").addEventListener("click", () => {
+        if (!confirm("Vymazat aktuálně vyplněnou domácnost?")) return;
+        state = structuredClone(defaults);
+        applyState();
+        setStatus("Aktuální domácnost je vymazaná.");
+      });
+      $("clearAll").addEventListener("click", () => {
+        if (!confirm("Vymazat všechna uložená data této aplikace?")) return;
+        localStorage.removeItem(STORAGE_KEY);
+        state = structuredClone(defaults);
+        applyState();
+        setStatus("Všechna uložená data jsou vymazaná.");
+      });
+      $("buildReport").addEventListener("click", buildReport);
+      $("printReport").addEventListener("click", () => window.print());
+      window.addEventListener("resize", drawCharts);
+    }
+
+    function applyState() {
+      fieldIds.forEach(id => {
+        if ($(id) && state[id] !== undefined) $(id).value = state[id];
+      });
+      $("householdName").value = state.householdName || defaults.householdName;
+      $("householdType").value = state.householdType || defaults.householdType;
+      $("adultCount").value = state.adultCount || defaults.adultCount;
+      renderMembers();
+      calculateAll();
+    }
+
+    bindBaseFields();
+    renderMembers();
+    setupEvents();
+    applyState();
+  </script>
+</body>
+</html>
